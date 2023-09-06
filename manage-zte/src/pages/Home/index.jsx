@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from '@mui/material/Button';
-
 
 import { Container } from "./style";
 
@@ -15,19 +14,20 @@ import { SearchOnu } from "../searchONU";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
+  console.log('1')
   return (
     <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
+		role="tabpanel"
+		hidden={value !== index}
+		id={`simple-tabpanel-${index}`}
+		aria-labelledby={`simple-tab-${index}`}
+		{...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+		{value === index && (
+		<Box sx={{ p: 3 }}>
+			<Typography component='span'>{children}</Typography>
+		</Box>
+		)}
     </div>
   );
 }
@@ -48,9 +48,15 @@ function a11yProps(index) {
 export function Home() {
 
 	const [value, setValue] = React.useState(0);
+	const [searchResult, setSearchResult] = useState("");
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
+	};
+
+	const handleInputChange = (newInputValue) => {
+		// Faça algo com o novo valor digitado, por exemplo, definir o resultado na state do componente pai
+		setSearchResult(`Resultado da pesquisa para ${newInputValue}`);
 	};
 
 	return (
@@ -66,17 +72,16 @@ export function Home() {
 						</Tabs>
 					</Box>
 					<CustomTabPanel value={value} index={0}>
-						<SearchOnu />
+						<SearchOnu onInputChange={handleInputChange}/>
+						<div>{searchResult}</div>
 					</CustomTabPanel> 	
-					<CustomTabPanel value={value} index={1}>
-						Item Two
-					</CustomTabPanel>
+
 				</Box>
 				</div>
 				<div className="formSubmit flex">
-				<Button variant="contained" endIcon={<SendIcon />}>
-					Procurar ONU
-				</Button>
+					<Button variant="contained" endIcon={<SendIcon />}>
+						Procurar ONU
+					</Button>
 				</div>
 			</form>
 		</Container>
