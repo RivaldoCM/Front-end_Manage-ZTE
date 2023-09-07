@@ -8,9 +8,6 @@ export function App() {
   return (
     <div className="App">
       <Router>
-      {
-                    console.log('1')
-                }
         <Routes />
         <GlobalStyle />
       </Router>

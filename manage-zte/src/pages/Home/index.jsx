@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Button from '@mui/material/Button';
 
+import { SearchOnu } from "../searchONU";
 import { Container } from "./style";
 
 import PropTypes from 'prop-types';
@@ -9,27 +9,26 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import SendIcon from '@mui/icons-material/Send';
-import { SearchOnu } from "../searchONU";
+import Button from '@mui/material/Button';
 
 function CustomTabPanel(props) {
-  const { children, value, index, ...other } = props;
+	const { children, value, index, ...other } = props;
 
-  console.log('1')
-  return (
-    <div
-		role="tabpanel"
-		hidden={value !== index}
-		id={`simple-tabpanel-${index}`}
-		aria-labelledby={`simple-tab-${index}`}
-		{...other}
-    >
-		{value === index && (
-		<Box sx={{ p: 3 }}>
-			<Typography component='span'>{children}</Typography>
-		</Box>
-		)}
-    </div>
-  );
+	return (
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			{...other}
+		>
+			{value === index && (
+			<Box sx={{ p: 3 }}>
+				<Typography component='span'>{children}</Typography>
+			</Box>
+			)}
+		</div>
+	);
 }
 
 CustomTabPanel.propTypes = {
