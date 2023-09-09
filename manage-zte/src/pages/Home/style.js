@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from "styled-components";
 
 export const Container = styled.div`
     display: flex;
@@ -7,7 +7,7 @@ export const Container = styled.div`
     width: 100%;
     height: 100vh;
 
-    form{
+    .input-content{
         display: flex;
         justify-content: center;
         align-items: center;
@@ -24,11 +24,66 @@ export const Container = styled.div`
         }
         .formContent{
             width: 100%;
-            height: 70%;
+            height: 90%;
+
+            .onu-callback{
+                flex-direction: column;
+                margin: 1rem 0;
+                border: 1px solid black;
+                border-radius: 10px;
+
+                .info-onu-controller{
+                    flex-direction: row;
+                    width:100%;
+                    border-bottom: 1px solid black;
+
+                    .add-onu {
+
+                        ul{
+                            flex-direction: row;
+
+                            li{
+                                padding: .5rem;
+                            }
+                        }
+
+                    }
+                }
+
+                .write-onu-controller{
+                    width: 100%;
+                    height: 100%;
+                    background: #168821;
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
+
+                    .write-onu{
+                        width: 100%;
+                        height: 100%;
+                        padding: .8rem;
+                        color: white;
+                    }
+                }
+
+            }
         }
-        .formSubmit{
-            height: 20%;
+    }
+`;
+
+export const SearchONU = styled.div`
+    flex-direction: column;
+
+    .option-container{
+        width: 100%;
+        margin: 1rem 0;
+        justify-content: flex-start;
+
+        :nth-of-type(2){
+            align-items: end;
         }
 
+        .text, .container{
+            width: 50%;
+        }
     }
 `;
