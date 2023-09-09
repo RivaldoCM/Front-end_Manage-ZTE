@@ -12,6 +12,10 @@ import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const OltInfo = [
     {
@@ -129,7 +133,7 @@ export function Home() {
         const ip = OltInfo.find(option => option.label === city ? city : '');
 		console.log(ip.ip, serial)
 		try{
-			const response = await axios.get('http://localhost:4000/searchONU?', {
+			const response = await axios.get('http://187.94.208.10:4000/searchONU?', {
 				params: {
 					ip: ip.ip,
 					serialNumber: serial,
@@ -200,19 +204,36 @@ export function Home() {
 								{dataOnu.map((item, index) => (
 									<div key={index} className="flex onu-callback">
 										<div className="flex info-onu-controller">
-											<h3>ONU {index + 1}:</h3>
 											<div className="flex add-onu">
-													<ul className="flex">
-														<li>Placa: {item[0]}</li>
-														<li>Pon: {item[1]}</li>
-														<li>Serial: {item[2]}</li>
-													</ul>
+												<ul className="flex">
+													<li>Placa: {item[0]}</li>
+													<li>Pon: {item[1]}</li>
+													<li>Serial: {item[2]}</li>
+												</ul>
 											</div>
 										</div>
 										<div className="flex write-onu-controller">
-											<button className="write-onu">
-												Provisionar
-											</button>
+											<Accordion className="dropdown-box flex">
+												<AccordionSummary 
+													className="dropdown-content"
+													expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
+													aria-controls="panel1a-content"
+													id="panel1a-header"
+												>
+													<Typography>Provisione aqui</Typography>
+												</AccordionSummary>
+												<AccordionDetails>
+													<form>
+														<TextField label="PPPoE" variant="standard">
+
+														</TextField>
+														<TextField label="N°" variant="standard">
+															
+														</TextField>
+
+													</form>
+												</AccordionDetails>
+											</Accordion>
 										</div>
 									</div>
 								))}
