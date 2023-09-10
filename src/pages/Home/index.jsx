@@ -113,6 +113,7 @@ export function Home() {
 	const [serial, setSerial] = useState();
     const [city, setCity] = useState('Natividade');
 	const [dataOnu, setDataOnu] = useState([]);
+	const [hasInputValue, setHasInputValue] = useState(false);
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -125,12 +126,18 @@ export function Home() {
     const handleInputChange = (event) => {
         const newValue = event.target.value;
         setSerial(newValue);
+		setHasInputValue(true);
+
+		if (newValue.length === 0) {
+			//ELIMINANDO ENVIO DE DADOS VAZIO AO BACKEND
+			setHasInputValue(false);
+		}
     };
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-        const oltData = OltInfo.find(option => option.label === city ? city : '');
+		const oltData = OltInfo.find(option => option.label === city ? city : '');
 		console.log(oltData.ip, serial)
 		try{
 			const response = await axios.get('http://187.94.208.10:4000/searchONU?', {
@@ -138,11 +145,11 @@ export function Home() {
 					ip: oltData.ip,
 					serialNumber: serial,
 				}
-			})
+			});
 			console.log('Resposta do servidor:', response.data);
 			setDataOnu(response.data);
 		} catch(err){
-			console.log(err)
+			console.log(err);
 		}
 	}
 
@@ -193,65 +200,75 @@ export function Home() {
 										/>
 									</div>
 								</InputContainer>
-								<Button type="submit" variant="contained" endIcon={<SendIcon />}>
-									Procurar ONU
-								</Button>
+								{
+									hasInputValue 
+									? 
+										<Button type="submit" variant="contained" endIcon={<SendIcon />}>
+											Procurar ONU
+										</Button>
+									:
+										<Button type="submit" disabled variant="contained" endIcon={<SendIcon />}>
+											Procurar ONU
+										</Button>
+								}
 							</form>
 							<ul>
-								{dataOnu.map((item, index) => (
-									<div key={index} className="onu-callback flex">
-										<div className="info-onu-controller flex">
-											<div className="add-onu flex">
-												<ul className="flex">
-													<li>Placa: {item[0]}</li>
-													<li>Pon: {item[1]}</li>
-													<li>Serial: {item[2]}</li>
-												</ul>
+								{
+									dataOnu.map((item, index) => (
+										<div key={index} className="onu-callback flex">
+											<div className="info-onu-controller flex">
+												<div className="add-onu flex">
+													<ul className="flex">
+														<li>Placa: {item[0]}</li>
+														<li>Pon: {item[1]}</li>
+														<li>Serial: {item[2]}</li>
+													</ul>
+												</div>
+											</div>
+											<div className="write-onu-controller flex">
+												<Accordion className="dropdown-box flex">
+													<AccordionSummary 
+														className="dropdown-header"
+														expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
+														aria-controls="panel1a-content"
+														id="panel1a-header"
+													>
+														<Typography>Provisione aqui</Typography>
+													</AccordionSummary>
+													<AccordionDetails className="teste">
+														<form>
+															<InputContainer>
+																<div className="text">
+																	<p>PPPoE do cliente: </p>
+																</div>
+																<div className="content">
+																	<TextField  variant="standard">
+	
+																	</TextField>
+																</div>
+															</InputContainer>
+		
+															<InputContainer>
+																<div className="text">
+																	<p>Número do contrato: </p>
+																</div>
+																<div className="content">
+																	<TextField  variant="standard">
+	
+																	</TextField>
+																</div>
+															</InputContainer>
+	
+															<Button type="submit" variant="contained" endIcon={<SendIcon />}>
+																Provisionar
+															</Button>
+														</form>
+													</AccordionDetails>
+												</Accordion>
 											</div>
 										</div>
-										<div className="write-onu-controller flex">
-											<Accordion className="dropdown-box flex">
-												<AccordionSummary 
-													className="dropdown-header"
-													expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
-													aria-controls="panel1a-content"
-													id="panel1a-header"
-												>
-													<Typography>Provisione aqui</Typography>
-												</AccordionSummary>
-												<AccordionDetails className="teste">
-													<form>
-														<InputContainer>
-															<div className="text">
-																<p>PPPoE do cliente: </p>
-															</div>
-															<div className="content">
-																<TextField  variant="standard">
-
-																</TextField>
-															</div>
-														</InputContainer>
-	
-														<InputContainer>
-															<div className="text">
-																<p>Número do contrato: </p>
-															</div>
-															<div className="content">
-																<TextField  variant="standard">
-
-																</TextField>
-															</div>
-														</InputContainer>
-
-														<Button type="submit" variant="contained" endIcon={<SendIcon />}>
-															Provisionar
-														</Button>
-													</form>
-												</AccordionDetails>
-											</Accordion>
-										</div>
-									</div>
-								))}
+									))
+								}
 							</ul>
 						</CustomTabPanel> 	
 					</Box>
