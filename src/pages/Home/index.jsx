@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from 'axios';
 
-import { Container, SearchONU } from "./style";
+import { Container, InputContainer } from "./style";
 
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -159,52 +159,49 @@ export function Home() {
 							</Tabs>
 						</Box>
 						<CustomTabPanel value={value} index={0}>
-							<form onSubmit={handleSubmit}>
-								<SearchONU className="flex">
-									<div className="option-container flex">
-										<div className="text">
-											<p>Selecione a cidade: </p>
-										</div>
-										<div className="content">
-											<TextField
-												id='1'
-												select
-												label="Cidades"
-												value={city}
-												onChange={handleCityChange}
-											>
-												{OltInfo.map((option) => (
-													<MenuItem key={option.id} value={option.label}>
-														{option.label}
-													</MenuItem>
-												))}
-											</TextField>
-										</div>
+							<form onSubmit={handleSubmit} className="flex">
+								<InputContainer center={true}>
+									<div className="text">
+										<p>Selecione a cidade: </p>
 									</div>
-									<div className="option-container flex">
-										<div className="text">
-											<p>Digite o serial da ONU: </p>
-										</div>
-										<div className="content">
-											<TextField 
-												id="standard-basic" 
-												label="Serial" 
-												variant="standard" 
-												type="text"
-												onChange={handleInputChange}
-											/>
-										</div>
+									<div className="content">
+										<TextField
+											id='1'
+											select
+											label="Cidades"
+											value={city}
+											onChange={handleCityChange}
+										>
+											{OltInfo.map((option) => (
+												<MenuItem key={option.id} value={option.label}>
+													{option.label}
+												</MenuItem>
+											))}
+										</TextField>
 									</div>
-									<Button type="submit" variant="contained" endIcon={<SendIcon />}>
-										Procurar ONU
-									</Button>
-								</SearchONU>
+								</InputContainer>
+								<InputContainer>
+									<div className="text">
+										<p>Digite o serial da ONU: </p>
+									</div>
+									<div className="content">
+										<TextField 
+											id="standard-basic" 
+											variant="standard" 
+											type="text"
+											onChange={handleInputChange}
+										/>
+									</div>
+								</InputContainer>
+								<Button type="submit" variant="contained" endIcon={<SendIcon />}>
+									Procurar ONU
+								</Button>
 							</form>
 							<ul>
 								{dataOnu.map((item, index) => (
-									<div key={index} className="flex onu-callback">
-										<div className="flex info-onu-controller">
-											<div className="flex add-onu">
+									<div key={index} className="onu-callback flex">
+										<div className="info-onu-controller flex">
+											<div className="add-onu flex">
 												<ul className="flex">
 													<li>Placa: {item[0]}</li>
 													<li>Pon: {item[1]}</li>
@@ -212,25 +209,43 @@ export function Home() {
 												</ul>
 											</div>
 										</div>
-										<div className="flex write-onu-controller">
+										<div className="write-onu-controller flex">
 											<Accordion className="dropdown-box flex">
 												<AccordionSummary 
-													className="dropdown-content"
+													className="dropdown-header"
 													expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
 													aria-controls="panel1a-content"
 													id="panel1a-header"
 												>
 													<Typography>Provisione aqui</Typography>
 												</AccordionSummary>
-												<AccordionDetails>
+												<AccordionDetails className="teste">
 													<form>
-														<TextField label="PPPoE" variant="standard">
+														<InputContainer>
+															<div className="text">
+																<p>PPPoE do cliente: </p>
+															</div>
+															<div className="content">
+																<TextField  variant="standard">
 
-														</TextField>
-														<TextField label="N°" variant="standard">
-															
-														</TextField>
+																</TextField>
+															</div>
+														</InputContainer>
+	
+														<InputContainer>
+															<div className="text">
+																<p>Número do contrato: </p>
+															</div>
+															<div className="content">
+																<TextField  variant="standard">
 
+																</TextField>
+															</div>
+														</InputContainer>
+
+														<Button type="submit" variant="contained" endIcon={<SendIcon />}>
+															Provisionar
+														</Button>
 													</form>
 												</AccordionDetails>
 											</Accordion>

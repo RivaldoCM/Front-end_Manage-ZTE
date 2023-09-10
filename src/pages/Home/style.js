@@ -27,6 +27,10 @@ export const Container = styled.div`
             height: 90%;
             overflow: auto;
 
+            form{
+                flex-direction: column;
+            }
+
             .onu-callback{
                 flex-direction: column;
                 margin: 1rem 0;
@@ -67,16 +71,23 @@ export const Container = styled.div`
                         border-bottom-left-radius: 10px;
                         color: white;
                         
-                        .dropdown-content{
+                        .dropdown-header{
                             width: 100%;
 
-                            p{
-                                font-size: .9rem;
+                            > div {
+                                max-width: 115px !important; 
+                                //CORRIGE O ESPAÇAMENTO DA PALAVRA COM O ICONE DE SETA
+
+                                p {
+                                    font-size: .9rem;
+                                }
                             }
                         }
 
-
-
+                        > div {
+                            width: 100%;
+                            //APLICA TAMANHO ODNE ESTÃO OS CAMPOS DE PPPoE E CONTRATO
+                        }
                     }
 
                     .write-onu{
@@ -86,26 +97,29 @@ export const Container = styled.div`
                         color: white;
                     }
                 }
-
             }
         }
     }
 `;
 
-export const SearchONU = styled.div`
-    flex-direction: column;
+export const InputContainer = styled.div`
+    /*
+        ESSE ESTILO CONTROLA O TEXTO E O QUE SEJA INSERIDO PELO USUÁRIO,
+        CARACTERISTICO POR: INFORMAÇÃO EM TEXTO SOBRE O QUE DEVE SER INSERIDO
+        E O CAMPO DE INSERÇÃO PARA O USUÁRIO
+    */
+    
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin: 1rem 0;
 
-    .option-container{
-        width: 100%;
-        margin: 1rem 0;
-        justify-content: flex-start;
+    .text{
+        display: flex;
+        align-items: ${(props) => props.center ? 'center' : 'end'};
+    }
 
-        :nth-of-type(2){
-            align-items: end;
-        }
-
-        .text, .container{
-            width: 50%;
-        }
+    .text, .content{
+        width: 50%;
     }
 `;
