@@ -130,12 +130,12 @@ export function Home() {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-        const ip = OltInfo.find(option => option.label === city ? city : '');
-		console.log(ip.ip, serial)
+        const oltData = OltInfo.find(option => option.label === city ? city : '');
+		console.log(oltData.ip, serial)
 		try{
 			const response = await axios.get('http://187.94.208.10:4000/searchONU?', {
 				params: {
-					ip: ip.ip,
+					ip: oltData.ip,
 					serialNumber: serial,
 				}
 			})
@@ -155,7 +155,7 @@ export function Home() {
 						<Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='flex'>
 							<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
 								<Tab label="Nova instalação" {...a11yProps(0)} />
-								<Tab label="Item Two" {...a11yProps(1)} />
+								{/*<Tab label="Item Two" {...a11yProps(1)} /> ADICINA VIDEO DO CE*/ }
 							</Tabs>
 						</Box>
 						<CustomTabPanel value={value} index={0}>
