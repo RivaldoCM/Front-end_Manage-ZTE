@@ -16,6 +16,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { VillaOutlined } from "@mui/icons-material";
 
 const OltInfo = [
     {
@@ -118,6 +119,7 @@ export function Home() {
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
+	console.log(dataOnu)
 
     const handleCityChange = (event) => {
         setCity(event.target.value); //Atualiza o valor no Front-end
@@ -146,7 +148,7 @@ export function Home() {
 					serialNumber: serial,
 				}
 			});
-			console.log('Resposta do servidor:', response.data);
+
 			setDataOnu(response.data);
 		} catch(err){
 			console.log(err);
@@ -214,7 +216,9 @@ export function Home() {
 							</form>
 							<ul>
 								{
-									dataOnu.map((item, index) => (
+									typeof(dataOnu) === 'object' 
+									? 
+									dataOnu.map((item, index) => {
 										<div key={index} className="onu-callback flex">
 											<div className="info-onu-controller flex">
 												<div className="add-onu flex">
@@ -267,7 +271,9 @@ export function Home() {
 												</Accordion>
 											</div>
 										</div>
-									))
+									}) 
+									:
+									<div>teste</div>
 								}
 							</ul>
 						</CustomTabPanel> 	
