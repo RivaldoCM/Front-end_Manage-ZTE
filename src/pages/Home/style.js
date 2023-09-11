@@ -64,7 +64,7 @@ export const Container = styled.div`
                     .dropdown-box{
                         flex-direction: column;
                         width: 100%;
-                        background: #168821;
+                        background: rgba(0, 0, 0, 0.39);
                         border-top-left-radius: 0px;
                         border-top-right-radius: 0px;
                         border-bottom-right-radius: 10px;

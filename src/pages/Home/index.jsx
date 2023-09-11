@@ -119,7 +119,6 @@ export function Home() {
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
-	console.log(dataOnu)
 
     const handleCityChange = (event) => {
         setCity(event.target.value); //Atualiza o valor no Front-end
@@ -216,64 +215,64 @@ export function Home() {
 							</form>
 							<ul>
 								{
-									typeof(dataOnu) === 'object' 
-									? 
-									dataOnu.map((item, index) => {
-										<div key={index} className="onu-callback flex">
-											<div className="info-onu-controller flex">
-												<div className="add-onu flex">
-													<ul className="flex">
-														<li>Placa: {item[0]}</li>
-														<li>Pon: {item[1]}</li>
-														<li>Serial: {item[2]}</li>
-													</ul>
+									Array.isArray(dataOnu) ? (
+										dataOnu.map((item, index) => (
+											<div key={index} className="onu-callback flex">
+												<div className="info-onu-controller flex">
+													<div className="add-onu flex">
+														<ul className="flex">
+															<li>Placa: {item[0]}</li>
+															<li>Pon: {item[1]}</li>
+															<li>Serial: {item[2]}</li>
+														</ul>
+													</div>
+												</div>
+												<div className="write-onu-controller flex">
+													<Accordion className="dropdown-box flex">
+														<AccordionSummary 
+															className="dropdown-header"
+															expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
+															aria-controls="panel1a-content"
+															id="panel1a-header"
+														>
+															<Typography>Provisione aqui</Typography>
+														</AccordionSummary>
+														<AccordionDetails className="teste">
+															<form>
+																<InputContainer>
+																	<div className="text">
+																		<p>PPPoE do cliente: </p>
+																	</div>
+																	<div className="content">
+																		<TextField  variant="standard">
+		
+																		</TextField>
+																	</div>
+																</InputContainer>
+			
+																<InputContainer>
+																	<div className="text">
+																		<p>Número do contrato: </p>
+																	</div>
+																	<div className="content">
+																		<TextField  variant="standard">
+		
+																		</TextField>
+																	</div>
+																</InputContainer>
+		
+																<Button type="submit" variant="contained" endIcon={<SendIcon />}>
+																	Provisionar
+																</Button>
+															</form>
+														</AccordionDetails>
+													</Accordion>
 												</div>
 											</div>
-											<div className="write-onu-controller flex">
-												<Accordion className="dropdown-box flex">
-													<AccordionSummary 
-														className="dropdown-header"
-														expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
-														aria-controls="panel1a-content"
-														id="panel1a-header"
-													>
-														<Typography>Provisione aqui</Typography>
-													</AccordionSummary>
-													<AccordionDetails className="teste">
-														<form>
-															<InputContainer>
-																<div className="text">
-																	<p>PPPoE do cliente: </p>
-																</div>
-																<div className="content">
-																	<TextField  variant="standard">
-	
-																	</TextField>
-																</div>
-															</InputContainer>
-		
-															<InputContainer>
-																<div className="text">
-																	<p>Número do contrato: </p>
-																</div>
-																<div className="content">
-																	<TextField  variant="standard">
-	
-																	</TextField>
-																</div>
-															</InputContainer>
-	
-															<Button type="submit" variant="contained" endIcon={<SendIcon />}>
-																Provisionar
-															</Button>
-														</form>
-													</AccordionDetails>
-												</Accordion>
-											</div>
-										</div>
-									}) 
-									:
-									<div>teste</div>
+										))
+									) : (
+										<li>Lista vazia</li>
+									)
 								}
 							</ul>
 						</CustomTabPanel> 	
