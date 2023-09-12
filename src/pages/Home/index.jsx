@@ -16,62 +16,67 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { VillaOutlined } from "@mui/icons-material";
 
 const OltInfo = [
+	{
+		id: 0,
+		ip: '172.18.2.38',
+		label: 'OLT Bancada',
+		isPizzaBox: 1
+	},
     {
         id: 1,
         ip: '172.18.2.2',
         label: 'Natividade',
-        isPizzaBox: false
+        isPizzaBox: 0
     },
     {
         id: 2,
         ip: '172.18.2.6',
         label: 'Guaçui',
-        isPizzaBox: false
+        isPizzaBox: 0
     },
     {
         id: 3,
         ip: '172.18.2.10',
         label: 'Celina',
-        isPizzaBox: true
+        isPizzaBox: 1
     },
     {
         id: 4,
         ip: '172.18.2.14',
         label: 'Espera Feliz',
-        isPizzaBox: false
+        isPizzaBox: 0
     },
     {
         id: 5,
         ip: '172.18.2.18',
         label: 'Varre-sai',
-        isPizzaBox: false
+        isPizzaBox: 0
     },
     {
         id: 6,
         ip: '172.18.2.22',
         label: 'Purilândia',
-        isPizzaBox: true
+        isPizzaBox: 1
     },
     {
         id: 7,
         ip: '172.18.2.26',
         label: 'Catuné',
-        isPizzaBox: false
+        isPizzaBox: 1
     },
     {
         id: 8,
         ip: '172.18.2.30',
         label: 'Tombos',
-        isPizzaBox: true
+        isPizzaBox: 1
     },
     {
         id: 9,
         ip: '172.18.2.34',
         label: 'Pedra Menina',
-        isPizzaBox: true
+        isPizzaBox: 1
     },
 ];
 
@@ -111,8 +116,10 @@ function a11yProps(index) {
 export function Home() {
 
 	const [value, setValue] = useState(0);
-	const [serial, setSerial] = useState();
+	const [matchSerialNumber, setMatchSerialNumber] = useState();
     const [city, setCity] = useState('Natividade');
+	const [pppoe, setPppoe] = useState('');
+	const [contractNumber, setContractNumber] = useState('');
 	const [dataFromApi, setDataFromApi] = useState();
 	const [dataOnu, setDataOnu] = useState([]);
 	const [hasInputValue, setHasInputValue] = useState(false);
@@ -125,9 +132,17 @@ export function Home() {
         setCity(event.target.value); //Atualiza o valor no Front-end
 	}
 
+	const handlePppoeChange = (e) => {
+		setPppoe(e.target.value);
+	}
+
+	const handleContractNumberChange = (e) => {
+		setContractNumber(e.target.value);
+	}
+
     const handleInputChange = (event) => {
         const newValue = event.target.value;
-        setSerial(newValue);
+		setMatchSerialNumber(newValue);
 		setHasInputValue(true);
 
 		if (newValue.length === 0) {
@@ -140,12 +155,12 @@ export function Home() {
 		event.preventDefault();
 
 		const oltData = OltInfo.find(option => option.label === city ? city : '');
-		console.log(oltData.ip, serial)
+
 		try{
 			const response = await axios.get('https://app.eterniaservicos.com.br/searchONU?', {
 				params: {
 					ip: oltData.ip,
-					serialNumber: serial,
+					serialNumber: matchSerialNumber,
 				}
 			});
 
@@ -154,7 +169,28 @@ export function Home() {
 			console.log(err);
 		}
 	}
-	console.log(dataFromApi, 'teste')
+
+	const handleSubmitWriteData = async (event) => {
+		event.preventDefault();
+		const oltData = OltInfo.find(option => option.label === city ? city : '');
+
+		try{
+			const response = await axios.get('https://app.eterniaservicos.com.br/writeONU?', {
+				params: {
+					ip: oltData.ip,
+					slot: dataFromApi[0],
+					pon: dataFromApi[1],
+					isPizzaBox: oltData.isPizzaBox,
+					serialNumber: dataFromApi[2],
+					contract: contractNumber,
+					pppoe: pppoe
+				}
+			});
+		} catch(err) {
+
+		}
+	}
+
 	return (
 		<Container>
 			<div className="input-content">
@@ -239,15 +275,13 @@ export function Home() {
 															<Typography>Provisione aqui</Typography>
 														</AccordionSummary>
 														<AccordionDetails className="teste">
-															<form>
+															<form onSubmit={handleSubmitWriteData}>
 																<InputContainer>
 																	<div className="text">
 																		<p>PPPoE do cliente: </p>
 																	</div>
 																	<div className="content">
-																		<TextField  variant="standard">
-		
-																		</TextField>
+																		<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
 																	</div>
 																</InputContainer>
 			
@@ -256,18 +290,14 @@ export function Home() {
 																		<p>Número do contrato: </p>
 																	</div>
 																	<div className="content">
-																		<TextField  variant="standard">
-		
-																		</TextField>
+																		<TextField variant="standard" onChange={handleContractNumberChange}></TextField>
 																	</div>
 																</InputContainer>
-		
 																<Button 
 																	type="submit" 
 																	variant="contained" 
 																	endIcon={<SendIcon />} 
-																	onClick={(e) => {
-																		e.preventDefault();
+																	onClick={() => {
 																		setDataFromApi([item[0], item[1], item[2]]);
 																	}}
 																>
