@@ -113,6 +113,7 @@ export function Home() {
 	const [value, setValue] = useState(0);
 	const [serial, setSerial] = useState();
     const [city, setCity] = useState('Natividade');
+	const [dataFromApi, setDataFromApi] = useState();
 	const [dataOnu, setDataOnu] = useState([]);
 	const [hasInputValue, setHasInputValue] = useState(false);
 
@@ -153,7 +154,7 @@ export function Home() {
 			console.log(err);
 		}
 	}
-
+	console.log(dataFromApi, 'teste')
 	return (
 		<Container>
 			<div className="input-content">
@@ -261,7 +262,15 @@ export function Home() {
 																	</div>
 																</InputContainer>
 		
-																<Button type="submit" variant="contained" endIcon={<SendIcon />}>
+																<Button 
+																	type="submit" 
+																	variant="contained" 
+																	endIcon={<SendIcon />} 
+																	onClick={(e) => {
+																		e.preventDefault();
+																		setDataFromApi([item[0], item[1], item[2]]);
+																	}}
+																>
 																	Provisionar
 																</Button>
 															</form>
