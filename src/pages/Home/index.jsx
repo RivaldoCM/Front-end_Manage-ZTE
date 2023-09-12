@@ -141,7 +141,7 @@ export function Home() {
 		const oltData = OltInfo.find(option => option.label === city ? city : '');
 		console.log(oltData.ip, serial)
 		try{
-			const response = await axios.get('http://187.94.208.10:4000/searchONU?', {
+			const response = await axios.get('https://app.eterniaservicos.com.br/searchONU?', {
 				params: {
 					ip: oltData.ip,
 					serialNumber: serial,
