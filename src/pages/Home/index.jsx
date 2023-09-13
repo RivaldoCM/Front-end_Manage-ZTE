@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from 'axios';
 
+import { useLoading } from "../../hooks/useLoading";
+
 import { Container, InputContainer } from "./style";
 
 import PropTypes from 'prop-types';
@@ -16,6 +18,8 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CircularProgress from '@mui/material/CircularProgress';
+import SearchIcon from '@mui/icons-material/Search';
 
 const OltInfo = [
 	{
@@ -124,6 +128,8 @@ export function Home() {
 	const [dataOnu, setDataOnu] = useState([]);
 	const [hasInputValue, setHasInputValue] = useState(false);
 
+	const { isLoading, startLoading, stopLoading } = useLoading();
+
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
@@ -153,6 +159,7 @@ export function Home() {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		startLoading();
 
 		const oltData = OltInfo.find(option => option.label === city ? city : '');
 
@@ -163,7 +170,7 @@ export function Home() {
 					serialNumber: matchSerialNumber,
 				}
 			});
-
+			stopLoading();
 			setDataOnu(response.data);
 		} catch(err){
 			console.log(err);
@@ -172,6 +179,7 @@ export function Home() {
 
 	const handleSubmitWriteData = async (event) => {
 		event.preventDefault();
+		startLoading();
 		const oltData = OltInfo.find(option => option.label === city ? city : '');
 
 		try{
@@ -186,9 +194,11 @@ export function Home() {
 					pppoe: pppoe
 				}
 			});
+		stopLoading();
 		} catch(err) {
-
+			//TRATAR ERROS DE CONEXÃO
 		}
+
 	}
 
 	return (
@@ -239,13 +249,10 @@ export function Home() {
 									</div>
 								</InputContainer>
 								{
-									hasInputValue 
-									? 
-										<Button type="submit" variant="contained" endIcon={<SendIcon />}>
-											Procurar ONU
-										</Button>
+									isLoading ? 
+										<CircularProgress className="MUI-CircularProgress" color="primary"/>
 									:
-										<Button type="submit" disabled variant="contained" endIcon={<SendIcon />}>
+										<Button type="submit" variant="contained" endIcon={<SearchIcon />}>
 											Procurar ONU
 										</Button>
 								}
@@ -284,7 +291,6 @@ export function Home() {
 																		<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
 																	</div>
 																</InputContainer>
-			
 																<InputContainer>
 																	<div className="text">
 																		<p>Número do contrato: </p>
@@ -293,16 +299,21 @@ export function Home() {
 																		<TextField variant="standard" onChange={handleContractNumberChange}></TextField>
 																	</div>
 																</InputContainer>
-																<Button 
-																	type="submit" 
-																	variant="contained" 
-																	endIcon={<SendIcon />} 
-																	onClick={() => {
-																		setDataFromApi([item[0], item[1], item[2]]);
-																	}}
-																>
-																	Provisionar
-																</Button>
+																{
+																	isLoading ?
+																		<CircularProgress className="MUI-CircularProgress" color="primary"/>
+																	:
+																	<Button 
+																		type="submit" 
+																		variant="contained" 
+																		endIcon={<SendIcon />} 
+																		onClick={() => {
+																			setDataFromApi([item[0], item[1], item[2]]);
+																		}}
+																	>
+																		Provisionar
+																	</Button>
+																}
 															</form>
 														</AccordionDetails>
 													</Accordion>
