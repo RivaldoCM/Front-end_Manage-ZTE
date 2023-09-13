@@ -126,36 +126,19 @@ export function Home() {
 	const [contractNumber, setContractNumber] = useState('');
 	const [dataFromApi, setDataFromApi] = useState();
 	const [dataOnu, setDataOnu] = useState([]);
-	const [hasInputValue, setHasInputValue] = useState(false);
+	const [serialNumber, setSerialNumber] = useState(null);
 
 	const { isLoading, startLoading, stopLoading } = useLoading();
 
-	const handleChange = (event, newValue) => {
-		setValue(newValue);
-	};
+	const handleChange = (event, newValue) => {	setValue(newValue); };
 
-    const handleCityChange = (event) => {
-        setCity(event.target.value); //Atualiza o valor no Front-end
-	}
+    const handleCityChange = (event) => { setCity(event.target.value); }
 
-	const handlePppoeChange = (e) => {
-		setPppoe(e.target.value);
-	}
+	const handlePppoeChange = (e) => { setPppoe(e.target.value); }
 
-	const handleContractNumberChange = (e) => {
-		setContractNumber(e.target.value);
-	}
+	const handleContractNumberChange = (e) => {	setContractNumber(e.target.value); }
 
-    const handleInputChange = (event) => {
-        const newValue = event.target.value;
-		setMatchSerialNumber(newValue);
-		setHasInputValue(true);
-
-		if (newValue.length === 0) {
-			//ELIMINANDO ENVIO DE DADOS VAZIO AO BACKEND
-			setHasInputValue(false);
-		}
-    };
+    const handleInputChange = (e) => { setMatchSerialNumber(e.target.value); };
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -182,7 +165,9 @@ export function Home() {
 		startLoading();
 		const oltData = OltInfo.find(option => option.label === city ? city : '');
 
-		try{
+		setSerialNumber(dataFromApi[2])
+
+		/*try{
 			const response = await axios.get('https://app.eterniaservicos.com.br/writeONU?', {
 				params: {
 					ip: oltData.ip,
@@ -198,7 +183,7 @@ export function Home() {
 		} catch(err) {
 			//TRATAR ERROS DE CONEXÃO
 		}
-
+*/
 	}
 
 	return (
@@ -249,7 +234,7 @@ export function Home() {
 									</div>
 								</InputContainer>
 								{
-									isLoading ? 
+									isLoading && serialNumber === null ? 
 										<CircularProgress className="MUI-CircularProgress" color="primary"/>
 									:
 										<Button type="submit" variant="contained" endIcon={<SearchIcon />}>
@@ -300,13 +285,13 @@ export function Home() {
 																	</div>
 																</InputContainer>
 																{
-																	isLoading ?
+																	isLoading && item[2] == serialNumber ?
 																		<CircularProgress className="MUI-CircularProgress" color="primary"/>
 																	:
 																	<Button 
 																		type="submit" 
 																		variant="contained" 
-																		endIcon={<SendIcon />} 
+																		endIcon={<SendIcon />}
 																		onClick={() => {
 																			setDataFromApi([item[0], item[1], item[2]]);
 																		}}
