@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from 'axios';
 
 import { useLoading } from "../../hooks/useLoading";
+import { useError } from "../../hooks/useError";
 
 import { Container, InputContainer } from "./style";
 
@@ -20,6 +21,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from '@mui/icons-material/Search';
+import Alert from '@mui/material/Alert';
 
 const OltInfo = [
 	{
@@ -129,6 +131,7 @@ export function Home() {
 	const [serialNumber, setSerialNumber] = useState(null);
 
 	const { isLoading, startLoading, stopLoading } = useLoading();
+	const { error, errorMessage, handleError } = useError();
 
 	const handleChange = (event, newValue) => {	setValue(newValue); }; //MUI-Core
     const handleCityChange = (event) => { setCity(event.target.value); };
@@ -139,7 +142,9 @@ export function Home() {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		if(isLoading){
-			console.log('aguarde o carregamento.');
+			const err = 'loading/has-action-in-progress';
+			handleError(err);
+		
 		}else{
 			startLoading();
 			const oltData = OltInfo.find(option => option.label === city ? city : '');
@@ -152,6 +157,9 @@ export function Home() {
 					}
 				});
 				stopLoading();
+				if(typeof(response.data) === 'string'){
+					handleError('api/ONU-not-found');
+				}
 				setDataFromApi(response.data);
 			} catch(err){
 				console.log(err);
@@ -163,7 +171,8 @@ export function Home() {
 		event.preventDefault();
 
 		if (isLoading){
-			console.log('aguarde o carregamento.');
+			const err = 'loading/has-action-in-progress';
+			handleError(err);
 		}else{
 			startLoading();
 			setSerialNumber(dataOnu[2]);
@@ -252,78 +261,82 @@ export function Home() {
 									)
 								}
 							</form>
-							<ul>
-								{
-									Array.isArray(dataFromApi) ? (
-										dataFromApi.map((item, index) => (
-											<div key={index} className="onu-callback flex">
-												<div className="info-onu-controller flex">
-													<div className="add-onu flex">
-														<ul className="flex">
-															<li>Placa: {item[0]}</li>
-															<li>Pon: {item[1]}</li>
-															<li>Serial: {item[2]}</li>
-														</ul>
-													</div>
-												</div>
-												<div className="write-onu-controller flex">
-													<Accordion className="dropdown-box flex">
-														<AccordionSummary 
-															className="dropdown-header"
-															expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
-															aria-controls="panel1a-content"
-															id="panel1a-header"
-														>
-															<Typography>Provisione aqui</Typography>
-														</AccordionSummary>
-														<AccordionDetails className="teste">
-															<form onSubmit={handleSubmitWriteData}>
-																<InputContainer>
-																	<div className="text">
-																		<p>PPPoE do cliente: </p>
-																	</div>
-																	<div className="content">
-																		<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
-																	</div>
-																</InputContainer>
-																<InputContainer>
-																	<div className="text">
-																		<p>Número do contrato: </p>
-																	</div>
-																	<div className="content">
-																		<TextField variant="standard" onChange={handleContractNumberChange}></TextField>
-																	</div>
-																</InputContainer>
-																{
-																	(isLoading && item[2] == serialNumber ?
-																		<CircularProgress className="MUI-CircularProgress" color="primary"/>
-																	:
-																		<Button 
-																			type="submit" 
-																			variant="contained" 
-																			endIcon={<SendIcon />}
-																			onClick={() => {
-																				setDataOnu([item[0], item[1], item[2]]);
-																			}}
-																		>
-																			Provisionar
-																		</Button>
-																	)
-																}
-															</form>
-														</AccordionDetails>
-													</Accordion>
-												</div>
+							{	
+								Array.isArray(dataFromApi) ?
+								dataFromApi.map((item, index) => (
+									<div key={index} className="onu-callback flex">
+										<div className="info-onu-controller flex">
+											<div className="add-onu flex">
+												<ul className="flex">
+													<li>Placa: {item[0]}</li>
+													<li>Pon: {item[1]}</li>
+													<li>Serial: {item[2]}</li>
+												</ul>
 											</div>
-										))
-									) : (
-										<li>Lista vazia</li>
-									)
-								}
-							</ul>
+										</div>
+										<div className="write-onu-controller flex">
+											<Accordion className="dropdown-box flex">
+												<AccordionSummary 
+													className="dropdown-header"
+													expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
+													aria-controls="panel1a-content"
+													id="panel1a-header"
+												>
+													<Typography>Provisione aqui</Typography>
+												</AccordionSummary>
+												<AccordionDetails className="teste">
+													<form onSubmit={handleSubmitWriteData}>
+														<InputContainer>
+															<div className="text">
+																<p>PPPoE do cliente: </p>
+															</div>
+															<div className="content">
+																<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
+															</div>
+														</InputContainer>
+														<InputContainer>
+															<div className="text">
+																<p>Número do contrato: </p>
+															</div>
+															<div className="content">
+																<TextField variant="standard" onChange={handleContractNumberChange}></TextField>
+															</div>
+														</InputContainer>
+														{
+															(isLoading && item[2] == serialNumber ?
+																<CircularProgress className="MUI-CircularProgress" color="primary"/>
+															:
+																<Button 
+																	type="submit" 
+																	variant="contained" 
+																	endIcon={<SendIcon />}
+																	onClick={() => {
+																		setDataOnu([item[0], item[1], item[2]]);
+																	}}
+																>
+																	Provisionar
+																</Button>
+															)
+														}
+													</form>
+												</AccordionDetails>
+											</Accordion>
+										</div>
+									</div>
+								))
+								:
+								<></>
+							}
 						</CustomTabPanel> 	
 					</Box>
 				</div>
+				{
+					(error ?
+						<Alert severity="warning" className="alert">{errorMessage}</Alert>
+					:
+						<></>
+					)
+				}
 			</div>
 		</Container>
 	);
