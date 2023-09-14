@@ -80,8 +80,7 @@ export const Container = styled.div`
                             width: 100%;
 
                             > div {
-                                max-width: 30% !important; 
-                                //CORRIGE O ESPAÇAMENTO DA PALAVRA COM O ICONE DE SETA
+                                display: contents;
 
                                 p {
                                     font-size: .9rem;

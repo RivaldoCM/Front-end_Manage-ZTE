@@ -131,7 +131,7 @@ export function Home() {
 	const { isLoading, startLoading, stopLoading } = useLoading();
 
 	const handleChange = (event, newValue) => {	setValue(newValue); }; //MUI-Core
-    const handleCityChange = (event) => { setCity(event.target.value); }; 
+    const handleCityChange = (event) => { setCity(event.target.value); };
 	const handlePppoeChange = (e) => { setPppoe(e.target.value); };
 	const handleContractNumberChange = (e) => {	setContractNumber(e.target.value); };
     const handleInputChange = (e) => { setMatchSerialNumber(e.target.value); };
