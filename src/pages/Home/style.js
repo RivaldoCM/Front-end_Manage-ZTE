@@ -29,6 +29,11 @@ export const Container = styled.div`
 
             form{
                 flex-direction: column;
+
+                .MUI-CircularProgress{
+                    width: 30px !important;
+                    height: 30px !important;
+                }
             }
 
             .onu-callback{
@@ -75,8 +80,7 @@ export const Container = styled.div`
                             width: 100%;
 
                             > div {
-                                max-width: 115px !important; 
-                                //CORRIGE O ESPAÇAMENTO DA PALAVRA COM O ICONE DE SETA
+                                display: contents;
 
                                 p {
                                     font-size: .9rem;

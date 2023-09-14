@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from 'axios';
 
+import { useLoading } from "../../hooks/useLoading";
+
 import { Container, InputContainer } from "./style";
 
 import PropTypes from 'prop-types';
@@ -16,6 +18,8 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CircularProgress from '@mui/material/CircularProgress';
+import SearchIcon from '@mui/icons-material/Search';
 
 const OltInfo = [
 	{
@@ -116,78 +120,72 @@ function a11yProps(index) {
 export function Home() {
 
 	const [value, setValue] = useState(0);
-	const [matchSerialNumber, setMatchSerialNumber] = useState();
+	const [matchSerialNumber, setMatchSerialNumber] = useState('');
     const [city, setCity] = useState('Natividade');
 	const [pppoe, setPppoe] = useState('');
 	const [contractNumber, setContractNumber] = useState('');
-	const [dataFromApi, setDataFromApi] = useState();
-	const [dataOnu, setDataOnu] = useState([]);
-	const [hasInputValue, setHasInputValue] = useState(false);
+	const [dataOnu, setDataOnu] = useState();
+	const [dataFromApi, setDataFromApi] = useState([]);
+	const [serialNumber, setSerialNumber] = useState(null);
 
-	const handleChange = (event, newValue) => {
-		setValue(newValue);
-	};
+	const { isLoading, startLoading, stopLoading } = useLoading();
 
-    const handleCityChange = (event) => {
-        setCity(event.target.value); //Atualiza o valor no Front-end
-	}
-
-	const handlePppoeChange = (e) => {
-		setPppoe(e.target.value);
-	}
-
-	const handleContractNumberChange = (e) => {
-		setContractNumber(e.target.value);
-	}
-
-    const handleInputChange = (event) => {
-        const newValue = event.target.value;
-		setMatchSerialNumber(newValue);
-		setHasInputValue(true);
-
-		if (newValue.length === 0) {
-			//ELIMINANDO ENVIO DE DADOS VAZIO AO BACKEND
-			setHasInputValue(false);
-		}
-    };
+	const handleChange = (event, newValue) => {	setValue(newValue); }; //MUI-Core
+    const handleCityChange = (event) => { setCity(event.target.value); };
+	const handlePppoeChange = (e) => { setPppoe(e.target.value); };
+	const handleContractNumberChange = (e) => {	setContractNumber(e.target.value); };
+    const handleInputChange = (e) => { setMatchSerialNumber(e.target.value); };
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-
-		const oltData = OltInfo.find(option => option.label === city ? city : '');
-
-		try{
-			const response = await axios.get('https://app.eterniaservicos.com.br/searchONU?', {
-				params: {
-					ip: oltData.ip,
-					serialNumber: matchSerialNumber,
-				}
-			});
-
-			setDataOnu(response.data);
-		} catch(err){
-			console.log(err);
+		if(isLoading){
+			console.log('aguarde o carregamento.');
+		}else{
+			startLoading();
+			const oltData = OltInfo.find(option => option.label === city ? city : '');
+	
+			try{
+				const response = await axios.get('https://app.eterniaservicos.com.br/searchONU?', {
+					params: {
+						ip: oltData.ip,
+						serialNumber: matchSerialNumber,
+					}
+				});
+				stopLoading();
+				setDataFromApi(response.data);
+			} catch(err){
+				console.log(err);
+			}
 		}
 	}
 
 	const handleSubmitWriteData = async (event) => {
 		event.preventDefault();
-		const oltData = OltInfo.find(option => option.label === city ? city : '');
 
-		try{
-			const response = await axios.get('https://app.eterniaservicos.com.br/writeONU?', {
-				params: {
-					ip: oltData.ip,
-					slot: dataFromApi[0],
-					pon: dataFromApi[1],
-					isPizzaBox: oltData.isPizzaBox,
-					serialNumber: dataFromApi[2],
-					contract: contractNumber,
-					pppoe: pppoe
-				}
-			});
-		} catch(err) {
+		if (isLoading){
+			console.log('aguarde o carregamento.');
+		}else{
+			startLoading();
+			setSerialNumber(dataOnu[2]);
+			const setDataOnu = OltInfo.find(option => option.label === city ? city : '');
 
+	
+			/*try{
+				const response = await axios.get('https://app.eterniaservicos.com.br/writeONU?', {
+					params: {
+						ip: oltData.ip,
+						slot: dataOnu[0],
+						ponsetDataOnu dataOnu[1],
+						setDataOnu: oltData.isPizzaBox,
+						serialNumber: dataOnu[2],
+						setDataOnu: contractNumber,
+						pppoe: pppoe
+					}
+				});
+			stopLoading();
+			} catch(err) {
+				//TRATAR ERROS DE CONEXÃO
+			}*/
 		}
 	}
 
@@ -200,7 +198,7 @@ export function Home() {
 						<Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='flex'>
 							<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
 								<Tab label="Nova instalação" {...a11yProps(0)} />
-								{/*<Tab label="Item Two" {...a11yProps(1)} /> ADICINA VIDEO DO CE*/ }
+								{/*<Tab label="Item Two" {...a11yProps(1)} /> ADICIONA NOVA ABA */ }
 							</Tabs>
 						</Box>
 						<CustomTabPanel value={value} index={0}>
@@ -239,21 +237,25 @@ export function Home() {
 									</div>
 								</InputContainer>
 								{
-									hasInputValue 
-									? 
-										<Button type="submit" variant="contained" endIcon={<SendIcon />}>
-											Procurar ONU
-										</Button>
+									(isLoading && serialNumber === null ? 
+										<CircularProgress className="MUI-CircularProgress" color="primary"/>
 									:
-										<Button type="submit" disabled variant="contained" endIcon={<SendIcon />}>
-											Procurar ONU
-										</Button>
+										(matchSerialNumber.length !== 0 ?
+											<Button type="submit" variant="contained" endIcon={<SearchIcon />}>
+												Procurar ONU
+											</Button>
+										:
+											<Button type="submit" disabled variant="contained" endIcon={<SearchIcon />}>
+												Procurar ONU
+											</Button>
+										)
+									)
 								}
 							</form>
 							<ul>
 								{
-									Array.isArray(dataOnu) ? (
-										dataOnu.map((item, index) => (
+									Array.isArray(dataFromApi) ? (
+										dataFromApi.map((item, index) => (
 											<div key={index} className="onu-callback flex">
 												<div className="info-onu-controller flex">
 													<div className="add-onu flex">
@@ -284,7 +286,6 @@ export function Home() {
 																		<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
 																	</div>
 																</InputContainer>
-			
 																<InputContainer>
 																	<div className="text">
 																		<p>Número do contrato: </p>
@@ -293,16 +294,22 @@ export function Home() {
 																		<TextField variant="standard" onChange={handleContractNumberChange}></TextField>
 																	</div>
 																</InputContainer>
-																<Button 
-																	type="submit" 
-																	variant="contained" 
-																	endIcon={<SendIcon />} 
-																	onClick={() => {
-																		setDataFromApi([item[0], item[1], item[2]]);
-																	}}
-																>
-																	Provisionar
-																</Button>
+																{
+																	(isLoading && item[2] == serialNumber ?
+																		<CircularProgress className="MUI-CircularProgress" color="primary"/>
+																	:
+																		<Button 
+																			type="submit" 
+																			variant="contained" 
+																			endIcon={<SendIcon />}
+																			onClick={() => {
+																				setDataOnu([item[0], item[1], item[2]]);
+																			}}
+																		>
+																			Provisionar
+																		</Button>
+																	)
+																}
 															</form>
 														</AccordionDetails>
 													</Accordion>
