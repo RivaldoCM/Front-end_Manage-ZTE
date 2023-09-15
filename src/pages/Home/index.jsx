@@ -144,21 +144,21 @@ export function Home() {
 		if(isLoading){
 			const err = 'loading/has-action-in-progress';
 			handleError(err);
-		
 		}else{
 			startLoading();
 			const oltData = OltInfo.find(option => option.label === city ? city : '');
 	
+
 			try{
 				const response = await axios.get('https://app.eterniaservicos.com.br/searchONU?', {
 					params: {
 						ip: oltData.ip,
-						serialNumber: matchSerialNumber,
+						serialNumber: matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
 					}
 				});
 				stopLoading();
 				if(typeof(response.data) === 'string'){
-					handleError('api/ONU-not-found');
+					handleError(response.data);
 				}
 				setDataFromApi(response.data);
 			} catch(err){
@@ -184,11 +184,11 @@ export function Home() {
 					params: {
 						ip: oltData.ip,
 						slot: dataOnu[0],
-						ponsetDataOnu dataOnu[1],
-						setDataOnu: oltData.isPizzaBox,
+						pon: dataOnu[1],
+						isPizzaBox: oltData.isPizzaBox,
 						serialNumber: dataOnu[2],
-						setDataOnu: contractNumber,
-						pppoe: pppoe
+						contract: contractNumber,
+						pppoe: pppoe.toLowerCase()
 					}
 				});
 			stopLoading();
@@ -249,7 +249,7 @@ export function Home() {
 									(isLoading && serialNumber === null ? 
 										<CircularProgress className="MUI-CircularProgress" color="primary"/>
 									:
-										(matchSerialNumber.length !== 0 ?
+										(matchSerialNumber.length >= 4 ?
 											<Button type="submit" variant="contained" endIcon={<SearchIcon />}>
 												Procurar ONU
 											</Button>
@@ -262,70 +262,71 @@ export function Home() {
 								}
 							</form>
 							{	
-								Array.isArray(dataFromApi) ?
-								dataFromApi.map((item, index) => (
-									<div key={index} className="onu-callback flex">
-										<div className="info-onu-controller flex">
-											<div className="add-onu flex">
-												<ul className="flex">
-													<li>Placa: {item[0]}</li>
-													<li>Pon: {item[1]}</li>
-													<li>Serial: {item[2]}</li>
-												</ul>
+								(Array.isArray(dataFromApi) ?
+									dataFromApi.map((item, index) => (
+										<div key={index} className="onu-callback flex">
+											<div className="info-onu-controller flex">
+												<div className="add-onu flex">
+													<ul className="flex">
+														<li>Placa: {item[0]}</li>
+														<li>Pon: {item[1]}</li>
+														<li>Serial: {item[2]}</li>
+													</ul>
+												</div>
+											</div>
+											<div className="write-onu-controller flex">
+												<Accordion className="dropdown-box flex">
+													<AccordionSummary 
+														className="dropdown-header"
+														expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
+														aria-controls="panel1a-content"
+														id="panel1a-header"
+													>
+														<Typography>Provisione aqui</Typography>
+													</AccordionSummary>
+													<AccordionDetails className="teste">
+														<form onSubmit={handleSubmitWriteData}>
+															<InputContainer>
+																<div className="text">
+																	<p>PPPoE do cliente: </p>
+																</div>
+																<div className="content">
+																	<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
+																</div>
+															</InputContainer>
+															<InputContainer>
+																<div className="text">
+																	<p>Número do contrato: </p>
+																</div>
+																<div className="content">
+																	<TextField variant="standard" onChange={handleContractNumberChange}></TextField>
+																</div>
+															</InputContainer>
+															{
+																(isLoading && item[2] == serialNumber ?
+																	<CircularProgress className="MUI-CircularProgress" color="primary"/>
+																:
+																	<Button 
+																		type="submit" 
+																		variant="contained" 
+																		endIcon={<SendIcon />}
+																		onClick={() => {
+																			setDataOnu([item[0], item[1], item[2]]);
+																		}}
+																	>
+																		Provisionar
+																	</Button>
+																)
+															}
+														</form>
+													</AccordionDetails>
+												</Accordion>
 											</div>
 										</div>
-										<div className="write-onu-controller flex">
-											<Accordion className="dropdown-box flex">
-												<AccordionSummary 
-													className="dropdown-header"
-													expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
-													aria-controls="panel1a-content"
-													id="panel1a-header"
-												>
-													<Typography>Provisione aqui</Typography>
-												</AccordionSummary>
-												<AccordionDetails className="teste">
-													<form onSubmit={handleSubmitWriteData}>
-														<InputContainer>
-															<div className="text">
-																<p>PPPoE do cliente: </p>
-															</div>
-															<div className="content">
-																<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
-															</div>
-														</InputContainer>
-														<InputContainer>
-															<div className="text">
-																<p>Número do contrato: </p>
-															</div>
-															<div className="content">
-																<TextField variant="standard" onChange={handleContractNumberChange}></TextField>
-															</div>
-														</InputContainer>
-														{
-															(isLoading && item[2] == serialNumber ?
-																<CircularProgress className="MUI-CircularProgress" color="primary"/>
-															:
-																<Button 
-																	type="submit" 
-																	variant="contained" 
-																	endIcon={<SendIcon />}
-																	onClick={() => {
-																		setDataOnu([item[0], item[1], item[2]]);
-																	}}
-																>
-																	Provisionar
-																</Button>
-															)
-														}
-													</form>
-												</AccordionDetails>
-											</Accordion>
-										</div>
-									</div>
-								))
+									))
 								:
-								<></>
+									<></>
+								)
 							}
 						</CustomTabPanel> 	
 					</Box>

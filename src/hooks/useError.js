@@ -17,8 +17,14 @@ export function useError(){
             case 'loading/has-action-in-progress':
                 setErrorMessage('Aguarde a ultima ação ser finalizada.');
             break;
-            case 'api/ONU-not-found':
+            case 'warning/equipament-not-found':
                 setErrorMessage('ONU não encontrada.');
+            break;
+            case 'error/connection-issue':
+                setErrorMessage('Não foi possível acessar a OLT.');
+            break;
+            case 'error/internal-issue':
+                setErrorMessage('Erro interno, verifique com o suporte.');
             break;
         }
     };
