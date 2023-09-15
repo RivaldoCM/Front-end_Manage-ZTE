@@ -22,11 +22,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 const OltInfo = [
 	{
 		id: 0,
-		ip: '172.18.2.38',
+		ip: '172.18.2.39',
 		label: 'OLT Bancada',
 		isPizzaBox: 1
 	},
@@ -129,25 +130,50 @@ export function Home() {
 	const [dataOnu, setDataOnu] = useState();
 	const [dataFromApi, setDataFromApi] = useState([]);
 	const [serialNumber, setSerialNumber] = useState(null);
+	const [isValueValid, setIsValueValid] = useState(false);
+	const [isContractNumberValid, setIsContractNumberValid] = useState(false);
 
 	const { isLoading, startLoading, stopLoading } = useLoading();
-	const { error, errorMessage, handleError } = useError();
+	const { error, errorMessage, severityStatus, handleError } = useError();
 
 	const handleChange = (event, newValue) => {	setValue(newValue); }; //MUI-Core
     const handleCityChange = (event) => { setCity(event.target.value); };
+
+	const handleMatchSerialNumberChange = (e) => {
+		let inputValue = e.target.value;
+		const verifyAlphaNumber = /^[a-zA-Z0-9]+$/;
+		if (!verifyAlphaNumber.test(inputValue)) {
+			setIsValueValid(false);
+			handleError('info/non-expect-caracter-not-alphaNumeric');
+		} else {
+			setIsValueValid(true);
+			setMatchSerialNumber(inputValue);
+		}
+	};
+
+	const handleContractNumberChange = (e) => {	
+		let inputValue = e.target.value;
+		const isNumber = /^[0-9]+$/;
+		if(!isNumber.test(inputValue)){
+			setIsContractNumberValid(false);
+			handleError('info/non-expect-caracter-NAN');
+		}else{
+			setIsContractNumberValid(true);
+			setContractNumber(inputValue);
+		}
+	};
+
 	const handlePppoeChange = (e) => { setPppoe(e.target.value); };
-	const handleContractNumberChange = (e) => {	setContractNumber(e.target.value); };
-    const handleInputChange = (e) => { setMatchSerialNumber(e.target.value); };
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+
 		if(isLoading){
-			const err = 'loading/has-action-in-progress';
+			const err = 'warning/has-action-in-progress';
 			handleError(err);
 		}else{
 			startLoading();
 			const oltData = OltInfo.find(option => option.label === city ? city : '');
-	
 
 			try{
 				const response = await axios.get('https://app.eterniaservicos.com.br/searchONU?', {
@@ -171,15 +197,14 @@ export function Home() {
 		event.preventDefault();
 
 		if (isLoading){
-			const err = 'loading/has-action-in-progress';
+			const err = 'warning/has-action-in-progress';
 			handleError(err);
 		}else{
 			startLoading();
 			setSerialNumber(dataOnu[2]);
-			const setDataOnu = OltInfo.find(option => option.label === city ? city : '');
-
+			const oltData = OltInfo.find(option => option.label === city ? city : '');
 	
-			/*try{
+			try{
 				const response = await axios.get('https://app.eterniaservicos.com.br/writeONU?', {
 					params: {
 						ip: oltData.ip,
@@ -191,10 +216,11 @@ export function Home() {
 						pppoe: pppoe.toLowerCase()
 					}
 				});
-			stopLoading();
+				stopLoading();
+				handleError(response.data);
 			} catch(err) {
-				//TRATAR ERROS DE CONEXÃO
-			}*/
+				console.log(err);
+			}
 		}
 	}
 
@@ -241,7 +267,7 @@ export function Home() {
 											id="standard-basic" 
 											variant="standard" 
 											type="text"
-											onChange={handleInputChange}
+											onChange={handleMatchSerialNumberChange}
 										/>
 									</div>
 								</InputContainer>
@@ -249,12 +275,12 @@ export function Home() {
 									(isLoading && serialNumber === null ? 
 										<CircularProgress className="MUI-CircularProgress" color="primary"/>
 									:
-										(matchSerialNumber.length >= 4 ?
-											<Button type="submit" variant="contained" endIcon={<SearchIcon />}>
+										(matchSerialNumber.length < 4 ?
+											<Button type="submit" disabled variant="outlined" endIcon={<SearchIcon />}>
 												Procurar ONU
 											</Button>
-										:
-											<Button type="submit" disabled variant="contained" endIcon={<SearchIcon />}>
+											:
+											<Button type="submit" disabled={!isValueValid} variant="outlined" endIcon={<SearchIcon />}>
 												Procurar ONU
 											</Button>
 										)
@@ -308,8 +334,9 @@ export function Home() {
 																:
 																	<Button 
 																		type="submit" 
-																		variant="contained" 
-																		endIcon={<SendIcon />}
+																		variant="outlined" 
+																		endIcon={<AddOutlinedIcon />}
+																		disabled={!isContractNumberValid}
 																		onClick={() => {
 																			setDataOnu([item[0], item[1], item[2]]);
 																		}}
@@ -333,7 +360,7 @@ export function Home() {
 				</div>
 				{
 					(error ?
-						<Alert severity="warning" className="alert">{errorMessage}</Alert>
+						<Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
 					:
 						<></>
 					)
