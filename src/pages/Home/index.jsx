@@ -11,7 +11,6 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -130,47 +129,25 @@ export function Home() {
 	const [dataOnu, setDataOnu] = useState();
 	const [dataFromApi, setDataFromApi] = useState([]);
 	const [serialNumber, setSerialNumber] = useState(null);
-	const [isValueValid, setIsValueValid] = useState(false);
-	const [isContractNumberValid, setIsContractNumberValid] = useState(false);
 
 	const { isLoading, startLoading, stopLoading } = useLoading();
 	const { error, errorMessage, severityStatus, handleError } = useError();
 
 	const handleChange = (event, newValue) => {	setValue(newValue); }; //MUI-Core
     const handleCityChange = (event) => { setCity(event.target.value); };
-
-	const handleMatchSerialNumberChange = (e) => {
-		let inputValue = e.target.value;
-		const verifyAlphaNumber = /^[a-zA-Z0-9]+$/;
-		if (!verifyAlphaNumber.test(inputValue)) {
-			setIsValueValid(false);
-			handleError('info/non-expect-caracter-not-alphaNumeric');
-		} else {
-			setIsValueValid(true);
-			setMatchSerialNumber(inputValue);
-		}
-	};
-
-	const handleContractNumberChange = (e) => {	
-		let inputValue = e.target.value;
-		const isNumber = /^[0-9]+$/;
-		if(!isNumber.test(inputValue)){
-			setIsContractNumberValid(false);
-			handleError('info/non-expect-caracter-NAN');
-		}else{
-			setIsContractNumberValid(true);
-			setContractNumber(inputValue);
-		}
-	};
-
+	const handleMatchSerialNumberChange = (e) => { setMatchSerialNumber(e.target.value); };
+	const handleContractNumberChange = (e) => { setContractNumber(e.target.value); };
 	const handlePppoeChange = (e) => { setPppoe(e.target.value); };
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		const verifyAlphaNumber = /^[a-zA-Z0-9]+$/;
 
 		if(isLoading){
 			const err = 'warning/has-action-in-progress';
 			handleError(err);
+		}else if(!verifyAlphaNumber.test(matchSerialNumber)){
+			handleError('info/non-expect-caracter-not-alphaNumeric');
 		}else{
 			startLoading();
 			const oltData = OltInfo.find(option => option.label === city ? city : '');
@@ -195,15 +172,20 @@ export function Home() {
 
 	const handleSubmitWriteData = async (event) => {
 		event.preventDefault();
+		const isNumeric = /^[0-9]+$/;
 
 		if (isLoading){
 			const err = 'warning/has-action-in-progress';
 			handleError(err);
+		}else if(contractNumber.length === 0 || pppoe.length === 0){
+			handleError('info/required-input');
+		}else if(!isNumeric.test(contractNumber)){
+			handleError('info/non-expect-caracter-NAN');
 		}else{
 			startLoading();
 			setSerialNumber(dataOnu[2]);
 			const oltData = OltInfo.find(option => option.label === city ? city : '');
-	
+			/*
 			try{
 				const response = await axios.get('https://app.eterniaservicos.com.br/writeONU?', {
 					params: {
@@ -221,6 +203,7 @@ export function Home() {
 			} catch(err) {
 				console.log(err);
 			}
+			*/
 		}
 	}
 
@@ -279,8 +262,8 @@ export function Home() {
 											<Button type="submit" disabled variant="outlined" endIcon={<SearchIcon />}>
 												Procurar ONU
 											</Button>
-											:
-											<Button type="submit" disabled={!isValueValid} variant="outlined" endIcon={<SearchIcon />}>
+										:
+											<Button type="submit" variant="outlined" endIcon={<SearchIcon />}>
 												Procurar ONU
 											</Button>
 										)
@@ -329,14 +312,13 @@ export function Home() {
 																</div>
 															</InputContainer>
 															{
-																(isLoading && item[2] == serialNumber ?
+																(isLoading && item[2] === serialNumber ?
 																	<CircularProgress className="MUI-CircularProgress" color="primary"/>
 																:
 																	<Button 
 																		type="submit" 
 																		variant="outlined" 
 																		endIcon={<AddOutlinedIcon />}
-																		disabled={!isContractNumberValid}
 																		onClick={() => {
 																			setDataOnu([item[0], item[1], item[2]]);
 																		}}

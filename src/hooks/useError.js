@@ -40,8 +40,15 @@ export function useError(){
                 setSeverityStatus('info');
             break;
             case 'info/non-expect-caracter-NAN':
-                setErrorMessage('Digite apenas números.');
+                setErrorMessage('Digite apenas números no campo Contrato.');
                 setSeverityStatus('info');
+            break;
+            case 'info/required-input':
+                setErrorMessage('Preencha todos os campos.');
+                setSeverityStatus('info');
+            break;
+            default:
+                handleError('Erro interno, verifique com o suporte');
             break;
         }
     };
