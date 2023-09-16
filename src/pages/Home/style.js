@@ -8,6 +8,7 @@ export const Container = styled.div`
     height: 100vh;
 
     .input-content{
+        position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -102,6 +103,11 @@ export const Container = styled.div`
                     }
                 }
             }
+        }
+
+        .alert{
+            position: absolute;
+            bottom: 2%;
         }
     }
 `;
