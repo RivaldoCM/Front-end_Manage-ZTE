@@ -185,7 +185,7 @@ export function Home() {
 			startLoading();
 			setSerialNumber(dataOnu[2]);
 			const oltData = OltInfo.find(option => option.label === city ? city : '');
-			/*
+
 			try{
 				const response = await axios.get('https://app.eterniaservicos.com.br/writeONU?', {
 					params: {
@@ -203,7 +203,6 @@ export function Home() {
 			} catch(err) {
 				console.log(err);
 			}
-			*/
 		}
 	}
 
