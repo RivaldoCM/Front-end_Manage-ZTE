@@ -124,7 +124,7 @@ export const InputContainer = styled.div`
 
     .text{
         display: flex;
-        align-items: ${(props) => props.center ? 'center' : 'end'};
+        align-items: ${(props) => (props.center ? 'center' : 'end')};
     }
 
     .text, .content{

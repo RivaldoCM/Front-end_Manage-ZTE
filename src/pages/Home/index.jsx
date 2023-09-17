@@ -220,7 +220,7 @@ export function Home() {
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
 							<form onSubmit={handleSubmit} className="flex">
-								<InputContainer center={true}>
+								<InputContainer center={1}>
 									<div className="text">
 										<p>Selecione a cidade: </p>
 									</div>
