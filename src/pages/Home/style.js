@@ -38,9 +38,9 @@ export const Container = styled.div`
 
                 .info-onu-controller{
                     flex-direction: row;
-                    width:100%;
+                    width:95%;
                     background-color: #ffffff;
-                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
                     border-radius: 1rem 1rem 0 0;
 
                     .add-onu {
@@ -48,6 +48,7 @@ export const Container = styled.div`
 
                         ul{
                             flex-direction: row;
+                            flex-wrap: wrap;
 
                             li{
                                 padding: .5rem;
@@ -66,7 +67,6 @@ export const Container = styled.div`
                         flex-direction: column;
                         width: 100%;
 
-                        
                         .dropdown-header{
                             width: 100%;
 
@@ -82,6 +82,10 @@ export const Container = styled.div`
                         > div {
                             width: 100%;
                             //APLICA TAMANHO ONDE ESTÃO OS CAMPOS DE PPPoE E CONTRATO
+                        }
+
+                        .content-button{
+
                         }
                     }
 
@@ -111,8 +115,12 @@ export const InputContainer = styled.div`
     
     display: flex;
     justify-content: flex-start;
-    width: 100%;
+    width: 80%;
     margin: 1rem 0;
+
+    @media (max-width: 450px){
+        width: 100%;
+    }
 
     .text{
         display: flex;

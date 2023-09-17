@@ -293,8 +293,8 @@ export function Home() {
 													>
 														<Typography>Provisione aqui</Typography>
 													</AccordionSummary>
-													<AccordionDetails className="teste">
-														<form onSubmit={handleSubmitWriteData}>
+													<AccordionDetails>
+														<form onSubmit={handleSubmitWriteData} className="flex">
 															<InputContainer>
 																<div className="text">
 																	<p>PPPoE do cliente: </p>
@@ -315,16 +315,18 @@ export function Home() {
 																(isLoading && item[2] === serialNumber ?
 																	<CircularProgress className="MUI-CircularProgress" color="primary"/>
 																:
-																	<Button 
-																		type="submit" 
-																		variant="outlined" 
-																		endIcon={<AddOutlinedIcon />}
-																		onClick={() => {
-																			setDataOnu([item[0], item[1], item[2]]);
-																		}}
-																	>
-																		Provisionar
-																	</Button>
+																	<div className="flex">
+																		<Button 
+																			type="submit" 
+																			variant="outlined" 
+																			endIcon={<AddOutlinedIcon />}
+																			onClick={() => {
+																				setDataOnu([item[0], item[1], item[2]]);
+																			}}
+																		>
+																			Provisionar
+																		</Button>
+																	</div>
 																)
 															}
 														</form>
