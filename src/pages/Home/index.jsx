@@ -22,6 +22,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import Divider from '@mui/material/Divider';
 
 const OltInfo = [
 	{
@@ -209,16 +210,15 @@ export function Home() {
 	return (
 		<Container>
 			<div className="input-content">
-				<div className="formHeader flex">Provisionar ONU ZTE</div>
 				<div className="formContent">
-					<Box sx={{ width: '100%' }}>
+					<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
 						<Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='flex'>
 							<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-								<Tab label="Nova instalação" {...a11yProps(0)} />
+								<Tab label="Provisionamento" {...a11yProps(0)} />
 								{/*<Tab label="Item Two" {...a11yProps(1)} /> ADICIONA NOVA ABA */ }
 							</Tabs>
 						</Box>
-						<CustomTabPanel value={value} index={0}>
+						<CustomTabPanel className="flex" value={value} index={0}>
 							<form onSubmit={handleSubmit} className="flex">
 								<InputContainer center={true}>
 									<div className="text">
@@ -226,7 +226,7 @@ export function Home() {
 									</div>
 									<div className="content">
 										<TextField
-											id='1'
+											id='select-city'
 											select
 											label="Cidades"
 											value={city}
@@ -269,6 +269,7 @@ export function Home() {
 									)
 								}
 							</form>
+							<Divider variant="middle" />
 							{	
 								(Array.isArray(dataFromApi) ?
 									dataFromApi.map((item, index) => (
@@ -286,7 +287,7 @@ export function Home() {
 												<Accordion className="dropdown-box flex">
 													<AccordionSummary 
 														className="dropdown-header"
-														expandIcon={<ExpandMoreIcon sx={{ color: 'white'}} />}
+														expandIcon={<ExpandMoreIcon />}
 														aria-controls="panel1a-content"
 														id="panel1a-header"
 													>
