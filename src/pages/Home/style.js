@@ -1,11 +1,12 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-    display: flex;
-    justify-content: center;
+    position: relative;
     align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
     width: 100%;
-    height: auto;
+
 
     .input-content{
         display: flex;
@@ -95,8 +96,8 @@ export const Container = styled.div`
         }
 
         .alert{
-            position: absolute;
-            bottom:6%;
+            position: fixed;
+            bottom: 2%;
         }
     }
 `;

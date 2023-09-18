@@ -212,7 +212,7 @@ export function Home() {
 	}
 
 	return (
-		<Container>
+		<Container className="flex">
 			<div className="input-content">
 				<div className="formContent">
 					<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
