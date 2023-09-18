@@ -315,8 +315,7 @@ export function Home() {
 																	<div className="content">
 																		<TextField 
 																			variant="standard" 
-																			inputMode="numeric" 
-																			pattern="[0-9]*" 
+																			inputProps={{ inputMode: 'numeric' }}
 																			onChange={handleContractNumberChange}>
 																		</TextField>
 																	</div>
