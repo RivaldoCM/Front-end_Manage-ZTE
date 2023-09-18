@@ -5,95 +5,90 @@ export const Container = styled.div`
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100vh;
+    height: auto;
 
     .input-content{
-        position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         width: 100%;
-        height: 98%;
 
         .formContent{
             width: 100%;
-            height: 100%;
-            overflow: auto;
 
             form{
                 flex-direction: column;
                 margin-bottom: 20px;
-
 
                 .MUI-CircularProgress{
                     width: 30px !important;
                     height: 30px !important;
                 }
             }
+            .ONU-content{
 
-            .onu-callback{
-                flex-direction: column;
-                margin: 1rem 0;
 
-                .info-onu-controller{
-                    flex-direction: row;
-                    width:95%;
-                    background-color: #ffffff;
-                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-                    border-radius: 1rem 1rem 0 0;
+                .onu-callback{
+                    flex-direction: column;
+                    margin: 1rem 0;
 
-                    .add-onu {
-                        width: 100%;
+                    .info-onu-controller{
+                        flex-direction: row;
+                        width:95%;
+                        background-color: #ffffff;
+                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+                        border-radius: 1rem 1rem 0 0;
 
-                        ul{
-                            flex-direction: row;
-                            flex-wrap: wrap;
-
-                            li{
-                                padding: .5rem;
-                                font-size: .9rem;
-                            }
-                        }
-                    }
-                }
-
-                .write-onu-controller{
-                    width: 100%;
-                    height: 100%;
-                    border-radius: 1rem !important;
-
-                    .dropdown-box{
-                        flex-direction: column;
-                        width: 100%;
-
-                        .dropdown-header{
+                        .add-onu {
                             width: 100%;
 
-                            > div {
-                                display: contents;
+                            ul{
+                                flex-direction: row;
+                                flex-wrap: wrap;
 
-                                p {
+                                li{
+                                    padding: .5rem;
                                     font-size: .9rem;
                                 }
                             }
                         }
-
-                        > div {
-                            width: 100%;
-                            //APLICA TAMANHO ONDE ESTÃO OS CAMPOS DE PPPoE E CONTRATO
-                        }
-
-                        .content-button{
-
-                        }
                     }
 
-                    .write-onu{
+                    .write-onu-controller{
                         width: 100%;
                         height: 100%;
-                        padding: .8rem;
-                        color: white;
+
+                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+
+                        .dropdown-box{
+                            flex-direction: column;
+                            width: 100%;
+
+                            .dropdown-header{
+                                width: 100%;
+
+                                > div {
+                                    display: contents;
+
+                                    p {
+                                        font-size: .9rem;
+                                    }
+                                }
+                            }
+
+                            > div {
+                                width: 100%;
+                                //APLICA TAMANHO ONDE ESTÃO OS CAMPOS DE PPPoE E CONTRATO
+                            }
+                        }
+
+                        .write-onu{
+                            width: 100%;
+                            height: 100%;
+                            padding: .8rem;
+                            color: white;
+                        }
                     }
                 }
             }
@@ -101,7 +96,7 @@ export const Container = styled.div`
 
         .alert{
             position: absolute;
-            bottom: 2%;
+            bottom:6%;
         }
     }
 `;
@@ -129,5 +124,6 @@ export const InputContainer = styled.div`
 
     .text, .content{
         width: 50%;
+        padding: 0 2px;
     }
 `;

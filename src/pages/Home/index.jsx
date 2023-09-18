@@ -163,6 +163,7 @@ export function Home() {
 				stopLoading();
 				if(typeof(response.data) === 'string'){
 					handleError(response.data);
+					//RETORNA ONU NAO ENCONTRADA
 				}
 				setDataFromApi(response.data);
 			} catch(err){
@@ -173,6 +174,9 @@ export function Home() {
 
 	const handleSubmitWriteData = async (event) => {
 		event.preventDefault();
+		setSerialNumber(dataOnu[3]);  
+		//ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
+
 		const isNumeric = /^[0-9]+$/;
 
 		if (isLoading){
@@ -184,9 +188,8 @@ export function Home() {
 			handleError('info/non-expect-caracter-NAN');
 		}else{
 			startLoading();
-			setSerialNumber(dataOnu[2]);
 			const oltData = OltInfo.find(option => option.label === city ? city : '');
-
+			
 			try{
 				const response = await axios.get('https://app.eterniaservicos.com.br/writeONU?', {
 					params: {
@@ -194,7 +197,8 @@ export function Home() {
 						slot: dataOnu[0],
 						pon: dataOnu[1],
 						isPizzaBox: oltData.isPizzaBox,
-						serialNumber: dataOnu[2],
+						serialNumber: dataOnu[3],
+						type: dataOnu[2],
 						contract: contractNumber,
 						pppoe: pppoe.toLowerCase()
 					}
@@ -270,75 +274,82 @@ export function Home() {
 								}
 							</form>
 							<Divider variant="middle" />
-							{	
-								(Array.isArray(dataFromApi) ?
-									dataFromApi.map((item, index) => (
-										<div key={index} className="onu-callback flex">
-											<div className="info-onu-controller flex">
-												<div className="add-onu flex">
-													<ul className="flex">
-														<li>Placa: {item[0]}</li>
-														<li>Pon: {item[1]}</li>
-														<li>Serial: {item[2]}</li>
-													</ul>
+							<div className="ONU-content">
+								{	
+									(Array.isArray(dataFromApi) ?
+										dataFromApi.map((item, index) => (
+											<div key={index} className="onu-callback flex">
+												<div className="info-onu-controller flex">
+													<div className="add-onu flex">
+														<ul className="flex">
+															<li>Placa: {item[0]}</li>
+															<li>Pon: {item[1]}</li>
+															<li>Serial: {item[2]}</li>
+														</ul>
+													</div>
+												</div>
+												<div className="write-onu-controller flex">
+													<Accordion className="dropdown-box flex">
+														<AccordionSummary 
+															className="dropdown-header"
+															expandIcon={<ExpandMoreIcon />}
+															aria-controls="panel1a-content"
+															id="panel1a-header"
+														>
+															<Typography>Provisione aqui</Typography>
+														</AccordionSummary>
+														<AccordionDetails>
+															<form onSubmit={handleSubmitWriteData} className="flex">
+																<InputContainer>
+																	<div className="text">
+																		<p>PPPoE do cliente: </p>
+																	</div>
+																	<div className="content">
+																		<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
+																	</div>
+																</InputContainer>
+																<InputContainer>
+																	<div className="text">
+																		<p>Número do contrato: </p>
+																	</div>
+																	<div className="content">
+																		<TextField 
+																			variant="standard" 
+																			inputMode="numeric" 
+																			pattern="[0-9]*" 
+																			onChange={handleContractNumberChange}>
+																		</TextField>
+																	</div>
+																</InputContainer>
+																{
+																	(isLoading && item[3] === serialNumber ?
+																		<CircularProgress className="MUI-CircularProgress" color="primary"/>
+																	:
+																		<div className="flex">
+																			<Button 
+																				type="submit" 
+																				variant="outlined" 
+																				endIcon={<AddOutlinedIcon />}
+																				onClick={() => {
+																					setDataOnu([item[0], item[1], item[2], item[3]]);
+																				}}
+																			>
+																				Provisionar
+																			</Button>
+																		</div>
+																	)
+																}
+															</form>
+														</AccordionDetails>
+													</Accordion>
 												</div>
 											</div>
-											<div className="write-onu-controller flex">
-												<Accordion className="dropdown-box flex">
-													<AccordionSummary 
-														className="dropdown-header"
-														expandIcon={<ExpandMoreIcon />}
-														aria-controls="panel1a-content"
-														id="panel1a-header"
-													>
-														<Typography>Provisione aqui</Typography>
-													</AccordionSummary>
-													<AccordionDetails>
-														<form onSubmit={handleSubmitWriteData} className="flex">
-															<InputContainer>
-																<div className="text">
-																	<p>PPPoE do cliente: </p>
-																</div>
-																<div className="content">
-																	<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
-																</div>
-															</InputContainer>
-															<InputContainer>
-																<div className="text">
-																	<p>Número do contrato: </p>
-																</div>
-																<div className="content">
-																	<TextField variant="standard" onChange={handleContractNumberChange}></TextField>
-																</div>
-															</InputContainer>
-															{
-																(isLoading && item[2] === serialNumber ?
-																	<CircularProgress className="MUI-CircularProgress" color="primary"/>
-																:
-																	<div className="flex">
-																		<Button 
-																			type="submit" 
-																			variant="outlined" 
-																			endIcon={<AddOutlinedIcon />}
-																			onClick={() => {
-																				setDataOnu([item[0], item[1], item[2]]);
-																			}}
-																		>
-																			Provisionar
-																		</Button>
-																	</div>
-																)
-															}
-														</form>
-													</AccordionDetails>
-												</Accordion>
-											</div>
-										</div>
-									))
-								:
-									<></>
-								)
-							}
+										))
+									:
+										<></>
+									)
+								}
+							</div>
 						</CustomTabPanel> 	
 					</Box>
 				</div>
