@@ -27,7 +27,7 @@ import Divider from '@mui/material/Divider';
 const OltInfo = [
 	{
 		id: 0,
-		ip: '172.18.2.39',
+		ip: '172.18.2.38',
 		label: 'OLT Bancada',
 		isPizzaBox: 1
 	},
@@ -153,22 +153,23 @@ export function Home() {
 			startLoading();
 			const oltData = OltInfo.find(option => option.label === city ? city : '');
 
-			try{
-				const response = await axios.get('https://app.eterniaservicos.com.br/searchONU?', {
-					params: {
-						ip: oltData.ip,
-						serialNumber: matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
-					}
-				});
-				stopLoading();
+			await axios.post('https://app.eterniaservicos.com.br/searchONU', {
+				ip: oltData.ip,
+				serialNumber: matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
+			})
+			.then(response => {
 				if(typeof(response.data) === 'string'){
+					stopLoading();
 					handleError(response.data);
 					//RETORNA ONU NAO ENCONTRADA
 				}
+				stopLoading();
 				setDataFromApi(response.data);
-			} catch(err){
-				console.log(err);
-			}
+			})
+			.catch(error => {
+				stopLoading();
+				handleError(error.code);
+			});
 		}
 	}
 
@@ -190,24 +191,25 @@ export function Home() {
 			startLoading();
 			const oltData = OltInfo.find(option => option.label === city ? city : '');
 			
-			try{
-				const response = await axios.get('https://app.eterniaservicos.com.br/writeONU?', {
-					params: {
-						ip: oltData.ip,
-						slot: dataOnu[0],
-						pon: dataOnu[1],
-						isPizzaBox: oltData.isPizzaBox,
-						serialNumber: dataOnu[3],
-						type: dataOnu[2],
-						contract: contractNumber,
-						pppoe: pppoe.toLowerCase()
-					}
-				});
+			await axios.post('https://app.eterniaservicos.com.br/writeONU', {
+				ip: oltData.ip,
+				slot: dataOnu[0],
+				pon: dataOnu[1],
+				isPizzaBox: oltData.isPizzaBox,
+				serialNumber: dataOnu[3],
+				type: dataOnu[2],
+				contract: contractNumber,
+				pppoe: pppoe.toLowerCase()
+			})
+			.then(response => {
 				stopLoading();
 				handleError(response.data);
-			} catch(err) {
-				console.log(err);
-			}
+				setDataFromApi(response.data);
+			})
+			.catch(error => {
+				stopLoading();
+				handleError(error.code);
+			});
 		}
 	}
 
@@ -284,7 +286,7 @@ export function Home() {
 														<ul className="flex">
 															<li>Placa: {item[0]}</li>
 															<li>Pon: {item[1]}</li>
-															<li>Serial: {item[2]}</li>
+															<li>Serial: {item[3]}</li>
 														</ul>
 													</div>
 												</div>

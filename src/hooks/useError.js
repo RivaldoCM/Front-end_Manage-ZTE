@@ -47,6 +47,10 @@ export function useError(){
                 setErrorMessage('Preencha todos os campos.');
                 setSeverityStatus('info');
             break;
+            case 'ERR_NETWORK':
+                setErrorMessage('Não foi possível se conectar ao serviço.');
+                setSeverityStatus('error');
+            break;
             default:
                 handleError('Erro interno, verifique com o suporte');
             break;
