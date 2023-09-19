@@ -26,14 +26,17 @@ export const GlobalStyle = createGlobalStyle`
         }
     }
     body {
-        background: var(--background);
+        //background: var(--background);
         -webkit-font-smoothing: antialiased;
     }
-    body, button, texarea, input {
-        font-family: 'Josefin Sans', sans-serif;
+    body, button, texarea{
+        font-family: 'Montserrat', sans-serif !important;
         font-weight: 400;
     }
-    h1, h2, h3, h4, h5, h6, strong, button{font-weight: 700; background: none;}
+    p, li, input, div{
+        font-family: 'Poppins', sans-serif !important;
+    }
+    h1, h2, h3, h4, h5, h6, strong{font-weight: 700; background: none;}
     button {cursor: pointer;}
     //a{color: var(--black)}
     [disable] {opacity: 0.6%; cursor: not-allowed;}
@@ -43,5 +46,4 @@ export const GlobalStyle = createGlobalStyle`
         justify-content: center;
         align-items: center;
     }
-
 `
