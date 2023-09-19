@@ -38,7 +38,7 @@ export const Container = styled.div`
                         flex-direction: row;
                         width:95%;
                         background-color: #ffffff;
-                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
                         border-radius: 1rem 1rem 0 0;
 
                         .add-onu {
@@ -60,11 +60,11 @@ export const Container = styled.div`
                         width: 100%;
                         height: 100%;
 
-                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-
                         .dropdown-box{
                             flex-direction: column;
                             width: 100%;
+                            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+                            border-radius: 1rem;
 
                             .dropdown-header{
                                 width: 100%;

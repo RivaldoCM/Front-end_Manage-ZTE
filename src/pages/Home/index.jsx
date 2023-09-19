@@ -18,6 +18,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';
@@ -130,6 +131,8 @@ export function Home() {
 	const [dataOnu, setDataOnu] = useState();
 	const [dataFromApi, setDataFromApi] = useState([]);
 	const [serialNumber, setSerialNumber] = useState(null);
+	const [isDropDownOpen, setIsDropDownOpen] = useState(0);
+	const [dropDownIndex, setDropDownIndex] = useState(0);
 
 	const { isLoading, startLoading, stopLoading } = useLoading();
 	const { error, errorMessage, severityStatus, handleError } = useError();
@@ -139,6 +142,12 @@ export function Home() {
 	const handleMatchSerialNumberChange = (e) => { setMatchSerialNumber(e.target.value); };
 	const handleContractNumberChange = (e) => { setContractNumber(e.target.value); };
 	const handlePppoeChange = (e) => { setPppoe(e.target.value); };
+
+	const handleDropDownArrow = (e, index) => {
+		e.preventDefault();
+		setIsDropDownOpen(!isDropDownOpen);
+		setDropDownIndex(index);
+	}
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -290,11 +299,12 @@ export function Home() {
 												</div>
 												<div className="write-onu-controller flex">
 													<Accordion className="dropdown-box flex">
-														<AccordionSummary 
+														<AccordionSummary
 															className="dropdown-header"
-															expandIcon={<ExpandMoreIcon />}
+															expandIcon={isDropDownOpen && index === dropDownIndex? <ExpandLessIcon/> : <ExpandMoreIcon />}
 															aria-controls="panel1a-content"
 															id="panel1a-header"
+															onClick={(e) => {handleDropDownArrow(e, index);}}
 														>
 															<Typography>Provisione aqui</Typography>
 														</AccordionSummary>
