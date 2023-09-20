@@ -1,29 +1,53 @@
 import React, { useState } from "react";
-import axios from 'axios';
 
 import { useLoading } from "../../hooks/useLoading";
 import { useError } from "../../hooks/useError";
-
-import { Container, InputContainer } from "./style";
 
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import CircularProgress from '@mui/material/CircularProgress';
-import SearchIcon from '@mui/icons-material/Search';
 import Alert from '@mui/material/Alert';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import Divider from '@mui/material/Divider';
+
+import { SearchONU } from "./SearchONU";
+import { WriteONU } from "./WriteONU";
+
+import { Container } from "./style";
+
+function CustomTabPanel(props) {
+	const { children, value, index, ...other } = props;
+
+	return (
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			{...other}
+		>
+			{value === index && (
+			<Box sx={{ p: 3 }}>
+				<Typography component='span'>{children}</Typography>
+			</Box>
+			)}
+		</div>
+	);
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+	return {
+	  id: `simple-tab-${index}`,
+	  'aria-controls': `simple-tabpanel-${index}`,
+	};
+}
 
 const OltInfo = [
 	{
@@ -88,139 +112,18 @@ const OltInfo = [
     },
 ];
 
-function CustomTabPanel(props) {
-	const { children, value, index, ...other } = props;
-
-	return (
-		<div
-			role="tabpanel"
-			hidden={value !== index}
-			id={`simple-tabpanel-${index}`}
-			aria-labelledby={`simple-tab-${index}`}
-			{...other}
-		>
-			{value === index && (
-			<Box sx={{ p: 3 }}>
-				<Typography component='span'>{children}</Typography>
-			</Box>
-			)}
-		</div>
-	);
-}
-
-CustomTabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-	return {
-	  id: `simple-tab-${index}`,
-	  'aria-controls': `simple-tabpanel-${index}`,
-	};
-}
-
 export function Provisionamento() {
 
-	const [value, setValue] = useState(0);
-	const [matchSerialNumber, setMatchSerialNumber] = useState('');
-    const [city, setCity] = useState('Natividade');
-	const [pppoe, setPppoe] = useState('');
-	const [contractNumber, setContractNumber] = useState('');
-	const [dataOnu, setDataOnu] = useState();
+	const [city, setCity] = useState('Natividade');
 	const [dataFromApi, setDataFromApi] = useState([]);
 	const [serialNumber, setSerialNumber] = useState(null);
-	const [isDropDownOpen, setIsDropDownOpen] = useState(0);
-	const [dropDownIndex, setDropDownIndex] = useState(0);
+
+	const [value, setValue] = useState(0);
 
 	const { isLoading, startLoading, stopLoading } = useLoading();
 	const { error, errorMessage, severityStatus, handleError } = useError();
 
 	const handleChange = (event, newValue) => {	setValue(newValue); }; //MUI-Core
-    const handleCityChange = (event) => { setCity(event.target.value); };
-	const handleMatchSerialNumberChange = (e) => { setMatchSerialNumber(e.target.value); };
-	const handleContractNumberChange = (e) => { setContractNumber(e.target.value); };
-	const handlePppoeChange = (e) => { setPppoe(e.target.value); };
-
-	const handleDropDownArrow = (e, index) => {
-		e.preventDefault();
-		setIsDropDownOpen(!isDropDownOpen);
-		setDropDownIndex(index);
-	}
-
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-		const verifyAlphaNumber = /^[a-zA-Z0-9]+$/;
-
-		if(isLoading){
-			const err = 'warning/has-action-in-progress';
-			handleError(err);
-		}else if(!verifyAlphaNumber.test(matchSerialNumber)){
-			handleError('info/non-expect-caracter-not-alphaNumeric');
-		}else{
-			startLoading();
-			const oltData = OltInfo.find(option => option.label === city ? city : '');
-
-			await axios.post('https://app.eterniaservicos.com.br/searchONU', {
-				ip: oltData.ip,
-				serialNumber: matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
-			})
-			.then(response => {
-				if(typeof(response.data) === 'string'){
-					stopLoading();
-					handleError(response.data);
-					//RETORNA ONU NAO ENCONTRADA
-				}
-				stopLoading();
-				setDataFromApi(response.data);
-			})
-			.catch(error => {
-				stopLoading();
-				handleError(error.code);
-			});
-		}
-	}
-
-	const handleSubmitWriteData = async (event) => {
-		event.preventDefault();
-		setSerialNumber(dataOnu[3]);  
-		//ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
-
-		const isNumeric = /^[0-9]+$/;
-
-		if (isLoading){
-			const err = 'warning/has-action-in-progress';
-			handleError(err);
-		}else if(contractNumber.length === 0 || pppoe.length === 0){
-			handleError('info/required-input');
-		}else if(!isNumeric.test(contractNumber)){
-			handleError('info/non-expect-caracter-NAN');
-		}else{
-			startLoading();
-			const oltData = OltInfo.find(option => option.label === city ? city : '');
-			
-			await axios.post('https://app.eterniaservicos.com.br/writeONU', {
-				ip: oltData.ip,
-				slot: dataOnu[0],
-				pon: dataOnu[1],
-				isPizzaBox: oltData.isPizzaBox,
-				serialNumber: dataOnu[3],
-				type: dataOnu[2],
-				contract: contractNumber,
-				pppoe: pppoe.toLowerCase()
-			})
-			.then(response => {
-				stopLoading();
-				handleError(response.data);
-				setDataFromApi(response.data);
-			})
-			.catch(error => {
-				stopLoading();
-				handleError(error.code);
-			});
-		}
-	}
 
 	return (
 		<Container className="flex">
@@ -234,133 +137,31 @@ export function Provisionamento() {
 							</Tabs>
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
-							<form onSubmit={handleSubmit} className="flex">
-								<InputContainer center={1}>
-									<div className="text">
-										<p>Selecione a cidade: </p>
-									</div>
-									<div className="content">
-										<TextField
-											id='select-city'
-											select
-											label="Cidades"
-											value={city}
-											onChange={handleCityChange}
-										>
-											{OltInfo.map((option) => (
-												<MenuItem key={option.id} value={option.label}>
-													{option.label}
-												</MenuItem>
-											))}
-										</TextField>
-									</div>
-								</InputContainer>
-								<InputContainer>
-									<div className="text">
-										<p>Digite o serial da ONU: </p>
-									</div>
-									<div className="content">
-										<TextField 
-											id="standard-basic" 
-											variant="standard" 
-											type="text"
-											onChange={handleMatchSerialNumberChange}
-										/>
-									</div>
-								</InputContainer>
-								{
-									(isLoading && serialNumber === null ? 
-										<CircularProgress className="MUI-CircularProgress" color="primary"/>
-									:
-										(matchSerialNumber.length < 4 ?
-											<Button type="submit" disabled variant="outlined" endIcon={<SearchIcon />}>
-												Procurar ONU
-											</Button>
-										:
-											<Button type="submit" variant="outlined" endIcon={<SearchIcon />}>
-												Procurar ONU
-											</Button>
-										)
-									)
-								}
-							</form>
+							<SearchONU 
+								setCity={setCity} 
+								city={city} 
+								setDataFromApi={setDataFromApi} 
+								serialNumber={serialNumber}
+								handleError={handleError}
+								isLoading={isLoading}
+								startLoading={startLoading}
+								stopLoading={stopLoading}
+								OltInfo={OltInfo}
+							/>
 							<Divider variant="middle" />
-							<div className="ONU-content">
-								{	
-									(Array.isArray(dataFromApi) ?
-										dataFromApi.map((item, index) => (
-											<div key={index} className="onu-callback flex">
-												<div className="info-onu-controller flex">
-													<div className="add-onu flex">
-														<ul className="flex">
-															<li>Placa: {item[0]}</li>
-															<li>Pon: {item[1]}</li>
-															<li>Serial: {item[3]}</li>
-														</ul>
-													</div>
-												</div>
-												<div className="write-onu-controller flex">
-													<Accordion className="dropdown-box flex">
-														<AccordionSummary
-															className="dropdown-header"
-															expandIcon={isDropDownOpen && index === dropDownIndex? <ExpandLessIcon/> : <ExpandMoreIcon />}
-															aria-controls="panel1a-content"
-															id="panel1a-header"
-															onClick={(e) => {handleDropDownArrow(e, index);}}
-														>
-															<Typography>Provisione aqui</Typography>
-														</AccordionSummary>
-														<AccordionDetails>
-															<form onSubmit={handleSubmitWriteData} className="flex">
-																<InputContainer>
-																	<div className="text">
-																		<p>PPPoE do cliente: </p>
-																	</div>
-																	<div className="content">
-																		<TextField  variant="standard" onChange={handlePppoeChange}></TextField>
-																	</div>
-																</InputContainer>
-																<InputContainer>
-																	<div className="text">
-																		<p>Número do contrato: </p>
-																	</div>
-																	<div className="content">
-																		<TextField 
-																			variant="standard" 
-																			inputProps={{ inputMode: 'numeric' }}
-																			onChange={handleContractNumberChange}>
-																		</TextField>
-																	</div>
-																</InputContainer>
-																{
-																	(isLoading && item[3] === serialNumber ?
-																		<CircularProgress className="MUI-CircularProgress" color="primary"/>
-																	:
-																		<div className="flex">
-																			<Button 
-																				type="submit" 
-																				variant="outlined" 
-																				endIcon={<AddOutlinedIcon />}
-																				onClick={() => {
-																					setDataOnu([item[0], item[1], item[2], item[3]]);
-																				}}
-																			>
-																				Provisionar
-																			</Button>
-																		</div>
-																	)
-																}
-															</form>
-														</AccordionDetails>
-													</Accordion>
-												</div>
-											</div>
-										))
-									:
-										<></>
-									)
-								}
-							</div>
+							<WriteONU 
+								setCity={setCity} 
+								city={city} 
+								setDataFromApi={setDataFromApi} 
+								serialNumber={serialNumber}
+								handleError={handleError}
+								isLoading={isLoading}
+								startLoading={startLoading}
+								stopLoading={stopLoading}
+								dataFromApi={dataFromApi}
+								setSerialNumber={setSerialNumber}
+								OltInfo={OltInfo}
+							/>
 						</CustomTabPanel> 	
 					</Box>
 				</div>
