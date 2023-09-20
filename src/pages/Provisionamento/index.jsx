@@ -117,8 +117,8 @@ export function Provisionamento() {
 	const [city, setCity] = useState('Natividade');
 	const [dataFromApi, setDataFromApi] = useState([]);
 	const [serialNumber, setSerialNumber] = useState(null);
-
-	const [value, setValue] = useState(0);
+	
+	const [value, setValue] = useState(0); //MUI-Core
 
 	const { isLoading, startLoading, stopLoading } = useLoading();
 	const { error, errorMessage, severityStatus, handleError } = useError();

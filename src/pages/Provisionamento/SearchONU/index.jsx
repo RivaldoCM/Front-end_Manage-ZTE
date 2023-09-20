@@ -7,7 +7,8 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { InputContainer } from "./style";
+import { InputContainer } from "../../../styles/global";
+import { Form } from "./style";
 
 export function SearchONU({ 
     setCity, 
@@ -47,7 +48,6 @@ export function SearchONU({
                     stopLoading();
                     handleError(response.data);
                     //RETORNA ONU NAO ENCONTRADA
-                    console.log(city, response.data)
                 }
                 stopLoading();
                 setDataFromApi(response.data);
@@ -60,7 +60,7 @@ export function SearchONU({
     }
 
     return(
-        <form onSubmit={handleSubmit} className="flex">
+        <Form onSubmit={handleSubmit} className="flex">
             <InputContainer center={1}>
                 <div className="text">
                     <p>Selecione a cidade: </p>
@@ -109,6 +109,6 @@ export function SearchONU({
                     )
                 )
             }
-        </form>
+        </Form>
     )
 }

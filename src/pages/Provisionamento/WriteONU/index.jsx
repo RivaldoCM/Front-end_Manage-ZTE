@@ -12,9 +12,20 @@ import Typography from '@mui/material/Typography';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { InputContainer } from "./style";
+import { InputContainer } from "../../../styles/global";
+import { Container } from './style';
 
-export function WriteONU({ city, setDataFromApi, dataFromApi, setSerialNumber, serialNumber, handleError, isLoading, startLoading, stopLoading, OltInfo }){
+export function WriteONU({ 
+    city, 
+    setDataFromApi, 
+    dataFromApi, 
+    setSerialNumber, 
+    serialNumber, 
+    handleError, 
+    isLoading, 
+    startLoading, 
+    stopLoading, 
+    OltInfo }){
 
 	const [dataOnu, setDataOnu] = useState();
 	const [isDropDownOpen, setIsDropDownOpen] = useState(0);
@@ -72,7 +83,7 @@ export function WriteONU({ city, setDataFromApi, dataFromApi, setSerialNumber, s
     }    
 
     return(
-        <div className="ONU-content">
+        <Container>
             {	
                 (Array.isArray(dataFromApi) ?
                     dataFromApi.map((item, index) => (
@@ -147,6 +158,6 @@ export function WriteONU({ city, setDataFromApi, dataFromApi, setSerialNumber, s
                     <></>
                 )
             }
-        </div>
+        </Container>
     )
 }
