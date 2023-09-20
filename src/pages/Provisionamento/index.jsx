@@ -121,7 +121,7 @@ function a11yProps(index) {
 	};
 }
 
-export function Home() {
+export function Provisionamento() {
 
 	const [value, setValue] = useState(0);
 	const [matchSerialNumber, setMatchSerialNumber] = useState('');
