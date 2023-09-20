@@ -56,5 +56,6 @@ export function useError(){
             break;
         }
     };
+    
     return { error, errorMessage, severityStatus, handleError };
 };

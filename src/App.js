@@ -7,10 +7,10 @@ import { GlobalStyle } from "./styles/global";
 export function App() {
   return (
     <div className="App">
-      <Router>
-        <Routes />
-        <GlobalStyle />
-      </Router>
+        <Router>
+          <Routes />
+          <GlobalStyle />
+        </Router>
     </div>
   );
 }
