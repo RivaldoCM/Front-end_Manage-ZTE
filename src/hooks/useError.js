@@ -20,7 +20,7 @@ export function useError(){
                 setSeverityStatus('warning');
             break;
             case 'warning/equipament-not-found':
-                setErrorMessage('ONU não encontrada.');
+                setErrorMessage('ONU não encontrada, tente novamente.');
                 setSeverityStatus('warning');
             break;
             case 'error/connection-issue':
@@ -36,11 +36,11 @@ export function useError(){
                 setSeverityStatus('success');
             break;
             case 'info/non-expect-caracter-not-alphaNumeric':
-                setErrorMessage('Digite apenas letras e/ou números');
+                setErrorMessage('Digite apenas letras e/ou números.');
                 setSeverityStatus('info');
             break;
             case 'info/non-expect-caracter-NAN':
-                setErrorMessage('Digite apenas números no campo Contrato.');
+                setErrorMessage('Digite apenas números no campo de contrato.');
                 setSeverityStatus('info');
             break;
             case 'info/required-input':
@@ -52,7 +52,7 @@ export function useError(){
                 setSeverityStatus('error');
             break;
             default:
-                handleError('Erro interno, verifique com o suporte');
+                handleError('Erro interno, verifique com o suporte.');
             break;
         }
     };
