@@ -19,7 +19,8 @@ export function SearchONU({
     isLoading, 
     startLoading, 
     stopLoading, 
-    OltInfo }){
+    OltInfo,
+    setSerialNumber }){
 
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
@@ -28,7 +29,8 @@ export function SearchONU({
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const verifyAlphaNumber = /^[a-zA-Z0-9]+$/;
+        setSerialNumber(null);
+        const verifyAlphaNumber = /^[a-zA-Z0-9_]+$/;
     
         if(isLoading){
             const err = 'warning/has-action-in-progress';

@@ -147,19 +147,20 @@ export function Provisionamento() {
 								startLoading={startLoading}
 								stopLoading={stopLoading}
 								OltInfo={OltInfo}
+								setSerialNumber={setSerialNumber}
 							/>
 							<Divider variant="middle" />
 							<WriteONU 
 								setCity={setCity} 
-								city={city} 
-								setDataFromApi={setDataFromApi} 
+								city={city}
+								setDataFromApi={setDataFromApi}
+								dataFromApi={dataFromApi}
 								serialNumber={serialNumber}
+								setSerialNumber={setSerialNumber}
 								handleError={handleError}
 								isLoading={isLoading}
 								startLoading={startLoading}
 								stopLoading={stopLoading}
-								dataFromApi={dataFromApi}
-								setSerialNumber={setSerialNumber}
 								OltInfo={OltInfo}
 							/>
 						</CustomTabPanel> 	
