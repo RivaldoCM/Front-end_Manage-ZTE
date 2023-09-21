@@ -51,8 +51,12 @@ export function useError(){
                 setErrorMessage('Não foi possível se conectar ao serviço.');
                 setSeverityStatus('error');
             break;
-            case 'info/wrong-type-passowrd':
+            case 'info/wrong-type-passoword':
                 setErrorMessage('A senha do wifi deve ter no minimo 8 caracteres.');
+                setSeverityStatus('info');
+            break;
+            case 'info/wifi-did-not-match':
+                setErrorMessage('O unico caracter especial aceito é o underline.');
                 setSeverityStatus('info');
             break;
             default:

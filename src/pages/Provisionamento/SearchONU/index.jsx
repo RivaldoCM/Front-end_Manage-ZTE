@@ -28,7 +28,7 @@ export function SearchONU({
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const verifyAlphaNumber = /^[a-zA-Z0-9]+$/;
+        const verifyAlphaNumber = /^[a-zA-Z0-9_]+$/;
     
         if(isLoading){
             const err = 'warning/has-action-in-progress';

@@ -53,30 +53,36 @@ export function WriteONU({
     
         console.log()
         const isNumeric = /^[0-9]+$/;
+        const isAlphaNumeric = /^[a-zA-Z0-9]+$/;
     
         if (isLoading){
             const err = 'warning/has-action-in-progress';
             handleError(err);
-        }else if(contractNumber.length === 0 || pppoe.length === 0){
+        }else if(contractNumber.length === 0 || pppoe.length === 0 || wifiPass.length === 0 || wifiSSID.length === 0 || pppoePass.length === 0){
             handleError('info/required-input');
         }else if(wifiPass.length < 8){
-            handleError('info/wrong-type-passowrd');
+            handleError('info/wrong-type-passoword');
         }else if(!isNumeric.test(contractNumber)){
             handleError('info/non-expect-caracter-NAN');
+        }else if(!isAlphaNumeric.test(wifiPass)){
+            handleError('info/wifi-did-not-match');
         }else{
             startLoading();
             const oltData = OltInfo.find(option => option.label === city ? city : '');
             
-            if(dataOnu[2].includes('F670L')){
-                dataOnu[2] = 'F670L';
-            }else if(dataOnu[2].includes('F6600')){
-                dataOnu[2] = 'F6600';
-            }else if(dataOnu[2].includes('F680')){
-                dataOnu[2] = 'F680';
+            const typeMapping = {
+                'F670L': 'F670L',
+                'F6600': 'F6600',
+                'F680': 'F680',
+                //ONU's QUE PROVISIONAM COM PPPoE E WIFI
+            };
+              
+            for (const key in typeMapping) {
+                if (dataOnu[2].includes(key)) {
+                  dataOnu[2] = typeMapping[key];
+                  break; // Para sair do loop após encontrar uma correspondência
+                }
             }
-
-            console.log(pppoePass, pppoe,wifiPass, wifiSSID)
-
 
             await axios.post('http://localhost:4000/writeONU', {
                 ip: oltData.ip,
