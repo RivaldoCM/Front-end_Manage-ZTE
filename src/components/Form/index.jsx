@@ -27,7 +27,11 @@ export function Form({
                             <p>Usuário PPPoE: </p>
                         </div>
                         <div className="content">
-                            <TextField  variant="standard" onChange={handlePppoeChange}></TextField>
+                            <TextField  
+                                variant="standard" 
+                                required
+                                onChange={handlePppoeChange}>
+                            </TextField>
                         </div>
                     </InputContainer>
                     <InputContainer>
@@ -37,6 +41,7 @@ export function Form({
                         <div className="content">
                             <TextField 
                                 variant="standard" 
+                                required
                                 onChange={handlePppoePassChange}>
                             </TextField>
                         </div>
@@ -46,8 +51,9 @@ export function Form({
                             <p>N° Contrato:</p>
                         </div>
                         <div className="content">
-                            <TextField 
+                            <TextField
                                 variant="standard" 
+                                required
                                 onChange={handleContractNumberChange}>
                             </TextField>
                         </div>
@@ -58,7 +64,8 @@ export function Form({
                         </div>
                         <div className="content">
                             <TextField 
-                                variant="standard" 
+                                variant="standard"
+                                required
                                 onChange={handleWifiSSIDChange}>
                             </TextField>
                         </div>
@@ -69,7 +76,8 @@ export function Form({
                         </div>
                         <div className="content">
                             <TextField 
-                                variant="standard" 
+                                variant="standard"
+                                required
                                 onChange={handleWifiPassChange}>
                             </TextField>
                         </div>

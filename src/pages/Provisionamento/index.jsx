@@ -147,6 +147,7 @@ export function Provisionamento() {
 								startLoading={startLoading}
 								stopLoading={stopLoading}
 								OltInfo={OltInfo}
+								setSerialNumber={setSerialNumber}
 							/>
 							<Divider variant="middle" />
 							<WriteONU 
