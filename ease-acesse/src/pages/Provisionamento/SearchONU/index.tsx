@@ -56,7 +56,7 @@ export function SearchONU(props: SearchONUProps) {
     }
 
     return (
-        <Form onSubmit={handleSubmit} className="flex">
+        <Form onSubmit={handleSubmit}>
             <InputContainer center={true}>
                 <div className="text">
                     <p>Selecione a cidade: </p>
