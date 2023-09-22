@@ -1,4 +1,5 @@
-import { createGlobalStyle, styled } from "styled-components";
+import { createGlobalStyle } from "styled-components";
+import styled from "styled-components";
 import { HTMLAttributes, DetailedHTMLProps } from 'react';
 
 interface MyStyledComponentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
