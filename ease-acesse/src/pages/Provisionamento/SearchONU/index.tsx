@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
 
 import { SearchONUProps } from "../../../interfaces/SearchONUProps";
@@ -19,6 +19,10 @@ export function SearchONU(props: SearchONUProps) {
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { props.setCity(e.target.value); };
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); };
 
+    useEffect(() => {
+        console.log(props.isLoading);
+    }, [props.isLoading]);
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -32,6 +36,7 @@ export function SearchONU(props: SearchONUProps) {
             props.handleError('info/non-expect-caracter-not-alphaNumeric');
         }else{
             props.startLoading();
+            console.log(props.isLoading)
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
 
             await axios.post('https://app.eterniaservicos.com.br/searchONU', {
@@ -42,11 +47,11 @@ export function SearchONU(props: SearchONUProps) {
                 if(typeof(response.data) === 'string'){
                     props.stopLoading();
                     props.handleError(response.data);
-                    console.log(response.data)
                     //RETORNA ONU NAO ENCONTRADA
+                }else{
+                    props.stopLoading();
+                    props.setDataFromApi(response.data);
                 }
-                props.stopLoading();
-                props.setDataFromApi(response.data);
             })
             .catch(error => {
                 props.stopLoading();
@@ -56,7 +61,7 @@ export function SearchONU(props: SearchONUProps) {
     }
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className="flex">
             <InputContainer center={true}>
                 <div className="text">
                     <p>Selecione a cidade: </p>
@@ -91,7 +96,7 @@ export function SearchONU(props: SearchONUProps) {
                 </div>
             </InputContainer>
             {
-                (props.isLoading && props.serialNumber === null ? 
+                (props.isLoading && props.serialNumber?.length === 0? 
                     <CircularProgress className="MUI-CircularProgress" color="primary"/>
                 :
                     (matchSerialNumber.length < 4 ?
