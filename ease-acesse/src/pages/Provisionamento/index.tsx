@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
-
+import { WriteONU } from "./WriteONU";
 
 interface TabPanelProps {
     className?: string
@@ -162,7 +162,17 @@ export function Provisionamento(){
                             setSerialNumber={setSerialNumber}
                         />
 							<Divider variant="middle" />
-							
+							<WriteONU 
+                                city={city}
+                                dataFromApi={dataFromApi}
+                                setDataFromApi={setDataFromApi}
+                                serialNumer={serialNumber}
+                                hanleError={handleError}
+                                isLoading={isLoading}
+                                startLoadng={startLoading}
+                                stopLoading={stopLoading}
+                                Oltinfo={OltInfo}
+                            />
 						</CustomTabPanel> 	
 					</Box>
 				</div>
