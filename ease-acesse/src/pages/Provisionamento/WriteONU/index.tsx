@@ -3,6 +3,8 @@ import axios from 'axios';
 
 import { WriteONUProps } from "../../../interfaces/WriteONUProps";
 
+import { Form } from "../../../components/Form";
+
 import { Container } from './style';
 
 import Accordion from '@mui/material/Accordion';
@@ -14,6 +16,7 @@ import Typography from '@mui/material/Typography';
 
 export function WriteONU(props: WriteONUProps){
 
+    //lifting up
     const [pppoePass, setPppoePass] = useState('');
 	const [wifiSSID, setWifiSSID] = useState('');
 	const [wifiPass, setWifiPass] = useState('');
@@ -113,10 +116,10 @@ export function WriteONU(props: WriteONUProps){
                             <div className="info-onu-controller flex">
                                 <div className="add-onu flex">
                                     <ul className="flex">
-                                        <li>Placa: {item[0]}</li>
+                                        <li>Placa: {item.placa}</li>
                                         <li>Pon: {item[1]}</li>
                                         <li>Modelo: {item[2]}</li>
-                                        <li>Serial: {item[3]}</li>
+                                        <li>Serial: {item.serial}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -136,9 +139,9 @@ export function WriteONU(props: WriteONUProps){
                                             handleSubmitWriteData={handleSubmitWriteData}
                                             handlePppoeChange={handlePppoeChange}
                                             handleContractNumberChange={handleContractNumberChange}
-                                            isLoading={isLoading}
+                                            isLoading={props.isLoading}
                                             item={item}
-                                            serialNumber={serialNumber}
+                                            serialNumber={props.serialNumber}
                                             setDataOnu={setDataOnu}
                                             handlePppoePassChange={handlePppoePassChange}
                                             handleWifiSSIDChange={handleWifiSSIDChange}

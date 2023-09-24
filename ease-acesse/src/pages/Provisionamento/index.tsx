@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { SearchONU } from "./SearchONU";
+import { WriteONU } from "./WriteONU";
 
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
@@ -16,7 +17,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
-import { WriteONU } from "./WriteONU";
+
 
 interface TabPanelProps {
     className?: string
@@ -149,29 +150,30 @@ export function Provisionamento(){
 							</Tabs>
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
-                        <SearchONU 
-                            setCity={setCity} 
-                            city={city} 
-                            setDataFromApi={setDataFromApi} 
-                            serialNumber={serialNumber}
-                            handleError={handleError}
-                            isLoading={isLoading}
-                            startLoading={startLoading}
-                            stopLoading={stopLoading}
-                            OltInfo={OltInfo}
-                            setSerialNumber={setSerialNumber}
-                        />
+                            <SearchONU 
+                                setCity={setCity} 
+                                city={city} 
+                                setDataFromApi={setDataFromApi} 
+                                serialNumber={serialNumber}
+                                handleError={handleError}
+                                isLoading={isLoading}
+                                startLoading={startLoading}
+                                stopLoading={stopLoading}
+                                OltInfo={OltInfo}
+                                setSerialNumber={setSerialNumber}
+                            />
 							<Divider variant="middle" />
 							<WriteONU 
                                 city={city}
                                 dataFromApi={dataFromApi}
                                 setDataFromApi={setDataFromApi}
-                                serialNumer={serialNumber}
-                                hanleError={handleError}
+                                setSerialNumber={setSerialNumber}
+                                serialNumber={serialNumber}
+                                handleError={handleError}
                                 isLoading={isLoading}
-                                startLoadng={startLoading}
+                                startLoading={startLoading}
                                 stopLoading={stopLoading}
-                                Oltinfo={OltInfo}
+                                OltInfo={OltInfo}
                             />
 						</CustomTabPanel> 	
 					</Box>

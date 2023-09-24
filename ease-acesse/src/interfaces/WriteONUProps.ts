@@ -6,9 +6,9 @@ export interface WriteONUProps {
         placa: string,
         pon: string,
         model: string,
-        type: string
+        serial: string
     }>;
-    setDataFromApi: (data: any[]) => void;
+    setDataFromApi: (dataFromApi: any[]) => void;
     setSerialNumber: (serialNumber: string) => void;
     serialNumber: string;
     handleError: (error: string) => void;
@@ -16,5 +16,4 @@ export interface WriteONUProps {
     startLoading: () => void;
     stopLoading: () => void;
     OltInfo: OltInfoItem[];
-    
 }

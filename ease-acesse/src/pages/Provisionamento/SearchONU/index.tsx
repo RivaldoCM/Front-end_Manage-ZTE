@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from 'axios';
 
 import { SearchONUProps } from "../../../interfaces/SearchONUProps";
@@ -12,16 +12,11 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
-
 export function SearchONU(props: SearchONUProps) {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { props.setCity(e.target.value); };
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); };
-
-    useEffect(() => {
-        console.log(props.isLoading);
-    }, [props.isLoading]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

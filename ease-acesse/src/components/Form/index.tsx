@@ -1,16 +1,13 @@
-import React from "react";
-
 import { FormProps } from "../../interfaces/Form"
+
+import { InputContainer } from "../../globalStyles";
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-import { InputContainer } from "../../globalStyles";
-
 export function Form(props: FormProps){
-
         if(props.item[2].includes('F670L') || props.item[2].includes('F6600') || props.item[2].includes('F680')){
             return(
                 <form onSubmit={props.handleSubmitWriteData} className="flex">
