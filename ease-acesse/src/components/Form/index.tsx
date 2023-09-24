@@ -7,8 +7,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+
 export function Form(props: FormProps){
-        if(props.item[2].includes('F670L') || props.item[2].includes('F6600') || props.item[2].includes('F680')){
+        if(props.item.model && (props.item.model.includes('F670L') || props.item.model.includes('F6600') || props.item.model.includes('F680'))){
             return(
                 <form onSubmit={props.handleSubmitWriteData} className="flex">
                     <InputContainer>
@@ -72,7 +73,7 @@ export function Form(props: FormProps){
                         </div>
                     </InputContainer>
                     {
-                        (props.isLoading && props.item[3] === props.serialNumber ?
+                        (props.isLoading && props.item.serial === props.serialNumber ?
                             <CircularProgress className="MUI-CircularProgress" color="primary"/>
                         :
                             <div className="flex">
@@ -81,7 +82,12 @@ export function Form(props: FormProps){
                                     variant="outlined" 
                                     endIcon={<AddOutlinedIcon />}
                                     onClick={() => {
-                                        props.setDataOnu([props.item[0], props.item[1], props.item[2], props.item[3]]);
+                                        props.setDataOnu([{
+                                            placa: props.item.placa,
+                                            pon: props.item.pon,
+                                            model: props.item.model,
+                                            serial: props.item.serial,
+                                          }]);
                                     }}
                                 >
                                     Provisionar
@@ -115,16 +121,21 @@ export function Form(props: FormProps){
                         </div>
                     </InputContainer>
                     {
-                        (props.isLoading && props.item[3] === props.serialNumber ?
+                        (props.isLoading && props.item.serial === props.serialNumber ?
                             <CircularProgress className="MUI-CircularProgress" color="primary"/>
                         :
                             <div className="flex">
-                                <Button 
+                                <Button
                                     type="submit" 
                                     variant="outlined" 
                                     endIcon={<AddOutlinedIcon />}
                                     onClick={() => {
-                                        props.setDataOnu([props.item[0], props.item[1], props.item[2], props.item[3]]);
+                                        props.setDataOnu([{
+                                            placa: props.item.placa,
+                                            pon: props.item.pon,
+                                            model: props.item.model,
+                                            serial: props.item.serial,
+                                        }]);
                                     }}
                                 >
                                     Provisionar

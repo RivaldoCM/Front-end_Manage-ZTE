@@ -14,6 +14,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Typography from '@mui/material/Typography';
 
+interface Item {
+    placa: string;
+    pon: string;
+    model: string;
+    serial: string;
+}
+
 export function WriteONU(props: WriteONUProps){
 
     //lifting up
@@ -21,7 +28,8 @@ export function WriteONU(props: WriteONUProps){
 	const [wifiSSID, setWifiSSID] = useState('');
 	const [wifiPass, setWifiPass] = useState('');
 
-	const [dataOnu, setDataOnu] = useState([]);
+    const [dataOnu, setDataOnu] = useState<{ placa: string; pon: string; model: string; serial: string; }[]>([]);
+
 	const [isDropDownOpen, setIsDropDownOpen] = useState(0);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 	const [pppoe, setPppoe] = useState('');
@@ -39,9 +47,11 @@ export function WriteONU(props: WriteONUProps){
         setDropDownIndex(index);
     }
     
-    const handleSubmitWriteData = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSubmitWriteData = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        props.setSerialNumber(dataOnu[3]);
+        console.log(dataOnu)
+        props.setSerialNumber(dataOnu[3].serial);
+
         //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
     
         const typeMapping = {
@@ -58,8 +68,8 @@ export function WriteONU(props: WriteONUProps){
         const typePppoe = ['F680', 'F6600', 'F670L'];
           
         for (const key in typeMapping) {
-            if (dataOnu[2].includes(key)) {
-              dataOnu[2] = typeMapping[key];
+            if (dataOnu[2].model.includes(key)) {
+              dataOnu[2].model = typeMapping[key as keyof typeof typeMapping];
               break; // Para sair do loop após encontrar uma correspondência
             }
         }
@@ -67,14 +77,14 @@ export function WriteONU(props: WriteONUProps){
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
             props.handleError(err);
-        }else if(typeBridge.includes((dataOnu[2]) && contractNumber.length === 0) ||
-        (typeBridge.includes(dataOnu[2]) && pppoe.length === 0)){
+        }else if(typeBridge.includes((dataOnu[2].model)) && contractNumber.length === 0 ||
+        (typeBridge.includes(dataOnu[2].model) && pppoe.length === 0)){
             props.handleError('info/required-input');
         }else if(!isNumeric.test(contractNumber)){
             props.handleError('info/non-expect-caracter-NAN');
-        }else if(typePppoe.includes(dataOnu[2]) && wifiPass.length < 8){
+        }else if(typePppoe.includes(dataOnu[2].model) && wifiPass.length < 8){
             props.handleError('info/wrong-type-passoword');
-        }else if(typePppoe.includes(dataOnu[2]) && !isAlphaNumeric.test(wifiPass)){
+        }else if(typePppoe.includes(dataOnu[2].model) && !isAlphaNumeric.test(wifiPass)){
             props.handleError('info/wifi-did-not-match');
         }else{
             props.startLoading();
@@ -82,11 +92,11 @@ export function WriteONU(props: WriteONUProps){
 
             await axios.post('https://app.eterniaservicos.com.br/writeONU', {
                 ip: oltData.ip,
-                slot: dataOnu[0],
-                pon: dataOnu[1],
+                slot: dataOnu[0].placa,
+                pon: dataOnu[1].pon,
                 isPizzaBox: oltData.isPizzaBox,
-                serialNumber: dataOnu[3],
-                type: dataOnu[2],
+                serialNumber: dataOnu[3].serial,
+                type: dataOnu[2].model,
                 contract: contractNumber,
                 pppoeUser: pppoe.toLowerCase(),
                 pppPass: pppoePass || null,
@@ -104,58 +114,65 @@ export function WriteONU(props: WriteONUProps){
                 props.handleError(error.code);
             });
         }
-    }    
+    }
 
-    return(
-        
+    return (
         <Container>
-            {	
-                Array.isArray(props.dataFromApi) ? (
-                    props.dataFromApi.map((item, index) => (
-                        <div key={index} className="onu-callback flex">
-                            <div className="info-onu-controller flex">
-                                <div className="add-onu flex">
-                                    <ul className="flex">
-                                        <li>Placa: {item.placa}</li>
-                                        <li>Pon: {item[1]}</li>
-                                        <li>Modelo: {item[2]}</li>
-                                        <li>Serial: {item.serial}</li>
-                                    </ul>
+            {Array.isArray(props.dataFromApi) ? (
+                props.dataFromApi.map((item, index) => {
+                    if (Array.isArray(item) && item.length === 4) {
+                        const [placa, pon, model, serial] = item;
+
+                        return (
+                            <div key={index} className="onu-callback flex">
+                                <div className="info-onu-controller flex">
+                                    <div className="add-onu flex">
+                                        <ul className="flex">
+                                            <li>Placa: {placa}</li>
+                                            <li>Pon: {pon}</li>
+                                            <li>Serial: {serial}</li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="write-onu-controller flex">
-                                <Accordion className="dropdown-box flex">
-                                    <AccordionSummary
+                                <div className="write-onu-controller flex">
+                                    <Accordion className="dropdown-box flex">
+                                        <AccordionSummary
                                         className="dropdown-header"
-                                        expandIcon={isDropDownOpen && index === dropDownIndex? <ExpandLessIcon/> : <ExpandMoreIcon />}
+                                        expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                         aria-controls="panel1a-content"
                                         id="panel1a-header"
-                                        onClick={(e) => {handleDropDownArrow(e, index);}}
-                                    >
-                                        <Typography>Provisione aqui</Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <Form 
-                                            handleSubmitWriteData={handleSubmitWriteData}
-                                            handlePppoeChange={handlePppoeChange}
-                                            handleContractNumberChange={handleContractNumberChange}
-                                            isLoading={props.isLoading}
-                                            item={item}
-                                            serialNumber={props.serialNumber}
-                                            setDataOnu={setDataOnu}
-                                            handlePppoePassChange={handlePppoePassChange}
-                                            handleWifiSSIDChange={handleWifiSSIDChange}
-                                            handleWifiPassChange={handleWifiPassChange}
-                                        />
-                                    </AccordionDetails>
-                                </Accordion>
+                                        onClick={(e) => {
+                                            handleDropDownArrow(e, index);
+                                        }}
+                                        >
+                                            <Typography>Provisione aqui</Typography>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <Form
+                                                handleSubmitWriteData={handleSubmitWriteData}
+                                                handlePppoeChange={handlePppoeChange}
+                                                handleContractNumberChange={handleContractNumberChange}
+                                                isLoading={props.isLoading}
+                                                item={item} 
+                                                serialNumber={props.serialNumber}
+                                                setDataOnu={setDataOnu}
+                                                handlePppoePassChange={handlePppoePassChange}
+                                                handleWifiSSIDChange={handleWifiSSIDChange}
+                                                handleWifiPassChange={handleWifiPassChange}
+                                            />
+                                        </AccordionDetails>
+                                    </Accordion>
+                                </div>
                             </div>
-                        </div>
-                    ))
-                ) : (
-                    null 
-                )
-            }
+                        );
+                    } else {
+                        // Lida com o caso em que o item não corresponde ao esperado
+                        return null;
+                    }
+                })
+            ) : (
+                null
+            )}
         </Container>
-    )
+    );
 }

@@ -18,7 +18,6 @@ import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 
-
 interface TabPanelProps {
     className?: string
     children?: React.ReactNode;
@@ -137,7 +136,7 @@ export function Provisionamento(){
     const handleChange = (event: React.SyntheticEvent, newValue: number) => { //MUI-Core
         setValue(newValue);
     }; 
-    console.log(dataFromApi)
+
     return(
         <Container>
             <div className="input-content">
