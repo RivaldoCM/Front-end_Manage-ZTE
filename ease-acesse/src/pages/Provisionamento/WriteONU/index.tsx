@@ -23,7 +23,7 @@ export function WriteONU(props: WriteONUProps){
 
     const [dataOnu, setDataOnu] = useState<{ placa: string; pon: string; model: string; serial: string; }[]>([]);
 
-	const [isDropDownOpen, setIsDropDownOpen] = useState(0);
+	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 	const [pppoe, setPppoe] = useState('');
 	const [contractNumber, setContractNumber] = useState('');
@@ -34,7 +34,7 @@ export function WriteONU(props: WriteONUProps){
     const handleWifiSSIDChange = (e: React.ChangeEvent<HTMLInputElement>) => { setWifiSSID(e.target.value); }
     const handleWifiPassChange = (e: React.ChangeEvent<HTMLInputElement>) => { setWifiPass(e.target.value); }
 
-    const handleDropDownArrow = (e: React.ChangeEvent<HTMLInputElement>, index) => {
+    const handleDropDownArrow = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
         e.preventDefault();
         setIsDropDownOpen(!isDropDownOpen);
         setDropDownIndex(index);
@@ -42,7 +42,7 @@ export function WriteONU(props: WriteONUProps){
     
     const handleSubmitWriteData = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const dataOnuByName = []; 
+        const dataOnuByName = [];
 
         for (const objeto of dataOnu) {
             const { placa, pon, model, serial } = objeto;
