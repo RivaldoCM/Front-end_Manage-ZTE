@@ -14,13 +14,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Typography from '@mui/material/Typography';
 
-interface Item {
-    placa: string;
-    pon: string;
-    model: string;
-    serial: string;
-}
-
 export function WriteONU(props: WriteONUProps){
 
     //lifting up
@@ -49,9 +42,14 @@ export function WriteONU(props: WriteONUProps){
     
     const handleSubmitWriteData = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log(dataOnu)
-        props.setSerialNumber(dataOnu[3].serial);
+        const dataOnuByName = []; 
 
+        for (const objeto of dataOnu) {
+            const { placa, pon, model, serial } = objeto;
+            dataOnuByName.push(placa, pon, model, serial)
+        }
+
+        props.setSerialNumber(dataOnuByName[3])
         //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
     
         const typeMapping = {
@@ -68,8 +66,8 @@ export function WriteONU(props: WriteONUProps){
         const typePppoe = ['F680', 'F6600', 'F670L'];
           
         for (const key in typeMapping) {
-            if (dataOnu[2].model.includes(key)) {
-              dataOnu[2].model = typeMapping[key as keyof typeof typeMapping];
+            if (dataOnuByName[2].includes(key)) {
+              dataOnuByName[2] = typeMapping[key as keyof typeof typeMapping];
               break; // Para sair do loop após encontrar uma correspondência
             }
         }
@@ -77,14 +75,14 @@ export function WriteONU(props: WriteONUProps){
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
             props.handleError(err);
-        }else if(typeBridge.includes((dataOnu[2].model)) && contractNumber.length === 0 ||
-        (typeBridge.includes(dataOnu[2].model) && pppoe.length === 0)){
+        }else if(typeBridge.includes((dataOnuByName[2])) && contractNumber.length === 0 ||
+        (typeBridge.includes(dataOnuByName[2]) && pppoe.length === 0)){
             props.handleError('info/required-input');
         }else if(!isNumeric.test(contractNumber)){
             props.handleError('info/non-expect-caracter-NAN');
-        }else if(typePppoe.includes(dataOnu[2].model) && wifiPass.length < 8){
+        }else if(typePppoe.includes(dataOnuByName[2]) && wifiPass.length < 8){
             props.handleError('info/wrong-type-passoword');
-        }else if(typePppoe.includes(dataOnu[2].model) && !isAlphaNumeric.test(wifiPass)){
+        }else if(typePppoe.includes(dataOnuByName[2]) && !isAlphaNumeric.test(wifiPass)){
             props.handleError('info/wifi-did-not-match');
         }else{
             props.startLoading();
@@ -92,23 +90,24 @@ export function WriteONU(props: WriteONUProps){
 
             await axios.post('https://app.eterniaservicos.com.br/writeONU', {
                 ip: oltData.ip,
-                slot: dataOnu[0].placa,
-                pon: dataOnu[1].pon,
+                slot: dataOnuByName[0],
+                pon: dataOnuByName[1],
                 isPizzaBox: oltData.isPizzaBox,
-                serialNumber: dataOnu[3].serial,
-                type: dataOnu[2].model,
+                serialNumber: dataOnuByName[3],
+                type: dataOnuByName[2],
                 contract: contractNumber,
                 pppoeUser: pppoe.toLowerCase(),
                 pppPass: pppoePass || null,
                 wifiSSID: wifiSSID || null,
                 wifiPass: wifiPass || null
+                
             })
             .then(response => {
                 props.stopLoading();
                 props.handleError(response.data);
                 props.setDataFromApi(response.data);
-
             })
+            
             .catch(error => {
                 props.stopLoading();
                 props.handleError(error.code);

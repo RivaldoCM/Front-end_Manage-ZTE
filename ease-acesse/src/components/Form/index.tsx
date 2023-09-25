@@ -9,7 +9,10 @@ import TextField from '@mui/material/TextField';
 
 
 export function Form(props: FormProps){
-        if(props.item.model && (props.item.model.includes('F670L') || props.item.model.includes('F6600') || props.item.model.includes('F680'))){
+    if (Array.isArray(props.item)) {
+        const [placa, pon, model, serial] = props.item;
+
+        if(model && (model.includes('F670L') || model.includes('F6600') || model.includes('F680'))){
             return(
                 <form onSubmit={props.handleSubmitWriteData} className="flex">
                     <InputContainer>
@@ -44,6 +47,7 @@ export function Form(props: FormProps){
                             <TextField
                                 variant="standard" 
                                 required
+                                inputProps={{ inputMode: 'numeric' }}
                                 onChange={props.handleContractNumberChange}>
                             </TextField>
                         </div>
@@ -73,7 +77,7 @@ export function Form(props: FormProps){
                         </div>
                     </InputContainer>
                     {
-                        (props.isLoading && props.item.serial === props.serialNumber ?
+                        (props.isLoading && serial === props.serialNumber ?
                             <CircularProgress className="MUI-CircularProgress" color="primary"/>
                         :
                             <div className="flex">
@@ -83,11 +87,11 @@ export function Form(props: FormProps){
                                     endIcon={<AddOutlinedIcon />}
                                     onClick={() => {
                                         props.setDataOnu([{
-                                            placa: props.item.placa,
-                                            pon: props.item.pon,
-                                            model: props.item.model,
-                                            serial: props.item.serial,
-                                          }]);
+                                            placa: placa,
+                                            pon: pon,
+                                            model: model,
+                                            serial: serial,
+                                        }]);
                                     }}
                                 >
                                     Provisionar
@@ -121,7 +125,7 @@ export function Form(props: FormProps){
                         </div>
                     </InputContainer>
                     {
-                        (props.isLoading && props.item.serial === props.serialNumber ?
+                        (props.isLoading && serial === props.serialNumber ?
                             <CircularProgress className="MUI-CircularProgress" color="primary"/>
                         :
                             <div className="flex">
@@ -131,10 +135,10 @@ export function Form(props: FormProps){
                                     endIcon={<AddOutlinedIcon />}
                                     onClick={() => {
                                         props.setDataOnu([{
-                                            placa: props.item.placa,
-                                            pon: props.item.pon,
-                                            model: props.item.model,
-                                            serial: props.item.serial,
+                                            placa: placa,
+                                            pon: pon,
+                                            model: model,
+                                            serial: serial,
                                         }]);
                                     }}
                                 >
@@ -146,4 +150,5 @@ export function Form(props: FormProps){
                 </form>
             )
         }
+    }
 }
