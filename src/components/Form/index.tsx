@@ -1,27 +1,20 @@
-import React from "react";
+import { FormProps } from "../../interfaces/Form"
+
+import { InputContainer } from "../../globalStyles";
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-import { InputContainer } from "../../styles/global";
 
-export function Form({ 
-    handleSubmitWriteData, 
-    handlePppoeChange, 
-    handleContractNumberChange, 
-    isLoading, 
-    item, 
-    serialNumber, 
-    setDataOnu,
-    handlePppoePassChange,
-    handleWifiSSIDChange,
-    handleWifiPassChange }){
+export function Form(props: FormProps){
+    if (Array.isArray(props.item)) {
+        const [placa, pon, model, serial] = props.item;
 
-        if(item[2].includes('F670L') || item[2].includes('F6600') || item[2].includes('F680')){
+        if(model && (model.includes('F670L') || model.includes('F6600') || model.includes('F680'))){
             return(
-                <form onSubmit={handleSubmitWriteData} className="flex">
+                <form onSubmit={props.handleSubmitWriteData} className="flex">
                     <InputContainer>
                         <div className="text">
                             <p>Usuário PPPoE: </p>
@@ -30,7 +23,7 @@ export function Form({
                             <TextField  
                                 variant="standard" 
                                 required
-                                onChange={handlePppoeChange}>
+                                onChange={props.handlePppoeChange}>
                             </TextField>
                         </div>
                     </InputContainer>
@@ -42,7 +35,7 @@ export function Form({
                             <TextField 
                                 variant="standard" 
                                 required
-                                onChange={handlePppoePassChange}>
+                                onChange={props.handlePppoePassChange}>
                             </TextField>
                         </div>
                     </InputContainer>
@@ -54,7 +47,8 @@ export function Form({
                             <TextField
                                 variant="standard" 
                                 required
-                                onChange={handleContractNumberChange}>
+                                inputProps={{ inputMode: 'numeric' }}
+                                onChange={props.handleContractNumberChange}>
                             </TextField>
                         </div>
                     </InputContainer>
@@ -66,7 +60,7 @@ export function Form({
                             <TextField 
                                 variant="standard"
                                 required
-                                onChange={handleWifiSSIDChange}>
+                                onChange={props.handleWifiSSIDChange}>
                             </TextField>
                         </div>
                     </InputContainer>
@@ -78,12 +72,12 @@ export function Form({
                             <TextField 
                                 variant="standard"
                                 required
-                                onChange={handleWifiPassChange}>
+                                onChange={props.handleWifiPassChange}>
                             </TextField>
                         </div>
                     </InputContainer>
                     {
-                        (isLoading && item[3] === serialNumber ?
+                        (props.isLoading && serial === props.serialNumber ?
                             <CircularProgress className="MUI-CircularProgress" color="primary"/>
                         :
                             <div className="flex">
@@ -92,7 +86,12 @@ export function Form({
                                     variant="outlined" 
                                     endIcon={<AddOutlinedIcon />}
                                     onClick={() => {
-                                        setDataOnu([item[0], item[1], item[2], item[3]]);
+                                        props.setDataOnu([{
+                                            placa: placa,
+                                            pon: pon,
+                                            model: model,
+                                            serial: serial,
+                                        }]);
                                     }}
                                 >
                                     Provisionar
@@ -104,13 +103,13 @@ export function Form({
             )
         }else{
             return(
-                <form onSubmit={handleSubmitWriteData} className="flex">
+                <form onSubmit={props.handleSubmitWriteData} className="flex">
                     <InputContainer>
                         <div className="text">
                             <p>PPPoE do cliente: </p>
                         </div>
                         <div className="content">
-                            <TextField  variant="standard" onChange={handlePppoeChange}></TextField>
+                            <TextField  variant="standard" onChange={props.handlePppoeChange}></TextField>
                         </div>
                     </InputContainer>
                     <InputContainer>
@@ -121,21 +120,26 @@ export function Form({
                             <TextField 
                                 variant="standard" 
                                 inputProps={{ inputMode: 'numeric' }}
-                                onChange={handleContractNumberChange}>
+                                onChange={props.handleContractNumberChange}>
                             </TextField>
                         </div>
                     </InputContainer>
                     {
-                        (isLoading && item[3] === serialNumber ?
+                        (props.isLoading && serial === props.serialNumber ?
                             <CircularProgress className="MUI-CircularProgress" color="primary"/>
                         :
                             <div className="flex">
-                                <Button 
+                                <Button
                                     type="submit" 
                                     variant="outlined" 
                                     endIcon={<AddOutlinedIcon />}
                                     onClick={() => {
-                                        setDataOnu([item[0], item[1], item[2], item[3]]);
+                                        props.setDataOnu([{
+                                            placa: placa,
+                                            pon: pon,
+                                            model: model,
+                                            serial: serial,
+                                        }]);
                                     }}
                                 >
                                     Provisionar
@@ -146,5 +150,5 @@ export function Form({
                 </form>
             )
         }
-        
+    }
 }

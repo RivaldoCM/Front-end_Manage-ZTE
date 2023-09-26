@@ -5,10 +5,4 @@ export const Form = styled.form`
     max-width: 500px;
     flex-direction: column;
     margin-bottom: 20px;
-
-    .MUI-CircularProgress{
-        width: 30px !important;
-        height: 30px !important;
-    }
-
 `;

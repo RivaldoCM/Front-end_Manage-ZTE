@@ -1,4 +1,10 @@
-import { createGlobalStyle, styled } from "styled-components";
+import { createGlobalStyle } from "styled-components";
+import styled from "styled-components";
+import { HTMLAttributes, DetailedHTMLProps } from 'react';
+
+interface MyStyledComponentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+    center?: boolean;
+}
 
 export const GlobalStyle = createGlobalStyle`
     :root {
@@ -46,9 +52,14 @@ export const GlobalStyle = createGlobalStyle`
         justify-content: center;
         align-items: center;
     }
+
+    .MUI-CircularProgress{
+        width: 30px !important;
+        height: 30px !important;
+    }
 `
 
-export const InputContainer = styled.div`
+export const InputContainer = styled.div<MyStyledComponentProps>`
     /*
         ESSE ESTILO CONTROLA O TEXTO E O QUE SEJA INSERIDO PELO USUÁRIO,
         CARACTERISTICO POR: INFORMAÇÃO EM TEXTO SOBRE O QUE DEVE SER INSERIDO

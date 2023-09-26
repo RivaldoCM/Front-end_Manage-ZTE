@@ -1,12 +1,11 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { Provisionamento } from "./pages/Provisionamento";
 
-export function MainRoutes(){
+export function AppRoutes(){
     return (
         <Routes>
-            <Route  path="/" element={ <Provisionamento /> } />
+            <Route path="/" element={ <Provisionamento /> } />
         </Routes>
     )
-}
+};

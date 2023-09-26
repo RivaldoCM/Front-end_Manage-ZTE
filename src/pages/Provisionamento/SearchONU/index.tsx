@@ -1,69 +1,62 @@
 import React, { useState } from "react";
 import axios from 'axios';
 
+import { SearchONUProps } from "../../../interfaces/SearchONUProps";
+
+import { Form } from './style';
+import { InputContainer } from "../../../globalStyles";
+
 import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { InputContainer } from "../../../styles/global";
-import { Form } from "./style";
-
-export function SearchONU({ 
-    setCity, 
-    city, 
-    setDataFromApi, 
-    serialNumber, 
-    handleError, 
-    isLoading, 
-    startLoading, 
-    stopLoading, 
-    OltInfo,
-    setSerialNumber }){
-
+export function SearchONU(props: SearchONUProps) {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
-    const handleCityChange = (event) => { setCity(event.target.value); };
-    const handleMatchSerialNumberChange = (e) => { setMatchSerialNumber(e.target.value); };
+    const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { props.setCity(e.target.value); };
+    const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setSerialNumber(null);
+
+        props.setSerialNumber('');
         const verifyAlphaNumber = /^[a-zA-Z0-9_]+$/;
     
-        if(isLoading){
+        if(props.isLoading){
             const err = 'warning/has-action-in-progress';
-            handleError(err);
+            props.handleError(err);
         }else if(!verifyAlphaNumber.test(matchSerialNumber)){
-            handleError('info/non-expect-caracter-not-alphaNumeric');
+            props.handleError('info/non-expect-caracter-not-alphaNumeric');
         }else{
-            startLoading();
-            const oltData = OltInfo.find(option => option.label === city ? city : '');
-    
+            props.startLoading();
+            const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
+
             await axios.post('https://app.eterniaservicos.com.br/searchONU', {
                 ip: oltData.ip,
                 serialNumber: matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
             })
             .then(response => {
                 if(typeof(response.data) === 'string'){
-                    stopLoading();
-                    handleError(response.data);
+                    props.stopLoading();
+                    props.handleError(response.data);
                     //RETORNA ONU NAO ENCONTRADA
+                }else{
+                    props.stopLoading();
+                    props.setDataFromApi(response.data);
                 }
-                stopLoading();
-                setDataFromApi(response.data);
             })
             .catch(error => {
-                stopLoading();
-                handleError(error.code);
+                props.stopLoading();
+                props.handleError(error.code);
             });
         }
     }
 
-    return(
+    return (
         <Form onSubmit={handleSubmit} className="flex">
-            <InputContainer center={1}>
+            <InputContainer center={true}>
                 <div className="text">
                     <p>Selecione a cidade: </p>
                 </div>
@@ -72,10 +65,10 @@ export function SearchONU({
                         id='select-city'
                         select
                         label="Cidades"
-                        value={city}
+                        value={props.city}
                         onChange={handleCityChange}
                     >
-                        {OltInfo.map((option) => (
+                        {props.OltInfo.map((option) => (
                             <MenuItem key={option.id} value={option.label}>
                                 {option.label}
                             </MenuItem>
@@ -97,11 +90,11 @@ export function SearchONU({
                 </div>
             </InputContainer>
             {
-                (isLoading && serialNumber === null ? 
+                (props.isLoading && props.serialNumber?.length === 0? 
                     <CircularProgress className="MUI-CircularProgress" color="primary"/>
                 :
                     (matchSerialNumber.length < 4 ?
-                        <Button type="submit" disabled variant="outlined" endIcon={<SearchIcon />}>
+                        <Button disabled variant="outlined" endIcon={<SearchIcon />}>
                             Procurar ONU
                         </Button>
                     :
@@ -112,5 +105,5 @@ export function SearchONU({
                 )
             }
         </Form>
-    )
+    );
 }

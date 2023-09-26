@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { AlertColor } from "@mui/material";
+
 export function useError(){
+
+    type SeverityStatus = AlertColor;
+
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [severityStatus, setSeverityStatus] = useState('');
+    const [severityStatus, setSeverityStatus] = useState<SeverityStatus>();
 
     useEffect(() => {
         setTimeout(() => {
@@ -11,7 +16,7 @@ export function useError(){
         }, 5000);
     }, [error]);
     
-    const handleError = (err) => {
+    const handleError = (err: string) => {
         setError(true);
 
         switch(err){
