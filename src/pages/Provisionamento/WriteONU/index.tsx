@@ -100,7 +100,6 @@ export function WriteONU(props: WriteONUProps){
                 pppPass: pppoePass || null,
                 wifiSSID: wifiSSID || null,
                 wifiPass: wifiPass || null
-                
             })
             .then(response => {
                 props.stopLoading();

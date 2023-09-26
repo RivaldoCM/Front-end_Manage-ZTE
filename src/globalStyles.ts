@@ -52,6 +52,11 @@ export const GlobalStyle = createGlobalStyle`
         justify-content: center;
         align-items: center;
     }
+
+    .MUI-CircularProgress{
+        width: 30px !important;
+        height: 30px !important;
+    }
 `
 
 export const InputContainer = styled.div<MyStyledComponentProps>`
