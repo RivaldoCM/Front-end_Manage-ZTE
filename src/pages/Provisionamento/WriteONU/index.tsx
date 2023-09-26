@@ -119,7 +119,7 @@ export function WriteONU(props: WriteONUProps){
             {Array.isArray(props.dataFromApi) ? (
                 props.dataFromApi.map((item, index) => {
                     if (Array.isArray(item) && item.length === 4) {
-                        const [placa, pon, model, serial] = item;
+                        const [placa, pon, _model, serial] = item;
 
                         return (
                             <div key={index} className="onu-callback flex">

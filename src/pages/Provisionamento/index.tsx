@@ -133,7 +133,7 @@ export function Provisionamento(){
 
 	const [value, setValue] = useState(0); //MUI-Core
 
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => { //MUI-Core
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
         setValue(newValue);
     }; 
 
