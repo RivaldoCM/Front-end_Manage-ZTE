@@ -80,10 +80,12 @@ export function WriteONU(props: WriteONUProps){
             props.handleError('info/required-input');
         }else if(!isNumeric.test(contractNumber)){
             props.handleError('info/non-expect-caracter-NAN');
+        }else if(typePppoe.includes(dataOnuByName[2]) && !isAlphaNumeric.test(wifiSSID)){
+            props.handleError('info/wifi-ssid-did-not-match');
+        }else if(typePppoe.includes(dataOnuByName[2]) && !isAlphaNumeric.test(wifiPass)){
+            props.handleError('info/wifi-password-did-not-match');
         }else if(typePppoe.includes(dataOnuByName[2]) && wifiPass.length < 8){
             props.handleError('info/wrong-type-passoword');
-        }else if(typePppoe.includes(dataOnuByName[2]) && !isAlphaNumeric.test(wifiPass)){
-            props.handleError('info/wifi-did-not-match');
         }else{
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
