@@ -43,15 +43,16 @@ export function WriteONU(props: WriteONUProps){
     const handleSubmitWriteData = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const dataOnuByName = [];
+        setIsDropDownOpen(false);
 
         for (const objeto of dataOnu) {
             const { placa, pon, model, serial } = objeto;
-            dataOnuByName.push(placa, pon, model, serial)
+            dataOnuByName.push(placa, pon, model, serial);
         }
 
-        props.setSerialNumber(dataOnuByName[3])
+        props.setSerialNumber(dataOnuByName[3]);
         //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
-    
+
         const typeMapping = {
             'F670L': 'F670L',
             'F6600': 'F6600',
@@ -59,7 +60,7 @@ export function WriteONU(props: WriteONUProps){
             'F601': 'F601',
             'F612': 'F612'
         };
-        
+
         const isNumeric = /^[0-9]+$/;
         const isAlphaNumeric = /^[a-zA-Z0-9_]+$/;
         const typeBridge = ['F601', 'F612'];
@@ -67,8 +68,8 @@ export function WriteONU(props: WriteONUProps){
           
         for (const key in typeMapping) {
             if (dataOnuByName[2].includes(key)) {
-              dataOnuByName[2] = typeMapping[key as keyof typeof typeMapping];
-              break; // Para sair do loop após encontrar uma correspondência
+                dataOnuByName[2] = typeMapping[key as keyof typeof typeMapping];
+                break; // Para sair do loop após encontrar uma correspondência
             }
         }
 
@@ -104,9 +105,8 @@ export function WriteONU(props: WriteONUProps){
             .then(response => {
                 props.stopLoading();
                 props.handleError(response.data);
-                props.setDataFromApi(response.data);
+                props.setDataFromApi([]);
             })
-            
             .catch(error => {
                 props.stopLoading();
                 props.handleError(error.code);

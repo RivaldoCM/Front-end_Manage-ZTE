@@ -20,8 +20,9 @@ export function SearchONU(props: SearchONUProps) {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
+        props.setDataFromApi([]);
         props.setSerialNumber('');
+
         const verifyAlphaNumber = /^[a-zA-Z0-9_]+$/;
     
         if(props.isLoading){
@@ -39,15 +40,14 @@ export function SearchONU(props: SearchONUProps) {
             })
             .then(response => {
                 if(typeof(response.data) === 'string'){
-                    props.stopLoading();
                     props.handleError(response.data);
                     //RETORNA ONU NAO ENCONTRADA
-                }else{
-                    props.stopLoading();
-                    props.setDataFromApi(response.data);
                 }
+                props.stopLoading();
+                props.setDataFromApi(response.data);
             })
             .catch(error => {
+                //SÓ ENTRA AQUI SE A CONEXÃO CAIR NO MEIO DA EXECUÇÃO DE TAREFAS
                 props.stopLoading();
                 props.handleError(error.code);
             });
