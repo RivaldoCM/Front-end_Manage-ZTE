@@ -60,8 +60,12 @@ export function useError(){
                 setErrorMessage('A senha do wifi deve ter no minimo 8 caracteres.');
                 setSeverityStatus('info');
             break;
-            case 'info/wifi-did-not-match':
-                setErrorMessage('O unico caracter especial aceito é o underline.');
+            case 'info/wifi-ssid-did-not-match':
+                setErrorMessage('O único caracter especial permitido no nome do wifi é o underline(_).');
+                setSeverityStatus('info');
+            break;
+            case 'info/wifi-password-did-not-match':
+                setErrorMessage('Não são permitidos carcteres especiais na senha.');
                 setSeverityStatus('info');
             break;
             default:
