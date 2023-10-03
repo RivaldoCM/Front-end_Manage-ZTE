@@ -3,7 +3,7 @@ import axios from "axios";
 import { MANAGE_ONU_API_CONFIG } from "../apiConfig";
 import { propsApi } from "../../interfaces/api";
 
-export const verifyIfOnuExist = async (props: propsApi) => {
+export const verifyIfOnuExists = async (props: propsApi) => {
     props.startLoading();
     const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
 
