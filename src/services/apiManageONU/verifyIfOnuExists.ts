@@ -1,13 +1,14 @@
 import axios from "axios";
 
-import { MANAGE_ONU_API_CONFIG } from "../apiConfig";
 import { propsApi } from "../../interfaces/api";
+
+const API_BASE_URL = import.meta.env.VITE_BASEURL_MANAGE_ONU;
 
 export const verifyIfOnuExists = async (props: propsApi) => {
     props.startLoading();
     const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
 
-    await axios.post(`${MANAGE_ONU_API_CONFIG.baseURL}/searchONU`, {
+    await axios.post(`${API_BASE_URL}/searchONU`, {
         ip: oltData.ip,
         serialNumber: props.matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
     })
