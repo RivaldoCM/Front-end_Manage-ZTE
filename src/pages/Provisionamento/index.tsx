@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
@@ -185,6 +186,9 @@ export function Provisionamento(){
 					)
 				}
 			</div>
+            <div>
+                <Link to="/getClient">clique aq</Link>
+            </div>
         </Container>
     )
 }
