@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export function getToken(){
-    return new Promise( async (resolve, reject) => {
+    return new Promise( async (resolve, _reject) => {
         await axios.post(`${import.meta.env.VITE_BASEURL_TP}:4500/connect/token`, {
             grant_type: 'client_credentials',
             scope: 'syngw',
