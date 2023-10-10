@@ -1,13 +1,19 @@
 import { BrowserRouter } from "react-router-dom";
 
+import { ChakraProvider } from '@chakra-ui/react'
+
+
 import { AppRoutes } from "./routes";
 import { GlobalStyle } from "./globalStyles";
 
 export function App() {
     return (
-        <BrowserRouter>
-            <AppRoutes />
-            <GlobalStyle />
-        </BrowserRouter>
+        <ChakraProvider>
+            <BrowserRouter>
+                <AppRoutes />
+                <GlobalStyle />
+            </BrowserRouter>
+        </ChakraProvider>
+
     );
 }
