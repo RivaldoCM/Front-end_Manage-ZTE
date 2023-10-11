@@ -63,8 +63,9 @@ function a11yProps(index: number) {
 export function Login() {
 
     const [value, setValue] = React.useState(0);
-    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {setValue(newValue);};
     const [showPassword, setShowPassword] = React.useState(false);
+    
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {setValue(newValue);};
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault();};
   
@@ -79,9 +80,9 @@ export function Login() {
             <CustomTabPanel value={value} index={0}>
                 <form className='flex'>
                     <FormControl>
-                        <InputLabel htmlFor="outlined-adornment-password">E-mail</InputLabel>
+                        <InputLabel htmlFor="outlined-adornment-email">E-mail</InputLabel>
                         <OutlinedInput
-                            id="outlined-adornment-password"
+                            id="outlined-adornment-email"
                             placeholder='Digite seu E-mail'
                             type='text'
                             startAdornment={
@@ -93,7 +94,7 @@ export function Login() {
                             }
                             endAdornment={
                                 <InputAdornment position="end">
-                                    <div>@acesse.net.br</div>
+                                    <p>@acesse.net.br</p>
                                 </InputAdornment>
                             }
                             label="E-mail"
@@ -135,9 +136,9 @@ export function Login() {
             <CustomTabPanel value={value} index={1}>
                 <form className='flex'>
                     <FormControl>
-                        <InputLabel htmlFor="outlined-adornment-password">Usuário</InputLabel>
+                        <InputLabel htmlFor="outlined-adornment-user">Usuário</InputLabel>
                         <OutlinedInput
-                            id="outlined-adornment-password"
+                            id="outlined-adornment-user"
                             placeholder='Digite seu nome'
                             startAdornment={
                                 <InputAdornment position="end">
