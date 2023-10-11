@@ -7,7 +7,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-
 export function Form(props: FormProps){
     if (Array.isArray(props.item)) {
         const [placa, pon, model, serial] = props.item;

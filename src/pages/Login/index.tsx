@@ -1,65 +1,154 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
-import {
-    Box,
-    FormControl,
-    Input,
-    Button,
-    InputGroup,
-    InputRightAddon,
-    InputRightElement
-} from '@chakra-ui/react'
-
-import { FiEye } from "react-icons/fi";
-import { FiEyeOff } from "react-icons/fi";
-
 import { Container } from './style';
+
+
+import FormControl from '@mui/material/FormControl';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import IconButton from '@mui/material/IconButton';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import Button from '@mui/material/Button';
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
+import Divider from '@mui/material/Divider';
+
+interface TabPanelProps {
+    className?: string
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
+
+function CustomTabPanel(props: TabPanelProps) {
+	const { className, children, value, index, ...other } = props;
+
+	return (
+		<div
+            className={className}
+			role="tabpanel"
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			{...other}
+		>
+			{value === index && (
+			<Box sx={{ p: 3 }}>
+				<Typography component='span'>{children}</Typography>
+			</Box>
+			)}
+		</div>
+	);
+}
+
+CustomTabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+  
+function a11yProps(index: number) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+
 
 export function Login() {
 
-    const [show, setShow] = React.useState(false);
-    const handleClick = () => setShow(!show);
+    const [value, setValue] = React.useState(0);
 
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+      setValue(newValue);
+    };
 
-    const {
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm();
+    const [showPassword, setShowPassword] = React.useState(false);
 
-    function onSubmit() {
-
-    }
-
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+  
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+    };
+  
     return (
         <Container className='flex'>
-            <Box>
-                <form onSubmit={handleSubmit(onSubmit)}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tab label="Login" {...a11yProps(0)} />
+                <Tab label="Registrar" {...a11yProps(1)} />
+            </Tabs>
+            </Box>
+            <CustomTabPanel value={value} index={0}>
+                <form className='flex'>
                     <FormControl>
-                        <InputGroup size='lg' my={4}>
-                            <Input placeholder='Meu e-mail' />
-                            <InputRightAddon children='@acesse.net.br' />
-                        </InputGroup>
-                        <InputGroup size='lg'>
-                            <Input
-                                pr='4.5rem'
-                                type={show ? 'text' : 'password'}
-                                placeholder='Minha senha'
-                            />
-                            <InputRightElement width='4.5rem'>
-                                <Button h='1.75rem' size='sm' onClick={handleClick}>
-                                {show ? <FiEyeOff /> : <FiEye />}
-                                </Button>
-                            </InputRightElement>
-                            </InputGroup>
+                        <InputLabel htmlFor="outlined-adornment-password">E-mail</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-password"
+                            placeholder='Digite seu E-mail'
+                            type='text'
+                            startAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton edge="start">
+                                        <MailOutlineIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <div>@acesse.net.br</div>
+                                </InputAdornment>
+                            }
+                            label="E-mail"
+                        />
                     </FormControl>
-                    <Button mt={4} colorScheme='teal' isLoading={isSubmitting} type='submit'>
-                        Submit
+                    <FormControl>
+                        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-password"
+                            placeholder='Digite sua senha'
+                            type={showPassword ? 'text' : 'password'}
+                            startAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton edge="start">
+                                        <LockOpenIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            label="Password"
+                        />
+                    </FormControl>
+                    <Button variant="contained" size="large">
+                        Entrar
                     </Button>
                 </form>
-            </Box>
-            
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+                {/*tela de register*/}
+            </CustomTabPanel>
+
         </Container>
-        
     )
 }

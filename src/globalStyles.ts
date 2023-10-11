@@ -20,7 +20,7 @@ export const GlobalStyle = createGlobalStyle`
         list-style-type: none;
     }
     html {
-        font-size: 18px;
+        font-size: 17px;
 
         @media screen {
             @media (max-width: 1000px){

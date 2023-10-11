@@ -5,9 +5,9 @@ export const Container = styled.div`
 
     form{
         display: grid;
-        gap: .5rem;
-        max-width: 400px;
-        height: 400px;
+        gap: 2rem;
+        max-width: 500px;
+        padding: 1rem;
         box-shadow: 1px solid black;
     }
 `;
