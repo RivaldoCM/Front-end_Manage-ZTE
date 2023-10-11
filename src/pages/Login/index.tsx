@@ -1,8 +1,6 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
 
 import { Container } from './style';
-
 
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
@@ -19,11 +17,10 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
-import Divider from '@mui/material/Divider';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 interface TabPanelProps {
-    className?: string
+    className?: string;
     children?: React.ReactNode;
     index: number;
     value: number;
@@ -63,31 +60,21 @@ function a11yProps(index: number) {
     };
 }
 
-
-
 export function Login() {
 
     const [value, setValue] = React.useState(0);
-
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-      setValue(newValue);
-    };
-
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => {setValue(newValue);};
     const [showPassword, setShowPassword] = React.useState(false);
-
     const handleClickShowPassword = () => setShowPassword((show) => !show);
-  
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
-    };
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault();};
   
     return (
         <Container className='flex'>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                <Tab label="Login" {...a11yProps(0)} />
-                <Tab label="Registrar" {...a11yProps(1)} />
-            </Tabs>
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                    <Tab label="Login" {...a11yProps(0)} />
+                    <Tab label="Registrar" {...a11yProps(1)} />
+                </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
                 <form className='flex'>
@@ -146,9 +133,76 @@ export function Login() {
                 </form>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                {/*tela de register*/}
+                <form className='flex'>
+                    <FormControl>
+                        <InputLabel htmlFor="outlined-adornment-password">Usuário</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-password"
+                            placeholder='Digite seu nome'
+                            startAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton edge="start">
+                                        <PersonOutlinedIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            }   
+                            label="Usuário"
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <InputLabel htmlFor="outlined-adornment-password">E-mail</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-password"
+                            placeholder='Digite seu E-mail'
+                            type='text'
+                            startAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton edge="start">
+                                        <MailOutlineIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <div>@acesse.net.br</div>
+                                </InputAdornment>
+                            }
+                            label="E-mail"
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-password"
+                            placeholder='Digite sua senha'
+                            type={showPassword ? 'text' : 'password'}
+                            startAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton edge="start">
+                                        <LockOpenIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            label="Password"
+                        />
+                    </FormControl>
+                    <Button variant="contained" size="large">
+                        Registrar
+                    </Button>
+                </form>
             </CustomTabPanel>
-
         </Container>
     )
 }
