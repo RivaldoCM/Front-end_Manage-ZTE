@@ -6,8 +6,9 @@ import { MenuDrawer } from "./pages/Menu";
 export function AppRoutes(){
     return (
         <Routes>
-            <Route path="/" element={ <Provisionamento /> } />
-            <Route path="menu" element={ <MenuDrawer /> } />
+            <Route path="/menu" element={ <MenuDrawer /> }>
+                <Route path="Provisionamento" element={ <Provisionamento /> } />
+            </Route >
         </Routes>
     )
 };

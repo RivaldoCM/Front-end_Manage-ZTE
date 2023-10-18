@@ -1,4 +1,5 @@
 import _React, { useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -21,82 +22,82 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
 
-import { Provisionamento } from '../Provisionamento';
-
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
-  width: drawerWidth,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: 'hidden',
+	width: drawerWidth,
+	transition: theme.transitions.create('width', {
+		easing: theme.transitions.easing.sharp,
+		duration: theme.transitions.duration.enteringScreen,
+	}),
+	overflowX: 'hidden',
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
+	transition: theme.transitions.create('width', {
+		easing: theme.transitions.easing.sharp,
+		duration: theme.transitions.duration.leavingScreen,
+	}),
+	overflowX: 'hidden',
+	width: `calc(${theme.spacing(7)} + 1px)`,
+	[theme.breakpoints.up('sm')]: {
+		width: `calc(${theme.spacing(8)} + 1px)`,
+	},
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'flex-end',
+	padding: theme.spacing(0, 1),
+	// necessary for content to be below app bar
+	...theme.mixins.toolbar,
 }));
 
 interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
+  	open?: boolean;
 }
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
+	shouldForwardProp: (prop) => prop !== 'open',
+	})<AppBarProps>(({ theme, open }) => ({
+		zIndex: theme.zIndex.drawer + 1,
+		transition: theme.transitions.create(['width', 'margin'], {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.leavingScreen,
+		}),
+		...(open && {
+			marginLeft: drawerWidth,
+			width: `calc(100% - ${drawerWidth}px)`,
+			transition: theme.transitions.create(['width', 'margin'], {
+				easing: theme.transitions.easing.sharp,
+				duration: theme.transitions.duration.enteringScreen,
+		}),
+	}),
 }));
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
-  }),
+		width: drawerWidth,
+		flexShrink: 0,
+		whiteSpace: 'nowrap',
+		boxSizing: 'border-box',
+		...(open && {
+			...openedMixin(theme),
+			'& .MuiDrawer-paper': openedMixin(theme),
+		}),
+		...(!open && {
+			...closedMixin(theme),
+			'& .MuiDrawer-paper': closedMixin(theme),
+		}),
+	}),
 );
 
 export function MenuDrawer() {
 	const theme = useTheme();
 	const [open, setOpen] = useState(false);
+
+	const navigate = useNavigate();
 
 	const [ currentPage, setCurrentPage ] = useState('Provisionamento');
 
@@ -108,28 +109,23 @@ export function MenuDrawer() {
 		setOpen(false);
 	};
 
-	const handlePage = () => {
-		switch (currentPage) {
-		case 'Provisionamento':
-			return <Provisionamento />
-		default:
-			return null;
-		}
+	const redirectToRoute = (text: string) => {
+		navigate(`/menu/${text}`);
+	}
+
+	const handleListItemClick = (text: string) => {
+		setCurrentPage(text);
+		redirectToRoute(text);
 	};
 
-	var teste = ['Provisionamento', 'teste']
-
-	const handleIconMenu = () => {
-		teste.map((index) =>{
-			switch (index) {
-				case 'Provisionamento':
-					return <MiscellaneousServicesOutlinedIcon />
-				case "teste":
-					return <MailIcon />
-				default:
-					return null;
-			}
-		})
+	const handleIconMenu: any = (text: string) => {
+		if(text == "Provisionamento"){
+			return <MiscellaneousServicesOutlinedIcon />
+		}else if(text =="teste"){
+			return <InboxIcon />
+		}else if(text =="inbox"){
+			return <MailIcon />
+		}
 	}
 
 	return (
@@ -162,24 +158,26 @@ export function MenuDrawer() {
 				</DrawerHeader>
 				<Divider />
 				<List>
-					{['Provisionamento', 'teste'].map((text, index) => (
+					{['Provisionamento', 'teste', 'inbox'].map((text, _index) => (
 						<ListItem key={text} disablePadding sx={{ display: 'block' }}>
 							<ListItemButton
-								onClick={() => setCurrentPage(text)}
+								onClick={() => {
+									handleListItemClick(text)
+								}}
 								sx={{
-								minHeight: 48,
-								justifyContent: open ? 'initial' : 'center',
-								px: 2.5,
+									minHeight: 48,
+									justifyContent: open ? 'initial' : 'center',
+									px: 2.5,
 								}}
 							>
 								<ListItemIcon
-								sx={{
-									minWidth: 0,
-									mr: open ? 3 : 'auto',
-									justifyContent: 'center',
-								}}
+									sx={{
+										minWidth: 0,
+										mr: open ? 3 : 'auto',
+										justifyContent: 'center',
+									}}
 								>
-								{handleIconMenu()}
+									{handleIconMenu(text)}
 								</ListItemIcon>
 								<ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
 							</ListItemButton>
@@ -188,7 +186,7 @@ export function MenuDrawer() {
 				</List>
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, mt: 10 }}>
-				{handlePage()}
+				<Outlet />
 			</Box>
 		</Box>
 	);
