@@ -18,8 +18,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
 
 const drawerWidth = 240;
@@ -94,26 +92,19 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export function MenuDrawer() {
+	const navigate = useNavigate();
+
 	const theme = useTheme();
 	const [open, setOpen] = useState(false);
 
-	const navigate = useNavigate();
-
 	const [ currentPage, setCurrentPage ] = useState('Provisionamento');
 
-	const handleDrawerOpen = () => {
-		setOpen(true);
-	};
+	const handleDrawerOpen = () => { setOpen(true);	};
+	const handleDrawerClose = () => { setOpen(false); };
 
-	const handleDrawerClose = () => {
-		setOpen(false);
-	};
+	const redirectToRoute = (text: string) => {	navigate(`/${text.toLocaleLowerCase()}`); }
 
-	const redirectToRoute = (text: string) => {
-		navigate(`/menu/${text}`);
-	}
-
-	const handleListItemClick = (text: string) => {
+	const handlePageChange = (text: string) => {
 		setCurrentPage(text);
 		redirectToRoute(text);
 	};
@@ -121,12 +112,8 @@ export function MenuDrawer() {
 	const handleIconMenu: any = (text: string) => {
 		if(text == "Provisionamento"){
 			return <MiscellaneousServicesOutlinedIcon />
-		}else if(text =="teste"){
-			return <InboxIcon />
-		}else if(text =="inbox"){
-			return <MailIcon />
 		}
-	}
+	};
 
 	return (
 		<Box sx={{ display: 'flex' }}>
@@ -139,8 +126,8 @@ export function MenuDrawer() {
 						onClick={handleDrawerOpen}
 						edge="start"
 						sx={{
-						marginRight: 5,
-						...(open && { display: 'none' }),
+							marginRight: 5,
+							...(open && { display: 'none' }),
 						}}
 					>
 						<MenuIcon />
@@ -158,12 +145,10 @@ export function MenuDrawer() {
 				</DrawerHeader>
 				<Divider />
 				<List>
-					{['Provisionamento', 'teste', 'inbox'].map((text, _index) => (
+					{['Provisionamento',].map((text, _index) => (
 						<ListItem key={text} disablePadding sx={{ display: 'block' }}>
 							<ListItemButton
-								onClick={() => {
-									handleListItemClick(text)
-								}}
+								onClick={() => { handlePageChange(text); }}
 								sx={{
 									minHeight: 48,
 									justifyContent: open ? 'initial' : 'center',
