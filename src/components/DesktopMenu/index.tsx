@@ -110,9 +110,13 @@ export function MenuDrawer() {
 	};
 
 	const handleIconMenu: any = (text: string) => {
-		if(text == "Provisionamento"){
-			return <MiscellaneousServicesOutlinedIcon />
-		}
+
+        switch(text){
+            case 'Provisionamento':
+                return <MiscellaneousServicesOutlinedIcon />;
+            default:
+                return <></>;
+        }
 	};
 
 	return (
