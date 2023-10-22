@@ -68,6 +68,7 @@ export function SignIn() {
                     label="Password"
                 />
             </FormControl>
+            <Button variant='text' size='small'>Esqueceu sua senha?</Button>
             <Button variant="contained" size="large">
                 Entrar
             </Button>
