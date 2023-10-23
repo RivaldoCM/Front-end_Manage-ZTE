@@ -68,7 +68,7 @@ export const InputContainer = styled.div<MyStyledComponentProps>`
     
     display: flex;
     justify-content: flex-start;
-    width: 80%;
+    width: 100%;
     margin: 1rem 0;
 
     @media (max-width: 450px){
