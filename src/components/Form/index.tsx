@@ -7,9 +7,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+
+
 export function Form(props: FormProps){
     if (Array.isArray(props.item)) {
-        const [placa, pon, model, serial] = props.item;
+        const { placa, pon, model, serial } = props.item;
 
         if(model && (model.includes('F670L') || model.includes('F6600') || model.includes('F680'))){
             return(

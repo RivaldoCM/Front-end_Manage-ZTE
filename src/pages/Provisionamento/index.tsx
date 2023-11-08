@@ -123,13 +123,20 @@ const OltInfo: OltInfoItem[] = [
     },
 ];
 
+type IDataFromApi = {
+    placa: number,
+    pon: number,
+    model: string,
+    serial: string
+}
+
 export function Provisionamento(){
 
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
     const [city, setCity] = useState('Natividade');
-	const [dataFromApi, setDataFromApi] = useState<any[]>([]);
+	const [dataFromApi, setDataFromApi] = useState<IDataFromApi[]>([]);
 	const [serialNumber, setSerialNumber] = useState('');
 
 	const [value, setValue] = useState(0); //MUI-Core

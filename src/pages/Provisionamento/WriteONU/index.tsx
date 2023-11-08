@@ -159,6 +159,7 @@ export function WriteONU(props: WriteONUProps){
                                     </Accordion>
                                 </div>
                             </div>
+                            
                         );
                     } else {
                         // Lida com o caso em que o item não corresponde ao esperado
@@ -169,5 +170,6 @@ export function WriteONU(props: WriteONUProps){
                 null
             )}
         </Container>
+        
     );
 }
