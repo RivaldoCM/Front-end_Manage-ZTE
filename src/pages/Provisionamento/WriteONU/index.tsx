@@ -65,7 +65,7 @@ export function WriteONU(props: WriteONUProps){
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
 
-            await axios.post('http://localhost:4000/writeONU', {
+            await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
                 ip: oltData.ip,
                 slot: dataOnu[0].placa,
                 pon: dataOnu[0].pon,

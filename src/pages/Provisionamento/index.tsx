@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
 
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
 
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
-
 import { OltInfoItem } from "../../interfaces/OltInfoItem";
 
 import { Container } from './style';
-
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -193,9 +190,6 @@ export function Provisionamento(){
 					)
 				}
 			</div>
-            <div>
-                <Link to="/getClient">clique aq</Link>
-            </div>
         </Container>
     )
 }
