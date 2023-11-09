@@ -1,19 +1,19 @@
-import { FormProps } from "../../interfaces/Form"
+import { FormProps } from "../../interfaces/Form";
+
+import { cleanUpModelName, typePppoeZte } from "../../config/tipsOlts";
 
 import { InputContainer } from "../../globalStyles";
-
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-
-
 export function Form(props: FormProps){
     if (Array.isArray(props.item)) {
-        const { placa, pon, model, serial } = props.item;
+        const [ placa, pon, modelOnu, serial ] = props.item;
+        const model = cleanUpModelName(modelOnu);
 
-        if(model && (model.includes('F670L') || model.includes('F6600') || model.includes('F680'))){
+        if(model && typePppoeZte.includes(model)){
             return(
                 <form onSubmit={props.handleSubmitWriteData} className="flex">
                     <InputContainer>

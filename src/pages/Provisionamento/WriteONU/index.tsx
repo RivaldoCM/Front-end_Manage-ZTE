@@ -1,12 +1,12 @@
-import React, { useState } from "react";
 import axios from 'axios';
+import React, { useState } from "react";
 
+import { isNumeric, isAlphaNumeric } from '../../../config/regex';
+import { typeBridgeZte, typePppoeZte } from '../../../config/tipsOlts';
+import { Form } from "../../../components/Form";
 import { WriteONUProps } from "../../../interfaces/WriteONUProps";
 
-import { Form } from "../../../components/Form";
-
 import { Container } from './style';
-
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -46,41 +46,20 @@ export function WriteONU(props: WriteONUProps){
 
         //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
         props.setSerialNumber(dataOnu[0].serial);
-
-        const typeMapping = {
-            'F670L': 'F670L',
-            'F6600': 'F6600',
-            'F6600P': 'F6600P',
-            'F680': 'F680',
-            'F601': 'F601',
-            'F612': 'F612'
-        };
-
-        const isNumeric = /^[0-9]+$/;
-        const isAlphaNumeric = /^[a-zA-Z0-9_]+$/;
-        const typeBridge = ['F601', 'F612'];
-        const typePppoe = ['F680', 'F6600', 'F670L', 'F6600P'];
         
-        for (const key in typeMapping) {
-            if (dataOnu[0].model.includes(key)) {
-                dataOnu[0].model = typeMapping[key as keyof typeof typeMapping];
-                break;
-            }
-        }
-
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
             props.handleError(err);
-        }else if(typeBridge.includes((dataOnu[0].model)) && contractNumber.length === 0 ||
-        (typeBridge.includes(dataOnu[0].model) && pppoe.length === 0)){
+        }else if(typeBridgeZte.includes((dataOnu[0].model)) && contractNumber.length === 0 ||
+        (typeBridgeZte.includes(dataOnu[0].model) && pppoe.length === 0)){
             props.handleError('info/required-input');
-        }else if(!isNumeric.test(contractNumber)){
+        }else if(!contractNumber.match(isNumeric)){
             props.handleError('info/non-expect-caracter-NAN');
-        }else if(typePppoe.includes(dataOnu[0].model) && !isAlphaNumeric.test(wifiSSID)){
+        }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiSSID.match(isAlphaNumeric)){
             props.handleError('info/wifi-ssid-did-not-match');
-        }else if(typePppoe.includes(dataOnu[0].model) && !isAlphaNumeric.test(wifiPass)){
+        }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiPass.match(isAlphaNumeric)){
             props.handleError('info/wifi-password-did-not-match');
-        }else if(typePppoe.includes(dataOnu[0].model) && wifiPass.length < 8){
+        }else if(typePppoeZte.includes(dataOnu[0].model) && wifiPass.length < 8){
             props.handleError('info/wrong-type-passoword');
         }else{
             props.startLoading();
