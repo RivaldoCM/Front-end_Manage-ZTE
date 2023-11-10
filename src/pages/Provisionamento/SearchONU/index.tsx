@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import axios from 'axios';
 
 import { SearchONUProps } from "../../../interfaces/SearchONUProps";
+import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
 
 import { Form } from './style';
 import { InputContainer } from "../../../globalStyles";
-
 import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
@@ -31,26 +30,7 @@ export function SearchONU(props: SearchONUProps) {
         }else if(!verifyAlphaNumber.test(matchSerialNumber)){
             props.handleError('info/non-expect-caracter-not-alphaNumeric');
         }else{
-            props.startLoading();
-            const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
-
-            await axios.post('https://app.eterniaservicos.com.br/searchONU', {
-                ip: oltData.ip,
-                serialNumber: matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
-            })
-            .then(response => {
-                if(typeof(response.data) === 'string'){
-                    props.handleError(response.data);
-                    //RETORNA ONU NAO ENCONTRADA
-                }
-                props.stopLoading();
-                props.setDataFromApi(response.data);
-            })
-            .catch(error => {
-                //SÓ ENTRA AQUI SE A CONEXÃO CAIR NO MEIO DA EXECUÇÃO DE TAREFAS
-                props.stopLoading();
-                props.handleError(error.code);
-            });
+            verifyIfOnuExists({...props, matchSerialNumber});
         }
     }
 

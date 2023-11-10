@@ -3,8 +3,8 @@ import { OltInfoItem } from "./OltInfoItem";
 export interface WriteONUProps {
     city: string;
     dataFromApi: Array<{
-        placa: string,
-        pon: string,
+        placa: number,
+        pon: number,
         model: string,
         serial: string
     }>;

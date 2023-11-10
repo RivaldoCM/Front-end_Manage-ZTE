@@ -1,12 +1,12 @@
-import React, { useState } from "react";
 import axios from 'axios';
+import React, { useState } from "react";
 
+import { isNumeric, isAlphaNumeric } from '../../../config/regex';
+import { typeBridgeZte, typePppoeZte } from '../../../config/tipsOlts';
+import { Form } from "../../../components/Form";
 import { WriteONUProps } from "../../../interfaces/WriteONUProps";
 
-import { Form } from "../../../components/Form";
-
 import { Container } from './style';
-
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -21,7 +21,7 @@ export function WriteONU(props: WriteONUProps){
 	const [wifiSSID, setWifiSSID] = useState('');
 	const [wifiPass, setWifiPass] = useState('');
 
-    const [dataOnu, setDataOnu] = useState<{ placa: string; pon: string; model: string; serial: string; }[]>([]);
+    const [dataOnu, setDataOnu] = useState<{ placa: number; pon: number; model: string; serial: string; }[]>([]);
 
 	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
@@ -42,62 +42,36 @@ export function WriteONU(props: WriteONUProps){
     
     const handleSubmitWriteData = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const dataOnuByName = [];
         setIsDropDownOpen(false);
 
-        for (const objeto of dataOnu) {
-            const { placa, pon, model, serial } = objeto;
-            dataOnuByName.push(placa, pon, model, serial);
-        }
-
-        props.setSerialNumber(dataOnuByName[3]);
         //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
-
-        const typeMapping = {
-            'F670L': 'F670L',
-            'F6600': 'F6600',
-            'F680': 'F680',
-            'F601': 'F601',
-            'F612': 'F612'
-        };
-
-        const isNumeric = /^[0-9]+$/;
-        const isAlphaNumeric = /^[a-zA-Z0-9_]+$/;
-        const typeBridge = ['F601', 'F612'];
-        const typePppoe = ['F680', 'F6600', 'F670L'];
-          
-        for (const key in typeMapping) {
-            if (dataOnuByName[2].includes(key)) {
-                dataOnuByName[2] = typeMapping[key as keyof typeof typeMapping];
-                break; // Para sair do loop após encontrar uma correspondência
-            }
-        }
-
+        props.setSerialNumber(dataOnu[0].serial);
+        
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
             props.handleError(err);
-        }else if(typeBridge.includes((dataOnuByName[2])) && contractNumber.length === 0 ||
-        (typeBridge.includes(dataOnuByName[2]) && pppoe.length === 0)){
+        }else if(typeBridgeZte.includes((dataOnu[0].model)) && contractNumber.length === 0 ||
+        (typeBridgeZte.includes(dataOnu[0].model) && pppoe.length === 0)){
             props.handleError('info/required-input');
-        }else if(!isNumeric.test(contractNumber)){
+        }else if(!contractNumber.match(isNumeric)){
             props.handleError('info/non-expect-caracter-NAN');
-        }else if(typePppoe.includes(dataOnuByName[2]) && !isAlphaNumeric.test(wifiSSID)){
+        }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiSSID.match(isAlphaNumeric)){
             props.handleError('info/wifi-ssid-did-not-match');
-        }else if(typePppoe.includes(dataOnuByName[2]) && !isAlphaNumeric.test(wifiPass)){
+        }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiPass.match(isAlphaNumeric)){
             props.handleError('info/wifi-password-did-not-match');
-        }else if(typePppoe.includes(dataOnuByName[2]) && wifiPass.length < 8){
+        }else if(typePppoeZte.includes(dataOnu[0].model) && wifiPass.length < 8){
             props.handleError('info/wrong-type-passoword');
         }else{
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
 
-            await axios.post('https://app.eterniaservicos.com.br/writeONU', {
+            await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
                 ip: oltData.ip,
-                slot: dataOnuByName[0],
-                pon: dataOnuByName[1],
+                slot: dataOnu[0].placa,
+                pon: dataOnu[0].pon,
                 isPizzaBox: oltData.isPizzaBox,
-                serialNumber: dataOnuByName[3],
-                type: dataOnuByName[2],
+                serialNumber: dataOnu[0].serial,
+                type: dataOnu[0].model,
                 contract: contractNumber,
                 pppoeUser: pppoe.toLowerCase(),
                 pppPass: pppoePass || null,
@@ -137,13 +111,13 @@ export function WriteONU(props: WriteONUProps){
                                 <div className="write-onu-controller flex">
                                     <Accordion className="dropdown-box flex">
                                         <AccordionSummary
-                                        className="dropdown-header"
-                                        expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                        onClick={(e) => {
-                                            handleDropDownArrow(e, index);
-                                        }}
+                                            className="dropdown-header"
+                                            expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header"
+                                            onClick={(e) => {
+                                                handleDropDownArrow(e, index);
+                                            }}
                                         >
                                             <Typography>Provisione aqui</Typography>
                                         </AccordionSummary>
@@ -164,6 +138,7 @@ export function WriteONU(props: WriteONUProps){
                                     </Accordion>
                                 </div>
                             </div>
+                            
                         );
                     } else {
                         // Lida com o caso em que o item não corresponde ao esperado
@@ -174,5 +149,6 @@ export function WriteONU(props: WriteONUProps){
                 null
             )}
         </Container>
+        
     );
 }
