@@ -1,15 +1,15 @@
 import axios from "axios";
 
-export async function getConnectionId(peopleId: any, pppoe: string){
+export async function getConnectionId(peopleId: any, pppoe: string): Promise<any>{
+    let connectionId;
 
-    await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/searchONU`, {
+    await axios.post(`http://localhost:4000/getConnectionId`, {
         peopleId: peopleId,
         pppoe: pppoe
     })
     .then(response => {
-        return response;
+        connectionId = response.data;
     })
-    .catch(error => {
 
-    });
+    return connectionId;
 }

@@ -3,9 +3,12 @@ import React, { useState } from "react";
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
 
+
+import { OltInfoItem } from "../../interfaces/OltInfoItem";
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
-import { OltInfoItem } from "../../interfaces/OltInfoItem";
+import { getPeopleId } from "../../services/apiVoalle/getPeopleId";
+import { getConnectionId } from "../../services/apiManageONU/getConnectionId";
 
 import { Container } from './style';
 import PropTypes from 'prop-types';
@@ -142,6 +145,14 @@ export function Provisionamento(){
         setValue(newValue);
     };
 
+    const  handleToken = async () => {
+        const peopleID = await getPeopleId('12748829662');
+
+        const teste = await getConnectionId(peopleID, 'rivaldo_testes')
+    
+        console.log(teste)
+    }
+
     return(
         <Container>
             <div className="input-content">
@@ -190,6 +201,9 @@ export function Provisionamento(){
 					)
 				}
 			</div>
+            <button
+                onClick={() => handleToken()}
+            >clique aqui para gerar o token</button>
         </Container>
     )
 }

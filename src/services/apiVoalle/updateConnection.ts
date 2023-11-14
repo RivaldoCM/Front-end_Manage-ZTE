@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function updateConnection(slot: number, pon: number, serialNumber: string, wifiSSID: string, wifiPass: string, connectionId: string){
+export async function updateConnection(slot: number, pon: number, serialNumber: string, wifiSSID: string, wifiPass: string, connectionId: any ){
 
     await axios({
         headers: {

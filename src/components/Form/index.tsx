@@ -48,7 +48,7 @@ export function Form(props: FormProps){
                             <TextField
                                 variant="standard" 
                                 required
-                                onChange={props.handleContractNumberChange}>
+                                onChange={props.handleCpfChange}>
                             </TextField>
                         </div>
                     </InputContainer>
@@ -119,7 +119,7 @@ export function Form(props: FormProps){
                         <div className="content">
                             <TextField 
                                 variant="standard" 
-                                onChange={props.handleContractNumberChange}>
+                                onChange={props.handleCpfChange}>
                             </TextField>
                         </div>
                     </InputContainer>

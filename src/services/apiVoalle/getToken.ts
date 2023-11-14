@@ -1,6 +1,8 @@
 import axios from "axios"
 
 export async function getToken(){
+    let token;
+
     await axios({
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -14,5 +16,9 @@ export async function getToken(){
             'client_secret': import.meta.env.VITE_CLIENTSECRET_TP, 
             'syndata': import.meta.env.VITE_VERIFYTOKEN_TP
         }
-    }).then((response) =>{ console.log(JSON.stringify(response.data)) })
+    }).then((response) =>{ 
+        token = response.data.access_token;
+    })
+
+    return token;
 }

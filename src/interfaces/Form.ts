@@ -1,7 +1,7 @@
 export interface FormProps {
     handleSubmitWriteData: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
     handlePppoeChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-    handleContractNumberChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+    handleCpfChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
     isLoading: boolean;
     item: {
         placa: number;

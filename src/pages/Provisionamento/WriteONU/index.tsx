@@ -1,10 +1,13 @@
 import axios from 'axios';
 import React, { useState } from "react";
 
-import { isNumeric, isAlphaNumeric } from '../../../config/regex';
-import { typeBridgeZte, typePppoeZte } from '../../../config/tipsOlts';
 import { Form } from "../../../components/Form";
 import { WriteONUProps } from "../../../interfaces/WriteONUProps";
+import { isNumeric, isAlphaNumeric } from '../../../config/regex';
+import { typeBridgeZte, typePppoeZte } from '../../../config/tipsOlts';
+import { getPeopleId } from '../../../services/apiVoalle/getPeopleId';
+import { getConnectionId } from '../../../services/apiManageONU/getConnectionId';
+import { updateConnection } from '../../../services/apiVoalle/updateConnection';
 
 import { Container } from './style';
 import Accordion from '@mui/material/Accordion';
@@ -13,9 +16,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Typography from '@mui/material/Typography';
-import { getPeopleId } from '../../../services/apiVoalle/getPeopleId';
-import { getConnectionId } from '../../../services/apiManageONU/getConnectionId';
-import { updateConnection } from '../../../services/apiVoalle/updateConnection';
+
 
 export function WriteONU(props: WriteONUProps){
 
@@ -29,9 +30,9 @@ export function WriteONU(props: WriteONUProps){
 	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 	const [pppoe, setPppoe] = useState('');
-	const [contractNumber, setContractNumber] = useState('');
+	const [cpf, setCpf] = useState('');
 
-    const handleContractNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setContractNumber(e.target.value); };
+    const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => { setCpf(e.target.value); };
     const handlePppoeChange = (e: React.ChangeEvent<HTMLInputElement>) => { setPppoe(e.target.value); };
     const handlePppoePassChange = (e: React.ChangeEvent<HTMLInputElement>) => { setPppoePass(e.target.value); }
     const handleWifiSSIDChange = (e: React.ChangeEvent<HTMLInputElement>) => { setWifiSSID(e.target.value); }
@@ -53,10 +54,10 @@ export function WriteONU(props: WriteONUProps){
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
             props.handleError(err);
-        }else if(typeBridgeZte.includes((dataOnu[0].model)) && contractNumber.length === 0 ||
+        }else if(typeBridgeZte.includes((dataOnu[0].model)) && cpf.length === 0 ||
         (typeBridgeZte.includes(dataOnu[0].model) && pppoe.length === 0)){
             props.handleError('info/required-input');
-        }else if(!contractNumber.match(isNumeric)){
+        }else if(!cpf.match(isNumeric)){
             props.handleError('info/non-expect-caracter-NAN');
         }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiSSID.match(isAlphaNumeric)){
             props.handleError('info/wifi-ssid-did-not-match');
@@ -68,8 +69,8 @@ export function WriteONU(props: WriteONUProps){
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
             
-            const peopleId = getPeopleId(contractNumber);
-            const connectionId = getConnectionId(peopleId, pppoe);
+            const peopleId = await getPeopleId(cpf);
+            const [connectionId, contract] = await getConnectionId(peopleId, pppoe);
 
             await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
                 ip: oltData.ip,
@@ -78,7 +79,7 @@ export function WriteONU(props: WriteONUProps){
                 isPizzaBox: oltData.isPizzaBox,
                 serialNumber: dataOnu[0].serial,
                 type: dataOnu[0].model,
-                contract: contractNumber,
+                contract: contract,
                 pppoeUser: pppoe.toLowerCase(),
                 pppPass: pppoePass || null,
                 wifiSSID: wifiSSID || null,
@@ -89,7 +90,7 @@ export function WriteONU(props: WriteONUProps){
                 props.handleError(response.data);
                 props.setDataFromApi([]);
 
-                updateConnection(dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId)
+                updateConnection(dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId);
             })
             .catch(error => {
                 props.stopLoading();
@@ -133,7 +134,7 @@ export function WriteONU(props: WriteONUProps){
                                             <Form
                                                 handleSubmitWriteData={handleSubmitWriteData}
                                                 handlePppoeChange={handlePppoeChange}
-                                                handleContractNumberChange={handleContractNumberChange}
+                                                handleCpfChange={handleCpfChange}
                                                 isLoading={props.isLoading}
                                                 item={item} 
                                                 serialNumber={props.serialNumber}
