@@ -1,7 +1,6 @@
 import axios from "axios";
 
-export async function updateConnection(req: any, _res: any){
-    const { slot, pon, serialNumber, wifiSSID, wifiPass, connectionId } = req.body;
+export async function updateConnection(slot: number, pon: number, serialNumber: string, wifiSSID: string, wifiPass: string, connectionId: string){
 
     await axios({
         headers: {
@@ -24,8 +23,8 @@ export async function updateConnection(req: any, _res: any){
             "equipmentPassword": "",
             "authenticationSplitterId": 0,
             "port": 0,
-            "wifiName": "" || wifiSSID,
-            "wifiPassword": "" || wifiPass,
+            "wifiName": wifiSSID,
+            "wifiPassword": wifiPass,
             "technologyType": 0,
             "authenticationAccessPointId": 0,
             "updateConnectionParameter": true,

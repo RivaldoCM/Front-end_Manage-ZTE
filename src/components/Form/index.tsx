@@ -42,13 +42,12 @@ export function Form(props: FormProps){
                     </InputContainer>
                     <InputContainer>
                         <div className="text">
-                            <p>N° Contrato:</p>
+                            <p>CPF do cliente: </p>
                         </div>
                         <div className="content">
                             <TextField
                                 variant="standard" 
                                 required
-                                inputProps={{ inputMode: 'numeric' }}
                                 onChange={props.handleContractNumberChange}>
                             </TextField>
                         </div>
@@ -115,12 +114,11 @@ export function Form(props: FormProps){
                     </InputContainer>
                     <InputContainer>
                         <div className="text">
-                            <p>Número do contrato: </p>
+                            <p>CPF do cliente: </p>
                         </div>
                         <div className="content">
                             <TextField 
                                 variant="standard" 
-                                inputProps={{ inputMode: 'numeric' }}
                                 onChange={props.handleContractNumberChange}>
                             </TextField>
                         </div>

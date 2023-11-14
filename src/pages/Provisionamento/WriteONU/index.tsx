@@ -13,6 +13,9 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Typography from '@mui/material/Typography';
+import { getPeopleId } from '../../../services/apiVoalle/getPeopleId';
+import { getConnectionId } from '../../../services/apiManageONU/getConnectionId';
+import { updateConnection } from '../../../services/apiVoalle/updateConnection';
 
 export function WriteONU(props: WriteONUProps){
 
@@ -64,6 +67,9 @@ export function WriteONU(props: WriteONUProps){
         }else{
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
+            
+            const peopleId = getPeopleId(contractNumber);
+            const connectionId = getConnectionId(peopleId, pppoe);
 
             await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
                 ip: oltData.ip,
@@ -82,6 +88,8 @@ export function WriteONU(props: WriteONUProps){
                 props.stopLoading();
                 props.handleError(response.data);
                 props.setDataFromApi([]);
+
+                updateConnection(dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId)
             })
             .catch(error => {
                 props.stopLoading();
