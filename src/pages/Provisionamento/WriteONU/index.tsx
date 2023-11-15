@@ -70,8 +70,10 @@ export function WriteONU(props: WriteONUProps){
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
             
             const peopleId = await getPeopleId(cpf);
-            const [connectionId, contract] = await getConnectionId(peopleId, pppoe);
-
+            const { connectionId, contractId } = await getConnectionId(peopleId, pppoe);
+            
+            console.log(connectionId, contractId)
+            /*
             await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
                 ip: oltData.ip,
                 slot: dataOnu[0].placa,
@@ -79,7 +81,7 @@ export function WriteONU(props: WriteONUProps){
                 isPizzaBox: oltData.isPizzaBox,
                 serialNumber: dataOnu[0].serial,
                 type: dataOnu[0].model,
-                contract: contract,
+                contract: contractId,
                 pppoeUser: pppoe.toLowerCase(),
                 pppPass: pppoePass || null,
                 wifiSSID: wifiSSID || null,
@@ -87,15 +89,16 @@ export function WriteONU(props: WriteONUProps){
             })
             .then(response => {
                 props.stopLoading();
-                props.handleError(response.data);
+                props.handleError(response.data[0]);
                 props.setDataFromApi([]);
 
-                updateConnection(dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId);
+                updateConnection(response.data[1], dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId);
             })
             .catch(error => {
                 props.stopLoading();
                 props.handleError(error.code);
             });
+            */
         }
     }
 

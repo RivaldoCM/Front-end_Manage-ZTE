@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function updateConnection(slot: number, pon: number, serialNumber: string, wifiSSID: string, wifiPass: string, connectionId: any ){
+export async function updateConnection(avalableId: number, slot: number, pon: number, serialNumber: string, wifiSSID: string, wifiPass: string, connectionId: any ){
 
     await axios({
         headers: {
@@ -14,7 +14,7 @@ export async function updateConnection(slot: number, pon: number, serialNumber: 
             "mac": "",
             "password": "",
             "equipmentType": 0,
-            "oltId": 0,
+            "oltId": avalableId,
             "slotOlt": slot,
             "portOlt": pon,
             "equipmentSerialNumber": serialNumber,
@@ -30,8 +30,9 @@ export async function updateConnection(slot: number, pon: number, serialNumber: 
             "updateConnectionParameter": true,
             "shouldMacUpdate": true,
             "user": "",
-            "isIPoE": false,
-            "complement": ""
+            "complement": "",
+            "isIPoE": false
+
         }
     });
 }

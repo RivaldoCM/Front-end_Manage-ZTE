@@ -1,9 +1,7 @@
 import axios from "axios"
 
 export async function getToken(){
-    let token;
-
-    await axios({
+    const token = await axios({
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
@@ -17,7 +15,7 @@ export async function getToken(){
             'syndata': import.meta.env.VITE_VERIFYTOKEN_TP
         }
     }).then((response) =>{ 
-        token = response.data.access_token;
+        return response.data.access_token;
     })
 
     return token;
