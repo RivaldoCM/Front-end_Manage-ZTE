@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
-
 import Button from '@mui/material/Button';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -14,28 +14,43 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 export function SignIn() {
 
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassord] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail((e.target.value));
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setPassord((e.target.value));
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault();};
 
+    console.log(email, password)
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        await axios.post('http://localhost:4000/login', {
+            email: email,
+            password: password
+        })
+        .then(response => {
+            console.log(response)
+        })
+        .catch(error => {
+
+        });
+    }
+
     return(
-        <form className='flex'>
+        <form className='flex' onSubmit={handleLogin}>
             <FormControl>
                 <InputLabel htmlFor="outlined-adornment-email">E-mail</InputLabel>
                 <OutlinedInput
                     placeholder='Digite seu E-mail'
                     type='text'
+                    onChange={handleEmailChange}
                     startAdornment={
                         <InputAdornment position="end">
                             <IconButton edge="start">
                                 <MailOutlineIcon />
                             </IconButton>
-                        </InputAdornment>
-                    }
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <span>@acesse.net.br</span>
                         </InputAdornment>
                     }
                     label="E-mail"
@@ -46,6 +61,7 @@ export function SignIn() {
                 <OutlinedInput
                     placeholder='Digite sua senha'
                     type={showPassword ? 'text' : 'password'}
+                    onChange={handlePasswordChange}
                     startAdornment={
                         <InputAdornment position="end">
                             <IconButton edge="start">
@@ -69,7 +85,7 @@ export function SignIn() {
                 />
             </FormControl>
             <Button variant='text' size='small'>Esqueceu sua senha?</Button>
-            <Button variant="contained" size="large">
+            <Button variant="contained" size="large" type="submit">
                 Entrar
             </Button>
         </form>
