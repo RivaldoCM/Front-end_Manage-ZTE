@@ -70,10 +70,8 @@ export function WriteONU(props: WriteONUProps){
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
             
             const peopleId = await getPeopleId(cpf);
-            const { connectionId, contractId } = await getConnectionId(peopleId, pppoe);
-            
-            console.log(connectionId, contractId)
-            /*
+            const { connectionId, contractId, pppoePassword } = await getConnectionId(peopleId, pppoe);
+
             await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
                 ip: oltData.ip,
                 slot: dataOnu[0].placa,
@@ -89,16 +87,14 @@ export function WriteONU(props: WriteONUProps){
             })
             .then(response => {
                 props.stopLoading();
-                props.handleError(response.data[0]);
+                props.handleError(response.data.message);
                 props.setDataFromApi([]);
-
-                updateConnection(response.data[1], dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId);
+                updateConnection(response.data.id, dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId, pppoe, pppoePassword);
             })
             .catch(error => {
                 props.stopLoading();
                 props.handleError(error.code);
             });
-            */
         }
     }
 
