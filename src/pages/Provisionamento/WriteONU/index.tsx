@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
 
 import { WriteONUProps } from "../../../interfaces/WriteONUProps";
-
 import { Form } from "../../../components/Form";
 
 import { Container } from './style';
-
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -22,7 +20,6 @@ export function WriteONU(props: WriteONUProps){
 	const [wifiPass, setWifiPass] = useState('');
 
     const [dataOnu, setDataOnu] = useState<{ placa: string; pon: string; model: string; serial: string; }[]>([]);
-
 	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 	const [pppoe, setPppoe] = useState('');

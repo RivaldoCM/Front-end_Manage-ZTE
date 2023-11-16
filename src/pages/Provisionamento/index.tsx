@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
@@ -9,7 +10,6 @@ import { useLoading } from "../../hooks/useLoading";
 import { OltInfoItem } from "../../interfaces/OltInfoItem";
 
 import { Container } from './style';
-
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -123,6 +123,18 @@ const OltInfo: OltInfoItem[] = [
 ];
 
 export function Provisionamento(){
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkUser = () => {
+            const user = localStorage.getItem('access-token');
+
+            if(!user){
+                navigate('/login');
+            }
+        }
+        checkUser();
+    }, []);
 
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
@@ -132,6 +144,10 @@ export function Provisionamento(){
 	const [serialNumber, setSerialNumber] = useState('');
 
 	const [value, setValue] = useState(0); //MUI-Core
+
+
+
+
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
         setValue(newValue);

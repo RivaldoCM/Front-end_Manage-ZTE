@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -12,7 +14,9 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export function SignIn() {
+export function SignIn(){
+
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [password, setPassord] = useState('');
@@ -23,7 +27,6 @@ export function SignIn() {
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault();};
 
-    console.log(email, password)
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         await axios.post('http://localhost:4000/login', {
@@ -31,10 +34,11 @@ export function SignIn() {
             password: password
         })
         .then(response => {
-            console.log(response)
+            localStorage.setItem('access-token', response.data.token);
+            navigate('/');
         })
         .catch(error => {
-
+            console.log('email ou senha errados.')
         });
     }
 
