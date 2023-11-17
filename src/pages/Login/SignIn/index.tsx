@@ -15,7 +15,6 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 export function SignIn(){
-
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -88,7 +87,6 @@ export function SignIn(){
                     label="Password"
                 />
             </FormControl>
-            <Button variant='text' size='small'>Esqueceu sua senha?</Button>
             <Button variant="contained" size="large" type="submit">
                 Entrar
             </Button>

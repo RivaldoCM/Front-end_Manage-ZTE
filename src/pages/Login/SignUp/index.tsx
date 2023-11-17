@@ -48,11 +48,6 @@ export function SignUp() {
                             </IconButton>
                         </InputAdornment>
                     }
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <div>@acesse.net.br</div>
-                        </InputAdornment>
-                    }
                     label="E-mail"
                 />
             </FormControl>
