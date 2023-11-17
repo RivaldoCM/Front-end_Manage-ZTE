@@ -93,24 +93,20 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export function MenuDrawer() {
 	const navigate = useNavigate();
-
 	const theme = useTheme();
+	
 	const [open, setOpen] = useState(false);
-
 	const [ currentPage, setCurrentPage ] = useState('Provisionamento');
 
 	const handleDrawerOpen = () => { setOpen(true);	};
 	const handleDrawerClose = () => { setOpen(false); };
-
 	const redirectToRoute = (text: string) => {	navigate(`/${text.toLocaleLowerCase()}`); }
-
 	const handlePageChange = (text: string) => {
 		setCurrentPage(text);
 		redirectToRoute(text);
 	};
 
 	const handleIconMenu: any = (text: string) => {
-
         switch(text){
             case 'Provisionamento':
                 return <MiscellaneousServicesOutlinedIcon />;
@@ -119,7 +115,7 @@ export function MenuDrawer() {
         }
 	};
 
-	return (
+	return(
 		<Box sx={{ display: 'flex' }}>
 			<CssBaseline />
 			<AppBar position="fixed" open={open}>
@@ -174,7 +170,7 @@ export function MenuDrawer() {
 					))}
 				</List>
 			</Drawer>
-			<Box component="main" sx={{ flexGrow: 1, mt: 10 }}>
+			<Box component="main" sx={{ flexGrow: 1, mt: 8.5 }}>
 				<Outlet />
 			</Box>
 		</Box>

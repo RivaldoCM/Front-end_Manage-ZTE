@@ -5,9 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
-
 import { Provisionamento } from "./pages/Provisionamento";
-
 
 export function AppRoutes(){
     const theme = useTheme();
