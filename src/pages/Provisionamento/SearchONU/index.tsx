@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 import { SearchONUProps } from "../../../interfaces/SearchONUProps";
 
@@ -12,8 +13,11 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
+
 export function SearchONU(props: SearchONUProps) {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
+
+    const navigate = useNavigate();
 
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { props.setCity(e.target.value); };
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); };
@@ -34,9 +38,17 @@ export function SearchONU(props: SearchONUProps) {
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
 
-            await axios.post('https://app.eterniaservicos.com.br/searchONU', {
-                ip: oltData.ip,
-                serialNumber: matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
+            const token =  localStorage.getItem('access-token')
+            await axios({
+                headers:{
+                    'Authorization': token
+                },
+                method: "post",
+                url:"http://localhost:4000/searchONU",
+                data: {
+                    ip: oltData.ip,
+                    serialNumber: matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
+                }
             })
             .then(response => {
                 if(typeof(response.data) === 'string'){
@@ -48,6 +60,14 @@ export function SearchONU(props: SearchONUProps) {
             })
             .catch(error => {
                 //SÓ ENTRA AQUI SE A CONEXÃO CAIR NO MEIO DA EXECUÇÃO DE TAREFAS
+                if(error.response.data.error === 'Invalid token'){
+                    props.handleError(error.response.data.error);
+                    localStorage.removeItem('access-token');
+                    setTimeout(function() {
+                        navigate('/login');
+                    }, 2000);
+                }
+                console.log(error)
                 props.stopLoading();
                 props.handleError(error.code);
             });
