@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
@@ -18,6 +18,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
+import { getOlt } from "../../services/apiManageONU/getOlt";
 
 interface TabPanelProps {
     className?: string
@@ -131,6 +132,12 @@ type IDataFromApi = {
 }
 
 export function Provisionamento(){
+    const [ olt, setOlt ] = useState<Object>([]);
+
+    useEffect(() => {
+        setOlt(getOlt('all'))
+        console.log(olt)
+    }, []);
 
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
