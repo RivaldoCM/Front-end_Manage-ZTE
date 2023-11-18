@@ -144,11 +144,7 @@ export function Provisionamento(){
 	const [serialNumber, setSerialNumber] = useState('');
 
 	const [value, setValue] = useState(0); //MUI-Core
-
-
-
-
-
+    
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
         setValue(newValue);
     };
@@ -160,7 +156,7 @@ export function Provisionamento(){
 					<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
 						<Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='flex'>
 							<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-								<Tab label="Provisionamento" {...a11yProps(0)} />
+								<Tab label="Provisiona ZTE" {...a11yProps(0)} />
 								{/*<Tab label="Item Two" {...a11yProps(1)} /> ADICIONA NOVA ABA */ }
 							</Tabs>
 						</Box>
