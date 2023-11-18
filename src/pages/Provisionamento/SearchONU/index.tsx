@@ -17,6 +17,8 @@ export function SearchONU(props: SearchONUProps) {
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { props.setCity(e.target.value); };
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); };
 
+    console.log(props.olt)
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         props.setDataFromApi([]);
@@ -48,9 +50,9 @@ export function SearchONU(props: SearchONUProps) {
                         value={props.city}
                         onChange={handleCityChange}
                     >
-                        {props.OltInfo.map((option) => (
-                            <MenuItem key={option.id} value={option.label}>
-                                {option.label}
+                        {props.olt.map((option) => (
+                            <MenuItem key={option.id} value={option.name}>
+                                {option.name}
                             </MenuItem>
                         ))}
                     </TextField>

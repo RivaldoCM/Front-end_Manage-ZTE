@@ -132,17 +132,21 @@ type IDataFromApi = {
 }
 
 export function Provisionamento(){
-    const [ olt, setOlt ] = useState<Object>([]);
+    const [ olt, setOlt ] = useState<any>([]);
 
     useEffect(() => {
-        setOlt(getOlt('all'))
-        console.log(olt)
+        async function olts(){
+            const oltData = await getOlt('zte');
+            console.log('pesquisado no DB')
+            setOlt(oltData)
+        }
+        olts();
     }, []);
 
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
-    const [city, setCity] = useState('Natividade');
+    const [city, setCity] = useState('ZTE-NATIVIDADE');
 	const [dataFromApi, setDataFromApi] = useState<IDataFromApi[]>([]);
 	const [serialNumber, setSerialNumber] = useState('');
 
@@ -167,8 +171,8 @@ export function Provisionamento(){
 					<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
 						<Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='flex'>
 							<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-								<Tab label="Provisionamento" {...a11yProps(0)} />
-								{/*<Tab label="Item Two" {...a11yProps(1)} /> ADICIONA NOVA ABA */ }
+								<Tab label="Provisiona ZTE" {...a11yProps(0)} />
+								<Tab label="PRoviziona PArks" {...a11yProps(1)} />
 							</Tabs>
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
@@ -182,10 +186,11 @@ export function Provisionamento(){
                                 startLoading={startLoading}
                                 stopLoading={stopLoading}
                                 OltInfo={OltInfo}
+                                olt={olt}
                                 setSerialNumber={setSerialNumber}
                             />
 							<Divider variant="middle" />
-							<WriteONU 
+							<WriteONU
                                 city={city}
                                 dataFromApi={dataFromApi}
                                 setDataFromApi={setDataFromApi}
