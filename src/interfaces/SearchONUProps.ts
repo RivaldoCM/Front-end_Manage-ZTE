@@ -1,5 +1,5 @@
 import { OltInfoItem } from "./OltInfoItem";
-import { olt } from "./olt";
+import { Olt } from "./olt";
 
 export interface SearchONUProps {
     setCity: (city: string) => void;
@@ -11,6 +11,6 @@ export interface SearchONUProps {
     startLoading: () => void;
     stopLoading: () => void;
     OltInfo: OltInfoItem[];
-    olt: olt[];
+    olt: Olt[];
     setSerialNumber: (serialNumber: string) => void;
 }
