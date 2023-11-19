@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { getOlt } from '../../../services/apiManageONU/getOlt';
 
@@ -132,15 +132,15 @@ export function HandleManageOlt() {
     const [ olt, setOlt ] = useState<any>([]);
 
     useEffect(() => {
-      async function olts(){
-          const oltData = await getOlt('all');
-          console.log('pesquisado no DB')
-          setOlt(oltData)
-      }
-      olts();
-  }, []);
+        async function olts(){
+            const oltData = await getOlt('all');
+            console.log('pesquisado no DB')
+            setOlt(oltData);
+        }
+        olts();
+    }, []);
 
-    const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const handleClick = (_event: React.MouseEvent<unknown>, id: number) => {
         const selectedIndex = selected.indexOf(id);
         let newSelected: readonly number[] = [];
 
@@ -159,7 +159,7 @@ export function HandleManageOlt() {
         setSelected(newSelected);
     };
 
-    const handleChangePage = (event: unknown, newPage: number) => {
+    const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage);
     };
 
@@ -175,93 +175,91 @@ export function HandleManageOlt() {
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - olt.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - olt.length) : 0;
 
-    const visibleRows = React.useMemo(
-        () =>
-        stableSort(olt, getComparator(order, orderBy)).slice(
-            page * rowsPerPage,
-            page * rowsPerPage + rowsPerPage,
-        ),
-        [order, orderBy, page, rowsPerPage],
+    const visibleRows = useMemo(() =>
+    stableSort(olt, getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage,
+    ),
+        [order, orderBy, page, rowsPerPage, olt],
     );
 
-  return (
-    <Box sx={{ width: '100%' }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected.length} />
-            <TableContainer>
-            <Table
-                sx={{ minWidth: 750 }}
-                aria-labelledby="tableTitle"
-                size={dense ? 'small' : 'medium'}
-            >
-                {/*COLOCA O HEADER AQ RIVALDO*/}
-                <TableBody>
-                {visibleRows.map((row, index) => {
-                    const isItemSelected = isSelected(row.id);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+    return (
+        <Box sx={{ width: '100%' }}>
+            <Paper sx={{ width: '100%', mb: 2 }}>
+                <EnhancedTableToolbar numSelected={selected.length} />
+                <TableContainer>
+                <Table
+                    sx={{ minWidth: 750 }}
+                    aria-labelledby="tableTitle"
+                    size={dense ? 'small' : 'medium'}
+                >
+                    {/*COLOCA O HEADER AQ RIVALDO*/}
+                    <TableBody>
+                    {visibleRows.map((row, index) => {
+                        const isItemSelected = isSelected(row.id);
+                        const labelId = `enhanced-table-checkbox-${index}`;
 
-                    return (
-                        <TableRow
-                            hover
-                            onClick={(event) => handleClick(event, row.id)}
-                            role="checkbox"
-                            aria-checked={isItemSelected}
-                            tabIndex={-1}
-                            key={row.id}
-                            selected={isItemSelected}
-                            sx={{ cursor: 'pointer' }}
-                        >
-                            <TableCell padding="checkbox">
-                            <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                'aria-labelledby': labelId,
-                                }}
-                            />
-                            </TableCell>
-                            <TableCell
-                                component="th"
-                                id={labelId}
-                                scope="row"
-                                padding="none"
+                        return (
+                            <TableRow
+                                hover
+                                onClick={(event) => handleClick(event, row.id)}
+                                role="checkbox"
+                                aria-checked={isItemSelected}
+                                tabIndex={-1}
+                                key={row.id}
+                                selected={isItemSelected}
+                                sx={{ cursor: 'pointer' }}
                             >
-                                {row.name}
-                            </TableCell>
-                            <TableCell align="right">{row.host}</TableCell>
-                            <TableCell align="right">{row.isPizzaBox.toString()}</TableCell>
+                                <TableCell padding="checkbox">
+                                <Checkbox
+                                    color="primary"
+                                    checked={isItemSelected}
+                                    inputProps={{
+                                    'aria-labelledby': labelId,
+                                    }}
+                                />
+                                </TableCell>
+                                <TableCell
+                                    component="th"
+                                    id={labelId}
+                                    scope="row"
+                                    padding="none"
+                                >
+                                    {row.name}
+                                </TableCell>
+                                <TableCell align="right">{row.host}</TableCell>
+                                <TableCell align="right">{row.isPizzaBox.toString()}</TableCell>
+                            </TableRow>
+                        );
+                    })}
+                    {emptyRows > 0 && (
+                        <TableRow
+                        style={{
+                            height: (dense ? 33 : 53) * emptyRows,
+                        }}
+                        >
+                        <TableCell colSpan={6} />
                         </TableRow>
-                    );
-                })}
-                {emptyRows > 0 && (
-                    <TableRow
-                    style={{
-                        height: (dense ? 33 : 53) * emptyRows,
-                    }}
-                    >
-                    <TableCell colSpan={6} />
-                    </TableRow>
-                )}
-                </TableBody>
-            </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={olt.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                    )}
+                    </TableBody>
+                </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={olt.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+            <FormControlLabel
+                control={<Switch checked={dense} onChange={handleChangeDense} />}
+                label="Dense padding"
             />
-        </Paper>
-        <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense} />}
-            label="Dense padding"
-        />
-    </Box>
-  );
+        </Box>
+    );
 }
