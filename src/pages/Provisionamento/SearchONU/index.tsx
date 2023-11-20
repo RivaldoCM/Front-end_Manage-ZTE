@@ -41,7 +41,7 @@ export function SearchONU(props: SearchONUProps) {
             const token =  localStorage.getItem('access-token')
             await axios({
                 headers:{
-                    'Authorization': token
+                    'Authorization': `Bearer ${token}`
                 },
                 method: "post",
                 url:"http://localhost:4000/searchONU",
