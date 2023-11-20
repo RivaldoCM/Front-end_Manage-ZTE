@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
+
 import { getOlt } from '../../../services/apiManageONU/getOlt';
+import { KeepMountedModal } from './modal';
 import { Olt } from '../../../interfaces/olt';
 
 import { alpha } from '@mui/material/styles';
@@ -20,8 +22,9 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { TableHead } from '@mui/material';
+
+
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -69,7 +72,6 @@ const headCells: readonly HeadCell[] = [
 ];
 
 function EnhancedTableHead(){
-
     return (
         <TableHead>
             <TableRow>
@@ -78,9 +80,9 @@ function EnhancedTableHead(){
                 </TableCell>
                 {headCells.map((headCell) => (
                     <TableCell
-                    key={headCell.id}
-                    align={headCell.numeric ? 'right' : 'left'}
-                    padding={headCell.disablePadding ? 'none' : 'normal'}
+                        key={headCell.id}
+                        align={headCell.numeric ? 'right' : 'left'}
+                        padding={headCell.disablePadding ? 'none' : 'normal'}
                     >
                         {headCell.label}
                     </TableCell>
@@ -91,7 +93,11 @@ function EnhancedTableHead(){
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
+    const { numSelected } = props;
+
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     return (
         <Toolbar
@@ -111,7 +117,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 variant="subtitle1"
                 component="div"
             >
-                {numSelected} selected
+                {numSelected} selecionado
             </Typography>
         ) : (
             <Typography
@@ -130,10 +136,12 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 </IconButton>
             </Tooltip>
         ) : (
-            <Tooltip title="Filter list">
-                <IconButton>
-                    <FilterListIcon />
-                </IconButton>
+            <Tooltip title="Adicionar">
+                <KeepMountedModal 
+                    handleOpen={handleOpen}
+                    open={open}
+                    handleClose={handleClose}
+                />
             </Tooltip>
         )}
         </Toolbar>
@@ -276,6 +284,7 @@ export function HandleManageOlt() {
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
                 label="Dense padding"
             />
+
         </Box>
     );
 }
