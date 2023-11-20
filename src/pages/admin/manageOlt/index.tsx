@@ -21,6 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { TableHead } from '@mui/material';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -32,6 +33,62 @@ function stableSort<T>(array: readonly T[]) {
 }
 
 interface EnhancedTableToolbarProps { numSelected: number; }
+
+interface HeadCell {
+    disablePadding: boolean;
+    id: number;
+    label: string;
+    numeric: boolean;
+  }
+  
+const headCells: readonly HeadCell[] = [
+    {
+        id: 1,
+        numeric: false,
+        disablePadding: true,
+        label: 'Cidade',
+    },
+    {
+        id: 2,
+        numeric: true,
+        disablePadding: false,
+        label: 'IP',
+    },
+    {
+        id: 3,
+        numeric: true,
+        disablePadding: false,
+        label: 'Tipo de OLT',
+    },
+    {
+        id: 4,
+        numeric: true,
+        disablePadding: false,
+        label: 'PizzaBox',
+    },
+];
+
+function EnhancedTableHead(){
+
+    return (
+        <TableHead>
+            <TableRow>
+                <TableCell padding="checkbox">
+
+                </TableCell>
+                {headCells.map((headCell) => (
+                    <TableCell
+                    key={headCell.id}
+                    align={headCell.numeric ? 'right' : 'left'}
+                    padding={headCell.disablePadding ? 'none' : 'normal'}
+                    >
+                        {headCell.label}
+                    </TableCell>
+                ))}
+            </TableRow>
+        </TableHead>
+    );
+}
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
@@ -134,14 +191,14 @@ export function HandleManageOlt() {
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - olt.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - olt.length) : 0;
 
     const visibleRows = useMemo(() =>
         stableSort(olt).slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage,
         ),
-        [page, rowsPerPage, olt],
+        [page, rowsPerPage, olt]
     );
 
     return (
@@ -154,7 +211,7 @@ export function HandleManageOlt() {
                         aria-labelledby="tableTitle"
                         size={dense ? 'small' : 'medium'}
                     >
-                        {/*COLOCA O HEADER AQ RIVALDO*/}
+                        <EnhancedTableHead />
                         <TableBody>
                         {visibleRows.map((row, index) => {
                             const isItemSelected = isSelected(row.id);
