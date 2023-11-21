@@ -76,8 +76,12 @@ export function useError(){
                 setErrorMessage('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');
             break;
-            case 'email or password invalid':
-                setErrorMessage('Email ou senha estão incorretos.');
+            case 'Invalid Email':
+                setErrorMessage('Este Email não existe em nossa base de dados.');
+                setSeverityStatus('error');
+            break;
+            case 'Invalid Password':
+                setErrorMessage('A senha está incorreta.');
                 setSeverityStatus('error');
             break;
             default:

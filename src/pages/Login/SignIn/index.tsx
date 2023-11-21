@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useError } from '../../../hooks/useError';
 
+import Alert from '@mui/material/Alert';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -17,8 +18,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 export function SignIn(){
     const navigate = useNavigate();
-    const { handleError, error } = useError();
-
+    const { error, errorMessage, severityStatus, handleError } = useError();
 
     const [email, setEmail] = useState('');
     const [password, setPassord] = useState('');
@@ -39,8 +39,9 @@ export function SignIn(){
             localStorage.setItem('Authorization', response.data.token);
             navigate('/');
         })
-        .catch(error => {
-            handleError('email or password invalid')
+        .catch(err => {
+            console.log(err.response.data.error)
+            handleError(err.response.data.error);
         });
     }
 
@@ -93,6 +94,13 @@ export function SignIn(){
             <Button variant="contained" size="large" type="submit">
                 Entrar
             </Button>
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
+                )
+            }
         </form>
     )
 }
