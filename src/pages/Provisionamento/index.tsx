@@ -18,7 +18,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
-import { getOlt } from "../../services/apiManageONU/getOlt";
+
 
 interface TabPanelProps {
     className?: string
@@ -132,25 +132,25 @@ type IDataFromApi = {
 }
 
 export function Provisionamento(){
-    const [ olt, setOlt ] = useState<any>([]);
-
-    useEffect(() => {
-        async function olts(){
-            const oltData = await getOlt('zte');
-            console.log('pesquisado no DB')
-            setOlt(oltData)
-        }
-        olts();
-    }, []);
-
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
-    const [city, setCity] = useState('ZTE-NATIVIDADE');
+    const [city, setCity] = useState('');
 	const [dataFromApi, setDataFromApi] = useState<IDataFromApi[]>([]);
 	const [serialNumber, setSerialNumber] = useState('');
+    const [type, setType] = useState('zte');
 
 	const [value, setValue] = useState(0); //MUI-Core
+
+    const handleTypeZte = () => {
+       setType('zte')
+       setCity('ZTE-NATIVIDADE')
+    }
+
+    const handleTypeParks = () => {
+        setType('parks')
+        setCity('Patrimonio-da-Penha')
+     }
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
         setValue(newValue);
@@ -171,12 +171,13 @@ export function Provisionamento(){
 					<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
 						<Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='flex'>
 							<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-								<Tab label="Provisiona ZTE" {...a11yProps(0)} />
-								<Tab label="PRoviziona PArks" {...a11yProps(1)} />
+								<Tab label="Provisiona ZTE" {...a11yProps(0)} onClick={handleTypeZte}/>
+								<Tab label="Provisiona Parks" {...a11yProps(1)} onClick={handleTypeParks}/>
 							</Tabs>
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
                             <SearchONU 
+                                type={type}
                                 setCity={setCity} 
                                 city={city} 
                                 setDataFromApi={setDataFromApi} 
@@ -186,7 +187,34 @@ export function Provisionamento(){
                                 startLoading={startLoading}
                                 stopLoading={stopLoading}
                                 OltInfo={OltInfo}
-                                olt={olt}
+                                setSerialNumber={setSerialNumber}
+                            />
+							<Divider variant="middle" />
+							<WriteONU
+                                city={city}
+                                dataFromApi={dataFromApi}
+                                setDataFromApi={setDataFromApi}
+                                setSerialNumber={setSerialNumber}
+                                serialNumber={serialNumber}
+                                handleError={handleError}
+                                isLoading={isLoading}
+                                startLoading={startLoading}
+                                stopLoading={stopLoading}
+                                OltInfo={OltInfo}
+                            />
+						</CustomTabPanel>
+                        <CustomTabPanel className="flex" value={value} index={1}>
+                            <SearchONU
+                                type={type}
+                                setCity={setCity} 
+                                city={city} 
+                                setDataFromApi={setDataFromApi} 
+                                serialNumber={serialNumber}
+                                handleError={handleError}
+                                isLoading={isLoading}
+                                startLoading={startLoading}
+                                stopLoading={stopLoading}
+                                OltInfo={OltInfo}
                                 setSerialNumber={setSerialNumber}
                             />
 							<Divider variant="middle" />
