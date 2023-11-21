@@ -68,8 +68,16 @@ export function useError(){
                 setErrorMessage('Não são permitidos carcteres especiais na senha.');
                 setSeverityStatus('info');
             break;
-            case 'Invalid token':
+            case 'Invalid Token':
                 setErrorMessage('Usuário não autenticado, você precisa fazer login de novo.');
+                setSeverityStatus('error');
+            break;
+            case 'Invalid Secret':
+                setErrorMessage('Erro interno, verifique com o suporte.');
+                setSeverityStatus('error');
+            break;
+            case 'email or password invalid':
+                setErrorMessage('Email ou senha estão incorretos.');
                 setSeverityStatus('error');
             break;
             default:

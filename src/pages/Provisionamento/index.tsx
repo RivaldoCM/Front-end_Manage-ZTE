@@ -127,7 +127,7 @@ export function Provisionamento(){
 
     useEffect(() => {
         const checkUser = () => {
-            const user = localStorage.getItem('access-token');
+            const user = localStorage.getItem('Authorization');
 
             if(!user){
                 navigate('/login');

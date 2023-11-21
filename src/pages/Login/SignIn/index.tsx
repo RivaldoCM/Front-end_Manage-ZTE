@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
+import { useError } from '../../../hooks/useError';
 
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -16,6 +17,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 export function SignIn(){
     const navigate = useNavigate();
+    const { handleError, error } = useError();
+
 
     const [email, setEmail] = useState('');
     const [password, setPassord] = useState('');
@@ -33,11 +36,11 @@ export function SignIn(){
             password: password
         })
         .then(response => {
-            localStorage.setItem('access-token', response.data.token);
+            localStorage.setItem('Authorization', response.data.token);
             navigate('/');
         })
         .catch(error => {
-            console.log('email ou senha errados.')
+            handleError('email or password invalid')
         });
     }
 

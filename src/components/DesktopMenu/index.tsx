@@ -118,7 +118,9 @@ export function MenuDrawer() {
 	return(
 		<Box sx={{ display: 'flex' }}>
 			<CssBaseline />
+
 			<AppBar position="fixed" open={open}>
+			<div>teste</div>
 				<Toolbar>
 					<IconButton
 						color="inherit"

@@ -37,8 +37,8 @@ export function SearchONU(props: SearchONUProps) {
         }else{
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
+            const token = localStorage.getItem('Authorization');
 
-            const token =  localStorage.getItem('access-token')
             await axios({
                 headers:{
                     'Authorization': `Bearer ${token}`
@@ -60,16 +60,26 @@ export function SearchONU(props: SearchONUProps) {
             })
             .catch(error => {
                 //SÓ ENTRA AQUI SE A CONEXÃO CAIR NO MEIO DA EXECUÇÃO DE TAREFAS
-                if(error.response.data.error === 'Invalid token'){
-                    props.handleError(error.response.data.error);
-                    localStorage.removeItem('access-token');
-                    setTimeout(function() {
-                        navigate('/login');
-                    }, 2000);
+                console.log(error.response.data.error)
+                switch(error.response.data.error){
+                    case 'Invalid Token':
+                        localStorage.removeItem('Authorization');
+                        props.handleError(error.response.data.error);
+                        props.stopLoading();
+                        setTimeout(function() {
+                            navigate('/login');
+                        }, 2000);
+                    break;
+                    case 'Invalid Secret':
+                        props.handleError(error.response.data.error);
+                        props.stopLoading();
+                    break;
+                    default:
+
+                        props.stopLoading();
+                        props.handleError('ERR_NETWORK');
+                    break;
                 }
-                console.log(error)
-                props.stopLoading();
-                props.handleError(error.code);
             });
         }
     }
