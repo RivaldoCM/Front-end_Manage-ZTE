@@ -19,6 +19,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 240;
 
@@ -115,13 +116,35 @@ export function MenuDrawer() {
         }
 	};
 
+	const handleLogout = () => {
+		localStorage.removeItem('Authorization');
+		navigate('/login');
+	}
+
 	return(
 		<Box sx={{ display: 'flex' }}>
 			<CssBaseline />
-
-			<AppBar position="fixed" open={open}>
-			<div>teste</div>
-				<Toolbar>
+			<AppBar 
+				className='flex' 
+				position="fixed" 
+				open={open}
+				sx={{
+					flexDirection: 'row-reverse',
+					width: '100% !important',
+				}}
+			>
+				<IconButton
+					color="inherit"
+					aria-label="open drawer"
+					onClick={handleLogout}
+					edge="start"
+					sx={{
+						marginRight: 5,
+					}}
+				>
+					<LogoutIcon />
+				</IconButton>
+				<Toolbar sx={{width: '100% !important',}}>
 					<IconButton
 						color="inherit"
 						aria-label="open drawer"
