@@ -1,4 +1,4 @@
-export interface olt{
+export interface Olt{
     id: number,
     name: string,
     host: string,

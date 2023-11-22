@@ -1,4 +1,4 @@
-import { OltInfoItem } from "./OltInfoItem";
+import { Olt } from "./olt";
 
 export interface SearchONUProps {
     type: string,
@@ -10,6 +10,6 @@ export interface SearchONUProps {
     isLoading: boolean;
     startLoading: () => void;
     stopLoading: () => void;
-    OltInfo: OltInfoItem[];
+    OltInfo: Olt[];
     setSerialNumber: (serialNumber: string) => void;
 }

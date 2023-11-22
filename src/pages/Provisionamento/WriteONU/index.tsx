@@ -67,13 +67,13 @@ export function WriteONU(props: WriteONUProps){
             props.handleError('info/wrong-type-passoword');
         }else{
             props.startLoading();
-            const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
+            const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
             
             const peopleId = await getPeopleId(cpf);
             const { connectionId, contractId, pppoePassword } = await getConnectionId(peopleId, pppoe);
 
             await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
-                ip: oltData.ip,
+                ip: oltData.host,
                 slot: dataOnu[0].placa,
                 pon: dataOnu[0].pon,
                 isPizzaBox: oltData.isPizzaBox,

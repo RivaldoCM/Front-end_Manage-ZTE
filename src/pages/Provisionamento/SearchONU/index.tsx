@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 
 import { SearchONUProps } from "../../../interfaces/SearchONUProps";
-import { getOlt } from "../../../services/apiManageONU/getOlt";
 import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
 
 import { Form } from './style';
@@ -15,35 +14,17 @@ import CircularProgress from '@mui/material/CircularProgress';
 export function SearchONU(props: SearchONUProps) {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
-    const [ olt, setOlt ] = useState<any>([]);
-
     useEffect(() => {
-        console.log('vim primeiro')
-        if(props.type === 'zte'){
-            async function olts(){
-                const oltData = await getOlt('zte');
-                setOlt(oltData);
-                props.setCity('ZTE-NATIVIDADE');
-            }
-            olts();
-        }else{
-            async function olts(){
-                const oltData = await getOlt('parks');
-                setOlt(oltData);
-                props.setCity('Patrimonio-da-Penha');
-            }
-            olts();
-        }
-    }, [props.type]);
 
-    useEffect(() => {
-        handleMapOltData();
-    }, [olt]);
+        
+
+
+    }, [props.OltInfo])
 
     const handleMapOltData: any = () => {
         if(props.type === 'zte'){
             return(
-                olt.map((option: any) => {
+                props.OltInfo.map((option: any) => {
                     return(
                         <MenuItem key={option.id} value={option.name}>
                             {option.name}
@@ -51,24 +32,13 @@ export function SearchONU(props: SearchONUProps) {
                     )
                 })
             )
-        }else{
+        }else{      
             return(
-                olt.map((subArray, index) => {
+                props.OltInfo.forEach(element => {
 
-                    if (subArray.length === 4) {
-                        console.log(subArray)
-                    }
-                    return (
-                        subArray.map((item, subIndex) => {
-                            return (
-                                <MenuItem key={subIndex} value={item.name}>
-                                    {item.name}
-                                </MenuItem>
-                            );
-                        })
-                    );
                 })
             )
+
         }
     }
 

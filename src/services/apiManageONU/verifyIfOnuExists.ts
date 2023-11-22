@@ -4,10 +4,10 @@ import { propsApi } from "../../interfaces/api";
 
 export const verifyIfOnuExists = async (props: propsApi) => {
     props.startLoading();
-    const oltData = props.OltInfo.find(option => option.label === props.city ? props.city : '')!;
+    const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
 
     await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/searchONU`, {
-        ip: oltData.ip,
+        ip: oltData.host,
         serialNumber: props.matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
     })
     .then(response => {

@@ -1,4 +1,4 @@
-import { OltInfoItem } from "./OltInfoItem";
+import { Olt } from "./olt";
 
 export interface WriteONUProps {
     city: string;
@@ -15,5 +15,5 @@ export interface WriteONUProps {
     isLoading: boolean;
     startLoading: () => void;
     stopLoading: () => void;
-    OltInfo: OltInfoItem[];
+    OltInfo: Olt[];
 }
