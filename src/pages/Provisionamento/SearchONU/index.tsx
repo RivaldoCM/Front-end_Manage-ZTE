@@ -13,7 +13,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
-
 export function SearchONU(props: SearchONUProps) {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
