@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState } from "react";
 
 import { SearchONUProps } from "../../../interfaces/SearchONUProps";
 import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
@@ -13,10 +13,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 export function SearchONU(props: SearchONUProps) {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
-
-    useEffect(() => {
-
-    }, [props.OltInfo])
 
     const handleMapOltData: any = () => {
 

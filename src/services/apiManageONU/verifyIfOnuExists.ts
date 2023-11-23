@@ -5,25 +5,30 @@ import { propsApi } from "../../interfaces/api";
 export const verifyIfOnuExists = async (props: propsApi) => {
     props.startLoading();
 
-    let data;
+    let dataOlt = [];
     if(props.typeOnu === 'zte'){
         const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
-        data = oltData
+        dataOlt = oltData;
     }else{
         props.OltInfo.map((subArray) => {
-            return subArray.map((data) => {
-                const verifyCity = data.name
-                const ip = data.host
-                if(verifyCity === props.city){
-                    data = {host: ip}
+            return subArray.map((option: any) => {
+                const verifyCity = option.name
+                if(props.city === 'TOMBOS'){
+                    if(option.city_id === 22){
+                        dataOlt.push(option.host) 
+                    }
+                }else if(verifyCity === props.city){
+                    const ip = option.host
+                    dataOlt.push(ip);
                 }
             });
         })
     }
 
+    console.log(dataOlt)
 
     await axios.post(`http://localhost:4000/searchONU`, {
-        ip: data.host,
+        ip: dataOlt,
         serialNumber: props.matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
     })
     .then(response => {
