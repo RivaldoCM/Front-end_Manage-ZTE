@@ -10,6 +10,7 @@ export interface SearchONUProps {
     isLoading: boolean;
     startLoading: () => void;
     stopLoading: () => void;
-    OltInfo: Olt[];
+    OltInfo: Array<Array<Olt>>;
+    typeOnu: string;
     setSerialNumber: (serialNumber: string) => void;
 }

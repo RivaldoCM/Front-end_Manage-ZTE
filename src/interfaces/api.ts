@@ -8,5 +8,6 @@ export interface propsApi{
     handleError: (error: string) => void;
     startLoading: () => void;
     stopLoading: () => void;
-    OltInfo: Olt[];
+    typeOnu: string;
+    OltInfo: Array<Array<Olt>> | Array<any>;
 }

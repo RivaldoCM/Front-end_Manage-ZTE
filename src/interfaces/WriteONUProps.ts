@@ -15,5 +15,6 @@ export interface WriteONUProps {
     isLoading: boolean;
     startLoading: () => void;
     stopLoading: () => void;
+    typeOnu: string;
     OltInfo: Olt[];
 }

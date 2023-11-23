@@ -18,7 +18,6 @@ import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 
-
 interface TabPanelProps {
     className?: string
     children?: React.ReactNode;
@@ -74,27 +73,28 @@ export function Provisionamento(){
     const [city, setCity] = useState('');
 	const [dataFromApi, setDataFromApi] = useState<IDataFromApi[]>([]);
 	const [serialNumber, setSerialNumber] = useState('');
-    const [ olt, setOlt ] = useState<any>([]);
+    const [olt, setOlt] = useState<any>([]);
     const [type, setType] = useState('zte');
 	const [value, setValue] = useState(0); //MUI-Core
 
     const handleTypeZte = () => {
        setType('zte');
-       setCity('ZTE-NATIVIDADE');
+       setOlt([]);
+       setCity('');
     }
 
     const handleTypeParks = () => {
         setType('parks');
-        setCity('PARKS-SANTA-CLARA');
+        setOlt([]);
+        setCity('');
     }
 
     useEffect(() => {
-
         if(type === 'zte'){
             async function olts(){
                 const oltData = await getOlt('zte');
                 setOlt(oltData);
-                setCity('ZTE-NATIVIDADE');
+                setCity('ZTE-ESPERA FELIZ');
             }
             olts();
         }else{
@@ -105,7 +105,6 @@ export function Provisionamento(){
             }
             olts();
         }
-
     }, [type]);
     
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
@@ -143,6 +142,7 @@ export function Provisionamento(){
                                 startLoading={startLoading}
                                 stopLoading={stopLoading}
                                 setSerialNumber={setSerialNumber}
+                                typeOnu={type}
                                 OltInfo={olt}
                             />
 							<Divider variant="middle" />
@@ -156,6 +156,7 @@ export function Provisionamento(){
                                 isLoading={isLoading}
                                 startLoading={startLoading}
                                 stopLoading={stopLoading}
+                                typeOnu={type}
                                 OltInfo={olt}
                             />
 						</CustomTabPanel>
@@ -171,6 +172,7 @@ export function Provisionamento(){
                                 startLoading={startLoading}
                                 stopLoading={stopLoading}
                                 setSerialNumber={setSerialNumber}
+                                typeOnu={type}
                                 OltInfo={olt}
                             />
 							<Divider variant="middle" />
@@ -184,6 +186,7 @@ export function Provisionamento(){
                                 isLoading={isLoading}
                                 startLoading={startLoading}
                                 stopLoading={stopLoading}
+                                typeOnu={type}
                                 OltInfo={olt}
                             />
 						</CustomTabPanel> 	

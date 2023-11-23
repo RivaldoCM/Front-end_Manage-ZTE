@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 
 import { SearchONUProps } from "../../../interfaces/SearchONUProps";
 import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
@@ -16,12 +16,10 @@ export function SearchONU(props: SearchONUProps) {
 
     useEffect(() => {
 
-        
-
-
     }, [props.OltInfo])
 
     const handleMapOltData: any = () => {
+
         if(props.type === 'zte'){
             return(
                 props.OltInfo.map((option: any) => {
@@ -31,14 +29,25 @@ export function SearchONU(props: SearchONUProps) {
                         </MenuItem>
                     )
                 })
-            )
+            );
         }else{      
             return(
-                props.OltInfo.forEach(element => {
-
+                props.OltInfo.map((subArray) => {
+                    if(subArray.length <= 4){
+                        return(
+                            <MenuItem key="TOMBOS" value="TOMBOS">
+                                TOMBOS
+                            </MenuItem>
+                        );
+                    }else{
+                        return subArray.map((data) => (
+                            <MenuItem key={data.id} value={data.name}>
+                                {data.name}
+                            </MenuItem>
+                        ));
+                    }
                 })
-            )
-
+            );
         }
     }
 
