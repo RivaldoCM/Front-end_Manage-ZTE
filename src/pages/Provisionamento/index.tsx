@@ -79,12 +79,14 @@ export function Provisionamento(){
 
     const handleTypeZte = () => {
        setType('zte');
+       setDataFromApi([]);
        setOlt([]);
        setCity('');
     }
 
     const handleTypeParks = () => {
         setType('parks');
+        setDataFromApi([]);
         setOlt([]);
         setCity('');
     }

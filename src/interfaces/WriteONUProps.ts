@@ -2,12 +2,12 @@ import { Olt } from "./olt";
 
 export interface WriteONUProps {
     city: string;
-    dataFromApi: Array<Array<{
+    dataFromApi: Array<{
         placa: number,
         pon: number,
         model: string,
         serial: string
-    }>> | string;
+    }>;
     setDataFromApi: (dataFromApi: any[]) => void;
     setSerialNumber: (serialNumber: string) => void;
     serialNumber: string;

@@ -67,7 +67,7 @@ export function WriteONU(props: WriteONUProps){
         }else{
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
-            
+            /*
             const peopleId = await getPeopleId(cpf);
             const { connectionId, contractId, pppoePassword } = await getConnectionId(peopleId, pppoe);
 
@@ -94,97 +94,114 @@ export function WriteONU(props: WriteONUProps){
                 props.stopLoading();
                 props.handleError(error.code);
             });
+            */
         }
     }
-
+    console.log(props.dataFromApi)
     return (
         <Container>
-            {props.dataFromApi[1] === 'zte' ? (
-                
+            {props.typeOnu === 'zte' ? (
                 Array.isArray(props.dataFromApi) ? (
-
                     props.dataFromApi.map((item, index) => {
-                        return item.map((iterator: any) => {
-                            if (Array.isArray(iterator) && iterator.length === 4) {
-                                const [placa, pon, _model, serial] = iterator;
-        
-                                return (
-                                    <div key={index} className="onu-callback flex">
-                                        <div className="info-onu-controller flex">
-                                            <div className="add-onu flex">
-                                                <ul className="flex">
-                                                    <li>Placa: {placa}</li>
-                                                    <li>Pon: {pon}</li>
-                                                    <li>Serial: {serial}</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div className="write-onu-controller flex">
-                                            <Accordion className="dropdown-box flex">
-                                                <AccordionSummary
-                                                    className="dropdown-header"
-                                                    expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                                    aria-controls="panel1a-content"
-                                                    id="panel1a-header"
-                                                    onClick={(e) => {
-                                                        handleDropDownArrow(e, index);
-                                                    }}
-                                                >
-                                                    <Typography>Provisione aqui</Typography>
-                                                </AccordionSummary>
-                                                <AccordionDetails>
-                                                    <Form
-                                                        handleSubmitWriteData={handleSubmitWriteData}
-                                                        handlePppoeChange={handlePppoeChange}
-                                                        handleCpfChange={handleCpfChange}
-                                                        isLoading={props.isLoading}
-                                                        item={iterator} 
-                                                        serialNumber={props.serialNumber}
-                                                        setDataOnu={setDataOnu}
-                                                        handlePppoePassChange={handlePppoePassChange}
-                                                        handleWifiSSIDChange={handleWifiSSIDChange}
-                                                        handleWifiPassChange={handleWifiPassChange}
-                                                    />
-                                                </AccordionDetails>
-                                            </Accordion>
+                        if (Array.isArray(item) && item.length === 4) {
+                            const [placa, pon, _model, serial] = item;
+                            return (
+                                <div key={index} className="onu-callback flex">
+                                    <div className="info-onu-controller flex">
+                                        <div className="add-onu flex">
+                                            <ul className="flex">
+                                                <li>Placa: {placa}</li>
+                                                <li>Pon: {pon}</li>
+                                                <li>Serial: {serial}</li>
+                                            </ul>
                                         </div>
                                     </div>
-                                );
-                            } else {
-                                // Lida com o caso em que o item não corresponde ao esperado
-                                return null;
-                            }
-                        })
+                                    <div className="write-onu-controller flex">
+                                        <Accordion className="dropdown-box flex">
+                                            <AccordionSummary
+                                                className="dropdown-header"
+                                                expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                                aria-controls="panel1a-content"
+                                                id="panel1a-header"
+                                                onClick={(e) => {
+                                                    handleDropDownArrow(e, index);
+                                                }}
+                                            >
+                                                <Typography>Provisione aqui</Typography>
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <Form
+                                                    handleSubmitWriteData={handleSubmitWriteData}
+                                                    handlePppoeChange={handlePppoeChange}
+                                                    handleCpfChange={handleCpfChange}
+                                                    isLoading={props.isLoading}
+                                                    serialNumber={props.serialNumber}
+                                                    item={item}
+                                                    typeOnu={props.typeOnu}
+                                                    setDataOnu={setDataOnu}
+                                                    handlePppoePassChange={handlePppoePassChange}
+                                                    handleWifiSSIDChange={handleWifiSSIDChange}
+                                                    handleWifiPassChange={handleWifiPassChange}
+                                                />
+                                            </AccordionDetails>
+                                        </Accordion>
+                                    </div>
+                                </div>
+                            );
+                        } else {
+                            // Lida com o caso em que o item não corresponde ao esperado
+                            return null;
+                        }
                     })
                 ) : (
                     null
                 )
             ) : (
-                (props.dataFromApi.length > 0) ? (
-                        <div className="onu-callback flex">
-                            <div className="info-onu-controller flex">
-                                <div className="add-onu flex">
-                                    <ul className="flex">
-                                        <li>Placa: {props.dataFromApi[0]}</li>
-                                    </ul>
+                Array.isArray(props.dataFromApi) ? (
+                    props.dataFromApi.map((item, index) => {
+                        if(Array.isArray(item)){
+                            const [pon, serial] = item;
+                            return(
+                                <div className="onu-callback flex">
+                                <div className="info-onu-controller flex">
+                                    <div className="add-onu flex">
+                                        <ul className="flex">
+                                            <li>Pon: {pon}</li>
+                                            <li>Serial: {serial}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="write-onu-controller flex">
+                                    <Accordion className="dropdown-box flex">
+                                        <AccordionSummary
+                                            className="dropdown-header"
+                                            expandIcon={isDropDownOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header"
+                                            onClick={() => setIsDropDownOpen(!isDropDownOpen)}
+                                        >
+                                            <Typography>Provisione aqui</Typography>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <Form
+                                                handleSubmitWriteData={handleSubmitWriteData}
+                                                handlePppoeChange={handlePppoeChange}
+                                                handleCpfChange={handleCpfChange}
+                                                isLoading={props.isLoading}
+                                                serialNumber={props.serialNumber}
+                                                setDataOnu={setDataOnu}
+                                                typeOnu={props.typeOnu}
+                                                handlePppoePassChange={handlePppoePassChange}
+                                                handleWifiSSIDChange={handleWifiSSIDChange}
+                                                handleWifiPassChange={handleWifiPassChange}
+                                            />
+                                        </AccordionDetails>
+                                    </Accordion>
                                 </div>
                             </div>
-                            <div className="write-onu-controller flex">
-                                <Accordion className="dropdown-box flex">
-                                    <AccordionSummary
-                                        className="dropdown-header"
-                                        expandIcon={isDropDownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                    >
-                                        <Typography>Provisione aqui</Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-
-                                    </AccordionDetails>
-                                </Accordion>
-                            </div>
-                        </div>
+                            )
+                        }
+                    })
                 ) : (
                     null
                 )

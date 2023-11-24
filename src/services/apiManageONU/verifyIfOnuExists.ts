@@ -37,7 +37,7 @@ export const verifyIfOnuExists = async (props: propsApi) => {
         }
         props.stopLoading();
 
-        props.setDataFromApi([response.data, props.typeOnu]);
+        props.setDataFromApi(response.data);
     })
     .catch(error => {
         //SÓ ENTRA AQUI SE A CONEXÃO CAIR NO MEIO DA EXECUÇÃO DE TAREFAS

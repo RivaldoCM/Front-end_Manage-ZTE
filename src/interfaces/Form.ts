@@ -3,12 +3,13 @@ export interface FormProps {
     handlePppoeChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
     handleCpfChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
     isLoading: boolean;
-    item: {
+    item?: {
         placa: number;
         pon: number;
         model: string;
         serial: string;
-    };
+    }| string;
+    typeOnu?: string,
     serialNumber: string, 
     setDataOnu: React.Dispatch<React.SetStateAction<{ placa: number; pon: number; model: string; serial: string; }[]>>;
     handlePppoePassChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
