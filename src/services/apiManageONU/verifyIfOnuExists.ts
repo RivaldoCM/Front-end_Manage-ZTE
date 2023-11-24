@@ -8,7 +8,7 @@ export const verifyIfOnuExists = async (props: propsApi) => {
     let dataOlt = [];
     if(props.typeOnu === 'zte'){
         const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
-        dataOlt = oltData;
+        dataOlt.push(oltData.host);
     }else{
         props.OltInfo.map((subArray) => {
             return subArray.map((option: any) => {
@@ -25,11 +25,10 @@ export const verifyIfOnuExists = async (props: propsApi) => {
         })
     }
 
-    console.log(dataOlt)
-
     await axios.post(`http://localhost:4000/searchONU`, {
         ip: dataOlt,
-        serialNumber: props.matchSerialNumber.toUpperCase(), //NECESSÁRIO PARA OLT's ZTE
+        serialNumber: props.matchSerialNumber,
+        modelOlt: props.typeOnu
     })
     .then(response => {
         if(typeof(response.data) === 'string'){
@@ -37,7 +36,8 @@ export const verifyIfOnuExists = async (props: propsApi) => {
             //RETORNA ONU NAO ENCONTRADA
         }
         props.stopLoading();
-        props.setDataFromApi(response.data);
+
+        props.setDataFromApi([response.data, props.typeOnu]);
     })
     .catch(error => {
         //SÓ ENTRA AQUI SE A CONEXÃO CAIR NO MEIO DA EXECUÇÃO DE TAREFAS
