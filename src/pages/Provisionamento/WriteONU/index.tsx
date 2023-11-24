@@ -160,7 +160,7 @@ export function WriteONU(props: WriteONUProps){
                 Array.isArray(props.dataFromApi) ? (
                     props.dataFromApi.map((item, index) => {
                         if(Array.isArray(item)){
-                            const [pon, serial] = item;
+                            const [pon, signal, serial] = item;
                             return(
                                 <div className="onu-callback flex">
                                 <div className="info-onu-controller flex">
@@ -168,6 +168,7 @@ export function WriteONU(props: WriteONUProps){
                                         <ul className="flex">
                                             <li>Pon: {pon}</li>
                                             <li>Serial: {serial}</li>
+                                            <li>Sinal: {signal}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -175,7 +176,7 @@ export function WriteONU(props: WriteONUProps){
                                     <Accordion className="dropdown-box flex">
                                         <AccordionSummary
                                             className="dropdown-header"
-                                            expandIcon={isDropDownOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                                            expandIcon={isDropDownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                             aria-controls="panel1a-content"
                                             id="panel1a-header"
                                             onClick={() => setIsDropDownOpen(!isDropDownOpen)}

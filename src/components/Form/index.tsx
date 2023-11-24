@@ -12,7 +12,6 @@ export function Form(props: FormProps){
     console.log(Array.isArray(props.item))
     if(props.typeOnu === 'parks'){
         if (!Array.isArray(props.item)){
-
             return(
                 <form onSubmit={props.handleSubmitWriteData} className="flex">
                     <InputContainer>
