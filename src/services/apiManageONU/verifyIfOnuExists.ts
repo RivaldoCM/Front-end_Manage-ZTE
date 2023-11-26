@@ -36,7 +36,6 @@ export const verifyIfOnuExists = async (props: propsApi) => {
             //RETORNA ONU NAO ENCONTRADA
         }
         props.stopLoading();
-
         props.setDataFromApi(response.data);
     })
     .catch(error => {

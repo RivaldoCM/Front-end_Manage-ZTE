@@ -9,11 +9,24 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 export function Form(props: FormProps){
-    console.log(Array.isArray(props.item))
+
     if(props.typeOnu === 'parks'){
-        if (!Array.isArray(props.item)){
+        if (Array.isArray(props.item)){
+            const [ pon, signal, serial, ip ] = props.item;
             return(
                 <form onSubmit={props.handleSubmitWriteData} className="flex">
+                    <InputContainer>
+                        <div className="text">
+                            <p>CPF do cliente: </p>
+                        </div>
+                        <div className="content">
+                            <TextField
+                                variant="standard" 
+                                required
+                                onChange={props.handleCpfChange}>
+                            </TextField>
+                        </div>
+                    </InputContainer>
                     <InputContainer>
                         <div className="text">
                             <p>PPPoE do cliente: </p>
@@ -31,7 +44,16 @@ export function Form(props: FormProps){
                                     type="submit" 
                                     variant="outlined" 
                                     endIcon={<AddOutlinedIcon />}
-
+                                    onClick={() => {
+                                        props.setDataOnu([{
+                                            placa: 1,
+                                            pon: pon,
+                                            serial: serial,
+                                            model: 'parks',
+                                            signal: signal,
+                                            ip: ip
+                                        }]);
+                                    }}
                                 >
                                     Provisionar
                                 </Button>
@@ -41,8 +63,6 @@ export function Form(props: FormProps){
                 </form>
             )
         }
-
-        
     }else{
         if (Array.isArray(props.item)) {
             const [ placa, pon, modelOnu, serial ] = props.item;

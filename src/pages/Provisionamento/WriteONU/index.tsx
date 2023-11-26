@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import { Form } from "../../../components/Form";
 import { WriteONUProps } from "../../../interfaces/WriteONUProps";
-import { isNumeric, isAlphaNumeric } from '../../../config/regex';
+import { isNumeric, isAlphaNumeric, isValidCpf } from '../../../config/regex';
 import { typeBridgeZte, typePppoeZte } from '../../../config/tipsOlts';
 import { getPeopleId } from '../../../services/apiVoalle/getPeopleId';
 import { getConnectionId } from '../../../services/apiManageONU/getConnectionId';
@@ -24,7 +24,7 @@ export function WriteONU(props: WriteONUProps){
 	const [wifiSSID, setWifiSSID] = useState('');
 	const [wifiPass, setWifiPass] = useState('');
 
-    const [dataOnu, setDataOnu] = useState<{ placa: number; pon: number; model: string; serial: string; }[]>([]);
+    const [dataOnu, setDataOnu] = useState<{ placa: number; pon: number; model: string; serial: string; ip?: string; }[]>([]);
 
 	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
@@ -49,55 +49,114 @@ export function WriteONU(props: WriteONUProps){
 
         //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
         props.setSerialNumber(dataOnu[0].serial);
-        
-        if (props.isLoading){
-            const err = 'warning/has-action-in-progress';
-            props.handleError(err);
-        }else if(typeBridgeZte.includes((dataOnu[0].model)) && cpf.length === 0 ||
-        (typeBridgeZte.includes(dataOnu[0].model) && pppoe.length === 0)){
-            props.handleError('info/required-input');
-        }else if(!cpf.match(isNumeric)){
-            props.handleError('info/non-expect-caracter-NAN');
-        }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiSSID.match(isAlphaNumeric)){
-            props.handleError('info/wifi-ssid-did-not-match');
-        }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiPass.match(isAlphaNumeric)){
-            props.handleError('info/wifi-password-did-not-match');
-        }else if(typePppoeZte.includes(dataOnu[0].model) && wifiPass.length < 8){
-            props.handleError('info/wrong-type-passoword');
-        }else{
-            props.startLoading();
-            const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
-            /*
-            const peopleId = await getPeopleId(cpf);
-            const { connectionId, contractId, pppoePassword } = await getConnectionId(peopleId, pppoe);
 
-            await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
-                ip: oltData.host,
-                slot: dataOnu[0].placa,
-                pon: dataOnu[0].pon,
-                isPizzaBox: oltData.isPizzaBox,
-                serialNumber: dataOnu[0].serial,
-                type: dataOnu[0].model,
-                contract: contractId,
-                pppoeUser: pppoe.toLowerCase(),
-                pppPass: pppoePass || null,
-                wifiSSID: wifiSSID || null,
-                wifiPass: wifiPass || null
-            })
-            .then(response => {
-                props.stopLoading();
-                props.handleError(response.data.message);
-                props.setDataFromApi([]);
-                updateConnection(response.data.id, dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId, pppoe, pppoePassword);
-            })
-            .catch(error => {
-                props.stopLoading();
-                props.handleError(error.code);
-            });
-            */
+        if(dataOnu[0].model == "parks"){
+            if (props.isLoading){
+                const err = 'warning/has-action-in-progress';
+                props.handleError(err);
+            }else if(pppoe.length === 0 || cpf.length === 0){
+                props.handleError('info/required-input');
+            }else if(!cpf.match(isValidCpf)){
+                props.handleError('warning/invalid-cpf-input');
+            }else{
+                props.startLoading();
+                
+                let dataOlt: any = [];
+                props.OltInfo.map((subArray) => {
+                    return subArray.map((option: any) => {
+                        const verifyCity = option.name
+                        if(props.city === 'TOMBOS'){
+                            if(option.city_id === 22){
+                                dataOlt.push(option.host) 
+                            }
+                        }else if(verifyCity === props.city){
+                            const ip = option.host;
+                            dataOlt.push(ip);
+                        }
+                    });
+                });
+                if(dataOlt.length > 1){
+                    dataOlt[0] = dataOnu[0].ip
+                }
+                
+                console.log(dataOnu[0].ip)
+                
+                await axios.post(`http://localhost:4000/writeONU`, {
+                    ip: dataOlt[0],
+                    slot: null,
+                    pon: dataOnu[0].pon,
+                    isPizzaBox: null,
+                    serialNumber: dataOnu[0].serial,
+                    type: 'parks',
+                    contract: null,
+                    pppoeUser: pppoe.toLowerCase(),
+                    pppPass: pppoePass || null,
+                    wifiSSID: wifiSSID || null,
+                    wifiPass: wifiPass || null
+                })
+                .then(response => {
+                    props.stopLoading();
+                    props.handleError(response.data.message);
+                    props.setDataFromApi([]);
+                    //updateConnection(response.data.id, dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId, pppoe, pppoePassword);
+                })
+                .catch(error => {
+                    props.stopLoading();
+                    props.handleError(error.code);
+                });
+                
+            }
+        }else{
+            if (props.isLoading){
+                const err = 'warning/has-action-in-progress';
+                props.handleError(err);
+            }else if(typeBridgeZte.includes((dataOnu[0].model)) && cpf.length === 0 ||
+            (typeBridgeZte.includes(dataOnu[0].model) && pppoe.length === 0)){
+                props.handleError('info/required-input');
+            }else if(!cpf.match(isNumeric)){
+                props.handleError('info/non-expect-caracter-NAN');
+            }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiSSID.match(isAlphaNumeric)){
+                props.handleError('info/wifi-ssid-did-not-match');
+            }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiPass.match(isAlphaNumeric)){
+                props.handleError('info/wifi-password-did-not-match');
+            }else if(typePppoeZte.includes(dataOnu[0].model) && wifiPass.length < 8){
+                props.handleError('info/wrong-type-passoword');
+            }else{
+                props.startLoading();
+                const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
+    
+    
+                //const peopleId = await getPeopleId(cpf);
+                //const { connectionId, contractId, pppoePassword } = await getConnectionId(peopleId, pppoe);
+    /*
+                await axios.post(`http://localhost:4000/writeONU`, {
+                    ip: oltData.host,
+                    slot: dataOnu[0].placa,
+                    pon: dataOnu[0].pon,
+                    isPizzaBox: oltData.isPizzaBox,
+                    serialNumber: dataOnu[0].serial,
+                    type: dataOnu[0].model,
+                    contract: 1010 || null,
+                    pppoeUser: pppoe.toLowerCase(),
+                    pppPass: pppoePass || null,
+                    wifiSSID: wifiSSID || null,
+                    wifiPass: wifiPass || null
+                })
+                .then(response => {
+                    props.stopLoading();
+                    props.handleError(response.data.message);
+                    props.setDataFromApi([]);
+                    //updateConnection(response.data.id, dataOnu[0].placa, dataOnu[0].pon, dataOnu[0].serial, wifiSSID, wifiPass, connectionId, pppoe, pppoePassword);
+                })
+                .catch(error => {
+                    props.stopLoading();
+                    props.handleError(error.code);
+                });
+                */
+            }
         }
     }
-    console.log(props.dataFromApi)
+
     return (
         <Container>
             {props.typeOnu === 'zte' ? (
@@ -158,7 +217,7 @@ export function WriteONU(props: WriteONUProps){
                 )
             ) : (
                 Array.isArray(props.dataFromApi) ? (
-                    props.dataFromApi.map((item, index) => {
+                    props.dataFromApi.map((item) => {
                         if(Array.isArray(item)){
                             const [pon, signal, serial] = item;
                             return(
@@ -192,6 +251,7 @@ export function WriteONU(props: WriteONUProps){
                                                 serialNumber={props.serialNumber}
                                                 setDataOnu={setDataOnu}
                                                 typeOnu={props.typeOnu}
+                                                item={item}
                                                 handlePppoePassChange={handlePppoePassChange}
                                                 handleWifiSSIDChange={handleWifiSSIDChange}
                                                 handleWifiPassChange={handleWifiPassChange}

@@ -8,10 +8,12 @@ export interface FormProps {
         pon: number;
         model: string;
         serial: string;
+        signal?: string;
+        ip?: string;
     }| string;
     typeOnu?: string,
     serialNumber: string, 
-    setDataOnu: React.Dispatch<React.SetStateAction<{ placa: number; pon: number; model: string; serial: string; }[]>>;
+    setDataOnu: React.Dispatch<React.SetStateAction<{ placa: number; pon: number; model: string; serial: string; signal?: string; ip?: string }[]>>;
     handlePppoePassChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
     handleWifiSSIDChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
     handleWifiPassChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
