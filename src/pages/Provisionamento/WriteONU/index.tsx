@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import { Form } from "../../../components/Form";
 import { WriteONUProps } from "../../../interfaces/WriteONUProps";
-import { isNumeric, isAlphaNumeric, isValidCpf } from '../../../config/regex';
+import { isAlphaNumeric, isValidCpf } from '../../../config/regex';
 import { typeBridgeZte, typePppoeZte } from '../../../config/tipsOlts';
 import { getPeopleId } from '../../../services/apiVoalle/getPeopleId';
 import { getConnectionId } from '../../../services/apiManageONU/getConnectionId';
@@ -79,8 +79,6 @@ export function WriteONU(props: WriteONUProps){
                     dataOlt[0] = dataOnu[0].ip
                 }
                 
-                console.log(dataOnu[0].ip)
-                
                 await axios.post(`http://localhost:4000/writeONU`, {
                     ip: dataOlt[0],
                     slot: null,
@@ -104,7 +102,6 @@ export function WriteONU(props: WriteONUProps){
                     props.stopLoading();
                     props.handleError(error.code);
                 });
-                
             }
         }else{
             if (props.isLoading){
@@ -113,7 +110,7 @@ export function WriteONU(props: WriteONUProps){
             }else if(typeBridgeZte.includes((dataOnu[0].model)) && cpf.length === 0 ||
             (typeBridgeZte.includes(dataOnu[0].model) && pppoe.length === 0)){
                 props.handleError('info/required-input');
-            }else if(!cpf.match(isNumeric)){
+            }else if(!cpf.match(isValidCpf)){
                 props.handleError('info/non-expect-caracter-NAN');
             }else if(typePppoeZte.includes(dataOnu[0].model) && !wifiSSID.match(isAlphaNumeric)){
                 props.handleError('info/wifi-ssid-did-not-match');
@@ -124,19 +121,18 @@ export function WriteONU(props: WriteONUProps){
             }else{
                 props.startLoading();
                 const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
-    
-    
+
+
                 //const peopleId = await getPeopleId(cpf);
                 //const { connectionId, contractId, pppoePassword } = await getConnectionId(peopleId, pppoe);
-    /*
                 await axios.post(`http://localhost:4000/writeONU`, {
-                    ip: oltData.host,
+                    ip: [oltData.host],
                     slot: dataOnu[0].placa,
                     pon: dataOnu[0].pon,
                     isPizzaBox: oltData.isPizzaBox,
                     serialNumber: dataOnu[0].serial,
                     type: dataOnu[0].model,
-                    contract: 1010 || null,
+                    contract: 1010,
                     pppoeUser: pppoe.toLowerCase(),
                     pppPass: pppoePass || null,
                     wifiSSID: wifiSSID || null,
@@ -152,7 +148,6 @@ export function WriteONU(props: WriteONUProps){
                     props.stopLoading();
                     props.handleError(error.code);
                 });
-                */
             }
         }
     }

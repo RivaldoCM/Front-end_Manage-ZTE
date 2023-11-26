@@ -96,14 +96,14 @@ export function Provisionamento(){
             async function olts(){
                 const oltData = await getOlt('zte');
                 setOlt(oltData);
-                setCity('ZTE-ESPERA FELIZ');
+                setCity('ESPERA-FELIZ');
             }
             olts();
         }else{
             async function olts(){
                 const oltData = await getOlt('parks');
                 setOlt(oltData);
-                setCity('PARKS-SANTA-CLARA');
+                setCity('SANTA-CLARA');
             }
             olts();
         }
