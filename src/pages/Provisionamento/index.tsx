@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react";
 
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
-
 import { getOlt } from "../../services/apiManageONU/getOlt";
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
-import { getPeopleId } from "../../services/apiVoalle/getPeopleId";
-import { getConnectionId } from "../../services/apiManageONU/getConnectionId";
 
 import { Container } from './style';
 import PropTypes from 'prop-types';
@@ -78,13 +75,19 @@ export function Provisionamento(){
 	const [value, setValue] = useState(0); //MUI-Core
 
     const handleTypeZte = () => {
-       setType('zte');
-       setDataFromApi([]);
-       setOlt([]);
-       setCity('');
+        if(type === 'zte'){
+            return;
+        }
+        setType('zte');
+        setDataFromApi([]);
+        setOlt([]);
+        setCity('');
     }
 
     const handleTypeParks = () => {
+        if(type === 'parks'){
+            return;
+        }
         setType('parks');
         setDataFromApi([]);
         setOlt([]);

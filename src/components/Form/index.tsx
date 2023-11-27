@@ -17,7 +17,15 @@ export function Form(props: FormProps){
                 <form onSubmit={props.handleSubmitWriteData} className="flex">
                     <InputContainer>
                         <div className="text">
-                            <p>CPF do cliente: </p>
+                            <p>PPPoE do cliente: </p>
+                        </div>
+                        <div className="content">
+                            <TextField  variant="standard" onChange={props.handlePppoeChange}></TextField>
+                        </div>
+                    </InputContainer>
+                    <InputContainer>
+                        <div className="text">
+                            <p>N° do contrato: </p>
                         </div>
                         <div className="content">
                             <TextField
@@ -25,14 +33,6 @@ export function Form(props: FormProps){
                                 required
                                 onChange={props.handleCpfChange}>
                             </TextField>
-                        </div>
-                    </InputContainer>
-                    <InputContainer>
-                        <div className="text">
-                            <p>PPPoE do cliente: </p>
-                        </div>
-                        <div className="content">
-                            <TextField  variant="standard" onChange={props.handlePppoeChange}></TextField>
                         </div>
                     </InputContainer>
                     {
@@ -97,7 +97,7 @@ export function Form(props: FormProps){
                         </InputContainer>
                         <InputContainer>
                             <div className="text">
-                                <p>CPF do cliente: </p>
+                                <p>N° do Ccontrato: </p>
                             </div>
                             <div className="content">
                                 <TextField
@@ -169,7 +169,7 @@ export function Form(props: FormProps){
                         </InputContainer>
                         <InputContainer>
                             <div className="text">
-                                <p>CPF do cliente: </p>
+                                <p>N° do contrato: </p>
                             </div>
                             <div className="content">
                                 <TextField 
