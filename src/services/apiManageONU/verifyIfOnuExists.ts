@@ -25,7 +25,7 @@ export const verifyIfOnuExists = async (props: propsApi) => {
         })
     }
 
-    await axios.post(`http://localhost:4000/searchONU`, {
+    await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/searchONU`, {
         ip: dataOlt,
         serialNumber: props.matchSerialNumber,
         modelOlt: props.typeOnu
