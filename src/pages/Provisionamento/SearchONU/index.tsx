@@ -14,6 +14,39 @@ import CircularProgress from '@mui/material/CircularProgress';
 export function SearchONU(props: SearchONUProps) {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
+    const handleMapOltData: any = () => {
+
+        if(props.type === 'zte'){
+            return(
+                props.OltInfo.map((option: any) => {
+                    return(
+                        <MenuItem key={option.id} value={option.name}>
+                            {option.name}
+                        </MenuItem>
+                    )
+                })
+            );
+        }else{      
+            return(
+                props.OltInfo.map((subArray) => {
+                    if(subArray.length <= 4){
+                        return(
+                            <MenuItem key="TOMBOS" value="TOMBOS">
+                                TOMBOS
+                            </MenuItem>
+                        );
+                    }else{
+                        return subArray.map((data) => (
+                            <MenuItem key={data.id} value={data.name}>
+                                {data.name}
+                            </MenuItem>
+                        ));
+                    }
+                })
+            );
+        }
+    }
+
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { props.setCity(e.target.value); };
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); };
 
@@ -48,11 +81,7 @@ export function SearchONU(props: SearchONUProps) {
                         value={props.city}
                         onChange={handleCityChange}
                     >
-                        {props.OltInfo.map((option) => (
-                            <MenuItem key={option.id} value={option.label}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
+                        {handleMapOltData()}
                     </TextField>
                 </div>
             </InputContainer>

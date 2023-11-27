@@ -68,6 +68,10 @@ export function useError(){
                 setErrorMessage('O único caracter especial permitido no nome do wifi é o underline(_).');
                 setSeverityStatus('info');
             break;
+            case 'warning/invalid-cpf-input':
+                setErrorMessage('CPF inválido.');
+                setSeverityStatus('warning');
+            break;
             default:
                 handleError('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');
