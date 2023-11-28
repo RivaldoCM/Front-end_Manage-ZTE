@@ -1,6 +1,9 @@
 import _React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import { handleIconMenu, handlePages } from '../../config/menu';
+
+import { StyledMenu } from './style';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -107,15 +110,6 @@ export function MenuDrawer() {
 		redirectToRoute(text);
 	};
 
-	const handleIconMenu: any = (text: string) => {
-        switch(text){
-            case 'Provisionamento':
-                return <MiscellaneousServicesOutlinedIcon />;
-            default:
-                return <></>;
-        }
-	};
-
 	const handleLogout = () => {
 		localStorage.removeItem('Authorization');
 		navigate('/login');
@@ -130,7 +124,7 @@ export function MenuDrawer() {
 				open={open}
 				sx={{
 					flexDirection: 'row-reverse',
-					width: '100% !important',
+
 				}}
 			>
 				<IconButton
@@ -170,6 +164,40 @@ export function MenuDrawer() {
 				</DrawerHeader>
 				<Divider />
 				<List>
+
+					{handlePages.map((area, index) => (
+						<div key={index}>
+							
+							{open ? <StyledMenu className='selection-menu'>{area.name}</StyledMenu> : <></>}
+
+							<List>
+								{area.pages.map((page, pageIndex) => (
+									<ListItem key={pageIndex} disablePadding sx={{ display: 'block' }}>
+									<ListItemButton
+										onClick={() => { handlePageChange(page); }}
+										sx={{
+											minHeight: 48,
+											justifyContent: open ? 'initial' : 'center',
+											px: 2.5,
+										}}
+									>
+										<ListItemIcon
+											sx={{
+												minWidth: 0,
+												mr: open ? 3 : 'auto',
+												justifyContent: 'center',
+											}}
+										>
+											{handleIconMenu(page)}
+										</ListItemIcon>
+										<ListItemText primary={page} sx={{ opacity: open ? 1 : 0 }} />
+									</ListItemButton>
+								</ListItem>
+								))}
+							</List>
+						</div>
+					))}
+					{/*
 					{['Provisionamento',].map((text, _index) => (
 						<ListItem key={text} disablePadding sx={{ display: 'block' }}>
 							<ListItemButton
@@ -193,6 +221,7 @@ export function MenuDrawer() {
 							</ListItemButton>
 						</ListItem>
 					))}
+					*/ }
 				</List>
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, mt: 8.5 }}>

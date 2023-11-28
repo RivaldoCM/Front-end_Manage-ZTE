@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { Container } from './style';
+import { handleIconMenu, handlePages } from '../../config/menu';
 
+import { Container } from './style';
+import { StyledMenu } from '../DesktopMenu/style';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -12,7 +14,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
+
+
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
@@ -44,16 +47,6 @@ export function MobileDrawerMenu() {
         navigate(`/${text}`);
     }
 
-    const handleIconMenu: any = (text: string) => {
-
-        switch(text){
-            case 'Provisionamento':
-                return <MiscellaneousServicesOutlinedIcon />;
-            default:
-                return <></>;
-        }
-	};
-
     const list = (anchor: Anchor) => (
         <Box
             sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
@@ -62,17 +55,33 @@ export function MobileDrawerMenu() {
             onKeyDown={toggleDrawer(anchor, false)}
         >
             <List>
-                {['Provisionamento'].map((text, _index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton
-                            onClick={() => { handlePageChange(text); }}
-                        >
-                            <ListItemIcon>
-                                { handleIconMenu(text) }
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
+                {handlePages.map((area, index) => (
+                    <div key={index}>
+                        <StyledMenu>{area.name}</StyledMenu>
+                        <List>
+                            {area.pages.map((page, pageIndex) => (
+                                <ListItem key={pageIndex} disablePadding sx={{ display: 'block' }}>
+                                <ListItemButton
+                                    onClick={() => { handlePageChange(page); }}
+                                    sx={{
+                                        minHeight: 48,
+                                        px: 2.5,
+                                    }}
+                                >
+                                    <ListItemIcon
+                                        sx={{
+                                            minWidth: 0,
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        {handleIconMenu(page)}
+                                    </ListItemIcon>
+                                    <ListItemText primary={page} sx={{ padding: '1rem' }}/>
+                                </ListItemButton>
+                            </ListItem>
+                            ))}
+                        </List>
+                    </div>
                 ))}
             </List>
         </Box>
