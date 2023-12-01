@@ -21,7 +21,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TableHead } from '@mui/material';
-
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { KeepMountedModal } from '../manageOlt/modal';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -92,6 +93,10 @@ function EnhancedTableHead(){
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { numSelected } = props;
 
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     return (
         <Toolbar
             sx={{
@@ -119,18 +124,22 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 id="tableTitle"
                 component="div"
             >
-                OLT's
+                Usuários
             </Typography>
         )}
         {numSelected > 0 ? (
-            <Tooltip title="Delete">
+            <Tooltip title="Editar">
                 <IconButton>
-                    <DeleteIcon />
+                    <EditOutlinedIcon />
                 </IconButton>
             </Tooltip>
         ) : (
             <Tooltip title="Adicionar">
-                <div></div>
+                <KeepMountedModal 
+                    handleOpen={handleOpen}
+                    open={open}
+                    handleClose={handleClose}
+                />
             </Tooltip>
         )}
         </Toolbar>
