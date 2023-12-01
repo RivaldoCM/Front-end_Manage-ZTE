@@ -21,7 +21,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TableHead } from '@mui/material';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { KeepMountedModal } from '../manageOlt/modal';
 
 function stableSort<T>(array: readonly T[]) {
@@ -33,7 +32,7 @@ function stableSort<T>(array: readonly T[]) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-interface EnhancedTableToolbarProps { numSelected: number; }
+interface EnhancedTableToolbarProps { numSelected: number; selectedUserData: Array<any>;}
 
 interface HeadCell {
     disablePadding: boolean;
@@ -91,7 +90,7 @@ function EnhancedTableHead(){
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected } = props;
+    const { numSelected, selectedUserData } = props;
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -128,23 +127,28 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             </Typography>
         )}
         {numSelected > 0 ? (
-            <Tooltip title="Editar">
-                <IconButton>
-                    <EditOutlinedIcon />
-                </IconButton>
-            </Tooltip>
+            <div>
+                <Tooltip title="Editar">
+                    <IconButton>
+                        <KeepMountedModal 
+                            handleOpen={handleOpen}
+                            open={open}
+                            handleClose={handleClose}
+                            selectedUserData={selectedUserData}
+                        />
+                    </IconButton>
+                </Tooltip>
+            </div>
+            
         ) : (
             <Tooltip title="Adicionar">
-                <KeepMountedModal 
-                    handleOpen={handleOpen}
-                    open={open}
-                    handleClose={handleClose}
-                />
+                <div></div>
             </Tooltip>
         )}
         </Toolbar>
     );
 }
+
 export function HandleManageUsers() {
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
@@ -152,6 +156,7 @@ export function HandleManageUsers() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const [ users, setUsers ] = useState<IUsers[]>([]);
+    const [selectedUser, setSelectedUser] = useState<Array<any>>([]);
 
     useEffect(() => {
         async function users(){
@@ -161,7 +166,8 @@ export function HandleManageUsers() {
         users();
     }, []);
 
-    const handleClick = (_event: React.MouseEvent<unknown>, id: number) => {
+    const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: Array<any>) => {
+        setSelectedUser(row);
         const selectedIndex = selected.indexOf(id);
         let newSelected: number[] = [];
 
@@ -209,7 +215,7 @@ export function HandleManageUsers() {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} selectedUserData={selectedUser}/>
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -225,7 +231,7 @@ export function HandleManageUsers() {
                             return (
                                 <TableRow
                                     hover
-                                    onClick={(event) => handleClick(event, row.id)}
+                                    onClick={(event) => handleClick(event, row.id, row)}
                                     role="checkbox"
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}
@@ -282,7 +288,6 @@ export function HandleManageUsers() {
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
                 label="Dense padding"
             />
-
         </Box>
     );
 }
