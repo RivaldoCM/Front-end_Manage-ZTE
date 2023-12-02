@@ -12,4 +12,14 @@ export const Container = styled.form`
 	max-height: 600px;
     background-color: white;
     border-radius: 30px;
+	padding: 2rem 1rem;
+
+	.container{
+		position: relative;
+		width: 100%;
+		height: 100%;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
+	}
 `;

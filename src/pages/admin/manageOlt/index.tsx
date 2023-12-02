@@ -137,11 +137,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             </Tooltip>
         ) : (
             <Tooltip title="Adicionar">
-                <KeepMountedModal
-                    handleOpen={handleOpen}
-                    open={open}
-                    handleClose={handleClose}
-                />
+                <div></div>
             </Tooltip>
         )}
         </Toolbar>
