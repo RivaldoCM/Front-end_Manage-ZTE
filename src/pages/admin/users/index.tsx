@@ -156,7 +156,7 @@ export function HandleManageUsers() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const [ users, setUsers ] = useState<IUsers[]>([]);
-    const [selectedUser, setSelectedUser] = useState<Array<any>>([]);
+    const [selectedUser, setSelectedUser] = useState<any>([]);
 
     useEffect(() => {
         async function users(){
@@ -166,7 +166,7 @@ export function HandleManageUsers() {
         users();
     }, []);
 
-    const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: Array<any>) => {
+    const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: IUsers) => {
         setSelectedUser(row);
         const selectedIndex = selected.indexOf(id);
         let newSelected: number[] = [];

@@ -7,6 +7,10 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import { Container } from './style';
 import { InputContainer } from '../../../../globalStyles';
@@ -26,7 +30,7 @@ export function KeepMountedModal(props: any) {
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => { setName(e.target.value); };
 	const handleRuleChange = (e: React.ChangeEvent<HTMLInputElement>) => { setRule(e.target.value); };
-	const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => { setStatus(e.target.value); };
+	const handleStatusChange = (e: SelectChangeEvent) => { setStatus(e.target.value as string); };
 	const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => { setNewPassword(e.target.value); };
 
 	if(typeof props.selectedUserData && name === ''){
@@ -50,7 +54,11 @@ export function KeepMountedModal(props: any) {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const response = await axios.put('http://localhost:4000/getUsers', {
-			name: name
+			id: id,
+			name: name,
+			rule: rule,
+			status: status,
+			newPassword: newPassword
 		}).then((response) => {
 			console.log(response)
 		})
@@ -86,7 +94,19 @@ export function KeepMountedModal(props: any) {
 							<div className="text">
 								<p>Status: </p>
 							</div>
-							<TextField id="standard-basic" variant="standard" onChange={handleStatusChange} defaultValue={status} />
+							<FormControl fullWidth>
+								<InputLabel id="demo-simple-select-label">Status</InputLabel>
+								<Select
+									labelId="demo-simple-select-label"
+									id="demo-simple-select"
+									value={status}
+									label="Status"
+									onChange={handleStatusChange}
+								>
+									<MenuItem value='normal'>normal</MenuItem>
+									<MenuItem value='Desativado'>Desativado</MenuItem>
+								</Select>
+							</FormControl>
 						</InputContainer>
 						<FormControlLabel
 							control={
@@ -100,7 +120,7 @@ export function KeepMountedModal(props: any) {
 								<div className="text">
 									<p>Nova senha: </p>
 								</div>
-								<TextField id="standard-basic" variant="standard" onChange={handleNewPasswordChange}/>
+								<TextField id="standard-basic" variant="standard" onChange={handleNewPasswordChange} value={newPassword}/>
 							</InputContainer>
 							:
 							<></>
