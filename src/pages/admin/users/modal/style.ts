@@ -6,10 +6,10 @@ export const Container = styled.form`
 	left: 50%;
 	transform: translate(-50%, -50%);
 	flex-direction: column;
-	width: 30%;
-	max-width: 500px;
-    height: 80vh;
-	max-height: 600px;
+	width: 98%;
+	max-width: 580px;
+    height: 100vh;
+	max-height: 480px;
     background-color: white;
     border-radius: 30px;
 	padding: 2rem 1rem;

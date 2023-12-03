@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 
 
 import { getOlt } from '../../../services/apiManageONU/getOlt';
-import { KeepMountedModal } from './modal';
 import { Olt } from '../../../interfaces/olt';
 
 import { alpha } from '@mui/material/styles';
@@ -154,29 +153,17 @@ export function HandleManageOlt() {
     useEffect(() => {
         async function olts(){
             const oltData = await getOlt('all');
-            console.log('pesquisado no DB')
             setOlt(oltData);
         }
         olts();
     }, []);
 
     const handleClick = (_event: React.MouseEvent<unknown>, id: number) => {
-        const selectedIndex = selected.indexOf(id);
-        let newSelected: number[] = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
+        if(selected[0] === id){
+            setSelected([]);
+            return;
         }
-        setSelected(newSelected);
+        setSelected([id]);
     };
 
     const handleChangePage = (_event: unknown, newPage: number) => {
@@ -204,6 +191,8 @@ export function HandleManageOlt() {
         ),
         [page, rowsPerPage, olt]
     );
+
+    console.log(olt)
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -250,7 +239,17 @@ export function HandleManageOlt() {
                                         {row.name}
                                     </TableCell>
                                     <TableCell align="right">{row.host}</TableCell>
-                                    <TableCell align="right">{row.isPizzaBox.toString()}</TableCell>
+                                    {row.type === '10' ?
+                                        <TableCell align="right">ZTE</TableCell>
+                                        :
+                                        <TableCell align="right">Parks</TableCell>
+                                    }
+                                    {
+                                        row.isPizzaBox.toString() === 'true' ? 
+                                        <TableCell align="right">Sim</TableCell>
+                                        :
+                                        <TableCell align="right">Não</TableCell>
+                                    }
                                 </TableRow>
                             );
                         })}
@@ -277,8 +276,9 @@ export function HandleManageOlt() {
                 />
             </Paper>
             <FormControlLabel
+                sx={{margin: '0'}}
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Dense padding"
+                label="Modo compacto"
             />
 
         </Box>

@@ -21,7 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { TableHead } from '@mui/material';
-import { KeepMountedModal } from '../manageOlt/modal';
+import { KeepMountedModal } from './modal';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -141,7 +141,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 </Tooltip>
             </div>
             <div>
-                <DeleteOutlineOutlinedIcon />
+                
             </div>
             </>
             
@@ -177,7 +177,7 @@ export function HandleManageUsers() {
         if(selected[0] === id){
             //Aqui eu desmarco a checkbox caso clique no usuário que já esta marcado
             setSelected([]);
-            return
+            return;
         }
         setSelected([id]);
     };
@@ -277,8 +277,9 @@ export function HandleManageUsers() {
                 />
             </Paper>
             <FormControlLabel
+                sx={{margin: '0'}}
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Dense padding"
+                label="Modo compacto"
             />
         </Box>
     );
