@@ -19,7 +19,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { TableHead } from '@mui/material';
 import { KeepMountedModal } from '../manageOlt/modal';
 
@@ -127,6 +127,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             </Typography>
         )}
         {numSelected > 0 ? (
+            <>
             <div>
                 <Tooltip title="Editar">
                     <IconButton>
@@ -139,9 +140,13 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     </IconButton>
                 </Tooltip>
             </div>
+            <div>
+                <DeleteOutlineOutlinedIcon />
+            </div>
+            </>
             
         ) : (
-            <Tooltip title="Adicionar">
+            <Tooltip title="Deletar">
                 <div></div>
             </Tooltip>
         )}
@@ -150,7 +155,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 export function HandleManageUsers() {
-    const [selected, setSelected] = useState<readonly number[]>([]);
+    const [selected, setSelected] = useState<number[]>([]);
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -168,36 +173,23 @@ export function HandleManageUsers() {
 
     const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: IUsers) => {
         setSelectedUser(row);
-        const selectedIndex = selected.indexOf(id);
-        let newSelected: number[] = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, id);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
+    
+        if(selected[0] === id){
+            //Aqui eu desmarco a checkbox caso clique no usuário que já esta marcado
+            setSelected([]);
+            return
         }
-        setSelected(newSelected);
+        setSelected([id]);
     };
 
-    const handleChangePage = (_event: unknown, newPage: number) => {
-        setPage(newPage);
-    };
+    const handleChangePage = (_event: unknown, newPage: number) => { setPage(newPage); };
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
 
-    const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDense(event.target.checked);
-    };
+    const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => { setDense(event.target.checked); };
 
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
@@ -244,7 +236,7 @@ export function HandleManageUsers() {
                                         color="primary"
                                         checked={isItemSelected}
                                         inputProps={{
-                                        'aria-labelledby': labelId,
+                                            'aria-labelledby': labelId,
                                         }}
                                     />
                                     </TableCell>

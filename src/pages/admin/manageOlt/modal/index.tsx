@@ -3,8 +3,9 @@ import axios from 'axios';
 
 import { useError } from '../../../../hooks/useError';
 
+
 import Modal from '@mui/material/Modal';
-import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -38,7 +39,7 @@ export function KeepMountedModal(props: any) {
 	const handleStatusChange = (e: SelectChangeEvent) => { setStatus(e.target.value); };
 	const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => { setNewPassword(e.target.value); };
 
-	if(typeof props.selectedUserData && name === ''){
+	if (typeof props.selectedUserData === 'object' && id !== props.selectedUserData['id']) {
 		if ('id' in props.selectedUserData && props.selectedUserData['id'] !== id) {
 			setId(props.selectedUserData['id']);
 		}
@@ -73,7 +74,7 @@ export function KeepMountedModal(props: any) {
 	return (
 		<div>
 			<IconButton onClick={props.handleOpen}>
-				<AddCircleOutlineRoundedIcon />
+				<EditOutlinedIcon />
 			</IconButton>
 			<Modal
 				keepMounted
@@ -88,7 +89,7 @@ export function KeepMountedModal(props: any) {
 							<div className="text">
 								<p>Nome: </p>
 							</div>
-							<TextField id="standard-basic" variant="standard" onChange={handleNameChange} defaultValue={name}/>
+							<TextField id="standard-basic" variant="standard" onChange={handleNameChange} value={name}/>
 						</InputContainer>
 						<InputContainer>
 							<div className="text">
