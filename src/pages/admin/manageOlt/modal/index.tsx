@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+
+import { useError } from '../../../../hooks/useError';
 
 import Modal from '@mui/material/Modal';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
@@ -14,13 +17,15 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import { Container } from './style';
 import { InputContainer } from '../../../../globalStyles';
-import axios from 'axios';
 
 export function KeepMountedModal(props: any) {
+
+    const { error, errorMessage, severityStatus, handleError } = useError();
+
 	const [checked, setChecked] = useState(false);
 	const [id, setId] = useState<number>()
 	const [name, setName] = useState('');
-	const [rule, setRule] = useState<any>();
+	const [rule, setRule] = useState<number>();
 	const [status, setStatus] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 
@@ -29,8 +34,8 @@ export function KeepMountedModal(props: any) {
 	};
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => { setName(e.target.value); };
-	const handleRuleChange = (e: React.ChangeEvent<HTMLInputElement>) => { setRule(e.target.value); };
-	const handleStatusChange = (e: SelectChangeEvent) => { setStatus(e.target.value as string); };
+	const handleRuleChange = (e: React.ChangeEvent<HTMLInputElement>) => { setRule(parseInt(e.target.value)); };
+	const handleStatusChange = (e: SelectChangeEvent) => { setStatus(e.target.value); };
 	const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => { setNewPassword(e.target.value); };
 
 	if(typeof props.selectedUserData && name === ''){
@@ -53,14 +58,15 @@ export function KeepMountedModal(props: any) {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const response = await axios.put('http://localhost:4000/getUsers', {
+
+		await axios.patch('http://localhost:4000/getUsers', {
 			id: id,
 			name: name,
 			rule: rule,
 			status: status,
 			newPassword: newPassword
 		}).then((response) => {
-			console.log(response)
+			handleError(response.data)
 		})
 	}
 
@@ -86,9 +92,9 @@ export function KeepMountedModal(props: any) {
 						</InputContainer>
 						<InputContainer>
 							<div className="text">
-								<p>Permissões: </p>
+								<p>Nivel de acesso: </p>
 							</div>
-							<TextField id="standard-basic" variant="standard" onChange={handleRuleChange} defaultValue={rule}/>
+							<input type="number" id="rule" name="rule" min="1" max="17" value={rule} onChange={handleRuleChange}/>
 						</InputContainer>
 						<InputContainer>
 							<div className="text">

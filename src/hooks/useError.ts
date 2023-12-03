@@ -68,6 +68,10 @@ export function useError(){
                 setErrorMessage('O único caracter especial permitido no nome do wifi é o underline(_).');
                 setSeverityStatus('info');
             break;
+            case 'success/user-updated':
+                setErrorMessage('Usuário atualizado');
+                setSeverityStatus('success');
+            break;
             default:
                 handleError('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');
