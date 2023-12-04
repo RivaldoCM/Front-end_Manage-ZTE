@@ -1,20 +1,17 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+    flex-direction: column;
+    width: 100%;
 
     .float-menu{
-        position: absolute;
-        top: -1%;
-        right: 2%;
+        align-self: end;
         width: 64px;
         height: 56px;
-        z-index: 10; //Para o menu sobrepor a tela gerada dinamicamente.
         .menu{
             width: inherit;
             height: inherit;
             border-radius: inherit;
         }
     }
-
-
 `;

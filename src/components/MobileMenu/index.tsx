@@ -88,7 +88,7 @@ export function MobileDrawerMenu() {
     );
 
     return (
-        <Container>
+        <Container className='flex'>
             <div className='float-menu'>
                 {(['left'] as const).map((anchor) => (
                     <React.Fragment key={anchor}>
