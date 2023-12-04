@@ -56,6 +56,10 @@ export function useError(){
                 setErrorMessage('Não foi possível se conectar ao serviço.');
                 setSeverityStatus('error');
             break;
+            case 'info/wifi-password-did-not-match':
+                setErrorMessage('Não são permitidos carcteres especiais na senha.');
+                setSeverityStatus('info');
+            break;
             case 'info/wrong-type-passoword':
                 setErrorMessage('A senha do wifi deve ter no minimo 8 caracteres.');
                 setSeverityStatus('info');
@@ -64,9 +68,9 @@ export function useError(){
                 setErrorMessage('O único caracter especial permitido no nome do wifi é o underline(_).');
                 setSeverityStatus('info');
             break;
-            case 'info/wifi-password-did-not-match':
-                setErrorMessage('Não são permitidos carcteres especiais na senha.');
-                setSeverityStatus('info');
+            case 'success/user-updated':
+                setErrorMessage('Usuário atualizado');
+                setSeverityStatus('success');
             break;
             case 'Invalid Token':
                 setErrorMessage('Usuário não autenticado, você precisa fazer login de novo.');

@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
 
+import { OltInfoItem } from "../../interfaces/OltInfoItem";
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
-
-import { OltInfoItem } from "../../interfaces/OltInfoItem";
+import { getPeopleId } from "../../services/apiVoalle/getPeopleId";
+import { getConnectionId } from "../../services/apiManageONU/getConnectionId";
 
 import { Container } from './style';
 import PropTypes from 'prop-types';
@@ -17,6 +18,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
+import { getOlt } from "../../services/apiManageONU/getOlt";
 
 interface TabPanelProps {
     className?: string
@@ -122,8 +124,23 @@ const OltInfo: OltInfoItem[] = [
     },
 ];
 
+type IDataFromApi = {
+    placa: number,
+    pon: number,
+    model: string,
+    serial: string
+}
+
 export function Provisionamento(){
     const navigate = useNavigate();
+    const { error, errorMessage, severityStatus, handleError } = useError();
+    const { isLoading, startLoading, stopLoading } = useLoading();
+
+    const [city, setCity] = useState('ZTE-NATIVIDADE');
+	const [dataFromApi, setDataFromApi] = useState<IDataFromApi[]>([]);
+	const [serialNumber, setSerialNumber] = useState('');
+	const [value, setValue] = useState(0); //MUI-Core
+    const [ olt, setOlt ] = useState<any>([]);
 
     useEffect(() => {
         const checkUser = () => {
@@ -133,21 +150,25 @@ export function Provisionamento(){
                 navigate('/login');
             }
         }
+        async function olts(){
+            const oltData = await getOlt('zte');
+            setOlt(oltData);
+        }
         checkUser();
-    }, []);
+        olts();
+    })
 
-    const { error, errorMessage, severityStatus, handleError } = useError();
-    const { isLoading, startLoading, stopLoading } = useLoading();
-
-    const [city, setCity] = useState('Natividade');
-	const [dataFromApi, setDataFromApi] = useState<any[]>([]);
-	const [serialNumber, setSerialNumber] = useState('');
-
-	const [value, setValue] = useState(0); //MUI-Core
-    
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
         setValue(newValue);
     };
+
+    const  handleToken = async () => {
+        const peopleID = await getPeopleId('12748829662');
+
+        const teste = await getConnectionId(peopleID, 'rivaldo_testes')
+    
+        console.log(teste)
+    }
 
     return(
         <Container>
@@ -157,7 +178,7 @@ export function Provisionamento(){
 						<Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='flex'>
 							<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
 								<Tab label="Provisiona ZTE" {...a11yProps(0)} />
-								{/*<Tab label="Item Two" {...a11yProps(1)} /> ADICIONA NOVA ABA */ }
+								<Tab label="PRoviziona PArks" {...a11yProps(1)} />
 							</Tabs>
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
@@ -171,10 +192,11 @@ export function Provisionamento(){
                                 startLoading={startLoading}
                                 stopLoading={stopLoading}
                                 OltInfo={OltInfo}
+                                olt={olt}
                                 setSerialNumber={setSerialNumber}
                             />
 							<Divider variant="middle" />
-							<WriteONU 
+							<WriteONU
                                 city={city}
                                 dataFromApi={dataFromApi}
                                 setDataFromApi={setDataFromApi}
@@ -197,6 +219,9 @@ export function Provisionamento(){
 					)
 				}
 			</div>
+            <button
+                onClick={() => handleToken()}
+            >clique aqui para gerar o token</button>
         </Container>
     )
 }
