@@ -5,10 +5,9 @@ import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
 
 import { OltInfoItem } from "../../interfaces/OltInfoItem";
+import { getOlt } from "../../services/apiManageONU/getOlt";
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
-import { getPeopleId } from "../../services/apiVoalle/getPeopleId";
-import { getConnectionId } from "../../services/apiManageONU/getConnectionId";
 
 import { Container } from './style';
 import PropTypes from 'prop-types';
@@ -18,7 +17,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
-import { getOlt } from "../../services/apiManageONU/getOlt";
 
 interface TabPanelProps {
     className?: string
@@ -61,69 +59,6 @@ function a11yProps(index: number) {
     };
 }
 
-const OltInfo: OltInfoItem[] = [
-	{
-		id: 0,
-		ip: '172.18.2.38',
-		label: 'OLT Bancada',
-		isPizzaBox: true
-	},
-    {
-        id: 1,
-        ip: '172.18.2.2',
-        label: 'Natividade',
-        isPizzaBox: false
-    },
-    {
-        id: 2,
-        ip: '172.18.2.6',
-        label: 'Guaçui',
-        isPizzaBox: false
-    },
-    {
-        id: 3,
-        ip: '172.18.2.10',
-        label: 'Celina',
-        isPizzaBox: true
-    },
-    {
-        id: 4,
-        ip: '172.18.2.14',
-        label: 'Espera Feliz',
-        isPizzaBox: false
-    },
-    {
-        id: 5,
-        ip: '172.18.2.18',
-        label: 'Varre-sai',
-        isPizzaBox: false
-    },
-    {
-        id: 6,
-        ip: '172.18.2.22',
-        label: 'Purilândia',
-        isPizzaBox: true
-    },
-    {
-        id: 7,
-        ip: '172.18.2.26',
-        label: 'Catuné',
-        isPizzaBox: true
-    },
-    {
-        id: 8,
-        ip: '172.18.2.30',
-        label: 'Tombos',
-        isPizzaBox: true
-    },
-    {
-        id: 9,
-        ip: '172.18.2.34',
-        label: 'Pedra Menina',
-        isPizzaBox: true
-    },
-];
-
 type IDataFromApi = {
     placa: number,
     pon: number,
@@ -132,15 +67,18 @@ type IDataFromApi = {
 }
 
 export function Provisionamento(){
-    const navigate = useNavigate();
+
+
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
+    const navigate = useNavigate();
 
-    const [city, setCity] = useState('ZTE-NATIVIDADE');
+    const [city, setCity] = useState('');
 	const [dataFromApi, setDataFromApi] = useState<IDataFromApi[]>([]);
 	const [serialNumber, setSerialNumber] = useState('');
+    const [olt, setOlt] = useState<any>([]);
+    const [type, setType] = useState('zte');
 	const [value, setValue] = useState(0); //MUI-Core
-    const [ olt, setOlt ] = useState<any>([]);
 
     useEffect(() => {
         const checkUser = () => {
@@ -150,25 +88,47 @@ export function Provisionamento(){
                 navigate('/login');
             }
         }
-        async function olts(){
-            const oltData = await getOlt('zte');
-            setOlt(oltData);
-        }
         checkUser();
-        olts();
-    })
+        if(type === 'zte'){
+            async function olts(){
+                const oltData = await getOlt('zte');
+                setOlt(oltData);
+                setCity('ESPERA-FELIZ');
+            }
+            olts();
+        }else{
+            async function olts(){
+                const oltData = await getOlt('parks');
+                setOlt(oltData);
+                setCity('SANTA-CLARA');
+            }
+            olts();
+        }
+    }, [type]);
 
+    const handleTypeZte = () => {
+        if(type === 'zte'){
+            return;
+        }
+        setType('zte');
+        setDataFromApi([]);
+        setOlt([]);
+        setCity('');
+    }
+
+    const handleTypeParks = () => {
+        if(type === 'parks'){
+            return;
+        }
+        setType('parks');
+        setDataFromApi([]);
+        setOlt([]);
+        setCity('');
+    }
+    
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
         setValue(newValue);
     };
-
-    const  handleToken = async () => {
-        const peopleID = await getPeopleId('12748829662');
-
-        const teste = await getConnectionId(peopleID, 'rivaldo_testes')
-    
-        console.log(teste)
-    }
 
     return(
         <Container>
@@ -177,23 +137,24 @@ export function Provisionamento(){
 					<Box sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
 						<Box sx={{ borderBottom: 1, borderColor: 'divider' }} className='flex'>
 							<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-								<Tab label="Provisiona ZTE" {...a11yProps(0)} />
-								<Tab label="PRoviziona PArks" {...a11yProps(1)} />
+								<Tab label="Provisiona ZTE" {...a11yProps(0)} onClick={handleTypeZte}/>
+								<Tab label="Provisiona Parks" {...a11yProps(1)} onClick={handleTypeParks}/>
 							</Tabs>
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
                             <SearchONU 
-                                setCity={setCity} 
-                                city={city} 
-                                setDataFromApi={setDataFromApi} 
+                                type={type}
+                                setCity={setCity}
+                                city={city}
+                                setDataFromApi={setDataFromApi}
                                 serialNumber={serialNumber}
                                 handleError={handleError}
                                 isLoading={isLoading}
                                 startLoading={startLoading}
                                 stopLoading={stopLoading}
-                                OltInfo={OltInfo}
-                                olt={olt}
                                 setSerialNumber={setSerialNumber}
+                                typeOnu={type}
+                                OltInfo={olt}
                             />
 							<Divider variant="middle" />
 							<WriteONU
@@ -206,7 +167,38 @@ export function Provisionamento(){
                                 isLoading={isLoading}
                                 startLoading={startLoading}
                                 stopLoading={stopLoading}
-                                OltInfo={OltInfo}
+                                typeOnu={type}
+                                OltInfo={olt}
+                            />
+						</CustomTabPanel>
+                        <CustomTabPanel className="flex" value={value} index={1}>
+                            <SearchONU
+                                type={type}
+                                setCity={setCity} 
+                                city={city} 
+                                setDataFromApi={setDataFromApi} 
+                                serialNumber={serialNumber}
+                                handleError={handleError}
+                                isLoading={isLoading}
+                                startLoading={startLoading}
+                                stopLoading={stopLoading}
+                                setSerialNumber={setSerialNumber}
+                                typeOnu={type}
+                                OltInfo={olt}
+                            />
+							<Divider variant="middle" />
+							<WriteONU
+                                city={city}
+                                dataFromApi={dataFromApi}
+                                setDataFromApi={setDataFromApi}
+                                setSerialNumber={setSerialNumber}
+                                serialNumber={serialNumber}
+                                handleError={handleError}
+                                isLoading={isLoading}
+                                startLoading={startLoading}
+                                stopLoading={stopLoading}
+                                typeOnu={type}
+                                OltInfo={olt}
                             />
 						</CustomTabPanel> 	
 					</Box>
@@ -219,9 +211,6 @@ export function Provisionamento(){
 					)
 				}
 			</div>
-            <button
-                onClick={() => handleToken()}
-            >clique aqui para gerar o token</button>
         </Container>
     )
 }

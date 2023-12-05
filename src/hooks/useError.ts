@@ -88,6 +88,10 @@ export function useError(){
                 setErrorMessage('A senha está incorreta.');
                 setSeverityStatus('error');
             break;
+            case 'warning/invalid-cpf-input':
+                setErrorMessage('CPF inválido.');
+                setSeverityStatus('warning');
+            break;
             default:
                 handleError('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');

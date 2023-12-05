@@ -1,4 +1,4 @@
-import { OltInfoItem } from "./OltInfoItem";
+import { Olt } from "./olt";
 
 export interface propsApi{
     city: string;
@@ -8,5 +8,6 @@ export interface propsApi{
     handleError: (error: string) => void;
     startLoading: () => void;
     stopLoading: () => void;
-    OltInfo: OltInfoItem[];
+    typeOnu: string;
+    OltInfo: Array<Array<Olt>> | Array<any>;
 }
