@@ -105,9 +105,9 @@ export function MenuDrawer() {
 	const handleDrawerOpen = () => { setOpen(true);	};
 	const handleDrawerClose = () => { setOpen(false); };
 	const redirectToRoute = (text: string) => {	navigate(`/${text.toLocaleLowerCase()}`); }
-	const handlePageChange = (text: string) => {
-		setCurrentPage(text);
-		redirectToRoute(text);
+	const handlePageChange = (route: string, page: string) => { 
+		redirectToRoute(route);	
+		setCurrentPage(page);
 	};
 
 	const handleLogout = () => {
@@ -164,64 +164,34 @@ export function MenuDrawer() {
 				</DrawerHeader>
 				<Divider />
 				<List>
-
 					{handlePages.map((area, index) => (
 						<div key={index}>
-							
 							{open ? <StyledMenu className='selection-menu'>{area.name}</StyledMenu> : <></>}
-
 							<List>
 								{area.pages.map((page, pageIndex) => (
 									<ListItem key={pageIndex} disablePadding sx={{ display: 'block' }}>
-									<ListItemButton
-										onClick={() => { handlePageChange(page); }}
-										sx={{
-											minHeight: 48,
-											justifyContent: open ? 'initial' : 'center',
-											px: 2.5,
-										}}
-									>
-										<ListItemIcon
+										<ListItemButton
+											onClick={() => { handlePageChange(Object.keys(page)[0], Object.values(page)[0]);}}
 											sx={{
-												minWidth: 0,
-												mr: open ? 3 : 'auto',
-												justifyContent: 'center',
+												minHeight: 48,
+												px: 2.5,
 											}}
 										>
-											{handleIconMenu(page)}
-										</ListItemIcon>
-										<ListItemText primary={page} sx={{ opacity: open ? 1 : 0 }} />
-									</ListItemButton>
-								</ListItem>
+											<ListItemIcon
+												sx={{
+													minWidth: 0,
+													justifyContent: 'center',
+												}}
+											>
+												{handleIconMenu(Object.keys(page)[0])}
+											</ListItemIcon>
+											<ListItemText primary={Object.values(page)[0]} sx={{ padding: '.5rem 1.5rem' }}/>
+										</ListItemButton>
+									</ListItem>
 								))}
 							</List>
-						</div>
+					</div>
 					))}
-					{/*
-					{['Provisionamento',].map((text, _index) => (
-						<ListItem key={text} disablePadding sx={{ display: 'block' }}>
-							<ListItemButton
-								onClick={() => { handlePageChange(text); }}
-								sx={{
-									minHeight: 48,
-									justifyContent: open ? 'initial' : 'center',
-									px: 2.5,
-								}}
-							>
-								<ListItemIcon
-									sx={{
-										minWidth: 0,
-										mr: open ? 3 : 'auto',
-										justifyContent: 'center',
-									}}
-								>
-									{handleIconMenu(text)}
-								</ListItemIcon>
-								<ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-							</ListItemButton>
-						</ListItem>
-					))}
-					*/ }
 				</List>
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, mt: 8.5 }}>

@@ -61,27 +61,27 @@ export function MobileDrawerMenu() {
                         <List>
                             {area.pages.map((page, pageIndex) => (
                                 <ListItem key={pageIndex} disablePadding sx={{ display: 'block' }}>
-                                <ListItemButton
-                                    onClick={() => { handlePageChange(page); }}
-                                    sx={{
-                                        minHeight: 48,
-                                        px: 2.5,
-                                    }}
-                                >
-                                    <ListItemIcon
+                                    <ListItemButton
+                                        onClick={() => { handlePageChange(Object.keys(page)[0]); }}
                                         sx={{
-                                            minWidth: 0,
-                                            justifyContent: 'center',
+                                            minHeight: 48,
+                                            px: 2.5,
                                         }}
                                     >
-                                        {handleIconMenu(page)}
-                                    </ListItemIcon>
-                                    <ListItemText primary={page} sx={{ padding: '1rem' }}/>
-                                </ListItemButton>
-                            </ListItem>
+                                        <ListItemIcon
+                                            sx={{
+                                                minWidth: 0,
+                                                justifyContent: 'center',
+                                            }}
+                                        >
+                                            {handleIconMenu(Object.keys(page)[0])}
+                                        </ListItemIcon>
+                                        <ListItemText primary={Object.values(page)[0]} sx={{ padding: '1rem' }}/>
+                                    </ListItemButton>
+                                </ListItem>
                             ))}
                         </List>
-                    </div>
+                  </div>
                 ))}
             </List>
         </Box>

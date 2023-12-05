@@ -6,23 +6,28 @@ export const handlePages = [
     {
         name: "Area Tecnica",
         pages: [
-            "Provisionamento",
-
+           {
+                provisionamento: 'Provisionamento'
+           }
         ]
     },
     {
         name: "Admin",
         pages: [
-            "users",
-            "olts"
-
+            {
+                users: 'Usuários',
+                
+            },
+            {
+                olts: "OLT's"
+            }
         ]
     }
 ]
 
 export const handleIconMenu: any = (text: string) => {
     switch(text){
-        case 'Provisionamento':
+        case 'provisionamento':
             return <MiscellaneousServicesOutlinedIcon />;
         case 'users':
             return <AdminPanelSettingsOutlinedIcon />;
