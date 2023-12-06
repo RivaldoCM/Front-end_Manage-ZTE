@@ -1,7 +1,7 @@
 import _React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { handleIconMenu, handlePages } from '../../config/menu';
+import { handleDynamicPagesByRule, handleIconMenu, handlePages } from '../../config/menu';
 
 import { StyledMenu } from './style';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
@@ -21,7 +21,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 240;
@@ -99,8 +98,8 @@ export function MenuDrawer() {
 	const navigate = useNavigate();
 	const theme = useTheme();
 	
-	const [open, setOpen] = useState(false);
-	const [ currentPage, setCurrentPage ] = useState('Provisionamento');
+	const [ open, setOpen ] = useState(false);
+	const [ currentPage, setCurrentPage ] = useState('');
 
 	const handleDrawerOpen = () => { setOpen(true);	};
 	const handleDrawerClose = () => { setOpen(false); };
@@ -164,7 +163,7 @@ export function MenuDrawer() {
 				</DrawerHeader>
 				<Divider />
 				<List>
-					{handlePages.map((area, index) => (
+					{handleDynamicPagesByRule.map((area, index) => (
 						<div key={index}>
 							{open ? <StyledMenu className='selection-menu'>{area.name}</StyledMenu> : <></>}
 							<List>

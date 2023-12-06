@@ -1,12 +1,12 @@
 import axios from "axios";
 import { SetStateAction } from 'react';
+import { Olt } from "../../interfaces/olt";
 
-export async function getOlt(type: string): Promise<SetStateAction<never[]>>{
+export async function getOlt(type: string): Promise<SetStateAction<Olt[]>>{
     const oltData = await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getOlt`, {
         type: type
     })
     .then(response => {
-        console.log(response.data)
         return response.data;
     });
 

@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
+import { handleShowPageByRule } from "../../config/menu";
 
 interface TabPanelProps {
     className?: string
@@ -83,9 +84,9 @@ export function Provisionamento(){
     useEffect(() => {
         const checkUser = () => {
             const user = localStorage.getItem('Authorization');
-
             if(!user){
                 navigate('/login');
+                return;
             }
         }
         checkUser();

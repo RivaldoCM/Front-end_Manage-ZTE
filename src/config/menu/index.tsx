@@ -2,6 +2,18 @@ import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/Miscellaneous
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 
+export var handleDynamicPagesByRule: any[] = []
+
+export const handleShowPageByRule = (rule: number) => {
+
+    if(rule === 17){
+        handleDynamicPagesByRule = [...handlePages]
+    }else if(rule === 1){
+        handleDynamicPagesByRule = [...handlePages]
+    }
+    console.log(handleDynamicPagesByRule)
+}
+
 export const handlePages = [
     {
         name: "Area Tecnica",

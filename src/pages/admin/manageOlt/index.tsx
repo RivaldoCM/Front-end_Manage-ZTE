@@ -192,8 +192,6 @@ export function HandleManageOlt() {
         [page, rowsPerPage, olt]
     );
 
-    console.log(olt)
-
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
