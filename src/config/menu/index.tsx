@@ -9,7 +9,7 @@ export const handleShowPageByRule = (rule: number) => {
     if(rule === 17){
         handleDynamicPagesByRule = [...handlePages]
     }else if(rule === 1){
-        handleDynamicPagesByRule = [...handlePages]
+        handleDynamicPagesByRule = [...handlePages.slice(1)]
     }
     console.log(handleDynamicPagesByRule)
 }

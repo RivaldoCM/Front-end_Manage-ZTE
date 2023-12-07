@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
 
-import { OltInfoItem } from "../../interfaces/OltInfoItem";
 import { getOlt } from "../../services/apiManageONU/getOlt";
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
@@ -17,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
-import { handleShowPageByRule } from "../../config/menu";
+import { useAuth } from "../../hooks/useAuth";
 
 interface TabPanelProps {
     className?: string
@@ -68,11 +67,10 @@ type IDataFromApi = {
 }
 
 export function Provisionamento(){
-
-
+    const navigate = useNavigate();
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
-    const navigate = useNavigate();
+    const { user } = useAuth();
 
     const [city, setCity] = useState('');
 	const [dataFromApi, setDataFromApi] = useState<IDataFromApi[]>([]);

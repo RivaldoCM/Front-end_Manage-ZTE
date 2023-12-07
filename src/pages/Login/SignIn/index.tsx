@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { jwtDecode } from "jwt-decode";
 import { useError } from '../../../hooks/useError';
+
 
 import Alert from '@mui/material/Alert';
 import FormControl from '@mui/material/FormControl';
@@ -15,10 +16,12 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useAuth } from '../../../hooks/useAuth';
 
 export function SignIn(){
     const navigate = useNavigate();
     const { error, errorMessage, severityStatus, handleError } = useError();
+    const { user, setUser } = useAuth();
 
     const [email, setEmail] = useState('');
     const [password, setPassord] = useState('');
@@ -37,10 +40,11 @@ export function SignIn(){
         })
         .then(response => {
             localStorage.setItem('Authorization', response.data.token);
+            const jwtDecoded = jwtDecode(response.data.token);
+            setUser(jwtDecoded);
             navigate('/');
         })
         .catch(err => {
-            console.log(err.response.data.error)
             handleError(err.response.data.error);
         });
     }

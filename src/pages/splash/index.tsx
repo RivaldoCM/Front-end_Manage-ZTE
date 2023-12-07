@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-export function splashScreen(){
+export function SplashScreen(){
     const navigate = useNavigate();
 
     useEffect(() => {
