@@ -7,13 +7,26 @@ import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 export var handleDynamicPagesByRule: IAllPages[];
 
 export const handleShowPageByRule = (rule: number) => {
+    console.log(rule)
+    switch(rule){
+        case 17:
+        return handleDynamicPagesByRule = [...handlePages]
+        case 16:
+            let withoutOlt = [...handlePages]
+            withoutOlt[1].pages.splice(1, 1)
+        return handleDynamicPagesByRule = [...withoutOlt]
+        case 1: 
+            let onlyAuthOnu = [...handlePages]
+            onlyAuthOnu.splice(1, 1)
+        return handleDynamicPagesByRule = [...onlyAuthOnu]
+    }
 
     if(rule === 17){
-        handleDynamicPagesByRule = [...handlePages]
+        
     }else if(rule === 1){
-        handleDynamicPagesByRule = [...handlePages.slice(1)]
+
     }
-    console.log(handleDynamicPagesByRule)
+
 }
 
 export const handlePages: IAllPages[] = [

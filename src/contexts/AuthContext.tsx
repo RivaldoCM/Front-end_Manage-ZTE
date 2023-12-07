@@ -12,6 +12,7 @@ export function AuthContextProvider(props: IAuthContextProviderProps){
         if (storedToken) {
             const decodedToken: IDecodedJTW = jwtDecode(storedToken);
             handleShowPageByRule(decodedToken.rule);
+            console.log(decodedToken)
             return decodedToken;
         }
         return undefined;
