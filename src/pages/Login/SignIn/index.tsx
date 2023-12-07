@@ -17,11 +17,12 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useAuth } from '../../../hooks/useAuth';
+import { IDecodedJTW } from '../../../interfaces/IDecodedJWT';
 
 export function SignIn(){
     const navigate = useNavigate();
     const { error, errorMessage, severityStatus, handleError } = useError();
-    const { user, setUser } = useAuth();
+    const { setUser } = useAuth();
 
     const [email, setEmail] = useState('');
     const [password, setPassord] = useState('');
@@ -40,7 +41,7 @@ export function SignIn(){
         })
         .then(response => {
             localStorage.setItem('Authorization', response.data.token);
-            const jwtDecoded = jwtDecode(response.data.token);
+            const jwtDecoded: IDecodedJTW = jwtDecode(response.data.token);
             setUser(jwtDecoded);
             navigate('/');
         })

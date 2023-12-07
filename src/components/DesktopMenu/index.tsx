@@ -1,7 +1,7 @@
 import _React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { handleDynamicPagesByRule, handleIconMenu, handlePages } from '../../config/menu';
+import { handleDynamicPagesByRule, handleIconMenu } from '../../config/menu';
 
 import { StyledMenu } from './style';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
@@ -170,7 +170,7 @@ export function MenuDrawer() {
 								{area.pages.map((page, pageIndex) => (
 									<ListItem key={pageIndex} disablePadding sx={{ display: 'block' }}>
 										<ListItemButton
-											onClick={() => { handlePageChange(Object.keys(page)[0], Object.values(page)[0]);}}
+											onClick={() => { handlePageChange(Object.keys(page)[0], Object.values(page)[0]); }}
 											sx={{
 												minHeight: 48,
 												px: 2.5,

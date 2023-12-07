@@ -79,6 +79,8 @@ export function Provisionamento(){
     const [type, setType] = useState('zte');
 	const [value, setValue] = useState(0); //MUI-Core
 
+    console.log(user)
+
     useEffect(() => {
         const checkUser = () => {
             const user = localStorage.getItem('Authorization');

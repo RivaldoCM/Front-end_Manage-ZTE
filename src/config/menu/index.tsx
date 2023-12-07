@@ -1,8 +1,10 @@
+import { IAllPages } from '../../interfaces/IAllPages';
+
 import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 
-export var handleDynamicPagesByRule: any[] = []
+export var handleDynamicPagesByRule: IAllPages[];
 
 export const handleShowPageByRule = (rule: number) => {
 
@@ -14,7 +16,7 @@ export const handleShowPageByRule = (rule: number) => {
     console.log(handleDynamicPagesByRule)
 }
 
-export const handlePages = [
+export const handlePages: IAllPages[] = [
     {
         name: "Area Tecnica",
         pages: [
