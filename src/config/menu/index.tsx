@@ -6,8 +6,7 @@ import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 
-export const handleShowPageByRule = (rule: number) => {
-    console.log(rule)
+export const handleShowPageByRule = (rule?: number) => {
     switch(rule){
         case 17:
         return handleDynamicPagesByRule = [...handlePages]

@@ -11,13 +11,10 @@ export function AuthContextProvider(props: IAuthContextProviderProps){
         const storedToken = localStorage.getItem('Authorization');
         if (storedToken) {
             const decodedToken: IDecodedJTW = jwtDecode(storedToken);
-            handleShowPageByRule(decodedToken.rule);
-            console.log(decodedToken)
             return decodedToken;
         }
-        return undefined;
     });
-
+    handleShowPageByRule(user?.rule);
     return(
         <AuthContext.Provider value={{ user, setUser }}> 
             {props.children}

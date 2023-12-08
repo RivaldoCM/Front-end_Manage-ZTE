@@ -22,6 +22,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useAuth } from '../../hooks/useAuth';
 
 const drawerWidth = 240;
 
@@ -96,6 +97,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export function MenuDrawer() {
 	const navigate = useNavigate();
+	const { setUser } = useAuth();
 	const theme = useTheme();
 	
 	const [ open, setOpen ] = useState(false);
@@ -111,6 +113,7 @@ export function MenuDrawer() {
 
 	const handleLogout = () => {
 		localStorage.removeItem('Authorization');
+		setUser(undefined);
 		navigate('/login');
 	}
 
