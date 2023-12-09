@@ -1,4 +1,4 @@
-import _React, { useState } from 'react';
+import _React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { handleDynamicPagesByRule, handleIconMenu } from '../../config/menu';
@@ -23,6 +23,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth } from '../../hooks/useAuth';
+import { isLogged } from '../../config/isLogged';
 
 const drawerWidth = 240;
 
@@ -99,7 +100,7 @@ export function MenuDrawer() {
 	const navigate = useNavigate();
 	const { setUser } = useAuth();
 	const theme = useTheme();
-	
+
 	const [ open, setOpen ] = useState(false);
 	const [ currentPage, setCurrentPage ] = useState('');
 
