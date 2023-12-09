@@ -3,30 +3,9 @@ import { IAllPages } from '../../interfaces/IAllPages';
 import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import cloneDeep from 'lodash/cloneDeep';
 
 export var handleDynamicPagesByRule: IAllPages[];
-
-export const handleShowPageByRule = (rule?: number) => {
-    switch(rule){
-        case 17:
-        return handleDynamicPagesByRule = [...handlePages]
-        case 16:
-            let withoutOlt = [...handlePages]
-            withoutOlt[1].pages.splice(1, 1)
-        return handleDynamicPagesByRule = [...withoutOlt]
-        case 1: 
-            let onlyAuthOnu = [...handlePages]
-            onlyAuthOnu.splice(1, 1)
-        return handleDynamicPagesByRule = [...onlyAuthOnu]
-    }
-
-    if(rule === 17){
-        
-    }else if(rule === 1){
-
-    }
-
-}
 
 export const handlePages: IAllPages[] = [
     {
@@ -50,6 +29,22 @@ export const handlePages: IAllPages[] = [
         ]
     }
 ]
+
+export const handleShowPageByRule = (rule?: number) => {
+    switch(rule){
+        case 17:
+            let allPages = cloneDeep(handlePages);
+        return handleDynamicPagesByRule = allPages;
+        case 16:
+            let withoutOlt = cloneDeep(handlePages);
+            withoutOlt[1].pages.splice(1, 1);
+        return handleDynamicPagesByRule = withoutOlt;
+        case 1:
+            let onlyAuthOnu = cloneDeep(handlePages);
+            onlyAuthOnu.splice(1, 1);
+        return handleDynamicPagesByRule = onlyAuthOnu;
+    }
+}
 
 export const handleIconMenu: any = (text: string) => {
     switch(text){
