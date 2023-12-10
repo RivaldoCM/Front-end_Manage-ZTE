@@ -1,6 +1,7 @@
 import _React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import { useAuth } from '../../hooks/useAuth';
 import { handleDynamicPagesByRule, handleIconMenu } from '../../config/menu';
 
 import { StyledMenu } from './style';
@@ -22,7 +23,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useAuth } from '../../hooks/useAuth';
 
 const drawerWidth = 240;
 
@@ -135,6 +135,7 @@ export function MenuDrawer() {
 					edge="start"
 					sx={{
 						marginRight: 5,
+						zIndex: 5
 					}}
 				>
 					<LogoutIcon />

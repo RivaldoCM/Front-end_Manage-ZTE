@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { handleIconMenu, handlePages } from '../../config/menu';
+import { useAuth } from '../../hooks/useAuth';
+import { handleDynamicPagesByRule, handleIconMenu } from '../../config/menu';
 
 import { Container } from './style';
 import { StyledMenu } from '../DesktopMenu/style';
@@ -14,6 +15,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 
@@ -21,6 +23,7 @@ type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 export function MobileDrawerMenu() {
     const navigate = useNavigate();
+    const { setUser } = useAuth();
 
     const [state, setState] = useState({
         top: false,
@@ -47,6 +50,13 @@ export function MobileDrawerMenu() {
         navigate(`/${text}`);
     }
 
+    const handleLogout = () => {
+		localStorage.removeItem('Authorization');
+		setUser(undefined);
+		navigate('/login');
+	};
+
+
     const list = (anchor: Anchor) => (
         <Box
             sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
@@ -55,7 +65,7 @@ export function MobileDrawerMenu() {
             onKeyDown={toggleDrawer(anchor, false)}
         >
             <List>
-                {handlePages.map((area, index) => (
+                {handleDynamicPagesByRule.map((area, index) => (
                     <div key={index}>
                         <StyledMenu>{area.name}</StyledMenu>
                         <List>
@@ -89,27 +99,36 @@ export function MobileDrawerMenu() {
 
     return (
         <Container className='flex'>
-            <div className='float-menu'>
-                {(['left'] as const).map((anchor) => (
-                    <React.Fragment key={anchor}>
-                        <Button
-                            className='menu' 
-                            onClick={toggleDrawer('left', true)}
-                        >
-                            <MenuOutlinedIcon />
-                        </Button>
-                        <Drawer
-                            anchor={anchor}
-                            open={state[anchor]}
-                            onClose={toggleDrawer(anchor, false)}
-                        >
-                            {list(anchor)}
-                        </Drawer>
-                    </React.Fragment>
-                ))}
-            </div>
+            <header className='flex'>
+                <nav className='flex'>
+                    {(['bottom'] as const).map((anchor) => (
+                        <React.Fragment key={anchor}>
+                            <Button
+                                className='menu' 
+                                onClick={toggleDrawer('bottom', true)}
+                            >
+                                <MenuOutlinedIcon />
+                            </Button>
+                            <Drawer
+                                anchor={anchor}
+                                open={state[anchor]}
+                                onClose={toggleDrawer(anchor, false)}
+                            >
+                                {list(anchor)}
+                            </Drawer>
+                        </React.Fragment>
+                    ))}
+                </nav>
+                <div className="flex">
+                    <Button
+                        className='logout' 
+                        onClick={handleLogout}
+                    >
+                        <LogoutIcon />
+                    </Button>
+                </div>
+            </header>
             <Outlet/>
         </Container>
-        
     );
 }

@@ -4,14 +4,20 @@ export const Container = styled.div`
     flex-direction: column;
     width: 100%;
 
-    .float-menu{
-        align-self: end;
-        width: 64px;
+    header{
+        justify-content: space-between;
+        width: 100%;
         height: 56px;
-        .menu{
-            width: inherit;
+        nav{
             height: inherit;
-            border-radius: inherit;
+            .menu{
+                width: 64px;
+                height: inherit;
+            }
+        }
+
+        .logout{
+            height: 56px;
         }
     }
 `;
