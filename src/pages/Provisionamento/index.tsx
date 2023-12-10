@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
@@ -16,7 +15,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
-import { useAuth } from "../../hooks/useAuth";
 
 interface TabPanelProps {
     className?: string
@@ -67,10 +65,8 @@ type IDataFromApi = {
 }
 
 export function Provisionamento(){
-    const navigate = useNavigate();
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
-    const { user } = useAuth();
 
     const [city, setCity] = useState('');
 	const [dataFromApi, setDataFromApi] = useState<IDataFromApi[]>([]);
@@ -80,15 +76,6 @@ export function Provisionamento(){
 	const [value, setValue] = useState(0); //MUI-Core
 
     useEffect(() => {
-        const checkUser = () => {
-            const user = localStorage.getItem('Authorization');
-            if(!user){
-
-                navigate('/login');
-                return;
-            }
-        }
-        checkUser();
         if(type === 'zte'){
             async function olts(){
                 const oltData = await getOlt('zte');

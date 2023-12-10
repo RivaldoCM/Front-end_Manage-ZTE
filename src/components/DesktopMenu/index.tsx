@@ -1,4 +1,4 @@
-import _React, { useEffect, useState } from 'react';
+import _React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { handleDynamicPagesByRule, handleIconMenu } from '../../config/menu';
@@ -23,7 +23,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth } from '../../hooks/useAuth';
-import { isLogged } from '../../config/isLogged';
 
 const drawerWidth = 240;
 
@@ -80,7 +79,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
+  	({ theme, open }) => ({
 		width: drawerWidth,
 		flexShrink: 0,
 		whiteSpace: 'nowrap',
@@ -98,11 +97,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export function MenuDrawer() {
 	const navigate = useNavigate();
-	const { setUser } = useAuth();
+	const { user, setUser } = useAuth();
 	const theme = useTheme();
 
 	const [ open, setOpen ] = useState(false);
-	const [ currentPage, setCurrentPage ] = useState('');
+	const [ currentPage, setCurrentPage ] = useState('Provisionamento');
 
 	const handleDrawerOpen = () => { setOpen(true);	};
 	const handleDrawerClose = () => { setOpen(false); };
@@ -116,7 +115,7 @@ export function MenuDrawer() {
 		localStorage.removeItem('Authorization');
 		setUser(undefined);
 		navigate('/login');
-	}
+	};
 
 	return(
 		<Box sx={{ display: 'flex' }}>
@@ -127,7 +126,6 @@ export function MenuDrawer() {
 				open={open}
 				sx={{
 					flexDirection: 'row-reverse',
-
 				}}
 			>
 				<IconButton
@@ -167,7 +165,7 @@ export function MenuDrawer() {
 				</DrawerHeader>
 				<Divider />
 				<List>
-					{handleDynamicPagesByRule.map((area, index) => (
+					{user && handleDynamicPagesByRule.map((area, index) => (
 						<div key={index}>
 							{open ? <StyledMenu className='selection-menu'>{area.name}</StyledMenu> : <></>}
 							<List>

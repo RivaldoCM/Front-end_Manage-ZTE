@@ -43,7 +43,7 @@ export function SignIn(){
             localStorage.setItem('Authorization', response.data.token);
             const jwtDecoded: IDecodedJTW = jwtDecode(response.data.token);
             setUser(jwtDecoded);
-            navigate('/');
+            navigate('/provisionamento');
         })
         .catch(err => {
             handleError(err.response.data.error);

@@ -14,7 +14,9 @@ export function AuthContextProvider(props: IAuthContextProviderProps){
             return decodedToken;
         }
     });
+
     handleShowPageByRule(user?.rule);
+
     return(
         <AuthContext.Provider value={{ user, setUser }}> 
             {props.children}
