@@ -57,6 +57,11 @@ export const GlobalStyle = createGlobalStyle`
         width: 30px !important;
         height: 30px !important;
     }
+
+    .alert{
+        position: fixed;
+        bottom: 2%;
+    }
 `
 
 export const InputContainer = styled.div<MyStyledComponentProps>`
@@ -84,4 +89,4 @@ export const InputContainer = styled.div<MyStyledComponentProps>`
         width: 50%;
         padding: 0 2px;
     }
-`;
+`

@@ -3,7 +3,6 @@ import axios from 'axios';
 
 import { useError } from '../../../../hooks/useError';
 
-
 import Modal from '@mui/material/Modal';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
@@ -15,6 +14,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { Container } from './style';
 import { InputContainer } from '../../../../globalStyles';
@@ -84,6 +84,9 @@ export function KeepMountedModal(props: any) {
 				aria-describedby="keep-mounted-modal-description"
 			>
 				<Container className='flex' onSubmit={handleSubmit}>
+					<IconButton aria-label="close" onClick={props.handleClose}>
+						<CloseIcon />
+					</IconButton>
 					<div className='container flex'>
 						<InputContainer>
 							<div className="text">

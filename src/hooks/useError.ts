@@ -85,7 +85,7 @@ export function useError(){
                 setSeverityStatus('error');
             break;
             case 'Invalid Password':
-                setErrorMessage('A senha está incorreta.');
+                setErrorMessage('A senha está incorreta, verifique novamente.');
                 setSeverityStatus('error');
             break;
             case 'warning/invalid-cpf-input':
