@@ -94,9 +94,9 @@ function EnhancedTableHead(){
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { numSelected } = props;
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [_open, _setOpen] = useState(false);
+    //const handleOpen = () => setOpen(true);
+    //const handleClose = () => setOpen(false);
 
     return (
         <Toolbar
