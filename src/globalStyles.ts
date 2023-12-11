@@ -20,7 +20,7 @@ export const GlobalStyle = createGlobalStyle`
         list-style-type: none;
     }
     html {
-        font-size: 18px;
+        font-size: 17px;
 
         @media screen {
             @media (max-width: 1000px){
@@ -32,7 +32,7 @@ export const GlobalStyle = createGlobalStyle`
         }
     }
     body {
-        //background: var(--background);
+        //background: #bbbabb;
         -webkit-font-smoothing: antialiased;
     }
     body, button, texarea{
@@ -42,7 +42,7 @@ export const GlobalStyle = createGlobalStyle`
     p, li, input, div{
         font-family: 'Poppins', sans-serif !important;
     }
-    h1, h2, h3, h4, h5, h6, strong{font-weight: 700; background: none;}
+    h1, h2, h3, h4, h5, h6, strong, button{font-weight: 700; background: none;}
     button {cursor: pointer;}
     //a{color: var(--black)}
     [disable] {opacity: 0.6%; cursor: not-allowed;}
@@ -56,6 +56,13 @@ export const GlobalStyle = createGlobalStyle`
     .MUI-CircularProgress{
         width: 30px !important;
         height: 30px !important;
+    }
+
+    .alert{
+        position: fixed; 
+        top: 94%;
+        left:50%;
+        transform: translate(-50%, -50%);
     }
 `
 
@@ -84,4 +91,4 @@ export const InputContainer = styled.div<MyStyledComponentProps>`
         width: 50%;
         padding: 0 2px;
     }
-`;
+`

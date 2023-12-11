@@ -15,22 +15,28 @@ export const verifyIfOnuExists = async (props: propsApi) => {
                 const verifyCity = option.name
                 if(props.city === 'TOMBOS'){
                     if(option.city_id === 22){
-                        dataOlt.push(option.host) 
+                        dataOlt.push(option.host);
                     }
                 }else if(verifyCity === props.city){
-                    const ip = option.host
+                    const ip = option.host;
                     dataOlt.push(ip);
                 }
             });
         })
     }
-
-    await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/searchONU`, {
-        ip: dataOlt,
-        serialNumber: props.matchSerialNumber,
-        modelOlt: props.typeOnu
-    })
-    .then(response => {
+    
+    await axios({
+        method: 'post',
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/findOnu`,
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
+        },
+        data: {
+            ip: dataOlt,
+            serialNumber: props.matchSerialNumber,
+            modelOlt: props.typeOnu
+        }
+    }).then(response => {
         if(typeof(response.data) === 'string'){
             props.handleError(response.data);
             //RETORNA ONU NAO ENCONTRADA

@@ -68,9 +68,41 @@ export function useError(){
                 setErrorMessage('O único caracter especial permitido no nome do wifi é o underline(_).');
                 setSeverityStatus('info');
             break;
+            case 'success/user-updated':
+                setErrorMessage('Usuário atualizado com sucesso.');
+                setSeverityStatus('success');
+            break;
+            case 'success/user-created':
+                setErrorMessage('Usuário criado com sucesso.');
+                setSeverityStatus('success');
+            break;
+            case 'error/already-exists-email':
+                setErrorMessage('Este email já existe na base de dados.');
+                setSeverityStatus('error');
+            break;
+            case 'Invalid Token':
+                setErrorMessage('Usuário não autenticado, você precisa fazer login novamente.');
+                setSeverityStatus('error');
+            break;
+            case 'Invalid Secret':
+                setErrorMessage('Erro interno, verifique com o suporte.');
+                setSeverityStatus('error');
+            break;
+            case 'Invalid Email':
+                setErrorMessage('Este Email não existe em nossa base de dados.');
+                setSeverityStatus('error');
+            break;
+            case 'Invalid Password':
+                setErrorMessage('A senha está incorreta, verifique novamente.');
+                setSeverityStatus('error');
+            break;
             case 'warning/invalid-cpf-input':
                 setErrorMessage('CPF inválido.');
                 setSeverityStatus('warning');
+            break;
+            case 'unable-load-data':
+                setErrorMessage('Não foi possível carregar os dados, tente fazer login novamente.');
+                setSeverityStatus('error');
             break;
             default:
                 handleError('Erro interno, verifique com o suporte.');

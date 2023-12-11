@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
+
 import { getOlt } from "../../services/apiManageONU/getOlt";
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
@@ -74,6 +75,36 @@ export function Provisionamento(){
     const [type, setType] = useState('zte');
 	const [value, setValue] = useState(0); //MUI-Core
 
+    useEffect(() => {
+        if(type === 'zte'){
+            async function olts(){
+                const oltData = await getOlt('zte');
+                if(typeof oltData !== 'string'){
+                    setOlt(oltData);
+                    setCity('ESPERA-FELIZ');
+                } else {
+                    setOlt([]);
+                    setCity('');
+                    handleError('unable-load-data');
+                }
+            }
+            olts();
+        }else{
+            async function olts(){
+                const oltData = await getOlt('parks');
+                if(typeof oltData !== 'string'){
+                    setOlt(oltData);
+                    setCity('SANTA-CLARA');
+                } else {
+                    setOlt([]);
+                    setCity('');
+                    handleError('unable-load-data');
+                }
+            }
+            olts();
+        }
+    }, [type]);
+
     const handleTypeZte = () => {
         if(type === 'zte'){
             return;
@@ -93,24 +124,6 @@ export function Provisionamento(){
         setOlt([]);
         setCity('');
     }
-
-    useEffect(() => {
-        if(type === 'zte'){
-            async function olts(){
-                const oltData = await getOlt('zte');
-                setOlt(oltData);
-                setCity('ESPERA-FELIZ');
-            }
-            olts();
-        }else{
-            async function olts(){
-                const oltData = await getOlt('parks');
-                setOlt(oltData);
-                setCity('SANTA-CLARA');
-            }
-            olts();
-        }
-    }, [type]);
     
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
         setValue(newValue);

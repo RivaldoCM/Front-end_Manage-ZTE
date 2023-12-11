@@ -17,10 +17,5 @@ export const Container = styled.div`
         .formContent{
             width: 100%;
         }
-
-        .alert{
-            position: fixed;
-            bottom: 2%;
-        }
     }
 `;
