@@ -5,7 +5,7 @@ import { IUsers } from "../../interfaces/users";
 export async function getUsers(): Promise<IUsers[]>{
     const userData = await axios({
         method: 'post',
-        url: 'http://localhost:4000/getUsers',
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getUsers`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },

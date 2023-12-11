@@ -27,11 +27,10 @@ export const verifyIfOnuExists = async (props: propsApi) => {
     
     await axios({
         method: 'post',
-        url: 'http://localhost:4000/findOnu',
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/findOnu`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
         },
-
         data: {
             ip: dataOlt,
             serialNumber: props.matchSerialNumber,

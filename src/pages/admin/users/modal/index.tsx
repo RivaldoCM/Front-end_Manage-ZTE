@@ -65,7 +65,7 @@ export function KeepMountedModal(props: any) {
 			headers: {
 				'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
 			},
-			url: 'http://localhost:4000/getUsers',
+			url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getUsers`,
 			data:{
 				id: id,
 				name: name,
