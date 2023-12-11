@@ -22,8 +22,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TableHead } from '@mui/material';
-
-
+import { useError } from '../../../hooks/useError';
+import Alert from '@mui/material/Alert';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -143,6 +143,9 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     );
 }
 export function HandleManageOlt() {
+
+    const { error, errorMessage, severityStatus, handleError } = useError();
+
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
@@ -153,7 +156,8 @@ export function HandleManageOlt() {
     useEffect(() => {
         async function olts(){
             const oltData = await getOlt('all');
-            setOlt(oltData);
+            typeof oltData !== 'string' 
+            ? setOlt(oltData) : setOlt([]), handleError('nao deu');
         }
         olts();
     }, []);
@@ -278,7 +282,13 @@ export function HandleManageOlt() {
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
                 label="Modo compacto"
             />
-
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
+                )
+            }
         </Box>
     );
 }

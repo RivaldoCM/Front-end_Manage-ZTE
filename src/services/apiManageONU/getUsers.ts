@@ -12,6 +12,8 @@ export async function getUsers(): Promise<IUsers[]>{
         data: {},
     }).then((response) => {
         return response.data;
+    }).catch((err) => {
+        return err.response.data.messages.message;
     });
     return userData;
 }

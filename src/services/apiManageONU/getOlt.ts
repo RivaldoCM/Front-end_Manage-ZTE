@@ -14,6 +14,8 @@ export async function getOlt(type: string): Promise<SetStateAction<Olt[]>>{
         },
     }).then((response) => {
         return response.data;
+    }).catch((err) => {
+        return err.response.data.messages.message;
     });
     return oltData;
 }

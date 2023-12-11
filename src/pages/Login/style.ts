@@ -11,7 +11,5 @@ export const Container = styled.div`
         gap: 1.5rem;
         max-width: 500px;
         padding: 1rem;
-
-
     }
 `;

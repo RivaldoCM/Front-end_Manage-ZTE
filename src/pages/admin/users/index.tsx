@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
+import { useError } from '../../../hooks/useError';
 import { KeepMountedModal } from './modal';
 
 import { IUsers } from '../../../interfaces/users';
@@ -22,6 +23,7 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { TableHead } from '@mui/material';
+import Alert from '@mui/material/Alert';
 
 
 function stableSort<T>(array: readonly T[]) {
@@ -156,6 +158,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 export function HandleManageUsers() {
+    const { error, errorMessage, severityStatus, handleError } = useError();
+
     const [selected, setSelected] = useState<number[]>([]);
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
@@ -167,7 +171,9 @@ export function HandleManageUsers() {
     useEffect(() => {
         async function users(){
             const userData = await getUsers();
-            setUsers(userData);
+
+            typeof userData !== 'string' 
+            ? setUsers(userData) : setUsers([]), handleError('nao deu');
         }
         users();
     }, []);
@@ -217,7 +223,7 @@ export function HandleManageUsers() {
                     >
                         <EnhancedTableHead />
                         <TableBody>
-                        {visibleRows.map((row, index) => {
+                        {typeof visibleRows !== 'string' && visibleRows.map((row, index) => {
                             const isItemSelected = isSelected(row.id);
                             const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -282,6 +288,13 @@ export function HandleManageUsers() {
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
                 label="Modo compacto"
             />
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
+                )
+            }
         </Box>
     );
 }
