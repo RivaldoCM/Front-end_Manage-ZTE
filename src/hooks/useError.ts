@@ -69,11 +69,19 @@ export function useError(){
                 setSeverityStatus('info');
             break;
             case 'success/user-updated':
-                setErrorMessage('Usuário atualizado');
+                setErrorMessage('Usuário atualizado com sucesso.');
                 setSeverityStatus('success');
             break;
+            case 'success/user-created':
+                setErrorMessage('Usuário criado com sucesso.');
+                setSeverityStatus('success');
+            break;
+            case 'error/already-exists-email':
+                setErrorMessage('Este email já existe na base de dados.');
+                setSeverityStatus('error');
+            break;
             case 'Invalid Token':
-                setErrorMessage('Usuário não autenticado, você precisa fazer login de novo.');
+                setErrorMessage('Usuário não autenticado, você precisa fazer login novamente.');
                 setSeverityStatus('error');
             break;
             case 'Invalid Secret':

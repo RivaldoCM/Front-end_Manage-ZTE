@@ -15,12 +15,12 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
+import Alert from '@mui/material/Alert';
 
 import { Container } from './style';
 import { InputContainer } from '../../../../globalStyles';
 
 export function KeepMountedModal(props: any) {
-
     const { error, errorMessage, severityStatus, handleError } = useError();
 
 	const [checked, setChecked] = useState(false);
@@ -60,19 +60,26 @@ export function KeepMountedModal(props: any) {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		await axios.patch('http://localhost:4000/getUsers', {
-			id: id,
-			name: name,
-			rule: rule,
-			status: status,
-			newPassword: newPassword
+		await axios({
+			method: 'patch',
+			headers: {
+				'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
+			},
+			url: 'http://localhost:4000/getUsers',
+			data:{
+				id: id,
+				name: name,
+				rule: rule,
+				status: status,
+				newPassword: newPassword
+			}
 		}).then((response) => {
-			handleError(response.data)
-		})
+			handleError(response.data);
+		});
 	}
 
 	return (
-		<div>
+		<>
 			<IconButton onClick={props.handleOpen}>
 				<EditOutlinedIcon />
 			</IconButton>
@@ -84,10 +91,12 @@ export function KeepMountedModal(props: any) {
 				aria-describedby="keep-mounted-modal-description"
 			>
 				<Container className='flex' onSubmit={handleSubmit}>
-					<IconButton aria-label="close" onClick={props.handleClose}>
-						<CloseIcon />
-					</IconButton>
-					<div className='container flex'>
+					<div className="close-icon flex">
+						<IconButton aria-label="close" onClick={props.handleClose}>
+							<CloseIcon />
+						</IconButton>
+					</div>
+					<div className='content flex'>
 						<InputContainer>
 							<div className="text">
 								<p>Nome: </p>
@@ -136,9 +145,18 @@ export function KeepMountedModal(props: any) {
 							<></>
 						}
 					</div>
-					<Button type='submit' variant="contained">Atualizar Usuário</Button>
+					<div className="button flex">
+							<Button type='submit' onClick={props.handleClose} variant="contained">Atualizar Usuário</Button>
+					</div>
 				</Container>
 			</Modal>
-		</div>
+			{
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
+                )
+            }
+		</>
 	);
 }

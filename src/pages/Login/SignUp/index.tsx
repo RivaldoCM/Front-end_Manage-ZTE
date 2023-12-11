@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
 import axios from 'axios';
+import React, { useState } from 'react';
+
+import { useError } from '../../../hooks/useError';
 
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
-
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -15,6 +17,9 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 
 export function SignUp() {
+
+    const { error, errorMessage, severityStatus, handleError } = useError();
+
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -28,16 +33,20 @@ export function SignUp() {
 
     const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        await axios.post('http://localhost:4000/createUser', {
-            userName: userName,
+
+        await axios.post('http://localhost:4000/newUser', {
+            username: userName,
             email: email,
             password: password
         })
         .then(response => {
-
-        })
-        .catch(err => {
-            console.log(err.response.data.error)
+            console.log(response.data.response)
+            if(response.data.response === null){
+                console.log(response.data)
+               handleError(response.data.messages.message) 
+            }else{
+                handleError(response.data.response.status);
+            }
         });
     }
 
@@ -46,6 +55,7 @@ export function SignUp() {
             <FormControl>
                 <InputLabel htmlFor="outlined-adornment-user">Usuário</InputLabel>
                 <OutlinedInput
+                    required
                     placeholder='Digite seu nome'
                     onChange={handleUserNameChange}
                     startAdornment={
@@ -59,8 +69,9 @@ export function SignUp() {
                 />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="outlined-adornment-password">E-mail</InputLabel>
+                <InputLabel htmlFor="outlined-adornment-password" required>E-mail</InputLabel>
                 <OutlinedInput
+                    required
                     placeholder='Digite seu E-mail'
                     type='text'
                     onChange={handleEmailChange}
@@ -75,8 +86,9 @@ export function SignUp() {
                 />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                <InputLabel htmlFor="outlined-adornment-password" required>Password</InputLabel>
                 <OutlinedInput
+                    required
                     placeholder='Digite sua senha'
                     type={showPassword ? 'text' : 'password'}
                     onChange={handlePasswordChange}
@@ -102,9 +114,19 @@ export function SignUp() {
                     label="Password"
                 />
             </FormControl>
-            <Button variant="contained" size="large">
+            <Button type='submit' variant="contained" size="large">
                 Criar Conta
             </Button>
+            {
+                (error ?
+
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+
+
+                :
+                    <></>
+                )
+            }
         </form>
     )
 }

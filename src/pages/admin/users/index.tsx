@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
+import { KeepMountedModal } from './modal';
+
 import { IUsers } from '../../../interfaces/users';
 import { getUsers } from '../../../services/apiManageONU/getUsers';
 
@@ -19,9 +21,8 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { TableHead } from '@mui/material';
-import { KeepMountedModal } from './modal';
+
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);

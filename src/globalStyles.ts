@@ -59,8 +59,10 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     .alert{
-        position: fixed;
-        bottom: 2%;
+        position: fixed; 
+        top: 94%;
+        left:50%;
+        transform: translate(-50%, -50%);
     }
 `
 
