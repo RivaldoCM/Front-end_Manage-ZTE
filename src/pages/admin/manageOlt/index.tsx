@@ -41,7 +41,7 @@ interface HeadCell {
     id: number;
     label: string;
     numeric: boolean;
-  }
+}
   
 const headCells: readonly HeadCell[] = [
     {
@@ -156,8 +156,13 @@ export function HandleManageOlt() {
     useEffect(() => {
         async function olts(){
             const oltData = await getOlt('all');
-            typeof oltData !== 'string' 
-            ? setOlt(oltData) : setOlt([]), handleError('nao deu');
+
+            if(typeof oltData !== 'string'){
+                setOlt(oltData);
+            } else {
+                setOlt([]);
+                handleError('unable-load-data');
+            }
         }
         olts();
     }, []);

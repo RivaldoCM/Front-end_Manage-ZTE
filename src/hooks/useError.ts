@@ -100,7 +100,7 @@ export function useError(){
                 setErrorMessage('CPF inválido.');
                 setSeverityStatus('warning');
             break;
-            case 'nao deu':
+            case 'unable-load-data':
                 setErrorMessage('Não foi possível carregar os dados, tente fazer login novamente.');
                 setSeverityStatus('error');
             break;

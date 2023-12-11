@@ -172,8 +172,12 @@ export function HandleManageUsers() {
         async function users(){
             const userData = await getUsers();
 
-            typeof userData !== 'string' 
-            ? setUsers(userData) : setUsers([]), handleError('nao deu');
+            if(typeof userData !== 'string'){
+                setUsers(userData);
+            } else {
+                setUsers([]);
+                handleError('unable-load-data');
+            }
         }
         users();
     }, []);

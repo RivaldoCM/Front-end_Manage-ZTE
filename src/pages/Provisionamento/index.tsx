@@ -79,15 +79,27 @@ export function Provisionamento(){
         if(type === 'zte'){
             async function olts(){
                 const oltData = await getOlt('zte');
-                setOlt(oltData);
-                setCity('ESPERA-FELIZ');
+                if(typeof oltData !== 'string'){
+                    setOlt(oltData);
+                    setCity('ESPERA-FELIZ');
+                } else {
+                    setOlt([]);
+                    setCity('');
+                    handleError('unable-load-data');
+                }
             }
             olts();
         }else{
             async function olts(){
                 const oltData = await getOlt('parks');
-                setOlt(oltData);
-                setCity('SANTA-CLARA');
+                if(typeof oltData !== 'string'){
+                    setOlt(oltData);
+                    setCity('SANTA-CLARA');
+                } else {
+                    setOlt([]);
+                    setCity('');
+                    handleError('unable-load-data');
+                }
             }
             olts();
         }
