@@ -1,5 +1,5 @@
 import { ReactElement, useEffect} from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { isLogged } from "./config/isLogged";
@@ -19,6 +19,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ element }) => {
 }
 
 export function AppRoutes() {
+    const navigate = useNavigate();
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -26,11 +27,11 @@ export function AppRoutes() {
         const token = localStorage.getItem('Authorization');
     
         if(token && window.location.pathname === '/login' || token && window.location.pathname === '/'){
-            window.location.href = '/provisionamento';
+            navigate('/provisionamento');
         }
 
         if (!token && window.location.pathname !== '/login') {
-            window.location.href = '/login';
+            navigate('/login');
         }
       }, []);
 
