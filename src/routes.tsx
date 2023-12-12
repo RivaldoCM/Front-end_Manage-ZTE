@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect} from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -21,6 +21,18 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ element }) => {
 export function AppRoutes() {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('md'));
+
+    useEffect(() => {
+        const token = localStorage.getItem('Authorization');
+    
+        if(token && window.location.pathname === '/login' || token && window.location.pathname === '/'){
+            window.location.href = '/provisionamento';
+        }
+
+        if (!token && window.location.pathname !== '/login') {
+            window.location.href = '/login';
+        }
+      }, []);
 
     return (
         <Routes>
