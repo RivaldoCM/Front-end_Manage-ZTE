@@ -97,7 +97,7 @@ export function Form(props: FormProps){
                         </InputContainer>
                         <InputContainer>
                             <div className="text">
-                                <p>N° do Ccontrato: </p>
+                                <p>CPF do Cliente: </p>
                             </div>
                             <div className="content">
                                 <TextField
@@ -169,7 +169,7 @@ export function Form(props: FormProps){
                         </InputContainer>
                         <InputContainer>
                             <div className="text">
-                                <p>N° do contrato: </p>
+                                <p>CPF do Cliente: </p>
                             </div>
                             <div className="content">
                                 <TextField 

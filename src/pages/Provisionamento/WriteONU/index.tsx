@@ -13,6 +13,8 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Typography from '@mui/material/Typography';
+import { getPeopleId } from "../../../services/apiVoalle/getPeopleId";
+import { getConnectionId } from "../../../services/apiManageONU/getConnectionId";
 
 export function WriteONU(props: WriteONUProps){
 
@@ -117,6 +119,14 @@ export function WriteONU(props: WriteONUProps){
             }else{
                 props.startLoading();
                 const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
+                console.log('to aq')
+                const peopleId = await getPeopleId(cpf);
+
+                const connectionId = await getConnectionId(peopleId, pppoe);
+
+                console.log(peopleId, connectionId)
+
+                /*
 
                 await axios({
                     method: 'post',
@@ -131,7 +141,7 @@ export function WriteONU(props: WriteONUProps){
                         isPizzaBox: oltData.isPizzaBox,
                         serialNumber: dataOnu[0].serial,
                         type: dataOnu[0].model,
-                        contract: 1010,
+                        contract: connectionId,
                         pppoeUser: pppoe.toLowerCase(),
                         pppPass: pppoePass || null,
                         wifiSSID: wifiSSID || null,
@@ -148,6 +158,8 @@ export function WriteONU(props: WriteONUProps){
                     props.stopLoading();
                     props.handleError(error.code);
                 });
+
+                */
             }
         }
     }

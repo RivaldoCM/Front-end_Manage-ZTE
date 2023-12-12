@@ -28,11 +28,11 @@ export async function updateConnection(avalableId: number, slot: number, pon: nu
             "wifiName": wifiSSID, 
             "wifiPassword": wifiPass, 
             "technologyType": 16, 
-            "authenticationAccessPointId": 875, 
-            "updateConnectionParameter": false, 
+            "authenticationAccessPointId": 875,
+            "updateConnectionParameter": false,
             "shouldMacUpdate": false,
-            "user": pppoe, 
-            "complement": "", 
+            "user": pppoe,
+            "complement": "",
             "isIPoE": false
         }
     })
