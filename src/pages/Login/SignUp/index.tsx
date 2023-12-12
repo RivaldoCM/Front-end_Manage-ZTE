@@ -34,13 +34,12 @@ export function SignUp() {
     const handleCreateUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        await axios.post('http://localhost:4000/newUser', {
+        await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/newUser`, {
             username: userName,
             email: email,
             password: password
         })
         .then(response => {
-            console.log(response.data.response)
             if(response.data.response === null){
                 console.log(response.data)
                handleError(response.data.messages.message) 
