@@ -5,7 +5,7 @@ import { Olt } from "../../interfaces/olt";
 export async function getOlt(type: string): Promise<SetStateAction<Olt[]>>{
     const oltData = await axios({
         method: 'post',
-        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getOlts`,
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getOlt`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
         },
