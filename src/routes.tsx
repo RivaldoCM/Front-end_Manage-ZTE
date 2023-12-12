@@ -34,7 +34,7 @@ export function AppRoutes() {
         if (!token && location.pathname !== '/login') {
             navigate('/login');
         }
-      }, []);
+      }, [navigate, location]);
 
     return (
         <Routes>
