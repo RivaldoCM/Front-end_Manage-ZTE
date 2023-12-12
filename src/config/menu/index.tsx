@@ -42,7 +42,7 @@ export const handleShowPageByRule = (rule?: number) => {
             let withoutOlt = cloneDeep(handlePages);
             withoutOlt[1].pages.splice(1, 1);
         return handleDynamicPagesByRule = withoutOlt;
-        case 1:
+        default:
             let onlyAuthOnu = cloneDeep(handlePages);
             onlyAuthOnu.splice(1, 1);
         return handleDynamicPagesByRule = onlyAuthOnu;
