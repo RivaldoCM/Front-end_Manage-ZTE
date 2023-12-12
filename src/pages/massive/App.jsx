@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
-import { Global } from './styles/styledGlobal'
+import { Global } from './style/styledGlobal'
 import { Navbar } from './NavBar';
-import { NovoMassiva } from './styles/novoMassivaButton';
-import { ModalContainer, ModalContent, ModalHeader } from './styles/ModalStyles';
-import { Card, CardConteiner, CardHeader, ErrorMessage, FecharCardButton } from './styles/CardStyles';
-import { FormCardContainer, FormCardInput, FormCardLabel, FormCardSalvarButton, FormCardSelect } from './styles/FormCard';
-import { AppContainer, Overlay } from './styles/AppStyled';
+import { NovoMassiva } from './style/novoMassivaButton';
+import { ModalContainer, ModalContent, ModalHeader } from './style/ModalStyles';
+import { Card, CardConteiner, CardHeader, ErrorMessage, FecharCardButton } from './style/CardStyles';
+import { FormCardContainer, FormCardInput, FormCardLabel, FormCardSalvarButton, FormCardSelect } from './style/FormCard';
+import { AppContainer, Overlay } from './style/AppStyled';
 
 
-export function App() {
+export function Massive() {
   const [massives, setMassives] = useState([
     {
       id: 1,
@@ -170,10 +170,10 @@ export function App() {
       <Overlay isOpen={isOpen} onClick={isModalClose}/>
       <Global/>
       <Navbar />
-      <NovoMassiva onClick={isModalOpen}>
-        Novo Massiva
-      </NovoMassiva>
-      <ModalContainer style={{ display: isOpen ? 'block' : 'none' }}>
+            <NovoMassiva onClick={isModalOpen}>
+            Novo Massiva
+            </NovoMassiva>
+            <ModalContainer style={{ display: isOpen ? 'block' : 'none' }}>
         <ModalHeader>
           <FecharCardButton onClick={isModalClose}>
             <FontAwesomeIcon icon={faCircleXmark} size='x' style={{ color: 'white' }} />
@@ -258,9 +258,9 @@ export function App() {
             </FormCardSalvarButton>
           </ModalContent>
         </FormCardContainer>
-      </ModalContainer>
+            </ModalContainer>
 
-      <CardConteiner>
+            <CardConteiner>
         {massives.map((card, index) => (
           <Card key={index}>
             <CardHeader>

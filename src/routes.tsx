@@ -9,6 +9,7 @@ import { HandleManageOlt } from "./pages/admin/manageOlt";
 import { HandleManageUsers } from "./pages/admin/users";
 import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
+import { Massive } from "./pages/massive/App";
 
 
 interface PrivateRouteProps {
@@ -40,12 +41,12 @@ export function AppRoutes() {
                     element={<PrivateRoute element={<HandleManageUsers />} />}
                 />
 
-                <Route
+            </Route>
+            
+            <Route
                     path="massive"
                     element={<Massive/>}
                     />
-            </Route>
-
                 
         </Routes>
     );
