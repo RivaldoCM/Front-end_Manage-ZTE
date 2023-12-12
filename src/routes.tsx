@@ -10,6 +10,7 @@ import { HandleManageUsers } from "./pages/admin/users";
 import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
 
+
 interface PrivateRouteProps {
     element: ReactElement;
 }
@@ -38,7 +39,14 @@ export function AppRoutes() {
                     path="users"
                     element={<PrivateRoute element={<HandleManageUsers />} />}
                 />
+
+                <Route
+                    path="massive"
+                    element={<Massive/>}
+                    />
             </Route>
+
+                
         </Routes>
     );
 }
