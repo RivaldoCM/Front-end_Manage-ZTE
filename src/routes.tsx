@@ -31,6 +31,7 @@ export function AppRoutes() {
             navigate('/provisionamento');
         }
 
+        console.log(navigate)
         if (!token && location.pathname !== '/login') {
             navigate('/login');
         }
@@ -38,8 +39,8 @@ export function AppRoutes() {
 
     return (
         <Routes>
-            <Route path="login" element={<Login />} />
-            <Route path="/" element={matches ? <MobileDrawerMenu /> : <MenuDrawer />}>
+            <Route index path="login" element={<Login />} />
+            <Route path="" element={matches ? <MobileDrawerMenu /> : <MenuDrawer />}>
                 <Route
                     path="provisionamento"
                     element={<PrivateRoute element={<Provisionamento />} />}
