@@ -8,17 +8,7 @@ import { faHome, faHistory, faSignOutAlt } from '@fortawesome/free-solid-svg-ico
 export const Navbar = () => {
   return (
     <NavBarStyle>
-      <Item>
-          <FontAwesomeIcon icon={faHome} size="2x" />
-      </Item>
-
-      <Item>
-          <FontAwesomeIcon icon={faHistory} size="2x" />
-      </Item>
-
-      <Item >
-        <FontAwesomeIcon icon={faSignOutAlt} size="2x" alth/>
-      </Item>
+      <></>
     </NavBarStyle>
   );
 };

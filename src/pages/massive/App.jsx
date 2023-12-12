@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'
+import axios from 'axios';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import Box from '@mui/material/Box';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { Global } from './style/styledGlobal'
@@ -168,12 +171,13 @@ export function Massive() {
   return (
     <AppContainer>
       <Overlay isOpen={isOpen} onClick={isModalClose}/>
-      <Global/>
       <Navbar />
-            <NovoMassiva onClick={isModalOpen}>
-            Novo Massiva
-            </NovoMassiva>
-            <ModalContainer style={{ display: isOpen ? 'block' : 'none' }}>
+      <NovoMassiva>
+      <Fab sx={{backgroundColor:'#ff7400', color:'white'}} aria-label="add" onClick={isModalOpen}>
+        <AddIcon />
+      </Fab>
+      </NovoMassiva>
+        <ModalContainer style={{ display: isOpen ? 'block' : 'none' }}>
         <ModalHeader>
           <FecharCardButton onClick={isModalClose}>
             <FontAwesomeIcon icon={faCircleXmark} size='x' style={{ color: 'white' }} />
