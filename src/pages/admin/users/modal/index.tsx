@@ -62,10 +62,10 @@ export function KeepMountedModal(props: any) {
 
 		await axios({
 			method: 'patch',
+			url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getUsers`,
 			headers: {
 				'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
 			},
-			url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getUsers`,
 			data:{
 				id: id,
 				name: name,

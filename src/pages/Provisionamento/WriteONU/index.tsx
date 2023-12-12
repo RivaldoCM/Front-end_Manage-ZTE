@@ -118,18 +118,25 @@ export function WriteONU(props: WriteONUProps){
                 props.startLoading();
                 const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
 
-                await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
-                    ip: [oltData.host],
-                    slot: dataOnu[0].placa,
-                    pon: dataOnu[0].pon,
-                    isPizzaBox: oltData.isPizzaBox,
-                    serialNumber: dataOnu[0].serial,
-                    type: dataOnu[0].model,
-                    contract: 1010,
-                    pppoeUser: pppoe.toLowerCase(),
-                    pppPass: pppoePass || null,
-                    wifiSSID: wifiSSID || null,
-                    wifiPass: wifiPass || null
+                await axios({
+                    method: 'post',
+                    url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
+                    },
+                    data: {
+                        ip: [oltData.host],
+                        slot: dataOnu[0].placa,
+                        pon: dataOnu[0].pon,
+                        isPizzaBox: oltData.isPizzaBox,
+                        serialNumber: dataOnu[0].serial,
+                        type: dataOnu[0].model,
+                        contract: 1010,
+                        pppoeUser: pppoe.toLowerCase(),
+                        pppPass: pppoePass || null,
+                        wifiSSID: wifiSSID || null,
+                        wifiPass: wifiPass || null
+                    }
                 })
                 .then(response => {
                     props.stopLoading();
