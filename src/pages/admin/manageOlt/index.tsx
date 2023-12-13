@@ -24,6 +24,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { TableHead } from '@mui/material';
 import { useError } from '../../../hooks/useError';
 import Alert from '@mui/material/Alert';
+import { KeepMountedModal } from '../users/modal';
+import { KeepMountedOltModal } from './Modal';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -94,9 +96,9 @@ function EnhancedTableHead(){
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { numSelected } = props;
 
-    const [_open, _setOpen] = useState(false);
-    //const handleOpen = () => setOpen(true);
-    //const handleClose = () => setOpen(false);
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     return (
         <Toolbar
@@ -131,7 +133,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         {numSelected > 0 ? (
             <Tooltip title="Delete">
                 <IconButton>
-                    <DeleteIcon />
+                    <KeepMountedOltModal
+                        handleOpen={handleOpen}
+                        open={open}
+                        handleClose={handleClose}
+                    />
                 </IconButton>
             </Tooltip>
         ) : (
