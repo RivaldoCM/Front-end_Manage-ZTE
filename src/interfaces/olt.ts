@@ -5,5 +5,6 @@ export interface Olt{
     type: string,
     city_id: number,
     isPizzaBox: boolean,
-    voalleAccessPointId: number, 
+    voalleAccessPointId: number,
+    map: any
 }

@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { getToken } from "./getToken";
 
-export async function updateConnection(avalableId: number, slot: number, pon: number, serialNumber: string, wifiSSID: string, wifiPass: string, connectionId: number, pppoe: string, pppoePassword: string ){
+export async function updateConnection(avalableId: number, slot: number, pon: number, serialNumber: string, wifiSSID: string, wifiPass: string, connectionId: number | string, pppoe: string, pppoePassword: string ){
 
     await axios({
         headers: {
@@ -16,7 +16,7 @@ export async function updateConnection(avalableId: number, slot: number, pon: nu
             "mac": "",
             "password": pppoePassword, //PPPoE
             "equipmentType": 7, 
-            "oltId": avalableId, 
+            "oltId": avalableId || '', 
             "slotOlt": slot, 
             "portOlt": pon, 
             "equipmentSerialNumber": serialNumber, 

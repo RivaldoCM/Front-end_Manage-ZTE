@@ -21,13 +21,13 @@ export async function AuthOnu(props: IAuthOnuProps){
         }else{
             props.startLoading();
             
-            let dataOlt: any = [];
+            let dataOlt: any[] = [];
             props.OltInfo.map((subArray) => {
                 return subArray.map((option: any) => {
                     const verifyCity = option.name
                     if(props.city === 'TOMBOS'){
                         if(option.city_id === 22){
-                            dataOlt.push(option.host) 
+                            dataOlt.push(option.host);
                         }
                     }else if(verifyCity === props.city){
                         const ip = option.host;
@@ -94,7 +94,7 @@ export async function AuthOnu(props: IAuthOnuProps){
             const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
 
             const peopleId = await getPeopleId(props.cpf);
-            let connectionId;
+            let connectionId: number | string;
 
             if(peopleId){
                 connectionId = await getConnectionId(peopleId, props.pppoe);
@@ -124,10 +124,12 @@ export async function AuthOnu(props: IAuthOnuProps){
             })
             .then(response => {
                 props.stopLoading();
-                props.handleError(response.data);
+                props.handleError(response.data.responses.response);
                 props.setDataFromApi([]);
+
+                console.log(response.data.responses.data) //id
                 if(peopleId){ 
-                    //updateConnection()
+                    updateConnection(response.data.responses.data, props.dataOnu[0].placa, props.dataOnu[0].pon, props.dataOnu[0].serial, props.wifiSSID, props.wifiPass, connectionId, props.pppoe, props.pppoePass)
                 }
             })
             .catch(error => {

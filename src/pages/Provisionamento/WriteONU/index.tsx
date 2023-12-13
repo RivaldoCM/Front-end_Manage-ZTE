@@ -44,7 +44,6 @@ export function WriteONU(props: WriteONUProps){
         //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
         props.setSerialNumber(dataOnu[0].serial);
         AuthOnu({...props, pppoe, pppoePass,wifiPass, wifiSSID, cpf, dataOnu});
-
     }
 
     return (
