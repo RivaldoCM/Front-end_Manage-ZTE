@@ -68,6 +68,12 @@ const headCells: readonly HeadCell[] = [
         disablePadding: false,
         label: 'PizzaBox',
     },
+    {
+        id: 5,
+        numeric: true,
+        disablePadding: false,
+        label: 'Ponto de Acesso(Voalle)'
+    }
 ];
 
 function EnhancedTableHead(){
@@ -246,6 +252,7 @@ export function HandleManageOlt() {
                                         {row.name}
                                     </TableCell>
                                     <TableCell align="right">{row.host}</TableCell>
+
                                     {row.type === '10' ?
                                         <TableCell align="right">ZTE</TableCell>
                                         :
@@ -257,7 +264,9 @@ export function HandleManageOlt() {
                                         :
                                         <TableCell align="right">Não</TableCell>
                                     }
+                                    <TableCell align="right">{row.voalleAccessPointId}</TableCell>
                                 </TableRow>
+                                
                             );
                         })}
                         {emptyRows > 0 && (
