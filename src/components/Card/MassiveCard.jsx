@@ -3,13 +3,18 @@ import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 import Rotate90DegreesCwSharpIcon from '@mui/icons-material/Rotate90DegreesCwSharp';
 import Rotate90DegreesCcwSharpIcon from '@mui/icons-material/Rotate90DegreesCcwSharp';
 import styled from 'styled-components';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Rotate90DegreesCwIcon from '@mui/icons-material/Rotate90DegreesCw';
+import Rotate90DegreesCcwIcon from '@mui/icons-material/Rotate90DegreesCcw';
 
 const CardInner = styled.div`
   width: 300px;
   height: 400px;
   transform-style: preserve-3d;
   transition: transform 0.5s;
-  transform: ${({ isFlipped }) => (isFlipped ? 'rotateY(180deg)' : 'rotateY(0)')};
+
+  transform: ${({ flip }) => (flip ? 'rotateY(180deg)' : 'rotateY(0)')};
 `;
 
 const FrontCard = styled.div`
@@ -24,6 +29,7 @@ const FrontCard = styled.div`
   padding: 2%;
   border-radius: 5%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  
 `;
 
 const BackCard = styled.div`
@@ -35,8 +41,7 @@ const BackCard = styled.div`
   width: 100%;
   height: 100%;
   padding: 2%;
-  background: black;
-  color: white;
+  color: black;
   border-radius: 5%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   transform: rotateY(180deg);
@@ -48,6 +53,10 @@ const CardHeader = styled.div`
   align-items: center;
   border-bottom: 2px solid black;
   padding-bottom: 10px;
+
+  p{
+    color: white;
+  }
 `;
 
 const FecharCardButton = styled.button`
@@ -96,50 +105,73 @@ const MassiveCardContainer = styled.div`
   justify-content: space-between;
 `;
 
-const MassiveCard = ({ card, onDelete }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+const CardContainer = styled.div`
+  position: relative;
 
-  const flipCard = () => {
-    setIsFlipped(!isFlipped);
-  };
+  .teste{
+      position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    background-color: white;
+    width: 32px;
+    height: 38px;
+    box-shadow: 0 0 10px rgb(0, 0, 0);
+    border-radius: 10px;
+  }
 
-  return (
-    <CardInner isFlipped={isFlipped}>
-      <FrontCard>
-        <CardHeader>
-          <RotateIcon onClick={flipCard}>
-            {isFlipped ? (
-              <Rotate90DegreesCcwSharpIcon />
-            ) : (
-              <Rotate90DegreesCwSharpIcon />
-            )}
-          </RotateIcon>
-          <p>{card.type}</p>
-          <FecharCardButton onClick={(e) => onDelete(card.id, e)}>
-            <CloseSharpIcon />
-          </FecharCardButton>
-        </CardHeader>
-        <div>
-          <p>Previsão de Retorno: {card.returndate}</p>
-          <p>Locais Afetados: {card.locaisAfetados}</p>
-          <p>Informações Adicionais: {card.description}</p>
-        </div>
-      </FrontCard>
-      <BackCard>
-        <CardHeader>
-          <RotateIcon onClick={flipCard}>
-            {isFlipped ? (
-              <Rotate90DegreesCwSharpIcon />
-            ) : (
-              <Rotate90DegreesCcwSharpIcon />
-            )}
-          </RotateIcon>
-          <p>RIVALDO</p>
-        </CardHeader>
-        <p>Quem Abriu: {card.quemAbriu}</p>
-      </BackCard>
-    </CardInner>
-  );
+`
+
+const ButtonFlip = styled.div`
+
+
+  .teste{
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    width: 32px;
+    height: 38px;
+    box-shadow: 0 0 10px rgb(0, 0, 0);
+    border-radius: 10px;
+  }
+`
+
+export function CardMassive(){
+	const [isFlipped, setIsFlipped] = useState(false);
+
+	const flipCard = () => {
+		setIsFlipped(!isFlipped);
+	};
+
+	return (
+		<CardContainer>
+		{
+			isFlipped ?
+			<CardInner flip={isFlipped}>
+				<BackCard>
+					TESTE BACK
+				</BackCard>
+			</CardInner>
+			:
+			<CardInner flip={isFlipped}>
+				<FrontCard>
+					TESTE FRONT
+				</FrontCard>
+			</CardInner>
+		}
+		<>
+			<IconButton onClick={flipCard} sx={{borderRadius: '0'}} className='teste' aria-label="delete" size="small">
+			{
+				isFlipped ?
+				<Rotate90DegreesCcwIcon fontSize='inherit'/>
+				:
+				<Rotate90DegreesCwIcon fontSize='inherit'/>
+			}
+			</IconButton>
+		</>
+		</CardContainer>
+	);
 };
-
-export default MassiveCard;
