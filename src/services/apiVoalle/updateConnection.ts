@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { getToken } from "./getToken";
 
-export async function updateConnection(avalableId: number, slot: number, pon: number, serialNumber: string, wifiSSID: string, wifiPass: string, connectionId: number | string, pppoe: string, pppoePassword: string ){
+export async function updateConnection(avalableId: number, slot: number, pon: number, serialNumber: string, wifiSSID: string, wifiPass: string, connectionId: number | string, pppoe: string, pppoePassword: string, accessPointId: number ){
 
     await axios({
         headers: {
@@ -12,23 +12,23 @@ export async function updateConnection(avalableId: number, slot: number, pon: nu
         url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/updateconnection/${connectionId}`,
         data: {
             "id": connectionId,
-            "fiberMac": "", 
+            "fiberMac": "",
             "mac": "",
-            "password": pppoePassword, //PPPoE
-            "equipmentType": 7, 
-            "oltId": avalableId || '', 
-            "slotOlt": slot, 
-            "portOlt": pon, 
-            "equipmentSerialNumber": serialNumber, 
-            "ipType": 0, 
+            "password": pppoePassword || "", //PPPoE
+            "equipmentType": 7,
+            "oltId": avalableId || '',
+            "slotOlt": slot,
+            "portOlt": pon,
+            "equipmentSerialNumber": serialNumber,
+            "ipType": 0,
             "equipmentUser": "",
-            "equipmentPassword": "", 
-            "authenticationSplitterId": "", 
+            "equipmentPassword": "",
+            "authenticationSplitterId": "",
             "port": "",
-            "wifiName": wifiSSID, 
-            "wifiPassword": wifiPass, 
-            "technologyType": 16, 
-            "authenticationAccessPointId": 875,
+            "wifiName": wifiSSID || "",
+            "wifiPassword": wifiPass || "",
+            "technologyType": 16,
+            "authenticationAccessPointId": accessPointId,
             "updateConnectionParameter": false,
             "shouldMacUpdate": false,
             "user": pppoe,

@@ -15,6 +15,8 @@ import { IDataOnu } from "../../../interfaces/IAuthOnuProps";
 
 export function WriteONU(props: WriteONUProps){
 
+
+
     //lifting up
     const [pppoePass, setPppoePass] = useState('');
 	const [wifiSSID, setWifiSSID] = useState('');
@@ -43,6 +45,7 @@ export function WriteONU(props: WriteONUProps){
 
         //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
         props.setSerialNumber(dataOnu[0].serial);
+        console.log(dataOnu)
         AuthOnu({...props, pppoe, pppoePass,wifiPass, wifiSSID, cpf, dataOnu});
     }
 

@@ -10,6 +10,8 @@ import { updateConnection } from '../apiVoalle/updateConnection';
 
 export async function AuthOnu(props: IAuthOnuProps){
 
+    console.log(props)
+
     if(props.dataOnu[0].model == "parks"){
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
@@ -47,7 +49,7 @@ export async function AuthOnu(props: IAuthOnuProps){
             }else{
                 connectionId = props.cpf;
             }
-            
+
             await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
                 ip: dataOlt[0],
                 slot: null,
@@ -92,7 +94,6 @@ export async function AuthOnu(props: IAuthOnuProps){
         }else{
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
-
             const peopleId = await getPeopleId(props.cpf);
             let connectionId: number | string;
 
@@ -127,9 +128,10 @@ export async function AuthOnu(props: IAuthOnuProps){
                 props.handleError(response.data.responses.response);
                 props.setDataFromApi([]);
 
-                console.log(response.data.responses.data) //id
-                if(peopleId){ 
-                    updateConnection(response.data.responses.data, props.dataOnu[0].placa, props.dataOnu[0].pon, props.dataOnu[0].serial, props.wifiSSID, props.wifiPass, connectionId, props.pppoe, props.pppoePass)
+                console.log(connectionId)
+                if(peopleId !== null){
+                    console.log('aq')
+                    updateConnection(response.data.responses.data, props.dataOnu[0].placa, props.dataOnu[0].pon, props.dataOnu[0].serial, props.wifiSSID, props.wifiPass, connectionId, props.pppoe, props.pppoePass, oltData.voalleAccessPointId)
                 }
             })
             .catch(error => {
