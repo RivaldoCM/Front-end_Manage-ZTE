@@ -9,8 +9,13 @@ export async function getPeopleId(cpf:string): Promise<any>{
         method: 'get',
         url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/people/txid/${cpf}`,
     }).then((response) =>{ 
-        return response.data.response.id }
-    );
+        if(!response.data.response){
+            return null;
+        }
+        return response.data.responseid; 
+    }).catch((_err) =>{
+        return null;
+    });
 
     return peopleId;
 }
