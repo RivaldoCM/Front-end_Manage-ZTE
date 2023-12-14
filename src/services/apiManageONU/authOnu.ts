@@ -10,7 +10,7 @@ import { updateConnection } from '../apiVoalle/updateConnection';
 
 export async function AuthOnu(props: IAuthOnuProps){
 
-    if(props.dataOnu[0].model == "parks"){
+    if(props.dataOnu.model == "parks"){
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
             props.handleError(err);
@@ -36,7 +36,7 @@ export async function AuthOnu(props: IAuthOnuProps){
                 });
             });
             if(dataOlt.length > 1){
-                dataOlt[0] = props.dataOnu[0].ip;
+                dataOlt[0] = props.dataOnu.ip;
             }
 
             const peopleId = await getPeopleId(props.cpf);
@@ -51,9 +51,9 @@ export async function AuthOnu(props: IAuthOnuProps){
             await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
                 ip: dataOlt[0],
                 slot: null,
-                pon: props.dataOnu[0].pon,
+                pon: props.dataOnu.pon,
                 isPizzaBox: null,
-                serialNumber: props.dataOnu[0].serial,
+                serialNumber: props.dataOnu.serial,
                 type: 'parks',
                 contract: null,
                 pppoeUser: props.pppoe.toLowerCase(),
@@ -78,30 +78,31 @@ export async function AuthOnu(props: IAuthOnuProps){
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
             props.handleError(err);
-        }else if(typeBridgeZte.includes((props.dataOnu[0].model)) && props.cpf.length === 0 ||
-        (typeBridgeZte.includes(props.dataOnu[0].model) && props.pppoe.length === 0)){
+        }else if(typeBridgeZte.includes((props.dataOnu.model)) && props.cpf.length === 0 ||
+        (typeBridgeZte.includes(props.dataOnu.model) && props.pppoe.length === 0)){
             props.handleError('info/required-input');
         }else if(!props.cpf.match(isNumeric)){
             props.handleError('info/non-expect-caracter-NAN');
-        }else if(typePppoeZte.includes(props.dataOnu[0].model) && !props.wifiSSID.match(isAlphaNumeric)){
+        }else if(typePppoeZte.includes(props.dataOnu.model) && !props.wifiSSID.match(isAlphaNumeric)){
             props.handleError('info/wifi-ssid-did-not-match');
-        }else if(typePppoeZte.includes(props.dataOnu[0].model) && !props.wifiPass.match(isAlphaNumeric)){
+        }else if(typePppoeZte.includes(props.dataOnu.model) && !props.wifiPass.match(isAlphaNumeric)){
             props.handleError('info/wifi-password-did-not-match');
-        }else if(typePppoeZte.includes(props.dataOnu[0].model) && props.wifiPass.length < 8){
+        }else if(typePppoeZte.includes(props.dataOnu.model) && props.wifiPass.length < 8){
             props.handleError('info/wrong-type-passoword');
         }else{
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
-            const peopleId = await getPeopleId(props.cpf);
-            let dataClient: any
+            const peopleId: number = await getPeopleId(props.cpf);
+            let connectionData: any
 
+            console.log(peopleId, 'people')
             if(peopleId){
-                dataClient = await getConnectionId(peopleId, props.pppoe);
+                connectionData = await getConnectionId(peopleId, props.pppoe);
             }else{
-                dataClient = props.cpf;
+                connectionData = props.cpf;
             }
-
-            axios({
+            console.log(connectionData)
+            const hasAuth = await axios({
                 method: 'post',
                 url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
                 headers: {
@@ -109,12 +110,12 @@ export async function AuthOnu(props: IAuthOnuProps){
                 },
                 data: {
                     ip: [oltData.host],
-                    slot: props.dataOnu[0].placa,
-                    pon: props.dataOnu[0].pon,
+                    slot: props.dataOnu.placa,
+                    pon: props.dataOnu.pon,
                     isPizzaBox: oltData.isPizzaBox,
-                    serialNumber: props.dataOnu[0].serial,
-                    type: props.dataOnu[0].model,
-                    contract: dataClient.contractId,
+                    serialNumber: props.dataOnu.serial,
+                    type: props.dataOnu.model,
+                    contract: connectionData.contractId,
                     pppoeUser: props.pppoe.toLowerCase(),
                     pppPass: props.pppoePass || null,
                     wifiSSID: props.wifiSSID || null,
@@ -123,21 +124,29 @@ export async function AuthOnu(props: IAuthOnuProps){
             })
             .then(response => {
                 props.stopLoading();
-                props.handleError(response.data.responses.response);
                 props.setDataFromApi([]);
-
-                const connectionId = dataClient.connectionId
-
-                if(peopleId !== undefined){
-                    console.log('aq')
-
-                    updateConnection({...props, connectionId})
-                }
+                if(!response.data.responses.response){
+                    return null;
+                }       
+                return response.data.responses;
             })
             .catch(error => {
+                console.log(error)
                 props.stopLoading();
                 props.handleError(error.code);
+                return
             });
+
+            console.log(hasAuth,' aq')
+
+            if(hasAuth){
+                props.handleError(hasAuth.status);
+                const oltId = hasAuth.data;
+                if(peopleId !== undefined){
+                    updateConnection({...props, connectionData, oltId})
+                }
+            }
+
         }
     }
 }

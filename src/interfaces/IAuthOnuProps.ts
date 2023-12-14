@@ -1,15 +1,15 @@
 import { WriteONUProps } from "./WriteONUProps";
 
 export interface IDataOnu {
+    ip?: string;
     placa: number; 
     pon: number; 
     model: string; 
     serial: string; 
-    ip?: string;
 }
 
 export interface IAuthOnuProps extends WriteONUProps{
-    dataOnu: IDataOnu[],
+    dataOnu: IDataOnu,
     cpf: string,
     pppoe: string,
     pppoePass: string,

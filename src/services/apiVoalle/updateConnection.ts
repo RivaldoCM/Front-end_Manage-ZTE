@@ -1,19 +1,21 @@
 import axios from "axios";
 
 import { getToken } from "./getToken";
+import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps";
 
-export async function updateConnection(props: any){
+export async function updateConnection(props: IUpdateConnectionProps){
 
+    console.log(props.connectionData.connectionId)
 
     const data = {
-        "id": props.connectionId,
+        "id": props.connectionData.connectionId,
         "fiberMac": "",
         "mac": "",
-        "password": props.pppoePassword, //PPPoE
+        "password": props.pppoePass, //PPPoE
         "equipmentType": 7,
-        "oltId": props.avalableId,
-        "slotOlt": props.slot,
-        "portOlt": props.pon,
+        "oltId": props.oltId,
+        "slotOlt": props.dataOnu.placa,
+        "portOlt": props.dataOnu.pon,
         "equipmentSerialNumber": props.serialNumber,
         "ipType": 0,
         "equipmentUser": "",
@@ -23,7 +25,7 @@ export async function updateConnection(props: any){
         "wifiName": props.wifiSSID,
         "wifiPassword": props.wifiPass,
         "technologyType": 16,
-        "authenticationAccessPointId": props.accessPointId,
+        "authenticationAccessPointId": props.OltInfo[0].voalleAccessPointId,
         "updateConnectionParameter": false,
         "shouldMacUpdate": false,
         "user": props.pppoe,
@@ -36,7 +38,7 @@ export async function updateConnection(props: any){
             'Authorization': "Bearer " + await getToken()
         },
         method: 'put',
-        url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/updateconnection/${props.connectionId}`,
+        url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/updateconnection/${props.connectionData.connectionId}`,
         data: data
     })
     .then((response) => {
