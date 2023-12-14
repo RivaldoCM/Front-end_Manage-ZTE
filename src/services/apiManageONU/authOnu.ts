@@ -10,8 +10,6 @@ import { updateConnection } from '../apiVoalle/updateConnection';
 
 export async function AuthOnu(props: IAuthOnuProps){
 
-    console.log(props)
-
     if(props.dataOnu[0].model == "parks"){
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
@@ -95,15 +93,15 @@ export async function AuthOnu(props: IAuthOnuProps){
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
             const peopleId = await getPeopleId(props.cpf);
-            let connectionId: number | string;
+            let dataClient: any
 
             if(peopleId){
-                connectionId = await getConnectionId(peopleId, props.pppoe);
+                dataClient = await getConnectionId(peopleId, props.pppoe);
             }else{
-                connectionId = props.cpf;
+                dataClient = props.cpf;
             }
 
-            await axios({
+            axios({
                 method: 'post',
                 url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
                 headers: {
@@ -116,7 +114,7 @@ export async function AuthOnu(props: IAuthOnuProps){
                     isPizzaBox: oltData.isPizzaBox,
                     serialNumber: props.dataOnu[0].serial,
                     type: props.dataOnu[0].model,
-                    contract: connectionId,
+                    contract: dataClient.contractId,
                     pppoeUser: props.pppoe.toLowerCase(),
                     pppPass: props.pppoePass || null,
                     wifiSSID: props.wifiSSID || null,
@@ -128,10 +126,12 @@ export async function AuthOnu(props: IAuthOnuProps){
                 props.handleError(response.data.responses.response);
                 props.setDataFromApi([]);
 
-                console.log(connectionId)
-                if(peopleId !== null){
+                const connectionId = dataClient.connectionId
+
+                if(peopleId !== undefined){
                     console.log('aq')
-                    updateConnection(response.data.responses.data, props.dataOnu[0].placa, props.dataOnu[0].pon, props.dataOnu[0].serial, props.wifiSSID, props.wifiPass, connectionId, props.pppoe, props.pppoePass, oltData.voalleAccessPointId)
+
+                    updateConnection({...props, connectionId})
                 }
             })
             .catch(error => {

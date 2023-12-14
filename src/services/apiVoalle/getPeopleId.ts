@@ -9,7 +9,7 @@ export async function getPeopleId(cpf:string): Promise<any>{
         method: 'get',
         url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/people/txid/${cpf}`,
     }).then((response) =>{ 
-
+        console.log(response.data)
         if(!response.data.response){
             return null;
         }
