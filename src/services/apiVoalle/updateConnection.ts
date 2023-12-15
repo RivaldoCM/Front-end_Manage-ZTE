@@ -5,13 +5,13 @@ import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps"
 
 export async function updateConnection(props: IUpdateConnectionProps){
 
-    console.log(props.connectionData.connectionId)
+    console.log(props.dataOnu)
 
     const data = {
         "id": props.connectionData.connectionId,
         "fiberMac": "",
         "mac": "",
-        "password": props.pppoePass, //PPPoE
+        "password": props.connectionData.password, //PPPoE
         "equipmentType": 7,
         "oltId": props.oltId,
         "slotOlt": props.dataOnu.placa,
@@ -25,7 +25,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "wifiName": props.wifiSSID,
         "wifiPassword": props.wifiPass,
         "technologyType": 16,
-        "authenticationAccessPointId": props.OltInfo[0].voalleAccessPointId,
+        "authenticationAccessPointId": props.dataOnu.accessPoint,
         "updateConnectionParameter": false,
         "shouldMacUpdate": false,
         "user": props.pppoe,
@@ -46,4 +46,5 @@ export async function updateConnection(props: IUpdateConnectionProps){
     }).catch((err) => {
         console.log(err)
     });
+
 }

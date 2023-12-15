@@ -20,7 +20,7 @@ export async function AuthOnu(props: IAuthOnuProps){
             props.handleError('warning/invalid-input');
         }else{
             props.startLoading();
-            
+            console.log('aq')
             let dataOlt: any[] = [];
             props.OltInfo.map((subArray) => {
                 return subArray.map((option: any) => {
@@ -40,39 +40,52 @@ export async function AuthOnu(props: IAuthOnuProps){
             }
 
             const peopleId = await getPeopleId(props.cpf);
-            let connectionId;
+            let connectionData: any;
 
             if(peopleId){
-                connectionId = await getConnectionId(peopleId, props.pppoe);
+                connectionData = await getConnectionId(peopleId, props.pppoe);
             }else{
-                connectionId = props.cpf;
+                connectionData = props.cpf;
             }
 
-            await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
-                ip: dataOlt[0],
-                slot: null,
-                pon: props.dataOnu.pon,
-                isPizzaBox: null,
-                serialNumber: props.dataOnu.serial,
-                type: 'parks',
-                contract: null,
-                pppoeUser: props.pppoe.toLowerCase(),
-                pppPass: props.pppoePass || null,
-                wifiSSID: props.wifiSSID || null,
-                wifiPass: props.wifiPass || null
+            console.log(connectionData.password)
+
+            const hasAuth = await axios({
+                method: 'post',
+                url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
+                },
+                data: {
+                    ip: dataOlt[0],
+                    slot: null,
+                    pon: props.dataOnu.pon,
+                    isPizzaBox: null,
+                    serialNumber: props.dataOnu.serial,
+                    type: 'parks',
+                    contract: null,
+                    pppoeUser: props.pppoe.toLowerCase(),
+                    pppPass: props.pppoePass || null,
+                    wifiSSID: props.wifiSSID || null,
+                    wifiPass: props.wifiPass || null
+                }
             })
             .then(response => {
                 props.stopLoading();
-                props.handleError(response.data);
                 props.setDataFromApi([]);
-                if(peopleId){ 
-                    //updateConnection()
-                }
+                return response.data;
             })
             .catch(error => {
                 props.stopLoading();
                 props.handleError(error.code);
             });
+
+            if(hasAuth){
+                props.handleError(hasAuth);
+                if(peopleId !== undefined){
+                    updateConnection({...props, connectionData})
+                }
+            }
         }
     }else{
         if (props.isLoading){
@@ -95,13 +108,12 @@ export async function AuthOnu(props: IAuthOnuProps){
             const peopleId: number = await getPeopleId(props.cpf);
             let connectionData: any
 
-            console.log(peopleId, 'people')
             if(peopleId){
                 connectionData = await getConnectionId(peopleId, props.pppoe);
             }else{
                 connectionData = props.cpf;
             }
-            console.log(connectionData)
+
             const hasAuth = await axios({
                 method: 'post',
                 url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
@@ -131,13 +143,10 @@ export async function AuthOnu(props: IAuthOnuProps){
                 return response.data.responses;
             })
             .catch(error => {
-                console.log(error)
                 props.stopLoading();
                 props.handleError(error.code);
-                return
+                return;
             });
-
-            console.log(hasAuth,' aq')
 
             if(hasAuth){
                 props.handleError(hasAuth.status);
@@ -146,7 +155,6 @@ export async function AuthOnu(props: IAuthOnuProps){
                     updateConnection({...props, connectionData, oltId})
                 }
             }
-
         }
     }
 }

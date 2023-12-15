@@ -1,7 +1,7 @@
 import { IAuthOnuProps } from "./IAuthOnuProps";
 
 export interface IUpdateConnectionProps extends IAuthOnuProps {
-    oltId: number;
+    oltId?: number;
     connectionData: {
         connectionId: number, 
         contractId: number, 

@@ -19,7 +19,7 @@ export function WriteONU(props: WriteONUProps){
     const [pppoePass, setPppoePass] = useState('');
 	const [wifiSSID, setWifiSSID] = useState('');
 	const [wifiPass, setWifiPass] = useState('');
-    const [dataOnu, setDataOnu] = useState<IDataOnu[]>([]);
+    const [dataOnu, setDataOnu] = useState<IDataOnu>();
 	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 	const [pppoe, setPppoe] = useState('');
@@ -42,8 +42,10 @@ export function WriteONU(props: WriteONUProps){
         setIsDropDownOpen(false);
 
         //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
-        props.setSerialNumber(dataOnu[0].serial);
-        AuthOnu({...props, pppoe, pppoePass, wifiPass, wifiSSID, cpf, dataOnu});
+        if (dataOnu){
+            props.setSerialNumber(dataOnu.serial);
+            AuthOnu({...props, pppoe, pppoePass, wifiPass, wifiSSID, cpf, dataOnu});
+        }
     }
 
     return (
@@ -51,8 +53,8 @@ export function WriteONU(props: WriteONUProps){
             {props.typeOnu === 'zte' ? (
                 Array.isArray(props.dataFromApi) ? (
                     props.dataFromApi.map((item, index) => {
-                        if (Array.isArray(item) && item.length === 4) {
-                            const [placa, pon, _model, serial] = item;
+                        if (Array.isArray(item) && item.length === 5) {
+                            const [placa, pon, _model, serial, _accessPointId] = item;
                             return (
                                 <div key={index} className="onu-callback flex">
                                     <div className="info-onu-controller flex">

@@ -1,3 +1,5 @@
+import { IDataOnu } from "./IAuthOnuProps";
+
 export interface FormProps {
     handleSubmitWriteData: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
     handlePppoeChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
@@ -16,5 +18,5 @@ export interface FormProps {
     } | string;
     typeOnu?: string,
     serialNumber: string, 
-    setDataOnu: React.Dispatch<React.SetStateAction<{ placa: number; pon: number; model: string; serial: string; signal?: string; ip?: string }[]>>;
+    setDataOnu: React.Dispatch<React.SetStateAction<IDataOnu | undefined>>;
 }
