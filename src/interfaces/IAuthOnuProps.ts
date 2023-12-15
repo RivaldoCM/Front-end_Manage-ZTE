@@ -7,7 +7,7 @@ export interface IDataOnu {
     pon: number; 
     model: string; 
     serial: string; 
-    accessPoint: number;
+    accessPoint: number[];
 }
 
 export interface IAuthOnuProps extends WriteONUProps{

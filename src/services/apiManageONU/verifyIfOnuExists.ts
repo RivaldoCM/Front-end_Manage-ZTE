@@ -2,16 +2,16 @@ import axios from "axios";
 
 import { propsApi } from "../../interfaces/api";
 
+type olt = { ip: string[], accessPointId: number[] } | undefined 
+
 export const verifyIfOnuExists = async (props: propsApi) => {
     props.startLoading();
 
-    type olt = { ip: string[], accessPointId: number } | undefined 
-
-    let dataOlt: olt = {ip: [], accessPointId: 0};
+    let dataOlt: olt = {ip: [], accessPointId: []};
     if(props.typeOnu === 'zte'){
         const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
-        dataOlt?.ip.push(oltData.host)
-        dataOlt.accessPointId = oltData.voalleAccessPointId;
+        dataOlt?.ip.push(oltData.host);
+        dataOlt.accessPointId.push(oltData.voalleAccessPointId);
     }else{
         props.OltInfo.map((subArray) => {
             return subArray.map((option: any) => {
@@ -20,18 +20,20 @@ export const verifyIfOnuExists = async (props: propsApi) => {
                     if(option.city_id === 22){
                         const ip = option.host;
                         const accessPoint = option.voalleAccessPointId;
-                        dataOlt.ip.push(ip);
-                        dataOlt.accessPointId = accessPoint;
+                        dataOlt?.ip.push(ip);
+                        dataOlt?.accessPointId.push(accessPoint);
                     }
                 }else if(verifyCity === props.city){
                     const ip = option.host;
                     const accessPoint = option.voalleAccessPointId;
-                    dataOlt.ip.push(ip);
-                    dataOlt.accessPointId = accessPoint;
+                    dataOlt?.ip.push(ip);
+                    dataOlt?.accessPointId.push(accessPoint);
                 }
             });
         })
     }
+
+    console.log(dataOlt, 'aq')
 
     await axios({
         method: 'post',
@@ -51,8 +53,11 @@ export const verifyIfOnuExists = async (props: propsApi) => {
             //RETORNA ONU NAO ENCONTRADA
             return;
         }
-        response.data[0].push(dataOlt?.accessPointId)
-        //console.log(response.data)
+        if(props.typeOnu === 'zte'){
+            response.data[0].push(dataOlt?.accessPointId);
+        }else{
+            response.data[0].push(dataOlt?.ip, dataOlt?.accessPointId);
+        }
         props.stopLoading();
         props.setDataFromApi(response.data);
     })

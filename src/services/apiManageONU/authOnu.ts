@@ -20,7 +20,7 @@ export async function AuthOnu(props: IAuthOnuProps){
             props.handleError('warning/invalid-input');
         }else{
             props.startLoading();
-            console.log('aq')
+
             let dataOlt: any[] = [];
             props.OltInfo.map((subArray) => {
                 return subArray.map((option: any) => {
@@ -35,6 +35,7 @@ export async function AuthOnu(props: IAuthOnuProps){
                     }
                 });
             });
+
             if(dataOlt.length > 1){
                 dataOlt[0] = props.dataOnu.ip;
             }
@@ -47,8 +48,6 @@ export async function AuthOnu(props: IAuthOnuProps){
             }else{
                 connectionData = props.cpf;
             }
-
-            console.log(connectionData.password)
 
             const hasAuth = await axios({
                 method: 'post',

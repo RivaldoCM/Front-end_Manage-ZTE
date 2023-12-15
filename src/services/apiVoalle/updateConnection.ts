@@ -5,7 +5,13 @@ import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps"
 
 export async function updateConnection(props: IUpdateConnectionProps){
 
-    console.log(props.dataOnu)
+    if(props.dataOnu.ip === '172.18.1.6'){
+        props.dataOnu.accessPoint[0] = props.dataOnu.accessPoint[2]
+    }else if(props.dataOnu.ip === '172.18.1.2'){
+        props.dataOnu.accessPoint[0] = props.dataOnu.accessPoint[1]
+    }
+
+    console.log(props.dataOnu.accessPoint[0], 'fim')
 
     const data = {
         "id": props.connectionData.connectionId,
@@ -25,14 +31,14 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "wifiName": props.wifiSSID,
         "wifiPassword": props.wifiPass,
         "technologyType": 16,
-        "authenticationAccessPointId": props.dataOnu.accessPoint,
+        "authenticationAccessPointId": props.dataOnu.accessPoint[0],
         "updateConnectionParameter": false,
         "shouldMacUpdate": false,
         "user": props.pppoe,
         "complement": "",
         "isIPoE": false
     }
-
+/*
     await axios({
         headers: {
             'Authorization': "Bearer " + await getToken()
@@ -46,5 +52,5 @@ export async function updateConnection(props: IUpdateConnectionProps){
     }).catch((err) => {
         console.log(err)
     });
-
+*/
 }
