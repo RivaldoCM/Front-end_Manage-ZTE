@@ -12,9 +12,8 @@ export function Form(props: FormProps){
 
     if(props.typeOnu === 'parks'){
         if (Array.isArray(props.item)){
-
             const [ pon, signal, serial, ip, accessPoint ] = props.item;
-            console.log(pon, signal, serial, ip, accessPoint)
+            console.log(props.item)
             return(
                 <form onSubmit={props.handleSubmitWriteData} className="flex">
                     <InputContainer>

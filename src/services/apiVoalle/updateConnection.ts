@@ -11,8 +11,6 @@ export async function updateConnection(props: IUpdateConnectionProps){
         props.dataOnu.accessPoint[0] = props.dataOnu.accessPoint[1]
     }
 
-    console.log(props.dataOnu.accessPoint[0], 'fim')
-
     const data = {
         "id": props.connectionData.connectionId,
         "fiberMac": "",
@@ -22,7 +20,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "oltId": props.oltId,
         "slotOlt": props.dataOnu.placa,
         "portOlt": props.dataOnu.pon,
-        "equipmentSerialNumber": props.serialNumber,
+        "equipmentSerialNumber": props.dataOnu.serial,
         "ipType": 0,
         "equipmentUser": "",
         "equipmentPassword": "",
@@ -38,7 +36,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "complement": "",
         "isIPoE": false
     }
-/*
+
     await axios({
         headers: {
             'Authorization': "Bearer " + await getToken()
@@ -52,5 +50,4 @@ export async function updateConnection(props: IUpdateConnectionProps){
     }).catch((err) => {
         console.log(err)
     });
-*/
 }

@@ -149,7 +149,8 @@ export async function AuthOnu(props: IAuthOnuProps){
 
             if(hasAuth){
                 props.handleError(hasAuth.status);
-                const oltId = hasAuth.data;
+                const oltId = hasAuth.response;
+                console.log(hasAuth)
                 if(peopleId !== undefined){
                     updateConnection({...props, connectionData, oltId})
                 }

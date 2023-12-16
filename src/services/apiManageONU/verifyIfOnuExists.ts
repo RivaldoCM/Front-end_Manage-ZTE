@@ -33,8 +33,6 @@ export const verifyIfOnuExists = async (props: propsApi) => {
         })
     }
 
-    console.log(dataOlt, 'aq')
-
     await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/findOnu`,
@@ -53,10 +51,15 @@ export const verifyIfOnuExists = async (props: propsApi) => {
             //RETORNA ONU NAO ENCONTRADA
             return;
         }
-        if(props.typeOnu === 'zte'){
+        if(props.typeOnu === 'parks' && props.city !== 'TOMBOS'){
+            response.data[0].push(0, dataOlt?.accessPointId);
+        }else if(props.typeOnu === 'parks'){
             response.data[0].push(dataOlt?.accessPointId);
         }else{
-            response.data[0].push(dataOlt?.ip, dataOlt?.accessPointId);
+            for(let i in response.data){
+                response.data[i].push(dataOlt?.accessPointId);
+                //Para mostrar todas as ONU's caso use o comando especial
+            }
         }
         props.stopLoading();
         props.setDataFromApi(response.data);
