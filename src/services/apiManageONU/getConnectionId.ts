@@ -6,7 +6,12 @@ export async function getConnectionId(peopleId: any, pppoe: string): Promise<any
         pppoe: pppoe
     })
     .then(response => {
+        console.log(response.data.success)
+        if (!response.data.success) return response.data.messages.response;
         return response.data.responses.response;
+    })
+    .catch(() => {
+        return null;
     });
 
     return connectionId;

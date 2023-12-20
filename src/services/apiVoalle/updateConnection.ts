@@ -28,7 +28,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "port": "",
         "wifiName": props.wifiSSID,
         "wifiPassword": props.wifiPass,
-        "technologyType": 16,
+        "technologyType": 8,
         "authenticationAccessPointId": props.dataOnu.accessPoint[0],
         "updateConnectionParameter": false,
         "shouldMacUpdate": false,
@@ -45,9 +45,9 @@ export async function updateConnection(props: IUpdateConnectionProps){
         url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/updateconnection/${props.connectionData.connectionId}`,
         data: data
     })
-    .then((response) => {
-        console.log(response)
-    }).catch((err) => {
-        console.log(err)
+    .then(() => {
+        return;
+    }).catch(() => {
+        return;
     });
 }

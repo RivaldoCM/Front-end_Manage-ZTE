@@ -45,8 +45,11 @@ export async function AuthOnu(props: IAuthOnuProps){
 
             if(peopleId){
                 connectionData = await getConnectionId(peopleId, props.pppoe);
+                if (!connectionData.contractId){
+                    connectionData.contractId = 0
+                }
             }else{
-                connectionData = props.cpf;
+                connectionData.contractId = props.cpf;
             }
 
             const hasAuth = await axios({
@@ -80,9 +83,10 @@ export async function AuthOnu(props: IAuthOnuProps){
             });
 
             if(hasAuth){
-                props.handleError(hasAuth);
-                if(peopleId !== undefined){
-                    updateConnection({...props, connectionData})
+                props.handleError(hasAuth.status);
+                const oltId = hasAuth.response;
+                if(connectionData.connectionId){
+                    updateConnection({...props, connectionData, oltId})
                 }
             }
         }
@@ -109,8 +113,11 @@ export async function AuthOnu(props: IAuthOnuProps){
 
             if(peopleId){
                 connectionData = await getConnectionId(peopleId, props.pppoe);
+                if (!connectionData.contractId){
+                    connectionData.contractId = 0
+                }
             }else{
-                connectionData = props.cpf;
+                connectionData.contractId = props.cpf;
             }
 
             const hasAuth = await axios({
@@ -138,20 +145,19 @@ export async function AuthOnu(props: IAuthOnuProps){
                 props.setDataFromApi([]);
                 if(!response.data.responses.response){
                     return null;
-                }       
+                }
                 return response.data.responses;
             })
             .catch(error => {
                 props.stopLoading();
-                props.handleError(error.code);
+                props.handleError(error.data.messages.message);
                 return;
             });
 
             if(hasAuth){
                 props.handleError(hasAuth.status);
                 const oltId = hasAuth.response;
-                console.log(hasAuth)
-                if(peopleId !== undefined){
+                if(connectionData.connectionId){
                     updateConnection({...props, connectionData, oltId})
                 }
             }
