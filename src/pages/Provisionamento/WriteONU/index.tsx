@@ -76,18 +76,25 @@ export function WriteONU(props: WriteONUProps){
                     dataOlt[0] = dataOnu[0].ip;
                 }
                 
-                await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`, {
-                    ip: dataOlt[0],
-                    slot: null,
-                    pon: dataOnu[0].pon,
-                    isPizzaBox: null,
-                    serialNumber: dataOnu[0].serial,
-                    type: 'parks',
-                    contract: null,
-                    pppoeUser: pppoe.toLowerCase(),
-                    pppPass: pppoePass || null,
-                    wifiSSID: wifiSSID || null,
-                    wifiPass: wifiPass || null
+                await axios({
+                    method: 'post',
+                    url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
+                    },
+                    data: {
+                        ip: dataOlt[0],
+                        slot: null,
+                        pon: dataOnu[0].pon,
+                        isPizzaBox: null,
+                        serialNumber: dataOnu[0].serial,
+                        type: 'parks',
+                        contract: null,
+                        pppoeUser: pppoe.toLowerCase(),
+                        pppPass: pppoePass || null,
+                        wifiSSID: wifiSSID || null,
+                        wifiPass: wifiPass || null
+                    }
                 })
                 .then(response => {
                     props.stopLoading();
