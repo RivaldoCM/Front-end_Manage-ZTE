@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { isNumeric, isAlphaNumeric } from '../../config/regex';
+import { isNumeric, isAlphaNumeric, isValidCpf } from '../../config/regex';
 import { typeBridgeZte, typePppoeZte } from '../../config/tipsOlts';
 
 import { getPeopleId } from '../apiVoalle/getPeopleId';
@@ -16,7 +16,7 @@ export async function AuthOnu(props: IAuthOnuProps){
             props.handleError(err);
         }else if(props.pppoe.length === 0 || props.cpf.length === 0){
             props.handleError('info/required-input');
-        }else if(!props.cpf.match(isNumeric)){
+        }else if(!props.cpf.match(isValidCpf)){
             props.handleError('warning/invalid-input');
         }else{
             props.startLoading();
@@ -97,8 +97,8 @@ export async function AuthOnu(props: IAuthOnuProps){
         }else if(typeBridgeZte.includes((props.dataOnu.model)) && props.cpf.length === 0 ||
         (typeBridgeZte.includes(props.dataOnu.model) && props.pppoe.length === 0)){
             props.handleError('info/required-input');
-        }else if(!props.cpf.match(isNumeric)){
-            props.handleError('info/non-expect-caracter-NAN');
+        }else if(!props.cpf.match(isValidCpf)){
+            props.handleError('warning/invalid-cpf-input');
         }else if(typePppoeZte.includes(props.dataOnu.model) && !props.wifiSSID.match(isAlphaNumeric)){
             props.handleError('info/wifi-ssid-did-not-match');
         }else if(typePppoeZte.includes(props.dataOnu.model) && !props.wifiPass.match(isAlphaNumeric)){
@@ -108,8 +108,9 @@ export async function AuthOnu(props: IAuthOnuProps){
         }else{
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
+
             const peopleId: number = await getPeopleId(props.cpf);
-            let connectionData: any
+            let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
             if(peopleId){
                 connectionData = await getConnectionId(peopleId, props.pppoe);
@@ -117,7 +118,7 @@ export async function AuthOnu(props: IAuthOnuProps){
                     connectionData.contractId = 0
                 }
             }else{
-                connectionData.contractId = props.cpf;
+                connectionData.contractId = 0;
             }
 
             const hasAuth = await axios({
@@ -161,6 +162,7 @@ export async function AuthOnu(props: IAuthOnuProps){
                     updateConnection({...props, connectionData, oltId})
                 }
             }
+            
         }
     }
 }
