@@ -41,8 +41,8 @@ export function WriteONU(props: WriteONUProps){
         event.preventDefault();
         setIsDropDownOpen(false);
 
-        //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
         if (dataOnu){
+            //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
             props.setSerialNumber(dataOnu.serial);
             AuthOnu({...props, pppoe, pppoePass, wifiPass, wifiSSID, cpf, dataOnu});
         }

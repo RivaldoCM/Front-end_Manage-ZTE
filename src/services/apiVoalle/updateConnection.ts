@@ -4,6 +4,12 @@ import { getToken } from "./getToken";
 import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps";
 
 export async function updateConnection(props: IUpdateConnectionProps){
+    let modelOLTVoalle: number = 0;
+    if(props.typeOnu == 'zte'){
+        modelOLTVoalle = 7;
+    }else if(props.typeOnu == 'parks'){
+        modelOLTVoalle = 4;
+    }
 
     if(props.dataOnu.ip === '172.18.1.6'){
         props.dataOnu.accessPoint[0] = props.dataOnu.accessPoint[2]
@@ -16,7 +22,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "fiberMac": "",
         "mac": "",
         "password": props.connectionData.password, //PPPoE
-        "equipmentType": 7,
+        "equipmentType": modelOLTVoalle,
         "oltId": props.oltId,
         "slotOlt": props.dataOnu.placa,
         "portOlt": props.dataOnu.pon,

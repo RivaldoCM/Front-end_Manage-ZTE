@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { isNumeric, isAlphaNumeric, isValidCpf } from '../../config/regex';
+import { isAlphaNumeric, isValidCpf } from '../../config/regex';
 import { typeBridgeZte, typePppoeZte } from '../../config/tipsOlts';
 
 import { getPeopleId } from '../apiVoalle/getPeopleId';
@@ -17,10 +17,9 @@ export async function AuthOnu(props: IAuthOnuProps){
         }else if(props.pppoe.length === 0 || props.cpf.length === 0){
             props.handleError('info/required-input');
         }else if(!props.cpf.match(isValidCpf)){
-            props.handleError('warning/invalid-input');
+            props.handleError('warning/invalid-cpf-input');
         }else{
             props.startLoading();
-
             let dataOlt: any[] = [];
             props.OltInfo.map((subArray) => {
                 return subArray.map((option: any) => {
@@ -35,13 +34,12 @@ export async function AuthOnu(props: IAuthOnuProps){
                     }
                 });
             });
-
             if(dataOlt.length > 1){
                 dataOlt[0] = props.dataOnu.ip;
             }
 
             const peopleId = await getPeopleId(props.cpf);
-            let connectionData: any;
+            let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
             if(peopleId){
                 connectionData = await getConnectionId(peopleId, props.pppoe);
@@ -49,7 +47,7 @@ export async function AuthOnu(props: IAuthOnuProps){
                     connectionData.contractId = 0
                 }
             }else{
-                connectionData.contractId = props.cpf;
+                connectionData.contractId = 0;
             }
 
             const hasAuth = await axios({
@@ -75,18 +73,21 @@ export async function AuthOnu(props: IAuthOnuProps){
             .then(response => {
                 props.stopLoading();
                 props.setDataFromApi([]);
-                return response.data;
+                if(!response.data.responses.status){
+                    return null;
+                }
+                return response.data.responses;
             })
             .catch(error => {
                 props.stopLoading();
-                props.handleError(error.code);
+                props.handleError(error.data.messages.message);
+                return;
             });
 
             if(hasAuth){
                 props.handleError(hasAuth.status);
-                const oltId = hasAuth.response;
                 if(connectionData.connectionId){
-                    updateConnection({...props, connectionData, oltId})
+                    updateConnection({...props, connectionData})
                 }
             }
         }
@@ -108,14 +109,13 @@ export async function AuthOnu(props: IAuthOnuProps){
         }else{
             props.startLoading();
             const oltData = props.OltInfo.find(option => option.name === props.city ? props.city : '')!;
-
             const peopleId: number = await getPeopleId(props.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
             if(peopleId){
                 connectionData = await getConnectionId(peopleId, props.pppoe);
                 if (!connectionData.contractId){
-                    connectionData.contractId = 0
+                    connectionData.contractId = 0;
                 }
             }else{
                 connectionData.contractId = 0;
@@ -162,7 +162,6 @@ export async function AuthOnu(props: IAuthOnuProps){
                     updateConnection({...props, connectionData, oltId})
                 }
             }
-            
         }
     }
 }
