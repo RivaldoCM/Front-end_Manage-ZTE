@@ -12,7 +12,7 @@ export function Form(props: FormProps){
 
     if(props.typeOnu === 'parks'){
         if (Array.isArray(props.item)){
-            const [ pon, signal, serial, ip ] = props.item;
+            const [ pon, signal, serial, ip, accessPoint ] = props.item;
             return(
                 <form onSubmit={props.handleSubmitWriteData} className="flex">
                     <InputContainer>
@@ -25,7 +25,7 @@ export function Form(props: FormProps){
                     </InputContainer>
                     <InputContainer>
                         <div className="text">
-                            <p>N° do contrato: </p>
+                            <p>CPF do Cliente: </p>
                         </div>
                         <div className="content">
                             <TextField
@@ -45,14 +45,15 @@ export function Form(props: FormProps){
                                     variant="outlined" 
                                     endIcon={<AddOutlinedIcon />}
                                     onClick={() => {
-                                        props.setDataOnu([{
+                                        props.setDataOnu({
                                             placa: 1,
                                             pon: pon,
                                             serial: serial,
                                             model: 'parks',
                                             signal: signal,
-                                            ip: ip
-                                        }]);
+                                            ip: ip,
+                                            accessPoint: accessPoint
+                                        });
                                     }}
                                 >
                                     Provisionar
@@ -65,9 +66,9 @@ export function Form(props: FormProps){
         }
     }else{
         if (Array.isArray(props.item)) {
-            const [ placa, pon, modelOnu, serial ] = props.item;
+            const [ placa, pon, modelOnu, serial, accessPoint ] = props.item;
             const model = cleanUpModelName(modelOnu);
-    
+
             if(model && typePppoeZte.includes(model)){
                 return(
                     <form onSubmit={props.handleSubmitWriteData} className="flex">
@@ -97,7 +98,7 @@ export function Form(props: FormProps){
                         </InputContainer>
                         <InputContainer>
                             <div className="text">
-                                <p>N° do Ccontrato: </p>
+                                <p>CPF do Cliente: </p>
                             </div>
                             <div className="content">
                                 <TextField
@@ -141,12 +142,13 @@ export function Form(props: FormProps){
                                         variant="outlined" 
                                         endIcon={<AddOutlinedIcon />}
                                         onClick={() => {
-                                            props.setDataOnu([{
+                                            props.setDataOnu({
                                                 placa: placa,
                                                 pon: pon,
                                                 model: model,
                                                 serial: serial,
-                                            }]);
+                                                accessPoint: accessPoint
+                                            });
                                         }}
                                     >
                                         Provisionar
@@ -169,7 +171,7 @@ export function Form(props: FormProps){
                         </InputContainer>
                         <InputContainer>
                             <div className="text">
-                                <p>N° do contrato: </p>
+                                <p>CPF do Cliente: </p>
                             </div>
                             <div className="content">
                                 <TextField 
@@ -188,12 +190,13 @@ export function Form(props: FormProps){
                                         variant="outlined" 
                                         endIcon={<AddOutlinedIcon />}
                                         onClick={() => {
-                                            props.setDataOnu([{
+                                            props.setDataOnu({
                                                 placa: placa,
                                                 pon: pon,
                                                 model: model,
                                                 serial: serial,
-                                            }]);
+                                                accessPoint: accessPoint
+                                            });
                                         }}
                                     >
                                         Provisionar

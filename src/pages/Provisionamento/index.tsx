@@ -124,7 +124,7 @@ export function Provisionamento(){
         setOlt([]);
         setCity('');
     }
-    
+
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
         setValue(newValue);
     };

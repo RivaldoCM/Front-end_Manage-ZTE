@@ -30,12 +30,11 @@ export function AppRoutes() {
         if(token && location.pathname === '/login' || token && location.pathname === '/'){
             navigate('/provisionamento');
         }
-
-        console.log(navigate)
+        
         if (!token && location.pathname !== '/login') {
             navigate('/login');
         }
-      }, [navigate, location]);
+    }, [navigate, location]);
 
     return (
         <Routes>

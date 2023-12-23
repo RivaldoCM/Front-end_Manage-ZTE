@@ -97,7 +97,7 @@ export function useError(){
                 setSeverityStatus('error');
             break;
             case 'warning/invalid-cpf-input':
-                setErrorMessage('CPF inválido.');
+                setErrorMessage('CPF ou CNPJ inválidos.');
                 setSeverityStatus('warning');
             break;
             case 'unable-load-data':

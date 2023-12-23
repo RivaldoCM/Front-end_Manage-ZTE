@@ -27,7 +27,7 @@ export const Container = styled.form`
 		align-items: center;
 		height: 70%;
 		width: 100%;
-		padding: .5rem 2rem;
+		padding: .5rem 4rem;
 	}
 
 	.button{

@@ -16,7 +16,7 @@ export async function getToken(){
         }
     }).then((response) =>{ 
         return response.data.access_token;
-    })
+    });
 
     return token;
 }
