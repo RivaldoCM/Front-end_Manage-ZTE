@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-
 import { getOlt } from '../../../services/apiManageONU/getOlt';
 import { Olt } from '../../../interfaces/olt';
 
@@ -20,11 +19,9 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { TableHead } from '@mui/material';
 import { useError } from '../../../hooks/useError';
 import Alert from '@mui/material/Alert';
-import { KeepMountedModal } from '../users/modal';
 import { KeepMountedOltModal } from './Modal';
 
 function stableSort<T>(array: readonly T[]) {
@@ -154,15 +151,13 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Toolbar>
     );
 }
-export function HandleManageOlt() {
-
+export function HandleManageOlt(){
     const { error, errorMessage, severityStatus, handleError } = useError();
 
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-
     const [ olt, setOlt ] = useState<Olt[]>([]);
 
     useEffect(() => {

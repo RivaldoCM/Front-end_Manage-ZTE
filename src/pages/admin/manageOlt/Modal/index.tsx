@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 
 import { useError } from '../../../../hooks/useError';
@@ -8,12 +8,10 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
 
@@ -22,12 +20,6 @@ import { InputContainer } from '../../../../globalStyles';
 
 export function KeepMountedOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
-
-	const [checked, setChecked] = useState(false);
-
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setChecked(event.target.checked = !checked);
-	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
