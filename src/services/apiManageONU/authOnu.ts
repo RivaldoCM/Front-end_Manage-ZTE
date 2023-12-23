@@ -10,7 +10,7 @@ import { updateConnection } from '../apiVoalle/updateConnection';
 
 export async function AuthOnu(props: IAuthOnuProps){
 
-    if(props.dataOnu.model == "parks"){
+    if(props.dataOnu.model === "parks"){
         if (props.isLoading){
             const err = 'warning/has-action-in-progress';
             props.handleError(err);
