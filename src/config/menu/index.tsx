@@ -5,6 +5,7 @@ import { IAllPages } from '../../interfaces/IAllPages';
 import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 type IconType = React.ReactElement;
 
@@ -15,8 +16,11 @@ export const handlePages: IAllPages[] = [
         name: "Area Tecnica",
         pages: [
            {
-                provisionamento: 'Provisionamento'
-           }
+                provisionamento: 'Provisiona ONU'
+           },
+           {
+                onuDelete: 'Desprovisiona ONU'
+           },
         ]
     },
     {
@@ -24,7 +28,6 @@ export const handlePages: IAllPages[] = [
         pages: [
             {
                 users: 'Usuários',
-                
             },
             {
                 olts: "OLT's"
@@ -53,6 +56,8 @@ export const handleIconMenu = (text: string): IconType => {
     switch(text){
         case 'provisionamento':
             return <MiscellaneousServicesOutlinedIcon />;
+        case 'onuDelete':
+            return <HighlightOffOutlinedIcon />;
         case 'users':
             return <AdminPanelSettingsOutlinedIcon />;
         case "olts":

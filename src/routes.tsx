@@ -9,6 +9,7 @@ import { HandleManageOlt } from "./pages/admin/manageOlt";
 import { HandleManageUsers } from "./pages/admin/users";
 import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
+import { OnuDelete } from "./pages/onuDelete";
 
 interface PrivateRouteProps {
     element: ReactElement;
@@ -51,6 +52,10 @@ export function AppRoutes() {
                 <Route
                     path="users"
                     element={<PrivateRoute element={<HandleManageUsers />} />}
+                />
+                <Route
+                    path="onuDelete"
+                    element={<PrivateRoute element={<OnuDelete />} />}
                 />
             </Route>
         </Routes>
