@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { getOlt } from "../../services/apiManageONU/getOlt";
 import { Olt } from "../../interfaces/olt";
 import { renderCityMenuItem } from "../../config/duplicatedOltValues";
+import { deleteOnu } from "../../services/apiManageONU/deleteOnu";
 
 import { Form } from "./style";
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import TextField from '@mui/material/TextField';
+
 
 
 export function OnuDelete(){
@@ -45,7 +47,15 @@ export function OnuDelete(){
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const city = olt.map((value) => {
+            if(form.city == value.name){
+                return value;
+            }
+        }).filter(value => value !== undefined);
+
 
     }
 
@@ -68,6 +78,7 @@ export function OnuDelete(){
                 value={form.serial}
                 name="serial"
                 onChange={handleFormChange}
+                required
             />
             <Button
                 size="medium"

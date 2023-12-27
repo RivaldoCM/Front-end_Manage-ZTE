@@ -11,6 +11,7 @@ export const renderCityMenuItem = (value: Olt, index: number) => {
         if (!processedCityIds.has(value.city_id)) {
             processedCityIds.add(value.city_id);
             if(value.city_id === 22){
+
                 return (
                     <MenuItem key={index} value={value.name}>
                         TOMBOS
