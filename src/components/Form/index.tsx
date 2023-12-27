@@ -1,6 +1,6 @@
 import { FormProps } from "../../interfaces/Form";
 
-import { cleanUpModelName, typePppoeZte } from "../../config/tipsOlts";
+import { cleanUpModelName, typePppoeZte } from "../../config/typesOnus";
 
 import { InputContainer } from "../../globalStyles";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';

@@ -9,7 +9,7 @@ import { HandleManageOlt } from "./pages/admin/manageOlt";
 import { HandleManageUsers } from "./pages/admin/users";
 import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
-import { OnuDelete } from "./pages/onuDelete";
+import { OnuDelete } from "./pages/OnuDelete";
 
 interface PrivateRouteProps {
     element: ReactElement;
