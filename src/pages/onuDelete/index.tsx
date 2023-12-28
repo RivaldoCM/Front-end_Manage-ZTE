@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 
 import { getOlt } from "../../services/apiManageONU/getOlt";
 import { Olt } from "../../interfaces/olt";
-import { renderCityMenuItem } from "../../config/duplicatedOltValues";
 import { deleteOnu } from "../../services/apiManageONU/deleteOnu";
 
 import { Form } from "./style";
+import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import TextField from '@mui/material/TextField';
-
-
 
 export function OnuDelete(){
     const [olt, setOlt] = useState<Olt[]>([]);
@@ -41,22 +39,32 @@ export function OnuDelete(){
 
     const handleCity = () => {
         if (olt) {
-            return olt.map((value: Olt, index: number) => {
-                return renderCityMenuItem(value, index);
+            const onlyToDisplayOltData = olt.filter((el) => {
+                if (el.city_id == 22){
+                    return el.name === 'TOMBOS';
+                }
+                return el;
+            }) 
+
+            return onlyToDisplayOltData.map((value: Olt, index: number) => {
+                return (
+                    <MenuItem key={index} value={value.name}>
+                        {value.name}
+                    </MenuItem>
+                );
             });
         }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         const city = olt.map((value) => {
-            if(form.city == value.name){
-                return value;
+
+            if(form.city.includes(value.name)){
+                console.log(value)
+                return value
             }
         }).filter(value => value !== undefined);
-
-
     }
 
     return (
