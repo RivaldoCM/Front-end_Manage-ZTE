@@ -32,7 +32,7 @@ export const GlobalStyle = createGlobalStyle`
         }
     }
     body {
-        background: #eef1f6;
+        //background: #eef1f6 !important;
         -webkit-font-smoothing: antialiased;
     }
     body, button, texarea{

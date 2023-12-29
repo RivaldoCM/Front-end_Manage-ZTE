@@ -75,32 +75,34 @@ export function OnuDelete(){
                 serial: form.serial,
             };
             data.push(obj);
-        }     
+        }
 
         deleteOnu(data);
     };
 
     return (
         <Form className="flex" onSubmit={handleSubmit}>
-            <TextField
-                sx={{minWidth: 'unset'}}
-                id='select-city'
-                label="Cidades"
-                name="city"
-                value={form.city}
-                onChange={handleFormChange}
-                select
-            >
-                {handleCity()}
-            </TextField>
-            <TextField 
-                label="Digite o serial da ONU" 
-                id="fullWidth" 
-                value={form.serial}
-                name="serial"
-                onChange={handleFormChange}
-                required
-            />
+            <div className="controller flex">
+                <TextField
+                    sx={{minWidth: 'unset'}}
+                    id='select-city'
+                    label="Cidades"
+                    name="city"
+                    value={form.city}
+                    onChange={handleFormChange}
+                    select
+                >
+                    {handleCity()}
+                </TextField>
+                <TextField 
+                    label="Digite o serial da ONU" 
+                    id="fullWidth" 
+                    value={form.serial}
+                    name="serial"
+                    onChange={handleFormChange}
+                    required
+                />
+            </div>
             <Button
                 size="medium"
                 variant="contained" 
