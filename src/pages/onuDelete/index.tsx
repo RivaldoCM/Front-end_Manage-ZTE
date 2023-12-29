@@ -58,14 +58,27 @@ export function OnuDelete(){
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const city = olt.map((value) => {
+        let data = [];
 
-            if(form.city.includes(value.name)){
-                console.log(value)
-                return value
+        const city = olt.filter((value) => {
+            if(value.name.match(/\bTOMBOS\b/g) && form.city.match(/\bTOMBOS\b/g)){
+                return value;
+            }else if(form.city === value.name){
+                return value;
             }
-        }).filter(value => value !== undefined);
-    }
+        });
+
+        for (let i of city) {
+            let obj = {
+                ip: i.host,
+                type: i.type,
+                serial: form.serial,
+            };
+            data.push(obj);
+        }     
+
+        deleteOnu(data);
+    };
 
     return (
         <Form className="flex" onSubmit={handleSubmit}>
