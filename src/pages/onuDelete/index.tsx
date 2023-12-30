@@ -4,19 +4,19 @@ import { getOlt } from "../../services/apiManageONU/getOlt";
 import { Olt } from "../../interfaces/olt";
 import { deleteOnu } from "../../services/apiManageONU/deleteOnu";
 import { useError } from "../../hooks/useError";
+import { useLoading } from "../../hooks/useLoading";
 
 import { Form } from "./style";
 import { Alert } from "@mui/material";
+import {CircularProgress} from "@mui/material";
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import TextField from '@mui/material/TextField';
-import { IDeleteOnu } from "../../interfaces/IDeleteOnu";
-
 
 export function OnuDelete(){
     const { error, errorMessage, severityStatus, handleError } = useError();
-    
+    const { isLoading, startLoading, stopLoading } = useLoading();
     const [olt, setOlt] = useState<Olt[]>([]);
     const [form, setForm] = useState({
         city: '',
@@ -64,6 +64,8 @@ export function OnuDelete(){
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        startLoading();
+
         let data: any = [];
 
         const city = olt.filter((value) => {
@@ -84,7 +86,7 @@ export function OnuDelete(){
         }
 
         const response = await deleteOnu(data);
-
+        stopLoading();
         if(!response.success){
             handleError(response.messages.message);
             return;
@@ -116,14 +118,19 @@ export function OnuDelete(){
                     required
                 />
             </div>
-            <Button
-                size="medium"
-                variant="contained" 
-                endIcon={<SendIcon />}
-                type="submit"
-            >
-                Desprovisionar
-            </Button>
+            {isLoading ?
+                <CircularProgress className="MUI-CircularProgress" color="primary"/>
+                :
+                <Button
+                    size="medium"
+                    variant="contained" 
+                    endIcon={<SendIcon />}
+                    type="submit"
+                >
+                    Desprovisionar
+                </Button>
+            }
+            
             {
                 (error ?
                     <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
