@@ -104,6 +104,10 @@ export function useError(){
                 setErrorMessage('Não foi possível carregar os dados, tente fazer login novamente.');
                 setSeverityStatus('error');
             break;
+            case 'success/onu-delete-completed':
+                setErrorMessage('ONU desprovisionada com sucesso.');
+                setSeverityStatus('success');
+            break;
             default:
                 handleError('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');

@@ -3,14 +3,20 @@ import { useEffect, useState } from "react";
 import { getOlt } from "../../services/apiManageONU/getOlt";
 import { Olt } from "../../interfaces/olt";
 import { deleteOnu } from "../../services/apiManageONU/deleteOnu";
+import { useError } from "../../hooks/useError";
 
 import { Form } from "./style";
+import { Alert } from "@mui/material";
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import TextField from '@mui/material/TextField';
+import { IDeleteOnu } from "../../interfaces/IDeleteOnu";
+
 
 export function OnuDelete(){
+    const { error, errorMessage, severityStatus, handleError } = useError();
+    
     const [olt, setOlt] = useState<Olt[]>([]);
     const [form, setForm] = useState({
         city: '',
@@ -56,9 +62,9 @@ export function OnuDelete(){
         }
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        let data = [];
+        let data: any = [];
 
         const city = olt.filter((value) => {
             if(value.name.match(/\bTOMBOS\b/g) && form.city.match(/\bTOMBOS\b/g)){
@@ -77,7 +83,14 @@ export function OnuDelete(){
             data.push(obj);
         }
 
-        deleteOnu(data);
+        const response = await deleteOnu(data);
+
+        if(!response.success){
+            handleError(response.messages.message);
+            return;
+        }
+
+        handleError(response.responses.status);
     };
 
     return (
@@ -111,6 +124,13 @@ export function OnuDelete(){
             >
                 Desprovisionar
             </Button>
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
+                )
+            }
         </Form>
     )
 }

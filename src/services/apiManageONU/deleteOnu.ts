@@ -1,17 +1,18 @@
 import axios from "axios";
+import { IDeleteOnu } from "../../interfaces/IDeleteOnu";
 
-export async function deleteOnu(dataOlt): Promise<boolean>{
+export async function deleteOnu(dataToOlt: IDeleteOnu): Promise<any>{
     const data = await axios({
         method: 'delete',
-        url: 'http://localhost:4000/deleteOnu',
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/deleteOnu`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
         data: { 
-            dataOlt
+            dataToOlt
         },
-    }).then(() => {
-        return true;
+    }).then((res) => {
+        return res.data;
     }).catch(() => {
         return false;
     });
