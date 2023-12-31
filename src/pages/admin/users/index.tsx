@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 import { useError } from '../../../hooks/useError';
-import { KeepMountedModal } from './modal';
+import { KeepMountedModal } from './modals';
 
 import { IUsers } from '../../../interfaces/users';
 import { getUsers } from '../../../services/apiManageONU/getUsers';

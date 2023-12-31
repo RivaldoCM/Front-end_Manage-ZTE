@@ -22,7 +22,7 @@ import Switch from '@mui/material/Switch';
 import { TableHead } from '@mui/material';
 import { useError } from '../../../hooks/useError';
 import Alert from '@mui/material/Alert';
-import { KeepMountedOltModal } from './Modal';
+import { KeepMountedOltModal } from './modals';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -134,23 +134,35 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             </Typography>
         )}
         {numSelected > 0 ? (
-            <Tooltip title="Delete">
-                <IconButton>
-                    <KeepMountedOltModal
-                        handleOpen={handleOpen}
-                        open={open}
-                        handleClose={handleClose}
-                    />
-                </IconButton>
-            </Tooltip>
+            <div className='flex'>
+                <Tooltip title="Edit">
+                    <IconButton>
+                        <KeepMountedOltModal
+                            handleOpen={handleOpen}
+                            open={open}
+                            handleClose={handleClose}
+                        />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                    <IconButton>
+                        <KeepMountedOltModal
+                            handleOpen={handleOpen}
+                            open={open}
+                            handleClose={handleClose}
+                        />
+                    </IconButton>
+                </Tooltip>
+            </div>
         ) : (
             <Tooltip title="Adicionar">
-                <div></div>
+                <div>oi</div>
             </Tooltip>
         )}
         </Toolbar>
     );
 }
+
 export function HandleManageOlt(){
     const { error, errorMessage, severityStatus, handleError } = useError();
 

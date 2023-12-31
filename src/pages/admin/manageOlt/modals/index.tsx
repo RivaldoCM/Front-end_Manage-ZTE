@@ -15,7 +15,7 @@ import Select from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
 
-import { Container } from '../../users/modal/style';
+import { Container } from '../../users/modals/style';
 import { InputContainer } from '../../../../globalStyles';
 
 export function KeepMountedOltModal(props: any) {
