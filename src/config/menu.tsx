@@ -37,10 +37,13 @@ export const handlePages: IAllPages[] = [
 ]
 
 export const handleShowPageByRule = (rule?: number) => {
+
     switch(rule){
         case 17:
             let allPages = cloneDeep(handlePages);
         return handleDynamicPagesByRule = allPages;
+        case 14:
+        case 15:
         case 16:
             let withoutOlt = cloneDeep(handlePages);
             withoutOlt[1].pages.splice(1, 1);
