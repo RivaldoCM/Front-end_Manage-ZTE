@@ -196,7 +196,7 @@ export function MenuDrawer() {
 					))}
 				</List>
 			</Drawer>
-			<Box component="main" sx={{ flexGrow: 1, mt: 8.5 }}>
+			<Box component="main" className='flex' sx={{ flexGrow: 1, mt: 8.5 }}>
 				<Outlet />
 			</Box>
 		</Box>

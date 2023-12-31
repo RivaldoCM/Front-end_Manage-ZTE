@@ -1,10 +1,11 @@
 import cloneDeep from 'lodash/cloneDeep';
 
-import { IAllPages } from '../../interfaces/IAllPages';
+import { IAllPages } from '../interfaces/IAllPages';
 
 import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/MiscellaneousServicesOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 type IconType = React.ReactElement;
 
@@ -15,8 +16,11 @@ export const handlePages: IAllPages[] = [
         name: "Area Tecnica",
         pages: [
            {
-                provisionamento: 'Provisionamento'
-           }
+                provisionamento: 'Provisiona ONU'
+           },
+           {
+                onuDelete: 'Desprovisiona ONU'
+           },
         ]
     },
     {
@@ -24,7 +28,6 @@ export const handlePages: IAllPages[] = [
         pages: [
             {
                 users: 'Usuários',
-                
             },
             {
                 olts: "OLT's"
@@ -34,10 +37,13 @@ export const handlePages: IAllPages[] = [
 ]
 
 export const handleShowPageByRule = (rule?: number) => {
+
     switch(rule){
         case 17:
             let allPages = cloneDeep(handlePages);
         return handleDynamicPagesByRule = allPages;
+        case 14:
+        case 15:
         case 16:
             let withoutOlt = cloneDeep(handlePages);
             withoutOlt[1].pages.splice(1, 1);
@@ -53,6 +59,8 @@ export const handleIconMenu = (text: string): IconType => {
     switch(text){
         case 'provisionamento':
             return <MiscellaneousServicesOutlinedIcon />;
+        case 'onuDelete':
+            return <HighlightOffOutlinedIcon />;
         case 'users':
             return <AdminPanelSettingsOutlinedIcon />;
         case "olts":

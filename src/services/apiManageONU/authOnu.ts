@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { isAlphaNumeric, isValidCpf } from '../../config/regex';
-import { typeBridgeZte, typePppoeZte } from '../../config/tipsOlts';
+import { typeBridgeZte, typePppoeZte } from '../../config/typesOnus';
 
 import { getPeopleId } from '../apiVoalle/getPeopleId';
 import { getConnectionId } from './getConnectionId';
