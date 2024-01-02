@@ -69,16 +69,7 @@ export function KeepMountedOltModal(props: any) {
 							</div>
                             <TextField id="standard-basic" variant="standard" />
 						</InputContainer>
-                        <InputContainer>
-							<div className="text">
-								<p>Usuário: </p>
-							</div>
-                            <TextField id="standard-basic" variant="standard" />
-                            <div className="text">
-								<p>Senha: </p>
-							</div>
-							<TextField id="standard-basic" variant="standard" />
-						</InputContainer>
+
                         <InputContainer>
                             <div className="text">
 								<p>Ponto de acesso: </p>

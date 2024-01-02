@@ -15,7 +15,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -23,6 +22,7 @@ import { TableHead } from '@mui/material';
 import { useError } from '../../../hooks/useError';
 import Alert from '@mui/material/Alert';
 import { KeepMountedOltModal } from './modals';
+import { KeepMountedDeleteOltModal } from './modals/deleteOlt';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -103,6 +103,10 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    const [openDeleteOlt, setOpenDeleteOlt] = useState(false);
+    const handleOpenDeleteOlt = () => setOpenDeleteOlt(true);
+    const handleCloseDeleteOlt = () => setOpenDeleteOlt(false);
+
     return (
         <Toolbar
             sx={{
@@ -135,29 +139,23 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         )}
         {numSelected > 0 ? (
             <div className='flex'>
-                <Tooltip title="Edit">
-                    <IconButton>
-                        <KeepMountedOltModal
-                            handleOpen={handleOpen}
-                            open={open}
-                            handleClose={handleClose}
-                        />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                    <IconButton>
-                        <KeepMountedOltModal
-                            handleOpen={handleOpen}
-                            open={open}
-                            handleClose={handleClose}
-                        />
-                    </IconButton>
-                </Tooltip>
+                <KeepMountedOltModal
+                    handleOpen={handleOpen}
+                    open={open}
+                    handleClose={handleClose}
+                />
+                <KeepMountedDeleteOltModal
+                    handleOpen={handleOpenDeleteOlt}
+                    open={openDeleteOlt}
+                    handleClose={handleCloseDeleteOlt}
+                />
             </div>
         ) : (
-            <Tooltip title="Adicionar">
-                <div>oi</div>
-            </Tooltip>
+            <KeepMountedDeleteOltModal
+                handleOpen={handleOpenDeleteOlt}
+                open={openDeleteOlt}
+                handleClose={handleCloseDeleteOlt}
+            />
         )}
         </Toolbar>
     );
