@@ -4,21 +4,12 @@ import axios from 'axios';
 import { useError } from '../../../../hooks/useError';
 
 import Modal from '@mui/material/Modal';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
-import Typography from '@mui/material/Typography'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-
-import { Container } from '../../users/modals/style';
-import { InputContainer } from '../../../../globalStyles';
+import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
 
 export function KeepMountedDeleteOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
@@ -52,9 +43,23 @@ export function KeepMountedDeleteOltModal(props: any) {
 				aria-labelledby="keep-mounted-modal-title"
 				aria-describedby="keep-mounted-modal-description"
 			>
-				<Container className='flex' onSubmit={handleSubmit}>
-				
-				</Container>
+            <DefaultStyledModal>
+                <AddOlt>
+                    <CloseButton className="flex">
+                        <IconButton aria-label="close" onClick={props.handleClose}>
+                            <CloseIcon />
+                        </IconButton>
+                    </CloseButton>
+                    <FormModal className='flex'>
+						<div className="text">
+							<p>Você está apagando os dados da OLT de:  </p>
+						</div>
+                    </FormModal>
+                    <SubmitModal className="button flex">
+                    	<Button type='submit' onClick={props.handleClose} variant="contained">Confirmar</Button>
+                    </SubmitModal>
+                </AddOlt>
+            </DefaultStyledModal>
 			</Modal>
 			{
                 (error ?

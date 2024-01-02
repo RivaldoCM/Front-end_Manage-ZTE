@@ -25,7 +25,6 @@ import Switch from '@mui/material/Switch';
 import { TableHead } from '@mui/material';
 import Alert from '@mui/material/Alert';
 
-
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
     stabilizedThis.sort((a, b) => {
@@ -42,7 +41,7 @@ interface HeadCell {
     id: number;
     label: string;
     numeric: boolean;
-  }
+}
   
 const headCells: readonly HeadCell[] = [
     {

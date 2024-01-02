@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 
 import { getOlt } from '../../../services/apiManageONU/getOlt';
 import { Olt } from '../../../interfaces/olt';
+import AddOltModal from './modals/addOlt';
 
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -15,7 +16,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { TableHead } from '@mui/material';
@@ -107,6 +107,10 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const handleOpenDeleteOlt = () => setOpenDeleteOlt(true);
     const handleCloseDeleteOlt = () => setOpenDeleteOlt(false);
 
+    const [openAddOlt, setOpenAddOlt] = useState(false);
+    const handleOpenAddOlt = () => setOpenAddOlt(true);
+    const handleCloseAddOlt = () => setOpenAddOlt(false);
+
     return (
         <Toolbar
             sx={{
@@ -151,10 +155,10 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 />
             </div>
         ) : (
-            <KeepMountedDeleteOltModal
-                handleOpen={handleOpenDeleteOlt}
-                open={openDeleteOlt}
-                handleClose={handleCloseDeleteOlt}
+            <AddOltModal
+                handleOpen={handleOpenAddOlt}
+                open={openAddOlt}
+                handleClose={handleCloseAddOlt}
             />
         )}
         </Toolbar>
