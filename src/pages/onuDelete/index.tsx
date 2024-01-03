@@ -40,7 +40,7 @@ export function OnuDelete(){
         setForm({
             ...form,
             [e.target.name]: e.target.value
-        })
+        });
     }
 
     const handleCity = () => {

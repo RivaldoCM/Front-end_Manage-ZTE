@@ -33,7 +33,7 @@ function stableSort<T>(array: readonly T[]) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-interface EnhancedTableToolbarProps { numSelected: number; }
+interface EnhancedTableToolbarProps { numSelected: number; oltDataSelected: any }
 
 interface HeadCell {
     disablePadding: boolean;
@@ -97,7 +97,7 @@ function EnhancedTableHead(){
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected } = props;
+    const { numSelected, oltDataSelected } = props;
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -147,11 +147,13 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     handleOpen={handleOpen}
                     open={open}
                     handleClose={handleClose}
+                    oltDataSelected={oltDataSelected}
                 />
                 <KeepMountedDeleteOltModal
                     handleOpen={handleOpenDeleteOlt}
                     open={openDeleteOlt}
                     handleClose={handleCloseDeleteOlt}
+                    oltDataSelected={oltDataSelected}
                 />
             </div>
         ) : (
@@ -168,6 +170,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 export function HandleManageOlt(){
     const { error, errorMessage, severityStatus, handleError } = useError();
 
+    const [ oltDataSelected, setOltDataSelected ] = useState();
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
@@ -188,7 +191,8 @@ export function HandleManageOlt(){
         olts();
     }, []);
 
-    const handleClick = (_event: React.MouseEvent<unknown>, id: number) => {
+    const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: any) => {
+        setOltDataSelected(row);
         if(selected[0] === id){
             setSelected([]);
             return;
@@ -225,7 +229,7 @@ export function HandleManageOlt(){
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} oltDataSelected={oltDataSelected}/>
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -241,7 +245,7 @@ export function HandleManageOlt(){
                             return (
                                 <TableRow
                                     hover
-                                    onClick={(event) => handleClick(event, row.id)}
+                                    onClick={(event) => handleClick(event, row.id, row)}
                                     role="checkbox"
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}

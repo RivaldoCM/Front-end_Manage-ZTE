@@ -24,7 +24,7 @@ export function KeepMountedModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
 
 	const [checked, setChecked] = useState(false);
-	const [id, setId] = useState<number>()
+	const [id, setId] = useState<number>();
 	const [name, setName] = useState('');
 	const [rule, setRule] = useState<number>();
 	const [status, setStatus] = useState('');

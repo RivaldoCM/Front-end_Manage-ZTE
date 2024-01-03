@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 import { useError } from '../../../../hooks/useError';
@@ -18,8 +18,8 @@ export function KeepMountedDeleteOltModal(props: any) {
 		e.preventDefault();
 
 		await axios({
-			method: 'patch',
-			url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getUsers`,
+			method: 'delete',
+			url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt`,
 			headers: {
 				'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
 			},
@@ -30,6 +30,8 @@ export function KeepMountedDeleteOltModal(props: any) {
 			handleError(response.data);
 		});
 	}
+	console.log(props.oltDataSelected)
+
 
 	return (
 		<>
@@ -52,7 +54,7 @@ export function KeepMountedDeleteOltModal(props: any) {
                     </CloseButton>
                     <FormModal className='flex'>
 						<div className="text">
-							<p>Você está apagando os dados da OLT de:  </p>
+							<p>Você está apagando os dados da OLT de: {props.oltDataSelected.name} </p>
 						</div>
                     </FormModal>
                     <SubmitModal className="button flex">

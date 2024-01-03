@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 import { useError } from '../../../../hooks/useError';
@@ -22,6 +22,36 @@ import { InputContainer } from '../../../../globalStyles';
 export function KeepMountedOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
 
+	const [id, setId] = useState<number>(0);
+	const [form, setForm] = useState({
+		name: '',
+		host: '',
+		type: '',
+		pizzaBox: '',
+		voalleAccessPointId: ''
+	});
+	
+	if (typeof props.oltDataSelected === 'object' && id !== props.oltDataSelected['id']) {
+		if ('id' in props.oltDataSelected && props.oltDataSelected['id'] !== id) {
+			setId(props.oltDataSelected['id']);
+			setForm(() => ({
+				name: props.oltDataSelected['name'],
+				host: props.oltDataSelected['host'],
+				type: props.oltDataSelected['type'],
+				pizzaBox: props.oltDataSelected['pizzaBox'],
+				voalleAccessPointId: props.oltDataSelected['voalleAccessPointId'],
+			}));
+		}
+	}
+
+
+	const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
+	}
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
@@ -40,7 +70,7 @@ export function KeepMountedOltModal(props: any) {
 	}
 
 	return (
-		<>
+		<div>
 			<IconButton onClick={props.handleOpen}>
 				<EditOutlinedIcon />
 			</IconButton>
@@ -63,19 +93,37 @@ export function KeepMountedOltModal(props: any) {
 								<div className="text">
 									<p>Cidade: </p>
 								</div>
-								<TextField id="standard-basic" variant="standard" />
+								<TextField 
+									id="standard-basic"
+									name='name'
+									value={form.name}
+									variant="standard" 
+									onChange={handleFormChange}
+								/>
 							</InputContainer>
 							<InputContainer>
 								<div className="text">
 									<p>IP: </p>
 								</div>
-								<TextField id="standard-basic" variant="standard" />
+								<TextField 
+									id="standard-basic"
+									name='host'
+									value={form.host}
+									variant="standard"
+									onChange={handleFormChange}
+								/>
 							</InputContainer>
 							<InputContainer>
 								<div className="text">
 									<p>Ponto de acesso: </p>
 								</div>
-								<TextField id="standard-basic" variant="standard" />
+								<TextField 
+									id="standard-basic"
+									name='accessPoint'
+									value={form.voalleAccessPointId}
+									variant="standard"
+									onChange={handleFormChange}
+								/>
 							</InputContainer>
 							<InputContainer>
 								<div className="text">
@@ -86,6 +134,7 @@ export function KeepMountedOltModal(props: any) {
 									<Select
 										labelId="demo-simple-select-label"
 										id="demo-simple-select"
+										name='pizzaBox'
 										label="PizzaBox"
 									>
 										<MenuItem value='Sim'>Sim</MenuItem>
@@ -107,6 +156,6 @@ export function KeepMountedOltModal(props: any) {
                     <></>
                 )
             }
-		</>
+		</div>
 	);
 }
