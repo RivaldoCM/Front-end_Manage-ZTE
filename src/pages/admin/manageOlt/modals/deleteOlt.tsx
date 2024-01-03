@@ -9,26 +9,20 @@ import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-
+import { deleteOlt } from '../../../../services/apiManageONU/deleteOlt';
 
 export function KeepMountedDeleteOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		const response = await deleteOlt(props.oltDataSelected.id);
 
-		await axios({
-			method: 'delete',
-			url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt`,
-			headers: {
-				'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
-			},
-			data:{
+		if(!response.success){
+			handleError(response.messages.message);
+		}
 
-			}
-		}).then((response) => {
-			handleError(response.data);
-		});
+		handleError(response.responses.status);
 	}
 
 	return (
