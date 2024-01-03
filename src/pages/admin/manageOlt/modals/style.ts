@@ -8,7 +8,6 @@ export const DefaultStyledModal = styled.form`
     flex-direction: column;
     height: auto;
     padding: .5rem 0 1rem 0;
-    max-height: 480px;
     background-color: white;
     border-radius: 30px;
 
@@ -27,7 +26,7 @@ export const FormModal = styled.div`
     justify-content: flex-start;
     align-items: center;
     height: 75%;
-    padding: .5rem 4rem;
+    padding: .5rem 2.5rem;
 `
 
 export const SubmitModal = styled.div`

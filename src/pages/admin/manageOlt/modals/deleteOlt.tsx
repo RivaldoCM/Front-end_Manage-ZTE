@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
 import axios from 'axios';
 
 import { useError } from '../../../../hooks/useError';
 
+import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
 import Modal from '@mui/material/Modal';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
+
 
 export function KeepMountedDeleteOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
@@ -30,8 +30,6 @@ export function KeepMountedDeleteOltModal(props: any) {
 			handleError(response.data);
 		});
 	}
-	console.log(props.oltDataSelected)
-
 
 	return (
 		<>
@@ -45,7 +43,7 @@ export function KeepMountedDeleteOltModal(props: any) {
 				aria-labelledby="keep-mounted-modal-title"
 				aria-describedby="keep-mounted-modal-description"
 			>
-            <DefaultStyledModal>
+            <DefaultStyledModal onSubmit={handleSubmit}>
                 <AddOlt>
                     <CloseButton className="flex">
                         <IconButton aria-label="close" onClick={props.handleClose}>

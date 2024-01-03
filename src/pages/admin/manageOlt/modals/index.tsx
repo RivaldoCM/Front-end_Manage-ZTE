@@ -3,6 +3,8 @@ import axios from 'axios';
 
 import { useError } from '../../../../hooks/useError';
 
+import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
+import { InputContainer } from '../../../../globalStyles';
 import Modal from '@mui/material/Modal';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
@@ -14,10 +16,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
-
-import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
-
-import { InputContainer } from '../../../../globalStyles';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 export function KeepMountedOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
@@ -30,22 +29,34 @@ export function KeepMountedOltModal(props: any) {
 		pizzaBox: '',
 		voalleAccessPointId: ''
 	});
-	
+
 	if (typeof props.oltDataSelected === 'object' && id !== props.oltDataSelected['id']) {
 		if ('id' in props.oltDataSelected && props.oltDataSelected['id'] !== id) {
 			setId(props.oltDataSelected['id']);
-			setForm(() => ({
-				name: props.oltDataSelected['name'],
-				host: props.oltDataSelected['host'],
-				type: props.oltDataSelected['type'],
-				pizzaBox: props.oltDataSelected['pizzaBox'],
-				voalleAccessPointId: props.oltDataSelected['voalleAccessPointId'],
-			}));
+
+			if(props.oltDataSelected['isPizzaBox']){
+				setForm(() => ({
+					...form,
+					name: props.oltDataSelected['name'],
+					host: props.oltDataSelected['host'],
+					type: props.oltDataSelected['type'],
+					pizzaBox: 'Sim',
+					voalleAccessPointId: props.oltDataSelected['voalleAccessPointId'],
+				}));
+			}else{
+				setForm(() => ({
+					...form,
+					name: props.oltDataSelected['name'],
+					host: props.oltDataSelected['host'],
+					type: props.oltDataSelected['type'],
+					pizzaBox: 'Não',
+					voalleAccessPointId: props.oltDataSelected['voalleAccessPointId'],
+				}));
+			}
 		}
 	}
 
-
-	const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
 		setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -81,7 +92,7 @@ export function KeepMountedOltModal(props: any) {
 				aria-labelledby="keep-mounted-modal-title"
 				aria-describedby="keep-mounted-modal-description"
 			>
-				<DefaultStyledModal>
+				<DefaultStyledModal onSubmit={handleSubmit}>
 					<AddOlt>
 						<CloseButton className="flex">
 							<IconButton aria-label="close" onClick={props.handleClose}>
@@ -119,7 +130,7 @@ export function KeepMountedOltModal(props: any) {
 								</div>
 								<TextField 
 									id="standard-basic"
-									name='accessPoint'
+									name='voalleAccessPointId'
 									value={form.voalleAccessPointId}
 									variant="standard"
 									onChange={handleFormChange}
@@ -134,17 +145,38 @@ export function KeepMountedOltModal(props: any) {
 									<Select
 										labelId="demo-simple-select-label"
 										id="demo-simple-select"
-										name='pizzaBox'
+										value={form.pizzaBox}
 										label="PizzaBox"
+										onChange={handleFormChange}
 									>
 										<MenuItem value='Sim'>Sim</MenuItem>
 										<MenuItem value='Não'>Não</MenuItem>
 									</Select>
 								</FormControl>
 							</InputContainer>
+							<InputContainer>
+								<div className="text">
+									<p>Modelo: </p>
+								</div>
+								<FormControl fullWidth>
+									<InputLabel id="demo-simple-select-label">Status</InputLabel>
+									<Select
+										labelId="demo-simple-select-label"
+										id="demo-simple-select"
+										name='type'
+										value={form.type}
+										label="PizzaBox"
+										onChange={handleFormChange}
+									>
+										<MenuItem value='10'>ZTE</MenuItem>
+										<MenuItem value='20'>PARKS</MenuItem>
+										<MenuItem value='30'>FIBERHOME</MenuItem>
+									</Select>
+								</FormControl>
+							</InputContainer>
 						</FormModal>
 						<SubmitModal className="button flex">
-						<Button type='submit' onClick={props.handleClose} variant="contained">Adicionar OLT</Button>
+							<Button type='submit' onClick={props.handleClose} variant="contained">Editar OLT</Button>
 						</SubmitModal>
 					</AddOlt>
 				</DefaultStyledModal>
