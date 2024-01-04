@@ -13,6 +13,7 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { getCities } from '../../../../services/apiManageONU/getCities';
+import { addOlt } from '../../../../services/apiManageONU/addOlt';
 
 export function AddOltModal(props: any) {
     const [cities, setCities] = useState<Array<any> | null>(null);
@@ -20,7 +21,7 @@ export function AddOltModal(props: any) {
 		cityId: '',
 		host: '',
 		type: 10,
-		pizzaBox: 'Sim',
+		pizzaBox: true,
 		voalleAccessPointId: ''
 	});
 
@@ -43,7 +44,7 @@ export function AddOltModal(props: any) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-        console.log(form)
+        const res = await addOlt(form);
 	}
 
   return (
@@ -70,12 +71,13 @@ export function AddOltModal(props: any) {
                                 <p>Cidade: </p>
                             </div>
                             <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Cidades</InputLabel>
                                 <Select
                                 sx={{maxWidth: '205px'}}
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     name="cityId"
-                                    label="Cidade"
+                                    label="Cidades"
                                     value={form.cityId}
                                     onChange={handleFormChange}
                                 >
@@ -129,8 +131,8 @@ export function AddOltModal(props: any) {
                                     label="Status"
                                     onChange={handleFormChange}
                                 >
-                                    <MenuItem value='Sim'>Sim</MenuItem>
-                                    <MenuItem value='Não'>Não</MenuItem>
+                                    <MenuItem value={true}>Sim</MenuItem>
+                                    <MenuItem value={false}>Não</MenuItem>
                                 </Select>
                             </FormControl>
                         </InputContainer>
