@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 import { useError } from '../../../../hooks/useError';
 
 import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
 import { InputContainer } from '../../../../globalStyles';
+
 import Modal from '@mui/material/Modal';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
@@ -65,19 +65,6 @@ export function KeepMountedOltModal(props: any) {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-
-		await axios({
-			method: 'patch',
-			url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getUsers`,
-			headers: {
-				'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
-			},
-			data:{
-
-			}
-		}).then((response) => {
-			handleError(response.data);
-		});
 	}
 
 	return (

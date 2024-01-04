@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import Modal from '@mui/material/Modal';
@@ -12,16 +12,27 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { getCities } from '../../../../services/apiManageONU/getCities';
 
-export default function AddOltModal(props: any) {
-
+export function AddOltModal(props: any) {
+    const [cities, setCities] = useState<Array<any> | null>(null);
     const [form, setForm] = useState({
-		name: '',
+		cityId: '',
 		host: '',
-		type: '',
-		pizzaBox: '',
+		type: 10,
+		pizzaBox: 'Sim',
 		voalleAccessPointId: ''
 	});
+
+    useEffect(() => {
+        if(props.open){
+            async function cities(){
+                const cities = await getCities();
+                setCities(cities);
+            }
+            cities();
+        }
+    }, [props.open]);
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
 		setForm({
@@ -32,19 +43,19 @@ export default function AddOltModal(props: any) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-
+        console.log(form)
 	}
 
   return (
-    <div>
+    <>
         <IconButton onClick={props.handleOpen} title="Delete">
             <AddOutlinedIcon/>
         </IconButton>
         <Modal
             open={props.open}
             onClose={props.handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby="modal-add-OLT"
+            aria-describedby="modal-to-handle-new-OLT's"
         >
             <DefaultStyledModal onSubmit={handleSubmit}>
                 <AddOlt>
@@ -58,21 +69,34 @@ export default function AddOltModal(props: any) {
                             <div className="text">
                                 <p>Cidade: </p>
                             </div>
-                            <TextField 
-                                id="standard-basic"
-                                name='name'
-                                value={form.name}
-                                variant="standard" 
-                                onChange={handleFormChange}
-                            />
+                            <FormControl fullWidth>
+                                <Select
+                                sx={{maxWidth: '205px'}}
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    name="cityId"
+                                    label="Cidade"
+                                    value={form.cityId}
+                                    onChange={handleFormChange}
+                                >
+                                    {
+                                        cities && cities.map((el: { id: number; name: string }, index: number) => {
+                                            return(
+                                                <MenuItem key={index} value={el.id}>{el.name}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
                         </InputContainer>
                         <InputContainer>
                             <div className="text">
                                 <p>IP: </p>
                             </div>
-                            <TextField 
+                            <TextField
+                                required
                                 id="standard-basic"
-                                name='host'
+                                name="host"
                                 value={form.host}
                                 variant="standard"
                                 onChange={handleFormChange}
@@ -82,9 +106,10 @@ export default function AddOltModal(props: any) {
                             <div className="text">
                                 <p>Ponto de acesso: </p>
                             </div>
-                            <TextField 
+                            <TextField
+                                required
                                 id="standard-basic"
-                                name='voalleAccessPointId'
+                                name="voalleAccessPointId"
                                 value={form.voalleAccessPointId}
                                 variant="standard"
                                 onChange={handleFormChange}
@@ -99,8 +124,9 @@ export default function AddOltModal(props: any) {
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
+                                    name="pizzaBox"
                                     value={form.pizzaBox}
-                                    label="PizzaBox"
+                                    label="Status"
                                     onChange={handleFormChange}
                                 >
                                     <MenuItem value='Sim'>Sim</MenuItem>
@@ -113,28 +139,28 @@ export default function AddOltModal(props: any) {
                                 <p>Modelo: </p>
                             </div>
                             <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                <InputLabel id="demo-simple-select-label">Modelo da OLT</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    name='type'
+                                    name="type"
                                     value={form.type}
-                                    label="PizzaBox"
+                                    label="Modelo da OLT"
                                     onChange={handleFormChange}
                                 >
-                                    <MenuItem value='10'>ZTE</MenuItem>
-                                    <MenuItem value='20'>PARKS</MenuItem>
-                                    <MenuItem value='30'>FIBERHOME</MenuItem>
+                                    <MenuItem value={10}>ZTE</MenuItem>
+                                    <MenuItem value={20}>PARKS</MenuItem>
+                                    <MenuItem value={30}>FIBERHOME</MenuItem>
                                 </Select>
                             </FormControl>
                         </InputContainer>
                     </FormModal>
                     <SubmitModal className="button flex">
-                        <Button type='submit' onClick={props.handleClose} variant="contained">Editar OLT</Button>
+                        <Button type='submit' variant="contained">Editar OLT</Button>
                     </SubmitModal>
                 </AddOlt>
             </DefaultStyledModal>
         </Modal>
-    </div>
+    </>
   );
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 
 import { getOlt } from '../../../services/apiManageONU/getOlt';
 import { Olt } from '../../../interfaces/olt';
-import AddOltModal from './modals/addOlt';
+import { AddOltModal } from './modals/addOlt';
 
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
