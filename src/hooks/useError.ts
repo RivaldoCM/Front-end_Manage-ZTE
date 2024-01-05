@@ -108,10 +108,19 @@ export function useError(){
                 setErrorMessage('ONU desprovisionada com sucesso.');
                 setSeverityStatus('success');
             break;
+            case 'success/olt-deleted':
+                setErrorMessage('OLT deletada com sucesso.');
+                setSeverityStatus('success');
+            break;
+            case 'success/new-olt-created':
+                setErrorMessage('OLT criada com sucesso.');
+                setSeverityStatus('success');
+            break;
             default:
                 handleError('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');
             break;
+
         }
     };
     

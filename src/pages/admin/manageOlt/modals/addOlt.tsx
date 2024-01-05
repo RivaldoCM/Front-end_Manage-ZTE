@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
+
+import { getCities } from '../../../../services/apiManageONU/getCities';
+import { addOlt } from '../../../../services/apiManageONU/addOlt';
+import { useError } from '../../../../hooks/useError';
+
+import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
+import { InputContainer } from '../../../../globalStyles';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import Modal from '@mui/material/Modal';
 import IconButton from '@mui/material/IconButton';
-import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
-import { InputContainer } from '../../../../globalStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
@@ -12,17 +18,17 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { getCities } from '../../../../services/apiManageONU/getCities';
-import { addOlt } from '../../../../services/apiManageONU/addOlt';
 
 export function AddOltModal(props: any) {
+    const { error, errorMessage, severityStatus, handleError } = useError();
     const [cities, setCities] = useState<Array<any> | null>(null);
     const [form, setForm] = useState({
-		cityId: '',
+        name: '',
+		cityId: 1,
 		host: '',
 		type: 10,
-		pizzaBox: true,
-		voalleAccessPointId: ''
+		isPizzaBox: true,
+		voalleAccessPointId: 0
 	});
 
     useEffect(() => {
@@ -44,7 +50,13 @@ export function AddOltModal(props: any) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-        const res = await addOlt(form);
+        const response = await addOlt(form);
+
+        if(!response.success){
+			handleError(response.messages.message);
+		}
+
+		handleError(response.responses.status);
 	}
 
   return (
@@ -66,6 +78,19 @@ export function AddOltModal(props: any) {
                         </IconButton>
                     </CloseButton>
                     <FormModal className='flex'>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome da OLT: </p>
+                            </div>
+                            <TextField
+                                required
+                                id="standard-basic"
+                                name="name"
+                                value={form.name}
+                                variant="standard"
+                                onChange={handleFormChange}
+                            />
+                        </InputContainer>
                         <InputContainer>
                             <div className="text">
                                 <p>Cidade: </p>
@@ -108,12 +133,11 @@ export function AddOltModal(props: any) {
                             <div className="text">
                                 <p>Ponto de acesso: </p>
                             </div>
-                            <TextField
+                            <input 
                                 required
-                                id="standard-basic"
+                                type="number"
                                 name="voalleAccessPointId"
                                 value={form.voalleAccessPointId}
-                                variant="standard"
                                 onChange={handleFormChange}
                             />
                         </InputContainer>
@@ -126,8 +150,8 @@ export function AddOltModal(props: any) {
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    name="pizzaBox"
-                                    value={form.pizzaBox}
+                                    name="isPizzaBox"
+                                    value={form.isPizzaBox}
                                     label="Status"
                                     onChange={handleFormChange}
                                 >
@@ -158,11 +182,18 @@ export function AddOltModal(props: any) {
                         </InputContainer>
                     </FormModal>
                     <SubmitModal className="button flex">
-                        <Button type='submit' variant="contained">Editar OLT</Button>
+                        <Button type='submit' variant="contained">Criar OLT</Button>
                     </SubmitModal>
                 </AddOlt>
             </DefaultStyledModal>
         </Modal>
+        {
+            (error ?
+                <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+            :
+                <></>
+            )
+        }
     </>
   );
 }

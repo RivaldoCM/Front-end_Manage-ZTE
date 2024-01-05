@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { useError } from '../../../../hooks/useError';
 
 import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
@@ -17,6 +15,8 @@ export function KeepMountedDeleteOltModal(props: any) {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const response = await deleteOlt(props.oltDataSelected.id);
+
+		console.log(response)
 
 		if(!response.success){
 			handleError(response.messages.message);

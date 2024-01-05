@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
+import { getCities } from '../../../../services/apiManageONU/getCities';
 import { useError } from '../../../../hooks/useError';
 
 import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
@@ -20,15 +21,27 @@ import { SelectChangeEvent } from '@mui/material/Select';
 
 export function KeepMountedOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
+	const [cities, setCities] = useState<Array<any> | null>(null);
 
 	const [id, setId] = useState<number>(0);
 	const [form, setForm] = useState({
 		name: '',
+		cityId: 1, 
 		host: '',
 		type: '',
 		pizzaBox: '',
 		voalleAccessPointId: ''
 	});
+
+	useEffect(() => {
+        if(props.open){
+            async function cities(){
+                const cities = await getCities();
+                setCities(cities);
+            }
+            cities();
+        }
+    }, [props.open]);
 
 	if (typeof props.oltDataSelected === 'object' && id !== props.oltDataSelected['id']) {
 		if ('id' in props.oltDataSelected && props.oltDataSelected['id'] !== id) {
@@ -87,18 +100,44 @@ export function KeepMountedOltModal(props: any) {
 							</IconButton>
 						</CloseButton>
 						<FormModal className='flex'>
-							<InputContainer>
-								<div className="text">
-									<p>Cidade: </p>
-								</div>
-								<TextField 
-									id="standard-basic"
-									name='name'
-									value={form.name}
-									variant="standard" 
-									onChange={handleFormChange}
-								/>
-							</InputContainer>
+						<InputContainer>
+                            <div className="text">
+                                <p>Nome da OLT: </p>
+                            </div>
+                            <TextField
+                                required
+                                id="standard-basic"
+                                name="name"
+                                value={form.name}
+                                variant="standard"
+                                onChange={handleFormChange}
+                            />
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Cidade: </p>
+                            </div>
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Cidades</InputLabel>
+                                <Select
+                                sx={{maxWidth: '205px'}}
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    name="cityId"
+                                    label="Cidades"
+                                    value={form.cityId}
+                                    onChange={handleFormChange}
+                                >
+                                    {
+                                        cities && cities.map((el: { id: number; name: string }, index: number) => {
+                                            return(
+                                                <MenuItem key={index} value={el.id}>{el.name}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+                        </InputContainer>
 							<InputContainer>
 								<div className="text">
 									<p>IP: </p>

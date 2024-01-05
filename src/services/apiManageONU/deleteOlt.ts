@@ -11,7 +11,7 @@ export async function deleteOlt(id: number){
             id: id
         }
     }).then((response) => {
-        return response;
+        return response.data;
     }).catch((err) =>{
         return err;
     });
