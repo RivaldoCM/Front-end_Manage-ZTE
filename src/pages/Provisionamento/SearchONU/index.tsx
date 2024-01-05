@@ -4,7 +4,7 @@ import { SearchONUProps } from "../../../interfaces/SearchONUProps";
 import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
 
 import { Form } from './style';
-import { InputContainer } from "../../../globalStyles";
+import { InputContainer } from "../../../styles/globalStyles";
 import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 import { useError } from '../../../hooks/useError';
-import { KeepMountedModal } from './modals';
+import { EditUsersModal } from './modals';
 
 import { IUsers } from '../../../interfaces/users';
 import { getUsers } from '../../../services/apiManageONU/getUsers';
@@ -18,7 +18,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -130,21 +129,19 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         )}
         {numSelected > 0 ? (
             <>
-            <div>
-                <Tooltip title="Editar">
-                    <IconButton>
-                        <KeepMountedModal 
+                <div>
+                    <Tooltip title="Editar">
+                        <EditUsersModal 
                             handleOpen={handleOpen}
                             open={open}
                             handleClose={handleClose}
                             selectedUserData={selectedUserData}
                         />
-                    </IconButton>
-                </Tooltip>
-            </div>
-            <div>
-                
-            </div>
+                    </Tooltip>
+                </div>
+                <div>
+                    
+                </div>
             </>
             
         ) : (

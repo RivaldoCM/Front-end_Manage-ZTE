@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
 import axios from 'axios';
+import React, { useState } from 'react';
 
 import { useError } from '../../../../hooks/useError';
 
+import { InputContainer } from '../../../../styles/globalStyles';
+import { FormController, CloseButton, DefaultStyledModal, FormModal, SubmitModal } from '../../../../styles/modal';
 import Modal from '@mui/material/Modal';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
@@ -17,10 +19,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
 
-import { Container } from './style';
-import { InputContainer } from '../../../../globalStyles';
-
-export function KeepMountedModal(props: any) {
+export function EditUsersModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
 
 	const [checked, setChecked] = useState(false);
@@ -84,48 +83,54 @@ export function KeepMountedModal(props: any) {
 				<EditOutlinedIcon />
 			</IconButton>
 			<Modal
-				keepMounted
 				open={props.open}
 				onClose={props.handleClose}
 				aria-labelledby="keep-mounted-modal-title"
 				aria-describedby="keep-mounted-modal-description"
 			>
-				<Container className='flex' onSubmit={handleSubmit}>
-					<div className="close-icon flex">
-						<IconButton aria-label="close" onClick={props.handleClose}>
-							<CloseIcon />
-						</IconButton>
-					</div>
-					<div className='content flex'>
+				<DefaultStyledModal onSubmit={handleSubmit}>
+					<FormController>
+                    <CloseButton className="flex">
+                        <IconButton aria-label="close" onClick={props.handleClose}>
+                            <CloseIcon />
+                        </IconButton>
+                    </CloseButton>
+					<FormModal>
 						<InputContainer>
 							<div className="text">
 								<p>Nome: </p>
 							</div>
-							<TextField id="standard-basic" variant="standard" onChange={handleNameChange} value={name}/>
+							<div className="content">
+								<TextField id="standard-basic" variant="standard" onChange={handleNameChange} value={name}/>
+							</div>
 						</InputContainer>
 						<InputContainer>
 							<div className="text">
 								<p>Nivel de acesso: </p>
 							</div>
-							<input type="number" id="rule" name="rule" min="1" max="17" value={rule} onChange={handleRuleChange}/>
+							<div className="content">
+								<input type="number" id="rule" name="rule" min="1" max="17" value={rule} onChange={handleRuleChange}/>
+							</div>
 						</InputContainer>
 						<InputContainer>
 							<div className="text">
 								<p>Status: </p>
 							</div>
-							<FormControl fullWidth>
-								<InputLabel id="demo-simple-select-label">Status</InputLabel>
-								<Select
-									labelId="demo-simple-select-label"
-									id="demo-simple-select"
-									value={status}
-									label="Status"
-									onChange={handleStatusChange}
-								>
-									<MenuItem value='normal'>normal</MenuItem>
-									<MenuItem value='Desativado'>Desativado</MenuItem>
-								</Select>
-							</FormControl>
+							<div className="content">
+								<FormControl fullWidth>
+									<InputLabel id="demo-simple-select-label">Status</InputLabel>
+									<Select
+										labelId="demo-simple-select-label"
+										id="demo-simple-select"
+										value={status}
+										label="Status"
+										onChange={handleStatusChange}
+									>
+										<MenuItem value='normal'>normal</MenuItem>
+										<MenuItem value='Desativado'>Desativado</MenuItem>
+									</Select>
+								</FormControl>
+							</div>
 						</InputContainer>
 						<FormControlLabel
 							control={
@@ -139,16 +144,22 @@ export function KeepMountedModal(props: any) {
 								<div className="text">
 									<p>Nova senha: </p>
 								</div>
-								<TextField id="standard-basic" variant="standard" onChange={handleNewPasswordChange} value={newPassword}/>
+								<div className="content">
+									<TextField id="standard-basic" variant="standard" onChange={handleNewPasswordChange} value={newPassword}/>
+								</div>
+								
 							</InputContainer>
 							:
 							<></>
 						}
-					</div>
-					<div className="button flex">
-							<Button type='submit' onClick={props.handleClose} variant="contained">Atualizar Usuário</Button>
-					</div>
-				</Container>
+						<SubmitModal>
+							<div className="button flex">
+								<Button type='submit' onClick={props.handleClose} variant="contained">Atualizar Usuário</Button>
+							</div>
+						</SubmitModal>
+					</FormModal>
+					</FormController>
+				</DefaultStyledModal>
 			</Modal>
 			{
                 (error ?

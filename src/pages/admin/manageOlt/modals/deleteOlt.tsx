@@ -1,6 +1,6 @@
 import { useError } from '../../../../hooks/useError';
 
-import { AddOlt, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from './style';
+import { FormController, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from '../../../../styles/modal';
 import Modal from '@mui/material/Modal';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
@@ -16,8 +16,6 @@ export function KeepMountedDeleteOltModal(props: any) {
 		e.preventDefault();
 		const response = await deleteOlt(props.oltDataSelected.id);
 
-		console.log(response)
-
 		if(!response.success){
 			handleError(response.messages.message);
 		}
@@ -31,14 +29,13 @@ export function KeepMountedDeleteOltModal(props: any) {
 				<DeleteOutlineOutlinedIcon />
 			</IconButton>
 			<Modal
-				keepMounted
 				open={props.open}
 				onClose={props.handleClose}
 				aria-labelledby="keep-mounted-modal-title"
 				aria-describedby="keep-mounted-modal-description"
 			>
             <DefaultStyledModal onSubmit={handleSubmit}>
-                <AddOlt>
+                <FormController>
                     <CloseButton className="flex">
                         <IconButton aria-label="close" onClick={props.handleClose}>
                             <CloseIcon />
@@ -52,7 +49,7 @@ export function KeepMountedDeleteOltModal(props: any) {
                     <SubmitModal className="button flex">
                     	<Button type='submit' onClick={props.handleClose} variant="contained">Confirmar</Button>
                     </SubmitModal>
-                </AddOlt>
+                </FormController>
             </DefaultStyledModal>
 			</Modal>
 			{

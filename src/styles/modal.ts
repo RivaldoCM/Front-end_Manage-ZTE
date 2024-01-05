@@ -10,7 +10,6 @@ export const DefaultStyledModal = styled.form`
     padding: .5rem 0 1rem 0;
     background-color: white;
     border-radius: 30px;
-
 `
 
 export const CloseButton = styled.div`
@@ -35,7 +34,7 @@ export const SubmitModal = styled.div`
     align-items: start;
 `
 
-export const AddOlt = styled.div`
+export const FormController = styled.div`
 	height: 100%;
 `
 
@@ -45,7 +44,6 @@ export const deleteOlt = styled.div`
 `
 
 export const editOlt = styled.div`
-
 	flex-direction: column;
 	width: 98%;
 	max-width: 580px;
@@ -75,6 +73,5 @@ export const editOlt = styled.div`
 		width: 100%;
 		height: 20%;
 		align-items: start;
-	}
-    
+	}   
 `

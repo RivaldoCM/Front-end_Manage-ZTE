@@ -21,7 +21,7 @@ import Switch from '@mui/material/Switch';
 import { TableHead } from '@mui/material';
 import { useError } from '../../../hooks/useError';
 import Alert from '@mui/material/Alert';
-import { KeepMountedOltModal } from './modals';
+import { EditOltModal } from './modals/editOlt';
 import { KeepMountedDeleteOltModal } from './modals/deleteOlt';
 
 function stableSort<T>(array: readonly T[]) {
@@ -143,7 +143,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         )}
         {numSelected > 0 ? (
             <div className='flex'>
-                <KeepMountedOltModal
+                <EditOltModal
                     handleOpen={handleOpen}
                     open={open}
                     handleClose={handleClose}

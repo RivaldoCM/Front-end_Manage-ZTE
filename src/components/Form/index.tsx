@@ -2,7 +2,7 @@ import { FormProps } from "../../interfaces/Form";
 
 import { cleanUpModelName, typePppoeZte } from "../../config/typesOnus";
 
-import { InputContainer } from "../../globalStyles";
+import { InputContainer } from "../../styles/globalStyles";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
