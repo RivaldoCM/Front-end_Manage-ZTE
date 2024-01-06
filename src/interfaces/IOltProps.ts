@@ -1,4 +1,4 @@
-export type INewOlt = {
+export type IOltProps = {
     id?: number,
     name: string,
     host: string,

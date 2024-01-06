@@ -1,18 +1,16 @@
 import axios from "axios";
 import { IOltProps } from "../../interfaces/IOltProps";
 
-export async function addOlt(form: IOltProps){
-    // ISSO ACONTECE PQ TODO INPUT RETORNA STRING, E NESTE CASO PRECISA DE NUMBER
-    form.voalleAccessPointId = form.voalleAccessPointId * 1; 
+export async function editOlt(form: IOltProps){
 
     const res = await axios({
-        method: 'post',
+        method: 'put',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
         data:{
-            newOlt: form
+            dataOlt: form
         }
     }).then((response) => {
         return response.data;

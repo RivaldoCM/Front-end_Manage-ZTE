@@ -18,18 +18,23 @@ import Select from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { editOlt } from '../../../../services/apiManageONU/editOlt';
+import { useLoading } from '../../../../hooks/useLoading';
 
 export function EditOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
+	const { isLoading, startLoading, stopLoading } = useLoading();
+
 	const [cities, setCities] = useState<Array<any> | null>(null);
 
 	const [id, setId] = useState<number>(0);
 	const [form, setForm] = useState({
+		id: 0,
 		name: '',
 		cityId: 1, 
 		host: '',
-		type: '',
-		pizzaBox: '',
+		type: 10,
+		isPizzaBox: true,
 		voalleAccessPointId: 1
 	});
 
@@ -47,25 +52,15 @@ export function EditOltModal(props: any) {
 		if ('id' in props.oltDataSelected && props.oltDataSelected['id'] !== id) {
 			setId(props.oltDataSelected['id']);
 
-			if(props.oltDataSelected['isPizzaBox']){
-				setForm(() => ({
-					...form,
-					name: props.oltDataSelected['name'],
-					host: props.oltDataSelected['host'],
-					type: props.oltDataSelected['type'],
-					pizzaBox: 'Sim',
-					voalleAccessPointId: props.oltDataSelected['voalleAccessPointId'],
-				}));
-			}else{
-				setForm(() => ({
-					...form,
-					name: props.oltDataSelected['name'],
-					host: props.oltDataSelected['host'],
-					type: props.oltDataSelected['type'],
-					pizzaBox: 'Não',
-					voalleAccessPointId: props.oltDataSelected['voalleAccessPointId'],
-				}));
-			}
+			setForm(() => ({
+				...form,
+				id: props.oltDataSelected['id'],
+				name: props.oltDataSelected['name'],
+				host: props.oltDataSelected['host'],
+				type: props.oltDataSelected['type'],
+				pizzaBox: props.oltDataSelected['isPizzaBox'],
+				voalleAccessPointId: props.oltDataSelected['voalleAccessPointId'],
+			}));
 		}
 	}
 
@@ -78,6 +73,16 @@ export function EditOltModal(props: any) {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		startLoading();
+
+        const response = await editOlt(form);
+
+        if(!response.success){
+			handleError(response.messages.message);
+		}
+
+		handleError(response.responses.status);
+		stopLoading();
 	}
 
 	return (
@@ -179,12 +184,12 @@ export function EditOltModal(props: any) {
 										<Select
 											labelId="demo-simple-select-label"
 											id="demo-simple-select"
-											value={form.pizzaBox}
+											value={form.isPizzaBox}
 											label="PizzaBox"
 											onChange={handleFormChange}
 										>
-											<MenuItem value='Sim'>Sim</MenuItem>
-											<MenuItem value='Não'>Não</MenuItem>
+											<MenuItem value={true}>Sim</MenuItem>
+											<MenuItem value={false}>Não</MenuItem>
 										</Select>
 									</FormControl>
 								</div>
@@ -204,16 +209,16 @@ export function EditOltModal(props: any) {
 											label="OLT da Cidade"
 											onChange={handleFormChange}
 										>
-											<MenuItem value='10'>ZTE</MenuItem>
-											<MenuItem value='20'>PARKS</MenuItem>
-											<MenuItem value='30'>FIBERHOME</MenuItem>
+											<MenuItem value={10}>ZTE</MenuItem>
+											<MenuItem value={20}>PARKS</MenuItem>
+											<MenuItem value={30}>FIBERHOME</MenuItem>
 										</Select>
 									</FormControl>
 								</div>
 							</InputContainer>
 						</FormModal>
 						<SubmitModal className="button flex">
-							<Button type='submit' onClick={props.handleClose} variant="contained">Editar OLT</Button>
+							<Button type='submit' variant="contained">Editar OLT</Button>
 						</SubmitModal>
 					</FormController>
 				</DefaultStyledModal>

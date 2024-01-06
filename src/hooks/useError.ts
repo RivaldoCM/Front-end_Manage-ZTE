@@ -116,13 +116,15 @@ export function useError(){
                 setErrorMessage('OLT criada com sucesso.');
                 setSeverityStatus('success');
             break;
+            case 'success/olt-edited':
+                setErrorMessage('OLT editada com sucesso.');
+                setSeverityStatus('success');
+            break;
             default:
                 handleError('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');
             break;
-
         }
     };
-    
     return { error, errorMessage, severityStatus, handleError };
 };
