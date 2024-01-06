@@ -35,7 +35,11 @@ function stableSort<T>(array: readonly T[]) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-interface EnhancedTableToolbarProps { numSelected: number; selectedUserData: Array<any>;}
+interface EnhancedTableToolbarProps { 
+    numSelected: number; 
+    selectedUserData: Array<any>;
+    onInputValueChange: any;
+}
 
 interface HeadCell {
     disablePadding: boolean;
@@ -96,8 +100,16 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { numSelected, selectedUserData } = props;
 
     const [open, setOpen] = useState(false);
+    const [inputValue, setInputValue] = useState('');
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const handleChangeValue = (e) => {setInputValue(e.target.value)};
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        props.onInputValueChange(inputValue);
+    }
 
     return (
         <Toolbar
@@ -145,20 +157,26 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     
                 </div>
             </>
-            
         ) : (
-            <Tooltip title="filter">
+            <Tooltip title="">
                 <SearchButton>
-                <div className="search-container">
-                    <form action="#" method="get">
-                    <div className="search-box">
-                        <input type="text" placeholder="Digite sua pesquisa" name="search" className="search-input" />
-                        <IconButton type="submit" className="search-button">
-                            <SearchIcon />
-                        </IconButton>
+                    <div className="search-container">
+                        <form onSubmit={handleSubmit}>
+                            <div className="search-box">
+                                <input 
+                                    type="text" 
+                                    placeholder="Digite sua pesquisa" 
+                                    name="search" 
+                                    className="search-input" 
+                                    onChange={handleChangeValue}
+                                    value={inputValue}
+                                />
+                                <IconButton type="submit" className="search-button" >
+                                    <SearchIcon />
+                                </IconButton>
+                            </div>
+                        </form>
                     </div>
-                    </form>
-                </div>
                 </SearchButton>
             </Tooltip>
         )}
@@ -173,7 +191,7 @@ export function HandleManageUsers() {
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-
+    const [ filteredUser, setFilteredUser ] = useState<Array<IUsers>>([]);
     const [ users, setUsers ] = useState<IUsers[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>([]);
 
@@ -190,6 +208,15 @@ export function HandleManageUsers() {
         }
         users();
     }, []);
+
+    const handleInputValueChange = (value: string) => {
+        const filteredUser = users.filter((el) => {
+            if(el.name.toLowerCase().startsWith(value.toLowerCase())){
+                return el;
+            }
+        })
+        setFilteredUser(filteredUser);
+    }
 
     const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: IUsers) => {
         setSelectedUser(row);
@@ -216,7 +243,8 @@ export function HandleManageUsers() {
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - users.length) : 0;
 
-    const visibleRows = useMemo(() =>
+    const visibleRows = useMemo(() => 
+        
         stableSort(users).slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage,
@@ -227,7 +255,11 @@ export function HandleManageUsers() {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} selectedUserData={selectedUser}/>
+                <EnhancedTableToolbar 
+                    numSelected={selected.length} 
+                    selectedUserData={selectedUser}
+                    onInputValueChange={handleInputValueChange}
+                />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}

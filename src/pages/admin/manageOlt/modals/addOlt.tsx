@@ -46,7 +46,7 @@ export function AddOltModal(props: any) {
         }
     }, [props.open]);
 
-    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string | number | boolean>) => {
 		setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -212,7 +212,6 @@ export function AddOltModal(props: any) {
                             </SubmitModal>
                         )
                     }
-
                 </FormController>
             </DefaultStyledModal>
         </Modal>
