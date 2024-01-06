@@ -6,6 +6,7 @@ import { EditUsersModal } from './modals';
 import { IUsers } from '../../../interfaces/users';
 import { getUsers } from '../../../services/apiManageONU/getUsers';
 
+import { SearchButton } from '../../../styles/search';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -21,8 +22,9 @@ import Checkbox from '@mui/material/Checkbox';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { TableHead } from '@mui/material';
+import { IconButton, TableHead } from '@mui/material';
 import Alert from '@mui/material/Alert';
+import SearchIcon from '@mui/icons-material/Search';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -145,8 +147,19 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             </>
             
         ) : (
-            <Tooltip title="Deletar">
-                <div></div>
+            <Tooltip title="filter">
+                <SearchButton>
+                <div className="search-container">
+                    <form action="#" method="get">
+                    <div className="search-box">
+                        <input type="text" placeholder="Digite sua pesquisa" name="search" className="search-input" />
+                        <IconButton type="submit" className="search-button">
+                            <SearchIcon />
+                        </IconButton>
+                    </div>
+                    </form>
+                </div>
+                </SearchButton>
             </Tooltip>
         )}
         </Toolbar>

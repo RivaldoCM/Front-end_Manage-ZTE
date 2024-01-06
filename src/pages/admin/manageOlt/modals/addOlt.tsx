@@ -20,13 +20,14 @@ import FormControl from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useLoading } from '../../../../hooks/useLoading';
 import { CircularProgress } from '@mui/material';
+import { IOltProps } from '../../../../interfaces/IOltProps';
 
 export function AddOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
     const [cities, setCities] = useState<Array<any> | null>(null);
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<IOltProps>({
         name: '',
 		cityId: 1,
 		host: '',
@@ -57,7 +58,6 @@ export function AddOltModal(props: any) {
         startLoading();
 
         const response = await addOlt(form);
-        setForm(null);
         props.handleClose();
         stopLoading();
         if(!response.success){
