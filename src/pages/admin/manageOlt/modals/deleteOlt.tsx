@@ -1,5 +1,8 @@
 import { useError } from '../../../../hooks/useError';
 
+import { deleteOlt } from '../../../../services/apiManageONU/deleteOlt';
+import { useLoading } from '../../../../hooks/useLoading';
+
 import { FormController, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from '../../../../styles/modal';
 import Modal from '@mui/material/Modal';
 import IconButton from '@mui/material/IconButton';
@@ -7,15 +10,20 @@ import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { deleteOlt } from '../../../../services/apiManageONU/deleteOlt';
+import { CircularProgress } from '@mui/material';
+
 
 export function KeepMountedDeleteOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
+	const { isLoading, startLoading, stopLoading } = useLoading();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const response = await deleteOlt(props.oltDataSelected.id);
+		startLoading();
 
+		const response = await deleteOlt(props.oltDataSelected.id);
+		props.handleClose();
+		stopLoading();
 		if(!response.success){
 			handleError(response.messages.message);
 		}
@@ -46,9 +54,18 @@ export function KeepMountedDeleteOltModal(props: any) {
 							<p>Você está apagando os dados da OLT de: {props.oltDataSelected.name} </p>
 						</div>
                     </FormModal>
-                    <SubmitModal className="button flex">
-                    	<Button type='submit' onClick={props.handleClose} variant="contained">Confirmar</Button>
-                    </SubmitModal>
+					{
+						(isLoading ?
+							<div className="flex">
+								<CircularProgress className="MUI-CircularProgress" color="primary"/>
+							</div>
+							:
+							<SubmitModal className="button flex">
+								<Button type='submit' variant="contained">Confirmar</Button>
+							</SubmitModal>
+						)
+					}
+
                 </FormController>
             </DefaultStyledModal>
 			</Modal>

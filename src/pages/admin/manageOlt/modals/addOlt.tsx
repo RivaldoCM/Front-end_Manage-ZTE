@@ -18,9 +18,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { useLoading } from '../../../../hooks/useLoading';
+import { CircularProgress } from '@mui/material';
 
 export function AddOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
+    const { isLoading, startLoading, stopLoading } = useLoading();
+
     const [cities, setCities] = useState<Array<any> | null>(null);
     const [form, setForm] = useState({
         name: '',
@@ -50,8 +54,12 @@ export function AddOltModal(props: any) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-        const response = await addOlt(form);
+        startLoading();
 
+        const response = await addOlt(form);
+        setForm(null);
+        props.handleClose();
+        stopLoading();
         if(!response.success){
 			handleError(response.messages.message);
 		}
@@ -193,9 +201,18 @@ export function AddOltModal(props: any) {
                             </div>
                         </InputContainer>
                     </FormModal>
-                    <SubmitModal className="button flex">
-                        <Button type='submit' variant="contained">Criar OLT</Button>
-                    </SubmitModal>
+                    {
+                        (isLoading ?
+                            <div className="flex">
+                                <CircularProgress className="MUI-CircularProgress" color="primary"/>
+                            </div>
+                            :
+                            <SubmitModal className="button flex">
+                                <Button type='submit' variant="contained">Criar OLT</Button>
+                            </SubmitModal>
+                        )
+                    }
+
                 </FormController>
             </DefaultStyledModal>
         </Modal>

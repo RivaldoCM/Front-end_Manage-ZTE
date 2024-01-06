@@ -20,13 +20,13 @@ import Alert from '@mui/material/Alert';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { editOlt } from '../../../../services/apiManageONU/editOlt';
 import { useLoading } from '../../../../hooks/useLoading';
+import { CircularProgress } from '@mui/material';
 
 export function EditOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
 	const { isLoading, startLoading, stopLoading } = useLoading();
 
 	const [cities, setCities] = useState<Array<any> | null>(null);
-
 	const [id, setId] = useState<number>(0);
 	const [form, setForm] = useState({
 		id: 0,
@@ -76,13 +76,13 @@ export function EditOltModal(props: any) {
 		startLoading();
 
         const response = await editOlt(form);
-
+		stopLoading();
+		props.handleClose();
         if(!response.success){
+
 			handleError(response.messages.message);
 		}
-
 		handleError(response.responses.status);
-		stopLoading();
 	}
 
 	return (
@@ -217,9 +217,17 @@ export function EditOltModal(props: any) {
 								</div>
 							</InputContainer>
 						</FormModal>
-						<SubmitModal className="button flex">
-							<Button type='submit' variant="contained">Editar OLT</Button>
-						</SubmitModal>
+						{
+							(isLoading ?
+								<div className='flex'>
+									<CircularProgress className="MUI-CircularProgress" color="primary"/>
+								</div>
+							:
+								<SubmitModal className="button flex">
+									<Button type='submit' variant="contained">Editar OLT</Button>
+								</SubmitModal>
+							)
+						}
 					</FormController>
 				</DefaultStyledModal>
 			</Modal>

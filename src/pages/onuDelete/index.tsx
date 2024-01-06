@@ -17,6 +17,7 @@ import TextField from '@mui/material/TextField';
 export function OnuDelete(){
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
+
     const [olt, setOlt] = useState<Olt[]>([]);
     const [form, setForm] = useState({
         city: '',
@@ -41,7 +42,7 @@ export function OnuDelete(){
             ...form,
             [e.target.name]: e.target.value
         });
-    }
+    };
 
     const handleCity = () => {
         if (olt) {
@@ -91,7 +92,7 @@ export function OnuDelete(){
             handleError(response.messages.message);
             return;
         }
-
+        
         handleError(response.responses.status);
     };
 
@@ -130,7 +131,6 @@ export function OnuDelete(){
                     Desprovisionar
                 </Button>
             }
-            
             {
                 (error ?
                     <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
