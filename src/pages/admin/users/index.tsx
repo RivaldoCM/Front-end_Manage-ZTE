@@ -6,7 +6,7 @@ import { EditUsersModal } from './modals';
 import { IUsers } from '../../../interfaces/users';
 import { getUsers } from '../../../services/apiManageONU/getUsers';
 
-import { SearchButton } from '../../../styles/search';
+import { SearchButton } from '../../../styles/searchButton';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -100,15 +100,19 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { numSelected, selectedUserData } = props;
 
     const [open, setOpen] = useState(false);
-    const [inputValue, setInputValue] = useState('');
+    const [inputSearchValue, setInputSearchValue] = useState('');
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const handleChangeValue = (e) => {setInputValue(e.target.value)};
+    const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {setInputSearchValue(e.target.value)};
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        props.onInputValueChange(inputSearchValue);
+    }, [inputSearchValue]);
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        props.onInputValueChange(inputValue);
+        props.onInputValueChange(inputSearchValue);
     }
 
     return (
@@ -165,11 +169,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                             <div className="search-box">
                                 <input 
                                     type="text" 
-                                    placeholder="Digite sua pesquisa" 
+                                    placeholder="Digite o nome na busca" 
                                     name="search" 
                                     className="search-input" 
                                     onChange={handleChangeValue}
-                                    value={inputValue}
+                                    value={inputSearchValue}
                                 />
                                 <IconButton type="submit" className="search-button" >
                                     <SearchIcon />
@@ -201,6 +205,7 @@ export function HandleManageUsers() {
 
             if(typeof userData !== 'string'){
                 setUsers(userData);
+                setFilteredUser(userData);
             } else {
                 setUsers([]);
                 handleError('unable-load-data');
@@ -209,7 +214,7 @@ export function HandleManageUsers() {
         users();
     }, []);
 
-    const handleInputValueChange = (value: string) => {
+    const handleSearchValueChange = (value: string) => {
         const filteredUser = users.filter((el) => {
             if(el.name.toLowerCase().startsWith(value.toLowerCase())){
                 return el;
@@ -244,12 +249,11 @@ export function HandleManageUsers() {
     const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - users.length) : 0;
 
     const visibleRows = useMemo(() => 
-        
-        stableSort(users).slice(
+        stableSort(filteredUser).slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage,
         ),
-        [page, rowsPerPage, users]
+        [page, rowsPerPage, filteredUser]
     );
 
     return (
@@ -258,7 +262,7 @@ export function HandleManageUsers() {
                 <EnhancedTableToolbar 
                     numSelected={selected.length} 
                     selectedUserData={selectedUser}
-                    onInputValueChange={handleInputValueChange}
+                    onInputValueChange={handleSearchValueChange}
                 />
                 <TableContainer>
                     <Table

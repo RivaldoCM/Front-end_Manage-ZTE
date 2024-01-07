@@ -78,7 +78,7 @@ export function EditUsersModal(props: any) {
 	}
 
 	return (
-		<>
+		<div>
 			<IconButton onClick={props.handleOpen}>
 				<EditOutlinedIcon />
 			</IconButton>
@@ -168,6 +168,6 @@ export function EditUsersModal(props: any) {
                     <></>
                 )
             }
-		</>
+		</div>
 	);
 }

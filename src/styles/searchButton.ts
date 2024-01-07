@@ -16,7 +16,7 @@ export const SearchButton = styled.div`
 
 	.search-input {
 		flex: 1;
-		padding: 10px;
+		padding: 6px;
 		border: none;
 		outline: none;
 		border-radius: 25px 0 0 25px;

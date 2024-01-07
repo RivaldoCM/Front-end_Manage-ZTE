@@ -26,7 +26,7 @@ export function SearchONU(props: SearchONUProps) {
                     )
                 })
             );
-        }else{      
+        }else{
             return(
                 props.OltInfo.map((subArray) => {
                     if(subArray.length <= 4){
