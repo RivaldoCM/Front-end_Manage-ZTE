@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 
 import { useError } from '../../../../hooks/useError';
+import { useLoading } from '../../../../hooks/useLoading';
 
 import { InputContainer } from '../../../../styles/globalStyles';
 import { FormController, CloseButton, DefaultStyledModal, FormModal, SubmitModal } from '../../../../styles/modal';
@@ -18,14 +18,17 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
+import { CircularProgress } from '@mui/material';
+import { updateUser } from '../../../../services/apiManageONU/updateUser';
 
 export function EditUsersModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
+    const { isLoading, startLoading, stopLoading } = useLoading();
 
 	const [checked, setChecked] = useState(false);
-	const [id, setId] = useState<number>();
+	const [id, setId] = useState<number | undefined>();
 	const [name, setName] = useState('');
-	const [rule, setRule] = useState<number>();
+	const [rule, setRule] = useState<number | undefined>();
 	const [status, setStatus] = useState('');
 	const [newPassword, setNewPassword] = useState('');
 
@@ -58,23 +61,16 @@ export function EditUsersModal(props: any) {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		startLoading();
 
-		await axios({
-			method: 'patch',
-			url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getUsers`,
-			headers: {
-				'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
-			},
-			data:{
-				id: id,
-				name: name,
-				rule: rule,
-				status: status,
-				newPassword: newPassword
-			}
-		}).then((response) => {
-			handleError(response.data);
-		});
+		const response = await updateUser(id!, name, rule!, status, newPassword);
+		props.handleClose();
+		stopLoading();
+
+        if(!response.success){
+			handleError(response.messages.message);
+		}
+		handleError(response.responses.status);
 	}
 
 	return (
@@ -85,79 +81,83 @@ export function EditUsersModal(props: any) {
 			<Modal
 				open={props.open}
 				onClose={props.handleClose}
-				aria-labelledby="keep-mounted-modal-title"
-				aria-describedby="keep-mounted-modal-description"
 			>
 				<DefaultStyledModal onSubmit={handleSubmit}>
 					<FormController>
-                    <CloseButton className="flex">
-                        <IconButton aria-label="close" onClick={props.handleClose}>
-                            <CloseIcon />
-                        </IconButton>
-                    </CloseButton>
-					<FormModal>
-						<InputContainer>
-							<div className="text">
-								<p>Nome: </p>
-							</div>
-							<div className="content">
-								<TextField id="standard-basic" variant="standard" onChange={handleNameChange} value={name}/>
-							</div>
-						</InputContainer>
-						<InputContainer>
-							<div className="text">
-								<p>Nivel de acesso: </p>
-							</div>
-							<div className="content">
-								<input type="number" id="rule" name="rule" min="1" max="17" value={rule} onChange={handleRuleChange}/>
-							</div>
-						</InputContainer>
-						<InputContainer>
-							<div className="text">
-								<p>Status: </p>
-							</div>
-							<div className="content">
-								<FormControl fullWidth>
-									<InputLabel id="demo-simple-select-label">Status</InputLabel>
-									<Select
-										labelId="demo-simple-select-label"
-										id="demo-simple-select"
-										value={status}
-										label="Status"
-										onChange={handleStatusChange}
-									>
-										<MenuItem value='normal'>normal</MenuItem>
-										<MenuItem value='Desativado'>Desativado</MenuItem>
-									</Select>
-								</FormControl>
-							</div>
-						</InputContainer>
-						<FormControlLabel
-							control={
-								<Switch checked={checked} onChange={handleChange} />
-							}
-							label="Trocar senha"
-						/>
-						{
-							checked ? 
+						<CloseButton className="flex">
+							<IconButton aria-label="close" onClick={props.handleClose}>
+								<CloseIcon />
+							</IconButton>
+						</CloseButton>
+						<FormModal>
 							<InputContainer>
 								<div className="text">
-									<p>Nova senha: </p>
+									<p>Nome: </p>
 								</div>
 								<div className="content">
-									<TextField id="standard-basic" variant="standard" onChange={handleNewPasswordChange} value={newPassword}/>
+									<TextField id="standard-basic" variant="standard" onChange={handleNameChange} value={name}/>
 								</div>
-								
 							</InputContainer>
-							:
-							<></>
+							<InputContainer>
+								<div className="text">
+									<p>Nivel de acesso: </p>
+								</div>
+								<div className="content">
+									<input type="number" id="rule" name="rule" min="1" max="17" value={rule} onChange={handleRuleChange}/>
+								</div>
+							</InputContainer>
+							<InputContainer>
+								<div className="text">
+									<p>Status: </p>
+								</div>
+								<div className="content">
+									<FormControl fullWidth>
+										<InputLabel id="demo-simple-select-label">Status</InputLabel>
+										<Select
+											labelId="demo-simple-select-label"
+											id="demo-simple-select"
+											value={status}
+											label="Status"
+											onChange={handleStatusChange}
+										>
+											<MenuItem value='normal'>normal</MenuItem>
+											<MenuItem value='Desativado'>Desativado</MenuItem>
+										</Select>
+									</FormControl>
+								</div>
+							</InputContainer>
+							<FormControlLabel
+								control={
+									<Switch checked={checked} onChange={handleChange} />
+								}
+								label="Trocar senha"
+							/>
+							{
+								checked ? 
+								<InputContainer>
+									<div className="text">
+										<p>Nova senha: </p>
+									</div>
+									<div className="content">
+										<TextField id="standard-basic" variant="standard" onChange={handleNewPasswordChange} value={newPassword}/>
+									</div>
+									
+								</InputContainer>
+								:
+								<></>
+							}
+						{
+							(isLoading ?
+								<div className="flex">
+									<CircularProgress className="MUI-CircularProgress" color="primary"/>
+								</div>
+								:
+								<SubmitModal className="button flex">
+									<Button type='submit' variant="contained">Atualizar Usuário</Button>
+								</SubmitModal>
+							)
 						}
-						<SubmitModal>
-							<div className="button flex">
-								<Button type='submit' onClick={props.handleClose} variant="contained">Atualizar Usuário</Button>
-							</div>
-						</SubmitModal>
-					</FormModal>
+						</FormModal>
 					</FormController>
 				</DefaultStyledModal>
 			</Modal>

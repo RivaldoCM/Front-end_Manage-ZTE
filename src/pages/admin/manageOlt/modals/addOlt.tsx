@@ -63,7 +63,6 @@ export function AddOltModal(props: any) {
         if(!response.success){
 			handleError(response.messages.message);
 		}
-
 		handleError(response.responses.status);
 	}
 
