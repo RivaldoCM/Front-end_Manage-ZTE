@@ -17,8 +17,6 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-
-
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 export function MobileDrawerMenu() {

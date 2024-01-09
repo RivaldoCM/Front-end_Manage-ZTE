@@ -4,6 +4,6 @@ export type IOltProps = {
     host: string,
     type: number,
     cityId: number,
-    isPizzaBox: boolean,
+    isPizzaBox: number,
     voalleAccessPointId: number
 } 

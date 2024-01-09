@@ -101,7 +101,7 @@ export function MenuDrawer() {
 	const theme = useTheme();
 
 	const [ open, setOpen ] = useState(false);
-	const [ currentPage, setCurrentPage ] = useState('Provisionamento');
+	const [ currentPage, setCurrentPage ] = useState('EASE ACESSE');
 
 	const handleDrawerOpen = () => { setOpen(true);	};
 	const handleDrawerClose = () => { setOpen(false); };

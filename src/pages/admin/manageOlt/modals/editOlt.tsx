@@ -5,7 +5,6 @@ import { useError } from '../../../../hooks/useError';
 
 import { FormController, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from '../../../../styles/modal';
 import { InputContainer } from '../../../../styles/globalStyles';
-
 import Modal from '@mui/material/Modal';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
@@ -31,10 +30,10 @@ export function EditOltModal(props: any) {
 	const [form, setForm] = useState({
 		id: 0,
 		name: '',
-		cityId: 1, 
+		cityId: 1,
 		host: '',
 		type: 10,
-		isPizzaBox: true,
+		isPizzaBox: 0,
 		voalleAccessPointId: 1
 	});
 
@@ -51,20 +50,19 @@ export function EditOltModal(props: any) {
 	if (typeof props.oltDataSelected === 'object' && id !== props.oltDataSelected['id']) {
 		if ('id' in props.oltDataSelected && props.oltDataSelected['id'] !== id) {
 			setId(props.oltDataSelected['id']);
-
 			setForm(() => ({
 				...form,
 				id: props.oltDataSelected['id'],
 				name: props.oltDataSelected['name'],
 				host: props.oltDataSelected['host'],
 				type: props.oltDataSelected['type'],
-				pizzaBox: props.oltDataSelected['isPizzaBox'],
+				isPizzaBox: props.oltDataSelected['isPizzaBox'] ? 1 : 0,
 				voalleAccessPointId: props.oltDataSelected['voalleAccessPointId'],
 			}));
 		}
 	}
 
-	const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
+	const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string | number | boolean>) => {
 		setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -79,7 +77,6 @@ export function EditOltModal(props: any) {
 		stopLoading();
 		props.handleClose();
         if(!response.success){
-
 			handleError(response.messages.message);
 		}
 		handleError(response.responses.status);
@@ -188,8 +185,8 @@ export function EditOltModal(props: any) {
 											label="PizzaBox"
 											onChange={handleFormChange}
 										>
-											<MenuItem value={true}>Sim</MenuItem>
-											<MenuItem value={false}>Não</MenuItem>
+											<MenuItem value={1}>Sim</MenuItem>
+											<MenuItem value={0}>Não</MenuItem>
 										</Select>
 									</FormControl>
 								</div>

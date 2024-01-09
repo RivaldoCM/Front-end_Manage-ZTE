@@ -226,6 +226,17 @@ export function HandleManageOlt(){
         [page, rowsPerPage, olt]
     );
 
+    const renderTypeOlt: any = (typeOlt: number) => {
+        switch(typeOlt){
+            case 10:
+                return <TableCell align="right">ZTE</TableCell>
+            case 20:
+                return <TableCell align="right">PARKS</TableCell>
+            case 30:
+                return <TableCell align="right">FIBERHOME</TableCell>
+        }
+    }
+
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
@@ -272,13 +283,9 @@ export function HandleManageOlt(){
                                     </TableCell>
                                     <TableCell align="right">{row.host}</TableCell>
 
-                                    {row.type === '10' ?
-                                        <TableCell align="right">ZTE</TableCell>
-                                        :
-                                        <TableCell align="right">Parks</TableCell>
-                                    }
+                                    {renderTypeOlt(row.type)}
                                     {
-                                        row.isPizzaBox.toString() === 'true' ? 
+                                        row.isPizzaBox ? 
                                         <TableCell align="right">Sim</TableCell>
                                         :
                                         <TableCell align="right">Não</TableCell>

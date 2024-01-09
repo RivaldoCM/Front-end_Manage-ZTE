@@ -44,17 +44,8 @@ export function EditUsersModal(props: any) {
 	if (typeof props.selectedUserData === 'object' && id !== props.selectedUserData['id']) {
 		if ('id' in props.selectedUserData && props.selectedUserData['id'] !== id) {
 			setId(props.selectedUserData['id']);
-		}
-
-		if ('name' in props.selectedUserData && props.selectedUserData['name'] !== name) {
 			setName(props.selectedUserData['name']);
-		}
-
-		if ('department_id' in props.selectedUserData && props.selectedUserData['department_id'] !== rule) {
 			setRule(props.selectedUserData['department_id']);
-		}
-
-		if ('status' in props.selectedUserData && props.selectedUserData['status'] !== status) {
 			setStatus(props.selectedUserData['status']);
 		}
 	}
@@ -103,7 +94,7 @@ export function EditUsersModal(props: any) {
 									<p>Nivel de acesso: </p>
 								</div>
 								<div className="content">
-									<input type="number" id="rule" name="rule" min="1" max="17" value={rule} onChange={handleRuleChange}/>
+									<input type="number" id="rule" name="rule" min="1" max="21" value={rule} onChange={handleRuleChange}/>
 								</div>
 							</InputContainer>
 							<InputContainer>

@@ -120,6 +120,10 @@ export function useError(){
                 setErrorMessage('OLT editada com sucesso.');
                 setSeverityStatus('success');
             break;
+            case 'error/impossible-to-create-new-data':
+                setErrorMessage('Não foi possivel criar uma nova OLT.');
+                setSeverityStatus('error');
+            break;
             default:
                 handleError('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');

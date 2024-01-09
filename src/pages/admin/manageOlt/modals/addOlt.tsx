@@ -32,7 +32,7 @@ export function AddOltModal(props: any) {
 		cityId: 1,
 		host: '',
 		type: 10,
-		isPizzaBox: true,
+		isPizzaBox: 1,
 		voalleAccessPointId: 0
 	});
 
@@ -171,8 +171,8 @@ export function AddOltModal(props: any) {
                                         label="Status"
                                         onChange={handleFormChange}
                                     >
-                                        <MenuItem value={true}>Sim</MenuItem>
-                                        <MenuItem value={false}>Não</MenuItem>
+                                        <MenuItem value={1}>Sim</MenuItem>
+                                        <MenuItem value={0}>Não</MenuItem>
                                     </Select>
                                 </FormControl>
                             </div>

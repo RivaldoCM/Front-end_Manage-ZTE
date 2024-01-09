@@ -29,7 +29,6 @@ import SearchIcon from '@mui/icons-material/Search';
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
     stabilizedThis.sort((a, b) => {
-       
         return a[1] - b[1];
     });
     return stabilizedThis.map((el) => el[0]);
@@ -97,7 +96,7 @@ function EnhancedTableHead(){
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected, selectedUserData } = props;
+    const { numSelected, selectedUserData, onInputValueChange } = props;
 
     const [open, setOpen] = useState(false);
     const [inputSearchValue, setInputSearchValue] = useState('');
@@ -107,12 +106,12 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {setInputSearchValue(e.target.value)};
 
     useEffect(() => {
-        props.onInputValueChange(inputSearchValue);
+        onInputValueChange(inputSearchValue);
     }, [inputSearchValue]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        props.onInputValueChange(inputSearchValue);
+        onInputValueChange(inputSearchValue);
     }
 
     return (
@@ -148,14 +147,12 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         {numSelected > 0 ? (
             <>
                 <div>
-                    <Tooltip title="Editar">
-                        <EditUsersModal 
-                            handleOpen={handleOpen}
-                            open={open}
-                            handleClose={handleClose}
-                            selectedUserData={selectedUserData}
-                        />
-                    </Tooltip>
+                    <EditUsersModal
+                        handleOpen={handleOpen}
+                        open={open}
+                        handleClose={handleClose}
+                        selectedUserData={selectedUserData}
+                    />
                 </div>
                 <div>
                     
@@ -165,12 +162,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             <Tooltip title="">
                 <SearchButton>
                     <div className="search-container">
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} >
                             <div className="search-box">
                                 <input 
                                     type="text" 
                                     placeholder="Digite o nome na busca" 
-                                    name="search" 
                                     className="search-input" 
                                     onChange={handleChangeValue}
                                     value={inputSearchValue}
@@ -195,8 +191,8 @@ export function HandleManageUsers() {
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [ filteredUser, setFilteredUser ] = useState<Array<IUsers>>([]);
-    const [ users, setUsers ] = useState<IUsers[]>([]);
+    const [filteredUser, setFilteredUser] = useState<Array<IUsers>>([]);
+    const [users, setUsers] = useState<IUsers[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>([]);
 
     useEffect(() => {
@@ -217,6 +213,7 @@ export function HandleManageUsers() {
     const handleSearchValueChange = (value: string) => {
         const filteredUser = users.filter((el) => {
             if(el.name.toLowerCase().startsWith(value.toLowerCase())){
+                setPage(0);
                 return el;
             }
         })
@@ -246,7 +243,7 @@ export function HandleManageUsers() {
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - users.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - filteredUser.length) : 0;
 
     const visibleRows = useMemo(() => 
         stableSort(filteredUser).slice(
@@ -259,7 +256,7 @@ export function HandleManageUsers() {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar 
+                <EnhancedTableToolbar
                     numSelected={selected.length} 
                     selectedUserData={selectedUser}
                     onInputValueChange={handleSearchValueChange}
@@ -325,7 +322,7 @@ export function HandleManageUsers() {
                 <TablePagination
                     rowsPerPageOptions={[10, 15, 25]}
                     component="div"
-                    count={users.length}
+                    count={filteredUser.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
