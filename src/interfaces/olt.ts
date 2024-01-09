@@ -2,7 +2,7 @@ export interface Olt{
     id: number,
     name: string,
     host: string,
-    type: string,
+    type: number,
     city_id: number,
     isPizzaBox: boolean,
     voalleAccessPointId: number,

@@ -7,10 +7,7 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
-type IconType = React.ReactElement;
-
 export var handleDynamicPagesByRule: IAllPages[];
-
 export const handlePages: IAllPages[] = [
     {
         name: "Area Tecnica",
@@ -37,7 +34,6 @@ export const handlePages: IAllPages[] = [
 ]
 
 export const handleShowPageByRule = (rule?: number) => {
-
     switch(rule){
         case 17:
             let allPages = cloneDeep(handlePages);
@@ -55,7 +51,7 @@ export const handleShowPageByRule = (rule?: number) => {
     }
 }
 
-export const handleIconMenu = (text: string): IconType => {
+export const handleIconMenu = (text: string): React.ReactElement => {
     switch(text){
         case 'provisionamento':
             return <MiscellaneousServicesOutlinedIcon />;

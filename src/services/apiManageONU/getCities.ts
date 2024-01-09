@@ -1,18 +1,17 @@
 import axios from "axios";
 import { SetStateAction } from 'react';
-import { Olt } from "../../interfaces/olt";
 
-export async function getOlt(type: string): Promise<SetStateAction<Olt[]>>{
-    const oltData = await axios({
+export async function getCities(): Promise<SetStateAction<any>>{
+    const citiesData = await axios({
         method: 'get',
-        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt/${type}`,
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/cities`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
         },
     }).then((response) => {
-        return response.data;
+        return response.data.responses.response;
     }).catch((err) => {
         return err.response.data.messages.message;
     });
-    return oltData;
+    return citiesData;
 }

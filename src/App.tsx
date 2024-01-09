@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 
 import { AppRoutes } from "./routes";
 import { AuthContextProvider } from "./contexts/AuthContext";
-import { GlobalStyle } from "./globalStyles";
+import { GlobalStyle } from "./styles/globalStyles";
 
 export function App() {
     return (

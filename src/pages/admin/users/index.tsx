@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 import { useError } from '../../../hooks/useError';
-import { KeepMountedModal } from './modal';
+import { EditUsersModal } from './modals';
 
 import { IUsers } from '../../../interfaces/users';
 import { getUsers } from '../../../services/apiManageONU/getUsers';
 
+import { SearchButton } from '../../../styles/searchButton';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -18,31 +19,33 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { TableHead } from '@mui/material';
+import { IconButton, TableHead } from '@mui/material';
 import Alert from '@mui/material/Alert';
-
+import SearchIcon from '@mui/icons-material/Search';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
     stabilizedThis.sort((a, b) => {
-       
         return a[1] - b[1];
     });
     return stabilizedThis.map((el) => el[0]);
 }
 
-interface EnhancedTableToolbarProps { numSelected: number; selectedUserData: Array<any>;}
+interface EnhancedTableToolbarProps { 
+    numSelected: number; 
+    selectedUserData: Array<any>;
+    onInputValueChange: any;
+}
 
 interface HeadCell {
     disablePadding: boolean;
     id: number;
     label: string;
     numeric: boolean;
-  }
+}
   
 const headCells: readonly HeadCell[] = [
     {
@@ -93,11 +96,23 @@ function EnhancedTableHead(){
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected, selectedUserData } = props;
+    const { numSelected, selectedUserData, onInputValueChange } = props;
 
     const [open, setOpen] = useState(false);
+    const [inputSearchValue, setInputSearchValue] = useState('');
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {setInputSearchValue(e.target.value)};
+
+    useEffect(() => {
+        onInputValueChange(inputSearchValue);
+    }, [inputSearchValue]);
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        onInputValueChange(inputSearchValue);
+    }
 
     return (
         <Toolbar
@@ -131,26 +146,38 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         )}
         {numSelected > 0 ? (
             <>
-            <div>
-                <Tooltip title="Editar">
-                    <IconButton>
-                        <KeepMountedModal 
-                            handleOpen={handleOpen}
-                            open={open}
-                            handleClose={handleClose}
-                            selectedUserData={selectedUserData}
-                        />
-                    </IconButton>
-                </Tooltip>
-            </div>
-            <div>
-                
-            </div>
+                <div>
+                    <EditUsersModal
+                        handleOpen={handleOpen}
+                        open={open}
+                        handleClose={handleClose}
+                        selectedUserData={selectedUserData}
+                    />
+                </div>
+                <div>
+                    
+                </div>
             </>
-            
         ) : (
-            <Tooltip title="Deletar">
-                <div></div>
+            <Tooltip title="">
+                <SearchButton>
+                    <div className="search-container">
+                        <form onSubmit={handleSubmit} >
+                            <div className="search-box">
+                                <input 
+                                    type="text" 
+                                    placeholder="Digite o nome na busca" 
+                                    className="search-input" 
+                                    onChange={handleChangeValue}
+                                    value={inputSearchValue}
+                                />
+                                <IconButton type="submit" className="search-button" >
+                                    <SearchIcon />
+                                </IconButton>
+                            </div>
+                        </form>
+                    </div>
+                </SearchButton>
             </Tooltip>
         )}
         </Toolbar>
@@ -164,8 +191,8 @@ export function HandleManageUsers() {
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-
-    const [ users, setUsers ] = useState<IUsers[]>([]);
+    const [filteredUser, setFilteredUser] = useState<Array<IUsers>>([]);
+    const [users, setUsers] = useState<IUsers[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>([]);
 
     useEffect(() => {
@@ -174,6 +201,7 @@ export function HandleManageUsers() {
 
             if(typeof userData !== 'string'){
                 setUsers(userData);
+                setFilteredUser(userData);
             } else {
                 setUsers([]);
                 handleError('unable-load-data');
@@ -181,6 +209,16 @@ export function HandleManageUsers() {
         }
         users();
     }, []);
+
+    const handleSearchValueChange = (value: string) => {
+        const filteredUser = users.filter((el) => {
+            if(el.name.toLowerCase().startsWith(value.toLowerCase())){
+                setPage(0);
+                return el;
+            }
+        })
+        setFilteredUser(filteredUser);
+    }
 
     const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: IUsers) => {
         setSelectedUser(row);
@@ -205,20 +243,24 @@ export function HandleManageUsers() {
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - users.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - filteredUser.length) : 0;
 
-    const visibleRows = useMemo(() =>
-        stableSort(users).slice(
+    const visibleRows = useMemo(() => 
+        stableSort(filteredUser).slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage,
         ),
-        [page, rowsPerPage, users]
+        [page, rowsPerPage, filteredUser]
     );
 
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} selectedUserData={selectedUser}/>
+                <EnhancedTableToolbar
+                    numSelected={selected.length} 
+                    selectedUserData={selectedUser}
+                    onInputValueChange={handleSearchValueChange}
+                />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -280,7 +322,7 @@ export function HandleManageUsers() {
                 <TablePagination
                     rowsPerPageOptions={[10, 15, 25]}
                     component="div"
-                    count={users.length}
+                    count={filteredUser.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

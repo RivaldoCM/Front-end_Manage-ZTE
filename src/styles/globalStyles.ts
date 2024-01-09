@@ -78,10 +78,6 @@ export const InputContainer = styled.div<MyStyledComponentProps>`
     width: 100%;
     margin: 1rem 0;
 
-    @media (max-width: 450px){
-        width: 100%;
-    }
-
     .text{
         display: flex;
         align-items: ${(props) => (props.center ? 'center' : 'end')};
@@ -90,5 +86,17 @@ export const InputContainer = styled.div<MyStyledComponentProps>`
     .text, .content{
         width: 50%;
         padding: 0 2px;
+    }
+
+    .content{
+
+        > input{
+            //POR ALGUM MOIVO O INPUT TYPE NUMBER FLOODA O MODAL
+            max-width: 100%;
+        }
+    }
+
+    @media (max-width: 450px){
+        width: 100%;
     }
 `

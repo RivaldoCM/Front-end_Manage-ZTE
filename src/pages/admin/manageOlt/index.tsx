@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 
 import { getOlt } from '../../../services/apiManageONU/getOlt';
 import { Olt } from '../../../interfaces/olt';
+import { AddOltModal } from './modals/addOlt';
 
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -15,14 +16,13 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { TableHead } from '@mui/material';
 import { useError } from '../../../hooks/useError';
 import Alert from '@mui/material/Alert';
-import { KeepMountedOltModal } from './Modal';
+import { EditOltModal } from './modals/editOlt';
+import { KeepMountedDeleteOltModal } from './modals/deleteOlt';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -33,7 +33,7 @@ function stableSort<T>(array: readonly T[]) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-interface EnhancedTableToolbarProps { numSelected: number; }
+interface EnhancedTableToolbarProps { numSelected: number; oltDataSelected: any }
 
 interface HeadCell {
     disablePadding: boolean;
@@ -97,11 +97,19 @@ function EnhancedTableHead(){
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected } = props;
+    const { numSelected, oltDataSelected } = props;
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const [openDeleteOlt, setOpenDeleteOlt] = useState(false);
+    const handleOpenDeleteOlt = () => setOpenDeleteOlt(true);
+    const handleCloseDeleteOlt = () => setOpenDeleteOlt(false);
+
+    const [openAddOlt, setOpenAddOlt] = useState(false);
+    const handleOpenAddOlt = () => setOpenAddOlt(true);
+    const handleCloseAddOlt = () => setOpenAddOlt(false);
 
     return (
         <Toolbar
@@ -134,26 +142,35 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             </Typography>
         )}
         {numSelected > 0 ? (
-            <Tooltip title="Delete">
-                <IconButton>
-                    <KeepMountedOltModal
-                        handleOpen={handleOpen}
-                        open={open}
-                        handleClose={handleClose}
-                    />
-                </IconButton>
-            </Tooltip>
+            <div className='flex'>
+                <EditOltModal
+                    handleOpen={handleOpen}
+                    open={open}
+                    handleClose={handleClose}
+                    oltDataSelected={oltDataSelected}
+                />
+                <KeepMountedDeleteOltModal
+                    handleOpen={handleOpenDeleteOlt}
+                    open={openDeleteOlt}
+                    handleClose={handleCloseDeleteOlt}
+                    oltDataSelected={oltDataSelected}
+                />
+            </div>
         ) : (
-            <Tooltip title="Adicionar">
-                <div></div>
-            </Tooltip>
+            <AddOltModal
+                handleOpen={handleOpenAddOlt}
+                open={openAddOlt}
+                handleClose={handleCloseAddOlt}
+            />
         )}
         </Toolbar>
     );
 }
+
 export function HandleManageOlt(){
     const { error, errorMessage, severityStatus, handleError } = useError();
 
+    const [ oltDataSelected, setOltDataSelected ] = useState();
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
@@ -174,7 +191,8 @@ export function HandleManageOlt(){
         olts();
     }, []);
 
-    const handleClick = (_event: React.MouseEvent<unknown>, id: number) => {
+    const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: any) => {
+        setOltDataSelected(row);
         if(selected[0] === id){
             setSelected([]);
             return;
@@ -208,10 +226,21 @@ export function HandleManageOlt(){
         [page, rowsPerPage, olt]
     );
 
+    const renderTypeOlt: any = (typeOlt: number) => {
+        switch(typeOlt){
+            case 10:
+                return <TableCell align="right">ZTE</TableCell>
+            case 20:
+                return <TableCell align="right">PARKS</TableCell>
+            case 30:
+                return <TableCell align="right">FIBERHOME</TableCell>
+        }
+    }
+
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} oltDataSelected={oltDataSelected}/>
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -227,7 +256,7 @@ export function HandleManageOlt(){
                             return (
                                 <TableRow
                                     hover
-                                    onClick={(event) => handleClick(event, row.id)}
+                                    onClick={(event) => handleClick(event, row.id, row)}
                                     role="checkbox"
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}
@@ -254,13 +283,9 @@ export function HandleManageOlt(){
                                     </TableCell>
                                     <TableCell align="right">{row.host}</TableCell>
 
-                                    {row.type === '10' ?
-                                        <TableCell align="right">ZTE</TableCell>
-                                        :
-                                        <TableCell align="right">Parks</TableCell>
-                                    }
+                                    {renderTypeOlt(row.type)}
                                     {
-                                        row.isPizzaBox.toString() === 'true' ? 
+                                        row.isPizzaBox ? 
                                         <TableCell align="right">Sim</TableCell>
                                         :
                                         <TableCell align="right">Não</TableCell>
