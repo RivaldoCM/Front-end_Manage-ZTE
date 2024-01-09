@@ -181,6 +181,7 @@ export function EditOltModal(props: any) {
 										<Select
 											labelId="demo-simple-select-label"
 											id="demo-simple-select"
+											name='isPizzaBox'
 											value={form.isPizzaBox}
 											label="PizzaBox"
 											onChange={handleFormChange}
