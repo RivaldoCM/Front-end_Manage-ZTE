@@ -7,9 +7,10 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { useAuthOnu } from "../../hooks/useAuthOnu";
 
 export function Form(props: FormProps){
-
+    const { authOnu, setAuthOnu } = useAuthOnu();
     if(props.typeOnu === 'parks'){
         if (Array.isArray(props.item)){
             const [ pon, signal, serial, ip, accessPoint ] = props.item;

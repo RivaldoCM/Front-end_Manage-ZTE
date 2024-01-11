@@ -11,9 +11,6 @@ import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
 import { OnuDelete } from "./pages/onuDelete";
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
-import { useAuthOnu } from "./hooks/useAuthOnu";
-
-const { onu, setOnu } = useAuthOnu();
 
 interface PrivateRouteProps {
     element: ReactElement;
@@ -45,15 +42,15 @@ export function AppRoutes() {
         <Routes>
             <Route index path="login" element={<Login />} />
             <Route path="" element={matches ? <MobileDrawerMenu /> : <MenuDrawer />}>
-            <Route
-                path="provisionamento"
-                element={
-                    <AuthOnuContextProvider>
-                        <PrivateRoute
-                            element={<Provisionamento onu={onu} setOnu={setOnu} />}
-                        />
-                    </AuthOnuContextProvider>
-                }
+                <Route
+                    path="provisionamento"
+                    element={
+                        <AuthOnuContextProvider>
+                            <PrivateRoute
+                                element={<Provisionamento />}
+                            />
+                        </AuthOnuContextProvider>
+                    }
                 />
                 <Route
                     path="olts"

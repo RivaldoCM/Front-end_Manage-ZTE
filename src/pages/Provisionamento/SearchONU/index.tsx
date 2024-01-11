@@ -10,45 +10,42 @@ import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useAuthOnu } from "../../../hooks/useAuthOnu";
 
 export function SearchONU(props: SearchONUProps) {
+    const { authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt } = useAuthOnu();
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
+    
 
-    const handleMapOltData: any = () => {
 
-        if(props.type === 'zte'){
-            return(
-                props.OltInfo.map((option: any) => {
+    const handleMapOltData: any = () => {  
+        const cityIds = new Set();
+        console.log(cityIds)
+        return(
+            viewOnlyOlt.map((option: any) => {
+                if (cityIds.has(option.city_id) && option.city_id !== 10) {
+                    return(
+                        console.log('aq')
+                    )
+                } else {
+                    cityIds.add(option.city_id);
                     return(
                         <MenuItem key={option.id} value={option.name}>
                             {option.name}
                         </MenuItem>
                     )
-                })
-            );
-        }else{
-            return(
-                props.OltInfo.map((subArray) => {
-                    if(subArray.length <= 4){
-                        return(
-                            <MenuItem key="TOMBOS" value="TOMBOS">
-                                TOMBOS
-                            </MenuItem>
-                        );
-                    }else{
-                        return subArray.map((data) => (
-                            <MenuItem key={data.id} value={data.name}>
-                                {data.name}
-                            </MenuItem>
-                        ));
-                    }
-                })
-            );
-        }
+
+                }
+            })
+            
+
+        );
+
     }
 
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { props.setCity(e.target.value); };
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); };
+
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

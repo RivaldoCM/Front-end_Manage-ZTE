@@ -12,8 +12,10 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Typography from '@mui/material/Typography';
 import { AuthOnu } from "../../../services/apiManageONU/authOnu";
 import { IDataOnu } from "../../../interfaces/IAuthOnuProps";
+import { useAuthOnu } from "../../../hooks/useAuthOnu";
 
 export function WriteONU(props: WriteONUProps){
+    const { authOnu, setAuthOnu } = useAuthOnu(); 
 
     //lifting up
     const [pppoePass, setPppoePass] = useState('');

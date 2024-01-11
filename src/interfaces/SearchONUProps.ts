@@ -1,7 +1,6 @@
 import { Olt } from "./olt";
 
 export interface SearchONUProps {
-    type: string,
     setCity: (city: string) => void;
     city: string;
     setDataFromApi: (data: any[]) => void;

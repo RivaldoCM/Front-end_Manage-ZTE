@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
+import { useAuthOnu } from "../../hooks/useAuthOnu";
 
 interface TabPanelProps {
     className?: string
@@ -65,6 +66,8 @@ type IDataFromApi = {
 }
 
 export function Provisionamento(){
+    const { authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt } = useAuthOnu();
+
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
@@ -74,15 +77,16 @@ export function Provisionamento(){
     const [olt, setOlt] = useState<any>([]);
     const [type, setType] = useState('zte');
 	const [value, setValue] = useState(0); //MUI-Core
-
     useEffect(() => {
-        if(type === 'zte'){
+        if(authOnu.onuType === 'zte'){
             async function olts(){
                 const oltData = await getOlt('zte');
                 if(typeof oltData !== 'string'){
+                    setViewOnlyOlt(oltData);
                     setOlt(oltData);
                     setCity('ESPERA-FELIZ');
                 } else {
+                    setViewOnlyOlt([]);
                     setOlt([]);
                     setCity('');
                     handleError('unable-load-data');
@@ -93,9 +97,11 @@ export function Provisionamento(){
             async function olts(){
                 const oltData = await getOlt('parks');
                 if(typeof oltData !== 'string'){
+                    setViewOnlyOlt(oltData);
                     setOlt(oltData);
                     setCity('SANTA-CLARA');
                 } else {
+                    setViewOnlyOlt([]);
                     setOlt([]);
                     setCity('');
                     handleError('unable-load-data');
@@ -103,23 +109,31 @@ export function Provisionamento(){
             }
             olts();
         }
-    }, [type]);
+    }, [authOnu.onuType]);
+
+    console.log(olt)
 
     const handleTypeZte = () => {
-        if(type === 'zte'){
+        if(authOnu.onuType === 'zte'){
             return;
         }
-        setType('zte');
+        setAuthOnu({
+            ...authOnu,
+            onuType: 'zte'
+        })
         setDataFromApi([]);
         setOlt([]);
         setCity('');
     }
 
     const handleTypeParks = () => {
-        if(type === 'parks'){
+        if(authOnu.onuType === 'parks'){
             return;
         }
-        setType('parks');
+        setAuthOnu({
+            ...authOnu,
+            onuType: 'parks'
+        })
         setDataFromApi([]);
         setOlt([]);
         setCity('');
@@ -142,7 +156,6 @@ export function Provisionamento(){
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
                             <SearchONU 
-                                type={type}
                                 setCity={setCity}
                                 city={city}
                                 setDataFromApi={setDataFromApi}
@@ -172,7 +185,6 @@ export function Provisionamento(){
 						</CustomTabPanel>
                         <CustomTabPanel className="flex" value={value} index={1}>
                             <SearchONU
-                                type={type}
                                 setCity={setCity} 
                                 city={city} 
                                 setDataFromApi={setDataFromApi} 

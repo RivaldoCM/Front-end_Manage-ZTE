@@ -7,6 +7,7 @@ import { getPeopleId } from '../apiVoalle/getPeopleId';
 import { getConnectionId } from './getConnectionId';
 import { IAuthOnuProps } from '../../interfaces/IAuthOnuProps';
 import { updateConnection } from '../apiVoalle/updateConnection';
+import { useAuthOnu } from '../../hooks/useAuthOnu';
 
 export async function AuthOnu(props: IAuthOnuProps){
 
@@ -49,7 +50,7 @@ export async function AuthOnu(props: IAuthOnuProps){
             }else{
                 connectionData.contractId = 0;
             }
-
+            /*
             const hasAuth = await axios({
                 method: 'post',
                 url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
@@ -90,6 +91,7 @@ export async function AuthOnu(props: IAuthOnuProps){
                     updateConnection({...props, connectionData})
                 }
             }
+            */
         }
     }else{
         if (props.isLoading){
@@ -120,7 +122,7 @@ export async function AuthOnu(props: IAuthOnuProps){
             }else{
                 connectionData.contractId = 0;
             }
-
+            /*
             const hasAuth = await axios({
                 method: 'post',
                 url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
@@ -162,6 +164,7 @@ export async function AuthOnu(props: IAuthOnuProps){
                     updateConnection({...props, connectionData, oltId})
                 }
             }
+            */
         }
     }
 }
