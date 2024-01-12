@@ -18,7 +18,7 @@ import { useLoading } from "../../../hooks/useLoading";
 export function SearchONU(props: SearchONUProps) {
     const { authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
-    const { error, errorMessage, handleError } = useError();
+    const { error, errorMessage, severityStatus, handleError } = useError();
 
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
