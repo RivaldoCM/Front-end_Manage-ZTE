@@ -1,10 +1,17 @@
 
-import { createContext, useState } from "react";
+import { ReactNode, createContext, useState, Dispatch, SetStateAction } from "react";
+import { Olt } from "../interfaces/olt";
 
-export const AuthOnuContext = createContext<any>(null);
-export function AuthOnuContextProvider(props: any){
-    const [authOnu, setAuthOnu] = useState({
-        ip: '',
+export const AuthOnuContext = createContext<{
+    authOnu: IAuthOnuContext;
+    setAuthOnu: Dispatch<SetStateAction<IAuthOnuContext>>;
+    viewOnlyOlt: Olt[] | undefined;
+    setViewOnlyOlt: Dispatch<SetStateAction<Olt[] | undefined>>;
+} | undefined>(undefined);
+
+export function AuthOnuContextProvider({ children }: { children: ReactNode }){
+    const [authOnu, setAuthOnu] = useState<IAuthOnuContext>({
+        ip: [],
         userId: 0,
         oltId: 0,
         cityId: 0,
@@ -14,13 +21,14 @@ export function AuthOnuContextProvider(props: any){
         pon: 0,
         pppoe: '',
         onuType: 'zte',
-        oltType: ''
+        oltType: '',
+        voalleAccessPointId: []
     });
-    const [viewOnlyOlt, setViewOnlyOlt] = useState<any>([]);
+    const [viewOnlyOlt, setViewOnlyOlt] = useState<Olt[] | undefined>(undefined);
 
     return(
         <AuthOnuContext.Provider value={{ authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt }}> 
-            {props.children}
+            {children}
         </AuthOnuContext.Provider>
     )
 }

@@ -61,12 +61,9 @@ export const verifyIfOnuExists = async (props: propsApi) => {
                 //Para mostrar todas as ONU's caso use o comando especial
             }
         }
-        props.stopLoading();
-        props.setDataFromApi(response.data);
     })
     .catch(error => {
         //SÓ ENTRA AQUI SE A CONEXÃO CAIR NO MEIO DA EXECUÇÃO DE TAREFAS
-        props.stopLoading();
-        props.handleError(error.code);
+
     });
 }

@@ -26,51 +26,60 @@ export function SearchONU(props: SearchONUProps) {
         const cityIds = new Set<number>();
         const oltNames = new Set<string>();
 
-        return viewOnlyOlt.map((olt: Olt, index: number) => {
-            if(!cityIds.has(olt.city_id) && !oltNames.has(olt.name)){
-                cityIds.add(olt.city_id);
-                oltNames.add(olt.name);
-                return(
-                    <MenuItem key={index} value={olt.name}>
-                        {olt.name}
-                    </MenuItem>
-                )
-            } else {
-                //OLT's DA MESMA REGIÃO POREM EM LOCAIS DIFERENTES
-                let match = olt.name.match(/([a-zA-Z]+)/);
-                for(let name of oltNames){
-                    if(match && !name.includes(match[1])){
-                        return(
-                            <MenuItem key={index} value={match[1]}>
-                                {match[1]}
-                            </MenuItem>
-                        )
+        if(viewOnlyOlt){
+            return viewOnlyOlt.map((olt: Olt, index: number) => {
+                if(!cityIds.has(olt.city_id) && !oltNames.has(olt.name)){
+                    cityIds.add(olt.city_id);
+                    oltNames.add(olt.name);
+                    return(
+                        <MenuItem key={index} value={olt.name}>
+                            {olt.name}
+                        </MenuItem>
+                    )
+                } else {
+                    //OLT's DA MESMA REGIÃO POREM EM LOCAIS DIFERENTES
+                    let match = olt.name.match(/([a-zA-Z]+)/);
+                    for(let name of oltNames){
+
+                        if(match && !name.includes(match[1])){
+                            return(
+                                <MenuItem key={index} value={match[1]}>
+                                    {match[1]}
+                                </MenuItem>
+                            )
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
     }
 
-    const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { setAuthOnu({
+    const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
+        setAuthOnu({
         ...authOnu,
         city: e.target.value
-    }) };
+    })};
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        startLoading();
         props.setDataFromApi([]);
         props.setSerialNumber('');
 
         const verifyAlphaNumber = /^[a-zA-Z0-9_]+$/;
     
         if(isLoading){
-            const err = 'warning/has-action-in-progress';
-            handleError(err);
+            handleError('warning/has-action-in-progress');
         }else if(!verifyAlphaNumber.test(matchSerialNumber)){
             handleError('info/non-expect-caracter-not-alphaNumeric');
         }else{
-            verifyIfOnuExists({...props, matchSerialNumber});
+
+            //VER SE O REPLACE TIRA OS _ E PRINCIPALMENTE OS NUMEROS PARA COMPARAR AS CIDADES DIRETAMENTE
+            const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
+            console.log(olt)
+
+            //verifyIfOnuExists({...props, matchSerialNumber});
         }
     }
 

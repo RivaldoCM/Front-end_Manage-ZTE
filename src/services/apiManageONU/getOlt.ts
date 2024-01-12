@@ -2,7 +2,7 @@ import axios from "axios";
 import { SetStateAction } from 'react';
 import { Olt } from "../../interfaces/olt";
 
-export async function getOlt(type: string): Promise<SetStateAction<Olt[]>>{
+export async function getOlt(type: string): Promise<SetStateAction<Olt[] | undefined>>{
     const oltData = await axios({
         method: 'get',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt/${type}`,

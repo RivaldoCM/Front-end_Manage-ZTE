@@ -67,7 +67,6 @@ type IDataFromApi = {
 
 export function Provisionamento(){
     const { authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt } = useAuthOnu();
-
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
@@ -110,8 +109,6 @@ export function Provisionamento(){
             olts();
         }
     }, [authOnu.onuType]);
-
-    console.log(olt)
 
     const handleTypeZte = () => {
         if(authOnu.onuType === 'zte'){
