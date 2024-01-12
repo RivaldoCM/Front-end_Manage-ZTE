@@ -130,5 +130,5 @@ export function useError(){
             break;
         }
     };
-    return { error, errorMessage, severityStatus, handleError };
+    return { error, errorMessage, handleError };
 };

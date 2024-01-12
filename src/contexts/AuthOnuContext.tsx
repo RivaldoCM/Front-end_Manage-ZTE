@@ -16,9 +16,7 @@ export function AuthOnuContextProvider(props: any){
         onuType: 'zte',
         oltType: ''
     });
-
     const [viewOnlyOlt, setViewOnlyOlt] = useState<any>([]);
-
 
     return(
         <AuthOnuContext.Provider value={{ authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt }}> 
