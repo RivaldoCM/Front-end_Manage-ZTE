@@ -77,7 +77,7 @@ export function Provisionamento(){
     const [type, setType] = useState('zte');
 	const [value, setValue] = useState(0); //MUI-Core
     useEffect(() => {
-        if(authOnu.onuType === 'zte'){
+        if(authOnu.oltType === 'zte'){
             async function olts(){
                 const oltData = await getOlt('zte');
                 if(typeof oltData !== 'string'){
@@ -108,15 +108,15 @@ export function Provisionamento(){
             }
             olts();
         }
-    }, [authOnu.onuType]);
+    }, [authOnu.oltType]);
 
     const handleTypeZte = () => {
-        if(authOnu.onuType === 'zte'){
+        if(authOnu.oltType === 'zte'){
             return;
         }
         setAuthOnu({
             ...authOnu,
-            onuType: 'zte'
+            oltType: 'zte'
         })
         setDataFromApi([]);
         setOlt([]);
@@ -124,12 +124,12 @@ export function Provisionamento(){
     }
 
     const handleTypeParks = () => {
-        if(authOnu.onuType === 'parks'){
+        if(authOnu.oltType === 'parks'){
             return;
         }
         setAuthOnu({
             ...authOnu,
-            onuType: 'parks'
+            oltType: 'parks'
         })
         setDataFromApi([]);
         setOlt([]);

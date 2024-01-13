@@ -1,7 +1,7 @@
 type IAuthOnuContext = {
     ip: string[];
     userId: number;
-    oltId: number;
+    oltId: number[];
     cityId: number;
     city: string;
     serial: string;

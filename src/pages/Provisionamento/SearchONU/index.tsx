@@ -14,9 +14,11 @@ import { useAuthOnu } from "../../../hooks/useAuthOnu";
 import { Olt } from "../../../interfaces/olt";
 import { useError } from "../../../hooks/useError";
 import { useLoading } from "../../../hooks/useLoading";
+import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
+import { Alert } from "@mui/material";
 
 export function SearchONU(props: SearchONUProps) {
-    const { authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt } = useAuthOnu();
+    const { authOnu, setAuthOnu, viewOnlyOlt } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
 
@@ -74,12 +76,31 @@ export function SearchONU(props: SearchONUProps) {
         }else if(!verifyAlphaNumber.test(matchSerialNumber)){
             handleError('info/non-expect-caracter-not-alphaNumeric');
         }else{
-
-            //VER SE O REPLACE TIRA OS _ E PRINCIPALMENTE OS NUMEROS PARA COMPARAR AS CIDADES DIRETAMENTE
             const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
-            console.log(olt)
 
-            //verifyIfOnuExists({...props, matchSerialNumber});
+            let ips: string[] = [];
+
+            olt.map((data) => {
+                ips.push(data.host)
+                setAuthOnu((prevState) => ({
+                    ...prevState,
+                    ip: [...prevState.ip, data.host],
+                    voalleAccessPointId: [...prevState.voalleAccessPointId, data.voalleAccessPointId],
+                    oltId: [...prevState.oltId, data.id],
+                    cityId: data.city_id
+                }));
+            });
+
+            const response: IResponseData | IResponseError = await verifyIfOnuExists({
+                ip: ips, 
+                oltType: authOnu.oltType, 
+                matchSerialNumber: matchSerialNumber
+            });
+            stopLoading();
+
+            if(!response.success){
+                handleError(response.messages.message);
+            }
         }
     }
 
@@ -127,6 +148,13 @@ export function SearchONU(props: SearchONUProps) {
                             Procurar ONU
                         </Button>
                     )
+                )
+            }
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
                 )
             }
         </Form>
