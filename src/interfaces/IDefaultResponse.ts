@@ -1,9 +1,11 @@
+import { Olt } from "./olt";
+
 export type IResponseData = {
     success: true;
     messages: null;
     responses: {
         status: string | null;
-        response: string | number | Object | any[] | undefined;
+        response: string | number | Object | any[] | Olt[];
     };
 }
 

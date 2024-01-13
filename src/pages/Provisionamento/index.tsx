@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
+import { useAuthOnu } from "../../hooks/useAuthOnu";
 import { SearchONU } from "./SearchONU";
 import { WriteONU } from "./WriteONU";
-
-import { getOlt } from "../../services/apiManageONU/getOlt";
-import { useError } from "../../hooks/useError";
-import { useLoading } from "../../hooks/useLoading";
 
 import { Container } from './style';
 import PropTypes from 'prop-types';
@@ -13,9 +10,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
-import { useAuthOnu } from "../../hooks/useAuthOnu";
+
 
 interface TabPanelProps {
     className?: string
@@ -58,57 +54,11 @@ function a11yProps(index: number) {
     };
 }
 
-type IDataFromApi = {
-    placa: number,
-    pon: number,
-    model: string,
-    serial: string
-}
-
 export function Provisionamento(){
-    const { authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt } = useAuthOnu();
-    const { error, errorMessage, severityStatus, handleError } = useError();
-    const { isLoading, startLoading, stopLoading } = useLoading();
+    const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
 
-    const [city, setCity] = useState('');
-	const [dataFromApi, setDataFromApi] = useState<IDataFromApi[]>([]);
 	const [serialNumber, setSerialNumber] = useState('');
-    const [olt, setOlt] = useState<any>([]);
-    const [type, setType] = useState('zte');
 	const [value, setValue] = useState(0); //MUI-Core
-    useEffect(() => {
-        if(authOnu.oltType === 'zte'){
-            async function olts(){
-                const oltData = await getOlt('zte');
-                if(typeof oltData !== 'string'){
-                    setViewOnlyOlt(oltData);
-                    setOlt(oltData);
-                    setCity('ESPERA-FELIZ');
-                } else {
-                    setViewOnlyOlt([]);
-                    setOlt([]);
-                    setCity('');
-                    handleError('unable-load-data');
-                }
-            }
-            olts();
-        }else{
-            async function olts(){
-                const oltData = await getOlt('parks');
-                if(typeof oltData !== 'string'){
-                    setViewOnlyOlt(oltData);
-                    setOlt(oltData);
-                    setCity('SANTA-CLARA');
-                } else {
-                    setViewOnlyOlt([]);
-                    setOlt([]);
-                    setCity('');
-                    handleError('unable-load-data');
-                }
-            }
-            olts();
-        }
-    }, [authOnu.oltType]);
 
     const handleTypeZte = () => {
         if(authOnu.oltType === 'zte'){
@@ -118,9 +68,7 @@ export function Provisionamento(){
             ...authOnu,
             oltType: 'zte'
         })
-        setDataFromApi([]);
-        setOlt([]);
-        setCity('');
+        setOnus(undefined);
     }
 
     const handleTypeParks = () => {
@@ -131,9 +79,7 @@ export function Provisionamento(){
             ...authOnu,
             oltType: 'parks'
         })
-        setDataFromApi([]);
-        setOlt([]);
-        setCity('');
+        setOnus(undefined);
     }
 
     const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
@@ -153,71 +99,28 @@ export function Provisionamento(){
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
                             <SearchONU 
-                                setCity={setCity}
-                                city={city}
-                                setDataFromApi={setDataFromApi}
                                 serialNumber={serialNumber}
-                                handleError={handleError}
-                                isLoading={isLoading}
-                                startLoading={startLoading}
-                                stopLoading={stopLoading}
                                 setSerialNumber={setSerialNumber}
-                                typeOnu={type}
-                                OltInfo={olt}
                             />
 							<Divider variant="middle" />
 							<WriteONU
-                                city={city}
-                                dataFromApi={dataFromApi}
-                                setDataFromApi={setDataFromApi}
                                 setSerialNumber={setSerialNumber}
                                 serialNumber={serialNumber}
-                                handleError={handleError}
-                                isLoading={isLoading}
-                                startLoading={startLoading}
-                                stopLoading={stopLoading}
-                                typeOnu={type}
-                                OltInfo={olt}
                             />
 						</CustomTabPanel>
                         <CustomTabPanel className="flex" value={value} index={1}>
                             <SearchONU
-                                setCity={setCity} 
-                                city={city} 
-                                setDataFromApi={setDataFromApi} 
                                 serialNumber={serialNumber}
-                                handleError={handleError}
-                                isLoading={isLoading}
-                                startLoading={startLoading}
-                                stopLoading={stopLoading}
                                 setSerialNumber={setSerialNumber}
-                                typeOnu={type}
-                                OltInfo={olt}
                             />
 							<Divider variant="middle" />
 							<WriteONU
-                                city={city}
-                                dataFromApi={dataFromApi}
-                                setDataFromApi={setDataFromApi}
                                 setSerialNumber={setSerialNumber}
                                 serialNumber={serialNumber}
-                                handleError={handleError}
-                                isLoading={isLoading}
-                                startLoading={startLoading}
-                                stopLoading={stopLoading}
-                                typeOnu={type}
-                                OltInfo={olt}
                             />
-						</CustomTabPanel> 	
+						</CustomTabPanel>
 					</Box>
 				</div>
-				{
-					(error ?
-						<Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-					:
-						<></>
-					)
-				}
 			</div>
         </Container>
     )

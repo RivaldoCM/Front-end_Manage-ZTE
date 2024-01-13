@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { SearchONUProps } from "../../../interfaces/SearchONUProps";
+import { useAuthOnu } from "../../../hooks/useAuthOnu";
+import { Olt } from "../../../interfaces/olt";
+import { useError } from "../../../hooks/useError";
+import { useLoading } from "../../../hooks/useLoading";
+import { getOlt } from "../../../services/apiManageONU/getOlt";
 import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
+import { SearchONUProps } from "../../../interfaces/SearchONUProps";
 
 import { Form } from './style';
 import { InputContainer } from "../../../styles/globalStyles";
@@ -10,19 +15,45 @@ import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useAuthOnu } from "../../../hooks/useAuthOnu";
-import { Olt } from "../../../interfaces/olt";
-import { useError } from "../../../hooks/useError";
-import { useLoading } from "../../../hooks/useLoading";
-import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
 import { Alert } from "@mui/material";
 
 export function SearchONU(props: SearchONUProps) {
-    const { authOnu, setAuthOnu, viewOnlyOlt, setOnus } = useAuthOnu();
+    const { authOnu, setAuthOnu, setViewOnlyOlt, viewOnlyOlt, setOnus  } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
 
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
+
+    useEffect(() => {
+        switch(authOnu.oltType){
+            case 'zte':
+                async function oltZte(){
+                    const oltData = await getOlt('zte');
+                    if(oltData.success){
+                        setViewOnlyOlt(oltData.responses.response);
+                        setAuthOnu({
+                            ...authOnu,
+                            city: oltData.responses.response[0].name
+                        })
+                    }
+                }
+                oltZte();
+            break;
+            case 'parks':
+                async function oltParks(){
+                    const oltData = await getOlt('parks');
+                    if(oltData.success){
+                        setViewOnlyOlt(oltData.responses.response);
+                        setAuthOnu({
+                            ...authOnu,
+                            city: oltData.responses.response[0].name
+                        })
+                    }
+                }
+                oltParks();
+            break;
+        }
+    }, [authOnu.oltType]);
 
     const handleMapOltData = () => {  
         const cityIds = new Set<number>();
@@ -66,7 +97,6 @@ export function SearchONU(props: SearchONUProps) {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         startLoading();
-        props.setDataFromApi([]);
         props.setSerialNumber('');
 
         const verifyAlphaNumber = /^[a-zA-Z0-9_]+$/;

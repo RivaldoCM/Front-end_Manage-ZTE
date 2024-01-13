@@ -52,7 +52,7 @@ export function WriteONU(props: WriteONUProps){
 
     const handleShowOnuByType = (type: string) => {
         switch(type){
-            case 'zte': 
+            case 'zte':
                 return(
                     onus?.map((item, index) => {
                         return(
@@ -64,36 +64,6 @@ export function WriteONU(props: WriteONUProps){
                                                 <li>Placa: {item.slot}</li>
                                                 <li>Pon: {item.pon}</li>
                                                 <li>Serial: {item.serialNumber}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Container>
-                        )
-                    })
-                );
-            case 'parks':
-            break;
-        }
-    }
-
-    handleShowOnuByType('zte')
-
-    return (
-        <Container>
-            {props.typeOnu === 'zte' ? (
-                Array.isArray(props.dataFromApi) ? (
-                    props.dataFromApi.map((item, index) => {
-                        if (Array.isArray(item) && item.length === 5) {
-                            const [placa, pon, _model, serial, _accessPointId] = item;
-                            return (
-                                <div key={index} className="onu-callback flex">
-                                    <div className="info-onu-controller flex">
-                                        <div className="add-onu flex">
-                                            <ul className="flex">
-                                                <li>Placa: {placa}</li>
-                                                <li>Pon: {pon}</li>
-                                                <li>Serial: {serial}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -111,84 +81,57 @@ export function WriteONU(props: WriteONUProps){
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>
                                             <AccordionDetails>
-                                                <Form
-                                                    handleSubmitWriteData={handleSubmitWriteData}
-                                                    handlePppoeChange={handlePppoeChange}
-                                                    handleCpfChange={handleCpfChange}
-                                                    isLoading={props.isLoading}
-                                                    serialNumber={props.serialNumber}
-                                                    item={item}
-                                                    typeOnu={props.typeOnu}
-                                                    setDataOnu={setDataOnu}
-                                                    handlePppoePassChange={handlePppoePassChange}
-                                                    handleWifiSSIDChange={handleWifiSSIDChange}
-                                                    handleWifiPassChange={handleWifiPassChange}
-                                                />
+                                                {/*FORM AQ*/}
                                             </AccordionDetails>
                                         </Accordion>
                                     </div>
                                 </div>
-                            );
-                        } else {
-                            // Lida com o caso em que o item não corresponde ao esperado
-                            return null;
-                        }
+                            </Container>
+                        )
                     })
-                ) : (
-                    null
-                )
-            ) : (
-                Array.isArray(props.dataFromApi) ? (
-                    props.dataFromApi.map((item) => {
-                        if(Array.isArray(item)){
-                            const [pon, signal, serial] = item;
-                            return(
-                                <div className="onu-callback flex">
-                                <div className="info-onu-controller flex">
-                                    <div className="add-onu flex">
-                                        <ul className="flex">
-                                            <li>Pon: {pon}</li>
-                                            <li>Serial: {serial}</li>
-                                            <li>Sinal: {signal}</li>
-                                        </ul>
+                );
+            case 'parks':
+                return(
+                    onus?.map((onuItem, index) => {
+                       return(
+                            <Container>
+                                <div key={index} className="onu-callback flex">
+                                    <div className="info-onu-controller flex">
+                                        <div className="add-onu flex">
+                                            <ul className="flex">
+                                                <li>Pon: {onuItem.pon}</li>
+                                                <li>Serial: {onuItem.serial}</li>
+                                                <li>Sinal: {onuItem.rxPower}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div className="write-onu-controller flex">
+                                        <Accordion className="dropdown-box flex">
+                                            <AccordionSummary
+                                                className="dropdown-header"
+                                                expandIcon={isDropDownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                                aria-controls="panel1a-content"
+                                                id="panel1a-header"
+                                                onClick={() => setIsDropDownOpen(!isDropDownOpen)}
+                                            >
+                                                <Typography>Provisione aqui</Typography>
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+
+                                            </AccordionDetails>
+                                        </Accordion>
                                     </div>
                                 </div>
-                                <div className="write-onu-controller flex">
-                                    <Accordion className="dropdown-box flex">
-                                        <AccordionSummary
-                                            className="dropdown-header"
-                                            expandIcon={isDropDownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                            aria-controls="panel1a-content"
-                                            id="panel1a-header"
-                                            onClick={() => setIsDropDownOpen(!isDropDownOpen)}
-                                        >
-                                            <Typography>Provisione aqui</Typography>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            <Form
-                                                handleSubmitWriteData={handleSubmitWriteData}
-                                                handlePppoeChange={handlePppoeChange}
-                                                handleCpfChange={handleCpfChange}
-                                                isLoading={props.isLoading}
-                                                serialNumber={props.serialNumber}
-                                                setDataOnu={setDataOnu}
-                                                typeOnu={props.typeOnu}
-                                                item={item}
-                                                handlePppoePassChange={handlePppoePassChange}
-                                                handleWifiSSIDChange={handleWifiSSIDChange}
-                                                handleWifiPassChange={handleWifiPassChange}
-                                            />
-                                        </AccordionDetails>
-                                    </Accordion>
-                                </div>
-                            </div>
-                            )
-                        }
+                            </Container>
+                       ) 
                     })
-                ) : (
-                    null
-                )
-            )}
-        </Container>
+                );
+            default:
+                return <></>;
+        }
+    }
+
+    return (
+        handleShowOnuByType(authOnu.oltType)
     );
 }
