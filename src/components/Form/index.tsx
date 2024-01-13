@@ -10,7 +10,10 @@ import TextField from '@mui/material/TextField';
 import { useAuthOnu } from "../../hooks/useAuthOnu";
 
 export function Form(props: FormProps){
-    const { authOnu, setAuthOnu } = useAuthOnu();
+    const { authOnu, setAuthOnu, onus } = useAuthOnu();
+
+    console.log(onus)
+
     if(props.typeOnu === 'parks'){
         if (Array.isArray(props.item)){
             const [ pon, signal, serial, ip, accessPoint ] = props.item;

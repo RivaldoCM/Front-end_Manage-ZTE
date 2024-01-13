@@ -15,7 +15,7 @@ import { IDataOnu } from "../../../interfaces/IAuthOnuProps";
 import { useAuthOnu } from "../../../hooks/useAuthOnu";
 
 export function WriteONU(props: WriteONUProps){
-    const { authOnu, setAuthOnu } = useAuthOnu(); 
+    const { authOnu, setAuthOnu, onus } = useAuthOnu(); 
 
     //lifting up
     const [pppoePass, setPppoePass] = useState('');
@@ -49,6 +49,35 @@ export function WriteONU(props: WriteONUProps){
             AuthOnu({...props, pppoe, pppoePass, wifiPass, wifiSSID, cpf, dataOnu});
         }
     }
+
+    const handleShowOnuByType = (type: string) => {
+        switch(type){
+            case 'zte': 
+                return(
+                    onus?.map((item, index) => {
+                        return(
+                            <Container>
+                                <div key={index} className="onu-callback flex">
+                                    <div className="info-onu-controller flex">
+                                        <div className="add-onu flex">
+                                            <ul className="flex">
+                                                <li>Placa: {item.slot}</li>
+                                                <li>Pon: {item.pon}</li>
+                                                <li>Serial: {item.serialNumber}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Container>
+                        )
+                    })
+                );
+            case 'parks':
+            break;
+        }
+    }
+
+    handleShowOnuByType('zte')
 
     return (
         <Container>

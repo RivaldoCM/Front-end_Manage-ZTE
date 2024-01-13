@@ -18,7 +18,7 @@ import { IResponseData, IResponseError } from "../../../interfaces/IDefaultRespo
 import { Alert } from "@mui/material";
 
 export function SearchONU(props: SearchONUProps) {
-    const { authOnu, setAuthOnu, viewOnlyOlt } = useAuthOnu();
+    const { authOnu, setAuthOnu, viewOnlyOlt, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
 
@@ -77,7 +77,6 @@ export function SearchONU(props: SearchONUProps) {
             handleError('info/non-expect-caracter-not-alphaNumeric');
         }else{
             const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
-
             let ips: string[] = [];
 
             olt.map((data) => {
@@ -91,7 +90,7 @@ export function SearchONU(props: SearchONUProps) {
                 }));
             });
 
-            const response: IResponseData | IResponseError = await verifyIfOnuExists({
+            const response = await verifyIfOnuExists({
                 ip: ips, 
                 oltType: authOnu.oltType, 
                 matchSerialNumber: matchSerialNumber
@@ -100,7 +99,9 @@ export function SearchONU(props: SearchONUProps) {
 
             if(!response.success){
                 handleError(response.messages.message);
+                return;
             }
+            setOnus(response.responses.response);
         }
     }
 

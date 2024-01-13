@@ -7,6 +7,8 @@ export const AuthOnuContext = createContext<{
     setAuthOnu: Dispatch<SetStateAction<IAuthOnuContext>>;
     viewOnlyOlt: Olt[] | undefined;
     setViewOnlyOlt: Dispatch<SetStateAction<Olt[] | undefined>>;
+    onus: any[] | undefined,
+    setOnus: Dispatch<SetStateAction<any[] | undefined>>
 } | undefined>(undefined);
 
 export function AuthOnuContextProvider({ children }: { children: ReactNode }){
@@ -25,10 +27,10 @@ export function AuthOnuContextProvider({ children }: { children: ReactNode }){
         voalleAccessPointId: []
     });
     const [viewOnlyOlt, setViewOnlyOlt] = useState<Olt[] | undefined>(undefined);
-    const [onus, setOnus] = useState(undefined);
+    const [onus, setOnus] = useState<any[] | undefined>(undefined);
 
     return(
-        <AuthOnuContext.Provider value={{ authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt }}> 
+        <AuthOnuContext.Provider value={{ authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt, onus, setOnus }}> 
             {children}
         </AuthOnuContext.Provider>
     )
