@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 import { getOlt } from '../../../services/apiManageONU/getOlt';
-import { Olt } from '../../../interfaces/olt';
+import { Olt } from '../../../interfaces/IOlt';
 import { AddOltModal } from './modals/addOlt';
 
 import { alpha } from '@mui/material/styles';

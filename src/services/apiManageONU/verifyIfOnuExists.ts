@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IVerifyIfOnuExistisProps } from "../../interfaces/api";
+import { IVerifyIfOnuExistisProps } from "../../interfaces/IVerifyIfOnuExistisProps";
 
 export const verifyIfOnuExists = async (props: IVerifyIfOnuExistisProps) => {
     const { ip, oltType, matchSerialNumber } = props;

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { useAuthOnu } from "../../../hooks/useAuthOnu";
-import { Olt } from "../../../interfaces/olt";
+import { IOlt } from "../../../interfaces/IOlt";
 import { useError } from "../../../hooks/useError";
 import { useLoading } from "../../../hooks/useLoading";
 import { getOlt } from "../../../services/apiManageONU/getOlt";
 import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
-import { SearchONUProps } from "../../../interfaces/SearchONUProps";
 
 import { Form } from './style';
 import { InputContainer } from "../../../styles/globalStyles";
@@ -17,7 +16,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Alert } from "@mui/material";
 
-export function SearchONU(props: SearchONUProps) {
+export function SearchONU() {
     const { authOnu, setAuthOnu, setViewOnlyOlt, viewOnlyOlt, setOnus  } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
@@ -60,7 +59,7 @@ export function SearchONU(props: SearchONUProps) {
         const oltNames = new Set<string>();
 
         if(viewOnlyOlt){
-            return viewOnlyOlt.map((olt: Olt, index: number) => {
+            return viewOnlyOlt.map((olt: IOlt, index: number) => {
                 if(!cityIds.has(olt.city_id) && !oltNames.has(olt.name)){
                     cityIds.add(olt.city_id);
                     oltNames.add(olt.name);
@@ -97,7 +96,6 @@ export function SearchONU(props: SearchONUProps) {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         startLoading();
-        props.setSerialNumber('');
 
         const verifyAlphaNumber = /^[a-zA-Z0-9_]+$/;
     
@@ -110,7 +108,7 @@ export function SearchONU(props: SearchONUProps) {
             let ips: string[] = [];
 
             olt.map((data) => {
-                ips.push(data.host)
+                ips.push(data.host);
                 setAuthOnu((prevState) => ({
                     ...prevState,
                     ip: [...prevState.ip, data.host],
@@ -167,7 +165,7 @@ export function SearchONU(props: SearchONUProps) {
                 </div>
             </InputContainer>
             {
-                (isLoading && props.serialNumber?.length === 0? 
+                (isLoading ? 
                     <CircularProgress className="MUI-CircularProgress" color="primary"/>
                 :
                     (matchSerialNumber.length < 4 ?

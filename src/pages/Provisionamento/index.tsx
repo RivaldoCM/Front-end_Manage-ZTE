@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 
-
 interface TabPanelProps {
     className?: string
     children?: React.ReactNode;
@@ -57,7 +56,6 @@ function a11yProps(index: number) {
 export function Provisionamento(){
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
 
-	const [serialNumber, setSerialNumber] = useState('');
 	const [value, setValue] = useState(0); //MUI-Core
 
     const handleTypeZte = () => {
@@ -82,7 +80,8 @@ export function Provisionamento(){
         setOnus(undefined);
     }
 
-    const handleChange = (_event: React.SyntheticEvent, newValue: number) => { //MUI-Core
+    const handleChange = (_event: React.SyntheticEvent, newValue: number) => { 
+        //MUI-Core
         setValue(newValue);
     };
 
@@ -98,26 +97,14 @@ export function Provisionamento(){
 							</Tabs>
 						</Box>
 						<CustomTabPanel className="flex" value={value} index={0}>
-                            <SearchONU 
-                                serialNumber={serialNumber}
-                                setSerialNumber={setSerialNumber}
-                            />
+                            <SearchONU />
 							<Divider variant="middle" />
-							<WriteONU
-                                setSerialNumber={setSerialNumber}
-                                serialNumber={serialNumber}
-                            />
+							<WriteONU />
 						</CustomTabPanel>
                         <CustomTabPanel className="flex" value={value} index={1}>
-                            <SearchONU
-                                serialNumber={serialNumber}
-                                setSerialNumber={setSerialNumber}
-                            />
+                            <SearchONU />
 							<Divider variant="middle" />
-							<WriteONU
-                                setSerialNumber={setSerialNumber}
-                                serialNumber={serialNumber}
-                            />
+							<WriteONU />
 						</CustomTabPanel>
 					</Box>
 				</div>

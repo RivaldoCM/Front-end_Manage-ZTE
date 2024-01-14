@@ -1,4 +1,4 @@
-export interface Olt{
+export interface IOlt{
     id: number,
     name: string,
     host: string,
@@ -6,5 +6,4 @@ export interface Olt{
     city_id: number,
     isPizzaBox: boolean,
     voalleAccessPointId: number,
-    map?: any
 } 

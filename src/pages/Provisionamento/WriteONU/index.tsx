@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import { Form } from "../../../components/Form";
-import { WriteONUProps } from "../../../interfaces/WriteONUProps";
 
 import { Container } from './style';
 import Accordion from '@mui/material/Accordion';
@@ -14,7 +13,7 @@ import { AuthOnu } from "../../../services/apiManageONU/authOnu";
 import { IDataOnu } from "../../../interfaces/IAuthOnuProps";
 import { useAuthOnu } from "../../../hooks/useAuthOnu";
 
-export function WriteONU(props: WriteONUProps){
+export function WriteONU(){
     const { authOnu, setAuthOnu, onus } = useAuthOnu(); 
 
     //lifting up
@@ -45,8 +44,8 @@ export function WriteONU(props: WriteONUProps){
 
         if (dataOnu){
             //ISSO EXISTE PARA COMPARAÇÃO NO LOADING ÚNICO DO BOTÃO PROVISIONAR
-            props.setSerialNumber(dataOnu.serial);
-            AuthOnu({...props, pppoe, pppoePass, wifiPass, wifiSSID, cpf, dataOnu});
+            //props.setSerialNumber(dataOnu.serial);
+            //AuthOnu({...props, pppoe, pppoePass, wifiPass, wifiSSID, cpf, dataOnu});
         }
     }
 

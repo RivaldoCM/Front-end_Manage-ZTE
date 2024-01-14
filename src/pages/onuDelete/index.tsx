@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getOlt } from "../../services/apiManageONU/getOlt";
-import { Olt } from "../../interfaces/olt";
+import { Olt } from "../../interfaces/IOlt";
 import { deleteOnu } from "../../services/apiManageONU/deleteOnu";
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
