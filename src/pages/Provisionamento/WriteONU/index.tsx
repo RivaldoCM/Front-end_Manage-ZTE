@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { AuthOnu } from "../../../services/apiManageONU/authOnu";
 import { IDataOnu } from "../../../interfaces/IAuthOnuProps";
 import { useAuthOnu } from "../../../hooks/useAuthOnu";
+import { ZTEForm } from "./Forms/zte";
 
 export function WriteONU(){
     const { authOnu, setAuthOnu, onus } = useAuthOnu(); 
@@ -80,7 +81,7 @@ export function WriteONU(){
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>
                                             <AccordionDetails>
-                                                {/*FORM AQ*/}
+                                                <ZTEForm model={item.model}/>
                                             </AccordionDetails>
                                         </Accordion>
                                     </div>
