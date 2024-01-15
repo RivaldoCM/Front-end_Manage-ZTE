@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getOlt } from "../../services/apiManageONU/getOlt";
-import { Olt } from "../../interfaces/IOlt";
+import { IOlt } from "../../interfaces/IOlt";
 import { deleteOnu } from "../../services/apiManageONU/deleteOnu";
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
@@ -18,7 +18,7 @@ export function OnuDelete(){
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
-    const [olt, setOlt] = useState<Olt[]>([]);
+    const [olt, setOlt] = useState<IOlt[]>([]);
     const [form, setForm] = useState({
         city: '',
         serial: '',
@@ -28,11 +28,16 @@ export function OnuDelete(){
     useEffect(() => {
         async function getAllOlts(){
             const allOlt = await getOlt('all');
-            setOlt(allOlt);
-            setForm(() => ({
-                ...form, 
-                city: "ESPERA-FELIZ"
-            }));
+            if(allOlt.success){
+                setOlt(allOlt.responses.response);
+                setForm({
+                    ...form,
+                    city: allOlt.responses.response[0].name
+                })
+            }else{
+                setOlt([]);
+                handleError('unable-load-data');
+            }
         }
         getAllOlts();
     }, []);
@@ -53,7 +58,7 @@ export function OnuDelete(){
                 return el;
             }) 
 
-            return onlyToDisplayOltData.map((value: Olt, index: number) => {
+            return onlyToDisplayOltData.map((value: IOlt, index: number) => {
                 return (
                     <MenuItem key={index} value={value.name}>
                         {value.name}

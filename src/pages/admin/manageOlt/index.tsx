@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 import { getOlt } from '../../../services/apiManageONU/getOlt';
-import { Olt } from '../../../interfaces/IOlt';
+import { IOlt } from '../../../interfaces/IOlt';
 import { AddOltModal } from './modals/addOlt';
 
 import { alpha } from '@mui/material/styles';
@@ -175,15 +175,15 @@ export function HandleManageOlt(){
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [ olt, setOlt ] = useState<Olt[]>([]);
+    const [ olt, setOlt ] = useState<IOlt[]>([]);
 
     useEffect(() => {
         async function olts(){
             const oltData = await getOlt('all');
 
-            if(typeof oltData !== 'string'){
-                setOlt(oltData);
-            } else {
+            if(oltData.success){
+                setOlt(oltData.responses.response);
+            }else{
                 setOlt([]);
                 handleError('unable-load-data');
             }
