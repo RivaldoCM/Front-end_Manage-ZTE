@@ -7,7 +7,11 @@ type IAuthOnuContext = {
     serial: string;
     slot: number;
     pon: number;
-    pppoe: string;
+    cpf: string,
+    pppoeUser: string;
+    pppoePassword: string,
+    wifiName: string,
+    wifiPassword: string,
     onuType: string;
     oltType: string;
     voalleAccessPointId: number[];

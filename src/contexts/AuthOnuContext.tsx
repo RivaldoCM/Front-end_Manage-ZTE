@@ -21,7 +21,11 @@ export function AuthOnuContextProvider({ children }: { children: ReactNode }){
         serial: '',
         slot: 0,
         pon: 0,
-        pppoe: '',
+        cpf: '',
+        pppoeUser: '',
+        pppoePassword: '',
+        wifiName: '',
+        wifiPassword: '',
         onuType: '',
         oltType: 'zte',
         voalleAccessPointId: []

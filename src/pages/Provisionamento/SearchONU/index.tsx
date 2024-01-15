@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Alert } from "@mui/material";
+import { isAlphaNumeric } from "../../../config/regex";
 
 export function SearchONU() {
     const { authOnu, setAuthOnu, setViewOnlyOlt, viewOnlyOlt, setOnus  } = useAuthOnu();
@@ -95,13 +96,12 @@ export function SearchONU() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setOnus([]);
         startLoading();
-
-        const verifyAlphaNumber = /^[a-zA-Z0-9_]+$/;
     
         if(isLoading){
             handleError('warning/has-action-in-progress');
-        }else if(!verifyAlphaNumber.test(matchSerialNumber)){
+        }else if(!isAlphaNumeric.test(matchSerialNumber)){
             handleError('info/non-expect-caracter-not-alphaNumeric');
         }else{
             const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
