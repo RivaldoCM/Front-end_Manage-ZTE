@@ -6,17 +6,22 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { IOnu, IOnus } from '../../../../interfaces/IOnus';
 
-export function ZTEForm(onu: { model: string }){
+export function ZTEForm({ onu }: IOnu){
     const { authOnu, setAuthOnu, onus } = useAuthOnu();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
             ...authOnu,
             [e.target.name]: e.target.value
-        })
-    }
+        });
+    };
 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(onu)
+    };
 
     const handleRenderAddicionalConfig = () => {
         const onuModel = cleanUpModelName(onu.model);
@@ -78,10 +83,10 @@ export function ZTEForm(onu: { model: string }){
             default:
             break;
         }
-    }
+    };
 
     return(
-        <form className="flex">
+        <form onSubmit={handleSubmit} className="flex">
             <InputContainer>
                 <div className="text">
                     <p>CPF do Cliente: </p>
