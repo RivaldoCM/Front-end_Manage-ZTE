@@ -27,6 +27,7 @@ export function WriteONU(){
             case 'zte':
                 return(
                     onus?.map((item, index) => {
+                        console.log(item)
                         return(
                             <Container>
                                 <div key={index} className="onu-callback flex">
