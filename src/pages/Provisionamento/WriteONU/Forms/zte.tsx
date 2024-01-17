@@ -1,22 +1,24 @@
-import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
+import { useLoading } from '../../../../hooks/useLoading';
+import { useError } from '../../../../hooks/useError';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
+import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
+import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
+import { IOnu } from '../../../../interfaces/IOnus';
 
 import { InputContainer } from '../../../../styles/globalStyles';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { IOnu } from '../../../../interfaces/IOnus';
-import { useLoading } from '../../../../hooks/useLoading';
-import { useError } from '../../../../hooks/useError';
-import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
+import { Alert } from '@mui/material';
+import { AuthOnu } from '../../../../services/apiManageONU/authOnu';
+import { indexOf } from 'lodash';
 
-export function ZTEForm({ onu }: IOnu){
+
+export function ZTEForm({onu}: IOnu){
     const { authOnu, setAuthOnu, onus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
-
-    console.log(onu)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
@@ -25,9 +27,16 @@ export function ZTEForm({ onu }: IOnu){
         });
     };
 
+    const handleUpdateoltData = () => {
+        setAuthOnu((prevAuthOnu) => ({
+            ...prevAuthOnu,
+            voalleAccessPointId: prevAuthOnu.voalleAccessPointId.filter(index => index === onu.whichOltIndex)
+        }));
+    }
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
+
         if(isLoading){
             handleError('warning/has-action-in-progress');
         }else if(!authOnu.cpf.match(isValidCpf)){
@@ -39,7 +48,20 @@ export function ZTEForm({ onu }: IOnu){
         }else if(typePppoeZte.includes(onu.model) && authOnu.wifiPassword.length < 8){
             handleError('info/wrong-type-passoword');
         }else{
+            startLoading();
+
             console.log(authOnu)
+            /*
+            AuthOnu({
+                ip: authOnu.ip,
+                cpf: authOnu.cpf,
+                type: authOnu.oltType,
+                pppoe: authOnu.pppoeUser,
+
+            })
+                        */
+            stopLoading();
+
         }
     };
 
@@ -145,10 +167,18 @@ export function ZTEForm({ onu }: IOnu){
                     type="submit" 
                     variant="outlined" 
                     endIcon={<AddOutlinedIcon />}
+                    onClick={handleUpdateoltData}
                 >
                     Provisionar
                 </Button>
             </div>
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
+                )
+            }
         </form>
     )   
 }

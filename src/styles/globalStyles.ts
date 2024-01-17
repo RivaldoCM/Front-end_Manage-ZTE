@@ -62,6 +62,7 @@ export const GlobalStyle = createGlobalStyle`
         position: fixed; 
         top: 94%;
         left:50%;
+        z-index: 100;
         transform: translate(-50%, -50%);
     }
 `

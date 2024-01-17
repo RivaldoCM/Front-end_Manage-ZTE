@@ -1,15 +1,15 @@
 
 import { ReactNode, createContext, useState, Dispatch, SetStateAction } from "react";
 import { IOlt } from "../interfaces/IOlt";
-import { IOnu } from "../interfaces/IOnus";
+import { IOnu, IOnus } from "../interfaces/IOnus";
 
 export const AuthOnuContext = createContext<{
     authOnu: IAuthOnuContext;
     setAuthOnu: Dispatch<SetStateAction<IAuthOnuContext>>;
     viewOnlyOlt: IOlt[] | undefined;
     setViewOnlyOlt: Dispatch<SetStateAction<IOlt[] | undefined>>;
-    onus: IOnu[] | undefined,
-    setOnus: Dispatch<SetStateAction<IOnu[] | undefined>>
+    onus: IOnus[] | undefined,
+    setOnus: Dispatch<SetStateAction<IOnus[] | undefined>>
 } | undefined>(undefined);
 
 export function AuthOnuContextProvider({ children }: { children: ReactNode }){
@@ -19,9 +19,6 @@ export function AuthOnuContextProvider({ children }: { children: ReactNode }){
         oltId: [],
         cityId: 0,
         city: '',
-        serial: '',
-        slot: 0,
-        pon: 0,
         cpf: '',
         pppoeUser: '',
         pppoePassword: '',
@@ -29,10 +26,11 @@ export function AuthOnuContextProvider({ children }: { children: ReactNode }){
         wifiPassword: '',
         onuType: '',
         oltType: 'zte',
+        isPizzaBox: [],
         voalleAccessPointId: []
     });
     const [viewOnlyOlt, setViewOnlyOlt] = useState<IOlt[] | undefined>(undefined);
-    const [onus, setOnus] = useState<IOnu[] | undefined>(undefined);
+    const [onus, setOnus] = useState<IOnus[] | undefined>(undefined);
 
     return(
         <AuthOnuContext.Provider value={{ authOnu, setAuthOnu, viewOnlyOlt, setViewOnlyOlt, onus, setOnus }}> 

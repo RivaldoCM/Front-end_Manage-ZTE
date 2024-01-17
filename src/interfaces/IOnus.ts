@@ -5,15 +5,15 @@ export type IOnu = {
         model: string;
         serialNumber: string;
         rxPower?: string;
+        whichOltIndex: number;
     }
 }
 
 export type IOnus = {
-    onu: Array<{
-        slot: number;
-        pon: number;
-        model: string;
-        serialNumber: string;
-        rxPower?: string;
-    }>
+    slot: number;
+    pon: number;
+    model: string;
+    serialNumber: string;
+    rxPower?: string;
+    whichOltIndex: number;
 }

@@ -114,7 +114,8 @@ export function SearchONU() {
                     ip: [...prevState.ip, data.host],
                     voalleAccessPointId: [...prevState.voalleAccessPointId, data.voalleAccessPointId],
                     oltId: [...prevState.oltId, data.id],
-                    cityId: data.city_id
+                    cityId: data.city_id,
+                    isPizzaBox: [...prevState.isPizzaBox, data.isPizzaBox],
                 }));
             });
 

@@ -4,9 +4,6 @@ type IAuthOnuContext = {
     oltId: number[];
     cityId: number;
     city: string;
-    serial: string;
-    slot: number;
-    pon: number;
     cpf: string,
     pppoeUser: string;
     pppoePassword: string,
@@ -14,5 +11,6 @@ type IAuthOnuContext = {
     wifiPassword: string,
     onuType: string;
     oltType: string;
+    isPizzaBox: boolean[];
     voalleAccessPointId: number[];
 }

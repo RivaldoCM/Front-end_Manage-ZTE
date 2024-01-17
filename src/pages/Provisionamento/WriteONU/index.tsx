@@ -27,16 +27,15 @@ export function WriteONU(){
             case 'zte':
                 return(
                     onus?.map((item, index) => {
-                        console.log(item)
                         return(
                             <Container>
                                 <div key={index} className="onu-callback flex">
                                     <div className="info-onu-controller flex">
                                         <div className="add-onu flex">
                                             <ul className="flex">
-                                                <li>Placa: {item.onu.slot}</li>
-                                                <li>Pon: {item.onu.pon}</li>
-                                                <li>Serial: {item.onu.serialNumber}</li>
+                                                <li>Placa: {item.slot}</li>
+                                                <li>Pon: {item.pon}</li>
+                                                <li>Serial: {item.serialNumber}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -54,7 +53,7 @@ export function WriteONU(){
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>
                                             <AccordionDetails>
-                                                <ZTEForm onu={item.onu}/>
+                                                <ZTEForm onu={item}/>
                                             </AccordionDetails>
                                         </Accordion>
                                     </div>
@@ -72,9 +71,9 @@ export function WriteONU(){
                                     <div className="info-onu-controller flex">
                                         <div className="add-onu flex">
                                             <ul className="flex">
-                                                <li>Pon: {item.onu.pon}</li>
-                                                <li>Serial: {item.onu.serialNumber}</li>
-                                                <li>Sinal: {item.onu.rxPower}</li>
+                                                <li>Pon: {item.pon}</li>
+                                                <li>Serial: {item.serialNumber}</li>
+                                                <li>Sinal: {item.rxPower}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -90,7 +89,7 @@ export function WriteONU(){
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>
                                             <AccordionDetails>
-                                                
+
                                             </AccordionDetails>
                                         </Accordion>
                                     </div>
