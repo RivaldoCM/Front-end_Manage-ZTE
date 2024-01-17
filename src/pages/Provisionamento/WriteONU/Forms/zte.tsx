@@ -27,10 +27,22 @@ export function ZTEForm({onu}: IOnu){
         });
     };
 
+    const valueFromIndex = (array: any[]) => {
+        if (onu.whichOltIndex >= 0 && onu.whichOltIndex < array.length) {
+            const valueInIndex = array[onu.whichOltIndex];
+            return valueInIndex;
+        } else {
+            return undefined;
+        }
+    }
+
     const handleUpdateoltData = () => {
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
-            voalleAccessPointId: prevAuthOnu.voalleAccessPointId.filter(index => index === onu.whichOltIndex)
+            ip: [valueFromIndex(authOnu.ip)],
+            oltId: [valueFromIndex(authOnu.oltId)],
+            isPizzaBox: [valueFromIndex(authOnu.isPizzaBox)],
+            voalleAccessPointId: [valueFromIndex(authOnu.voalleAccessPointId)]
         }));
     }
 
@@ -51,15 +63,7 @@ export function ZTEForm({onu}: IOnu){
             startLoading();
 
             console.log(authOnu)
-            /*
-            AuthOnu({
-                ip: authOnu.ip,
-                cpf: authOnu.cpf,
-                type: authOnu.oltType,
-                pppoe: authOnu.pppoeUser,
-
-            })
-                        */
+            
             stopLoading();
 
         }
