@@ -73,7 +73,6 @@ export function SearchONU() {
                     //OLT's DA MESMA REGIÃO POREM EM LOCAIS DIFERENTES
                     let match = olt.name.match(/([a-zA-Z]+)/);
                     for(let name of oltNames){
-
                         if(match && !name.includes(match[1])){
                             return(
                                 <MenuItem key={index} value={match[1]}>
@@ -83,9 +82,11 @@ export function SearchONU() {
                         }
                     }
                 }
-            })
+                return null;
+            });
         }
-    }
+        return [];
+    };
 
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
         setAuthOnu({

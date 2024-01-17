@@ -28,8 +28,8 @@ export function WriteONU(){
                 return(
                     onus?.map((item, index) => {
                         return(
-                            <Container>
-                                <div key={index} className="onu-callback flex">
+                            <Container key={index}>
+                                <div className="onu-callback flex">
                                     <div className="info-onu-controller flex">
                                         <div className="add-onu flex">
                                             <ul className="flex">

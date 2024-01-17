@@ -56,7 +56,7 @@ export function OnuDelete(){
                     return el.name === 'TOMBOS';
                 }
                 return el;
-            }) 
+            });
 
             return onlyToDisplayOltData.map((value: IOlt, index: number) => {
                 return (

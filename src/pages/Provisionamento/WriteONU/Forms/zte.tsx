@@ -3,6 +3,7 @@ import { useError } from '../../../../hooks/useError';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
 import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
 import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
+import { AuthOnu } from '../../../../services/apiManageONU/authOnu';
 import { IOnu } from '../../../../interfaces/IOnus';
 
 import { InputContainer } from '../../../../styles/globalStyles';
@@ -11,8 +12,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Alert } from '@mui/material';
-import { AuthOnu } from '../../../../services/apiManageONU/authOnu';
-import { indexOf } from 'lodash';
+
 
 
 export function ZTEForm({onu}: IOnu){
