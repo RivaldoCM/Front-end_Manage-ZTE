@@ -29,12 +29,17 @@ export function SearchONU() {
             case 'zte':
                 async function oltZte(){
                     const oltData = await getOlt('zte');
-                    if(oltData.success){
-                        setViewOnlyOlt(oltData.responses.response);
-                        setAuthOnu({
-                            ...authOnu,
-                            city: oltData.responses.response[0].name
-                        })
+                    if(oltData){
+                        if(oltData.success){
+                            setViewOnlyOlt(oltData.responses.response);
+                            setAuthOnu({
+                                ...authOnu,
+                                city: oltData.responses.response[0].name
+                            });
+                        }
+                    } else {
+                        setViewOnlyOlt([]);
+                        handleError('error/no-connection-with-API');
                     }
                 }
                 oltZte();
@@ -42,18 +47,28 @@ export function SearchONU() {
             case 'parks':
                 async function oltParks(){
                     const oltData = await getOlt('parks');
-                    if(oltData.success){
-                        setViewOnlyOlt(oltData.responses.response);
-                        setAuthOnu({
-                            ...authOnu,
-                            city: oltData.responses.response[0].name
-                        })
+                    if(oltData){
+                        if(oltData.success){
+                            setViewOnlyOlt(oltData.responses.response);
+                            setAuthOnu({
+                                ...authOnu,
+                                city: oltData.responses.response[0].name
+                            })
+                        }
+                    } else {
+                        setViewOnlyOlt([]);
+                        handleError('error/no-connection-with-API');
                     }
                 }
                 oltParks();
             break;
         }
     }, [authOnu.oltType]);
+
+    useEffect(() => {
+        //LIMPANDO OS DADOS DE ONU'S CASO TROQUE DE CIDADE
+        setOnus([]);
+    }, [authOnu.city]);
 
     const handleMapOltData = () => {  
         const cityIds = new Set<number>();
@@ -95,8 +110,17 @@ export function SearchONU() {
     })};
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); }
 
+    console.log(authOnu)
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setAuthOnu({
+            ...authOnu,
+            ip: [],
+            oltId: [],
+            isPizzaBox: [],
+            voalleAccessPointId: []
+        });
         setOnus([]);
         startLoading();
     
@@ -127,11 +151,15 @@ export function SearchONU() {
             });
             stopLoading();
 
-            if(!response.success){
-                handleError(response.messages.message);
-                return;
+            if(response){
+                if(!response.success){
+                    handleError(response.messages.message);
+                    return;
+                }
+                setOnus(response.responses.response);
+            } else {
+                handleError('error/no-connection-with-API');
             }
-            setOnus(response.responses.response);
         }
     }
 

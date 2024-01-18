@@ -3,7 +3,6 @@ import { IVerifyIfOnuExistisProps } from "../../interfaces/IVerifyIfOnuExistisPr
 
 export const verifyIfOnuExists = async (props: IVerifyIfOnuExistisProps) => {
     const { ip, oltType, matchSerialNumber } = props;
-
     const res = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/findOnu`,

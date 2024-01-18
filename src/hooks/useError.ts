@@ -124,8 +124,12 @@ export function useError(){
                 setErrorMessage('Não foi possivel criar uma nova OLT.');
                 setSeverityStatus('error');
             break;
+            case 'error/no-connection-with-API':
+                setErrorMessage('Erro ao conectar a API, verifique com o suporte.');
+                setSeverityStatus('error');
+            break;
             default:
-                handleError('Erro interno, verifique com o suporte.');
+                setErrorMessage('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');
             break;
         }

@@ -14,6 +14,6 @@ export async function getOlt(type: string): Promise<IResponseData | IResponseErr
     }).catch(() => {
         return undefined;
     });
-
+    
     return oltData;
 }
