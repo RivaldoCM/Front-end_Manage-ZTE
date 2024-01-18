@@ -9,6 +9,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Typography from '@mui/material/Typography';
 import { useAuthOnu } from "../../../hooks/useAuthOnu";
 import { ZTEForm } from "./Forms/zte";
+import { PARKSForm } from "./Forms/parks";
 
 export function WriteONU(){
     const { authOnu, onus } = useAuthOnu(); 
@@ -66,8 +67,8 @@ export function WriteONU(){
                 return(
                     onus?.map((item, index) => {
                        return(
-                            <Container>
-                                <div key={index} className="onu-callback flex">
+                            <Container key={index}>
+                                <div className="onu-callback flex">
                                     <div className="info-onu-controller flex">
                                         <div className="add-onu flex">
                                             <ul className="flex">
@@ -89,13 +90,13 @@ export function WriteONU(){
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>
                                             <AccordionDetails>
-
+                                                <PARKSForm onu={item} />
                                             </AccordionDetails>
                                         </Accordion>
                                     </div>
                                 </div>
                             </Container>
-                       ) 
+                       )
                     })
                 );
             default:

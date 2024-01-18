@@ -1,7 +1,7 @@
 
 import { ReactNode, createContext, useState, Dispatch, SetStateAction } from "react";
 import { IOlt } from "../interfaces/IOlt";
-import { IOnu, IOnus } from "../interfaces/IOnus";
+import { IOnus } from "../interfaces/IOnus";
 
 export const AuthOnuContext = createContext<{
     authOnu: IAuthOnuContext;

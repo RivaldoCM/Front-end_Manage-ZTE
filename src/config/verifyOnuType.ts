@@ -1,10 +1,12 @@
-const verifyOnuType = (serialNumber: string) => {
-    switch(serialNumber.toLocaleLowerCase()){
-        case 'zte':
+export const verifyOnuType = (serialNumber: string) => {
+    switch(serialNumber.toLocaleLowerCase().substring(0, 4)){
+        case 'zteg':
             return 'zte';
-        case 'prss':
+        case 'prks':
             return 'parks';
-        case 'ftth':
+        case 'fhtt':
+            return 'fiberhome'
+        default:
             return 'fiberhome'
         
     };

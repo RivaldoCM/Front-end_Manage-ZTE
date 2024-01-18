@@ -15,7 +15,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "id": props.connectionId,
         "fiberMac": "",
         "mac": "",
-        "password": props.pppoepassword, //PPPoE
+        "password": props.pppoePassword, //PPPoE
         "equipmentType": props.onuType,
         "oltId": props.onuId,
         "slotOlt": props.slot,
@@ -45,9 +45,11 @@ export async function updateConnection(props: IUpdateConnectionProps){
         url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/updateconnection/${props.connectionId}`,
         data: data
     })
-    .then(() => {
+    .then((response) => {
+        console.log(response)
         return;
-    }).catch(() => {
+    }).catch((err) => {
+        console.log(err)
         return;
     });
 }

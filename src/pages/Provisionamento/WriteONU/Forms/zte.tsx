@@ -3,7 +3,12 @@ import { useError } from '../../../../hooks/useError';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
 import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
 import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
+import { verifyOnuType } from '../../../../config/verifyOnuType';
 import { authorizationToOlt } from '../../../../services/apiManageONU/authOnu';
+import { getPeopleId } from '../../../../services/apiVoalle/getPeopleId';
+import { getConnectionId } from '../../../../services/apiManageONU/getConnectionId';
+import { updateConnection } from '../../../../services/apiVoalle/updateConnection';
+import { setCorrectOltValues } from '../../../../config/verifywhichOltIs';
 import { IOnu } from '../../../../interfaces/IOnus';
 
 import { InputContainer } from '../../../../styles/globalStyles';
@@ -12,14 +17,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Alert } from '@mui/material';
-import { getPeopleId } from '../../../../services/apiVoalle/getPeopleId';
-import { getConnectionId } from '../../../../services/apiManageONU/getConnectionId';
-import { updateConnection } from '../../../../services/apiVoalle/updateConnection';
-
 
 
 export function ZTEForm({onu}: IOnu){
-    const { authOnu, setAuthOnu, onus } = useAuthOnu();
+    const { authOnu, setAuthOnu } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
 
@@ -30,24 +31,15 @@ export function ZTEForm({onu}: IOnu){
         });
     };
 
-    const valueFromIndex = (array: any[]) => {
-        if (onu.whichOltIndex >= 0 && onu.whichOltIndex < array.length) {
-            const valueInIndex = array[onu.whichOltIndex];
-            return valueInIndex;
-        } else {
-            return undefined;
-        }
-    }
-
-    const handleUpdateoltData = () => {
-
+    const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
-            ip: [valueFromIndex(authOnu.ip)],
-            oltId: [valueFromIndex(authOnu.oltId)],
+            ip: [setCorrectOltValues(onu, authOnu.ip)],
+            oltId: [setCorrectOltValues(onu, authOnu.oltId)],
             onuModel: cleanUpModelName(onu.model),
-            isPizzaBox: [valueFromIndex(authOnu.isPizzaBox)],
-            voalleAccessPointId: [valueFromIndex(authOnu.voalleAccessPointId)]
+            onuType: verifyOnuType(onu.serialNumber),
+            isPizzaBox: [setCorrectOltValues(onu, authOnu.isPizzaBox)],
+            voalleAccessPointId: [setCorrectOltValues(onu, authOnu.voalleAccessPointId)]
         }));
     }
 
@@ -92,6 +84,7 @@ export function ZTEForm({onu}: IOnu){
                 wifiSSID: authOnu.wifiName,
                 wifiPass: authOnu.wifiPassword
             });
+            stopLoading();
 
             if(!hasAuth.success){
                 handleError(hasAuth.messages.message);
@@ -101,22 +94,21 @@ export function ZTEForm({onu}: IOnu){
 
             const onuId = hasAuth.responses.response.onuId;
 
-            updateConnection({
-                onuId: onuId,
-                connectionId: connectionData.connectionId,
-                pppoeUser: authOnu.pppoeUser,
-                pppoepassword: authOnu.pppoePassword,
-                slot: onu.slot,
-                pon: onu.pon,
-                serialNumber: onu.serialNumber,
-                onuType: authOnu.onuType,
-                accessPointId: authOnu.voalleAccessPointId,
-                wifiSSID: authOnu.wifiName,
-                wifiPass: authOnu.wifiPassword
-
-            })
-
-            stopLoading();
+            if(connectionData.connectionId){
+                updateConnection({
+                    onuId: onuId,
+                    connectionId: connectionData.connectionId,
+                    pppoeUser: authOnu.pppoeUser,
+                    pppoePassword: connectionData.password,
+                    slot: onu.slot,
+                    pon: onu.pon,
+                    serialNumber: onu.serialNumber,
+                    onuType: authOnu.onuType,
+                    accessPointId: authOnu.voalleAccessPointId,
+                    wifiSSID: authOnu.wifiName,
+                    wifiPass: authOnu.wifiPassword
+                });
+            }
         }
     };
 
@@ -217,16 +209,21 @@ export function ZTEForm({onu}: IOnu){
             {
                 handleRenderAddicionalConfig()
             }
-            <div className="flex">
-                <Button
-                    type="submit" 
-                    variant="outlined" 
-                    endIcon={<AddOutlinedIcon />}
-                    onClick={handleUpdateoltData}
-                >
-                    Provisionar
-                </Button>
-            </div>
+            {
+                isLoading ?
+                <CircularProgress className="MUI-CircularProgress" color="primary"/>
+                :
+                <div className="flex">
+                    <Button
+                        type="submit" 
+                        variant="outlined" 
+                        endIcon={<AddOutlinedIcon />}
+                        onClick={handleUpdateOltData}
+                    >
+                        Provisionar
+                    </Button>
+                </div>
+            }
             {
                 (error ?
                     <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
