@@ -5,28 +5,22 @@ import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps"
 
 export async function updateConnection(props: IUpdateConnectionProps){
     let modelOLTVoalle: number = 0;
-    if(props.typeOnu == 'zte'){
+    if(props.onuType === 'zte'){
         modelOLTVoalle = 7;
-    }else if(props.typeOnu == 'parks'){
+    }else if(props.onuType === 'parks'){
         modelOLTVoalle = 4;
     }
 
-    if(props.dataOnu.ip === '172.18.1.6'){
-        props.dataOnu.accessPoint[0] = props.dataOnu.accessPoint[2]
-    }else if(props.dataOnu.ip === '172.18.1.2'){
-        props.dataOnu.accessPoint[0] = props.dataOnu.accessPoint[1]
-    }
-
     const data = {
-        "id": props.connectionData.connectionId,
+        "id": props.connectionId,
         "fiberMac": "",
         "mac": "",
-        "password": props.connectionData.password, //PPPoE
-        "equipmentType": modelOLTVoalle,
-        "oltId": props.oltId,
-        "slotOlt": props.dataOnu.placa,
-        "portOlt": props.dataOnu.pon,
-        "equipmentSerialNumber": props.dataOnu.serial,
+        "password": props.pppoepassword, //PPPoE
+        "equipmentType": props.onuType,
+        "oltId": props.onuId,
+        "slotOlt": props.slot,
+        "portOlt": props.pon,
+        "equipmentSerialNumber": props.serialNumber,
         "ipType": 0,
         "equipmentUser": "",
         "equipmentPassword": "",
@@ -35,10 +29,10 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "wifiName": props.wifiSSID,
         "wifiPassword": props.wifiPass,
         "technologyType": 8,
-        "authenticationAccessPointId": props.dataOnu.accessPoint[0],
+        "authenticationAccessPointId": props.accessPointId[0],
         "updateConnectionParameter": false,
         "shouldMacUpdate": false,
-        "user": props.pppoe,
+        "user": props.pppoeUser,
         "complement": "",
         "isIPoE": false
     }
@@ -48,7 +42,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
             'Authorization': "Bearer " + await getToken()
         },
         method: 'put',
-        url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/updateconnection/${props.connectionData.connectionId}`,
+        url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/updateconnection/${props.connectionId}`,
         data: data
     })
     .then(() => {

@@ -1,10 +1,13 @@
 export interface IAuthOnuProps {
-    cpf: string,
     ip: string[],
-    isPizzaBox: number,
+    slot: number,
+    pon: number,
+    serialNumber: string,
+    contract: number,
+    isPizzaBox: boolean[],
     type: string,
-    pppoe: string,
-    pppoePass?: string,
+    pppoeUser: string,
+    pppPass?: string,
     wifiSSID?: string,
     wifiPass?: string,
 }

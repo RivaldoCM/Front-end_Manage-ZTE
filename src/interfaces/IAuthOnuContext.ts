@@ -10,6 +10,7 @@ type IAuthOnuContext = {
     wifiName: string,
     wifiPassword: string,
     onuType: string;
+    onuModel: string;
     oltType: string;
     isPizzaBox: boolean[];
     voalleAccessPointId: number[];

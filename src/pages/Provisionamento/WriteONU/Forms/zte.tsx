@@ -3,7 +3,7 @@ import { useError } from '../../../../hooks/useError';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
 import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
 import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
-import { AuthOnu } from '../../../../services/apiManageONU/authOnu';
+import { authorizationToOlt } from '../../../../services/apiManageONU/authOnu';
 import { IOnu } from '../../../../interfaces/IOnus';
 
 import { InputContainer } from '../../../../styles/globalStyles';
@@ -12,6 +12,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Alert } from '@mui/material';
+import { getPeopleId } from '../../../../services/apiVoalle/getPeopleId';
+import { getConnectionId } from '../../../../services/apiManageONU/getConnectionId';
+import { updateConnection } from '../../../../services/apiVoalle/updateConnection';
 
 
 
@@ -37,16 +40,18 @@ export function ZTEForm({onu}: IOnu){
     }
 
     const handleUpdateoltData = () => {
+
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
             ip: [valueFromIndex(authOnu.ip)],
             oltId: [valueFromIndex(authOnu.oltId)],
+            onuModel: cleanUpModelName(onu.model),
             isPizzaBox: [valueFromIndex(authOnu.isPizzaBox)],
             voalleAccessPointId: [valueFromIndex(authOnu.voalleAccessPointId)]
         }));
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if(isLoading){
@@ -62,10 +67,56 @@ export function ZTEForm({onu}: IOnu){
         }else{
             startLoading();
 
-            console.log(authOnu)
-            
-            stopLoading();
+            const peopleId = await getPeopleId(authOnu.cpf);
+            let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
+            if (peopleId){
+                connectionData = await getConnectionId(peopleId, authOnu.pppoeUser);
+                if (!connectionData.contractId){
+                    connectionData.contractId = 0
+                }
+            }else{
+                connectionData.contractId = 0;
+            }
+
+            const hasAuth = await authorizationToOlt({
+                ip: authOnu.ip,
+                slot: onu.slot,
+                pon: onu.pon,
+                isPizzaBox: authOnu.isPizzaBox,
+                serialNumber: onu.serialNumber,
+                type: authOnu.onuModel,
+                contract: connectionData.contractId,
+                pppoeUser: authOnu.pppoeUser,
+                pppPass: authOnu.pppoePassword,
+                wifiSSID: authOnu.wifiName,
+                wifiPass: authOnu.wifiPassword
+            });
+
+            if(!hasAuth.success){
+                handleError(hasAuth.messages.message);
+                return;
+            }
+            handleError(hasAuth.responses.status!);
+
+            const onuId = hasAuth.responses.response.onuId;
+
+            updateConnection({
+                onuId: onuId,
+                connectionId: connectionData.connectionId,
+                pppoeUser: authOnu.pppoeUser,
+                pppoepassword: authOnu.pppoePassword,
+                slot: onu.slot,
+                pon: onu.pon,
+                serialNumber: onu.serialNumber,
+                onuType: authOnu.onuType,
+                accessPointId: authOnu.voalleAccessPointId,
+                wifiSSID: authOnu.wifiName,
+                wifiPass: authOnu.wifiPassword
+
+            })
+
+            stopLoading();
         }
     };
 

@@ -1,51 +1,48 @@
 import axios from 'axios';
-
-import { getPeopleId } from '../apiVoalle/getPeopleId';
-import { getConnectionId } from './getConnectionId';
 import { IAuthOnuProps } from '../../interfaces/IAuthOnuProps';
-import { updateConnection } from '../apiVoalle/updateConnection';
-import { useAuthOnu } from '../../hooks/useAuthOnu';
+import { IResponseData, IResponseError } from '../../interfaces/IDefaultResponse';
 
-export async function AuthOnu(props: IAuthOnuProps){
+export async function authorizationToOlt(props: IAuthOnuProps): Promise<IResponseData | IResponseError>{
+    const {
+        ip,
+        slot,
+        pon ,
+        isPizzaBox,
+        serialNumber,
+        type,
+        contract,
+        pppoeUser,
+        pppPass,
+        wifiSSID,
+        wifiPass
+    } = props;
 
-        const hasAuth = await axios({
-            method: 'post',
-            url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
-            },
-            data: {
-                ip: [oltData.host],
-                slot: props.dataOnu.placa,
-                pon: props.dataOnu.pon,
-                isPizzaBox: oltData.isPizzaBox,
-                serialNumber: props.dataOnu.serial,
-                type: props.dataOnu.model,
-                contract: connectionData.contractId,
-                pppoeUser: props.pppoe.toLowerCase(),
-                pppPass: props.pppoePass || null,
-                wifiSSID: props.wifiSSID || null,
-                wifiPass: props.wifiPass || null
-            }
-        })
-        .then(response => {
-
-            if(!response.data.responses.response){
-                return null;
-            }
-            return response.data.responses;
-        })
-        .catch(error => {
-
-            return;
-        });
-
-        if(hasAuth){
-            const oltId = hasAuth.response;
-            if(connectionData.connectionId){
-                updateConnection({...props, connectionData, oltId})
-            }
+    const hasAuth = await axios({
+        method: 'post',
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
+        },
+        data: {
+            ip: ip,
+            slot: slot,
+            pon: pon,
+            isPizzaBox: isPizzaBox,
+            serialNumber: serialNumber,
+            type: type,
+            contract: contract,
+            pppoeUser: pppoeUser,
+            pppPass: pppPass || null,
+            wifiSSID: wifiSSID || null,
+            wifiPass: wifiPass || null 
         }
+    })
+    .then(response => {
+        return response.data;
+    })
+    .catch(() => {
+        return null;
+    });
 
-    
+    return hasAuth;
 }
