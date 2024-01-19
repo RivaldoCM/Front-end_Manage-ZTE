@@ -110,8 +110,6 @@ export function SearchONU() {
     })};
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); }
 
-    console.log(authOnu)
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setAuthOnu({

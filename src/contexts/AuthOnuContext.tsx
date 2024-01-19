@@ -15,7 +15,6 @@ export const AuthOnuContext = createContext<{
 export function AuthOnuContextProvider({ children }: { children: ReactNode }){
     const [authOnu, setAuthOnu] = useState<IAuthOnuContext>({
         ip: [],
-        userId: 0,
         oltId: [],
         cityId: 0,
         city: '',

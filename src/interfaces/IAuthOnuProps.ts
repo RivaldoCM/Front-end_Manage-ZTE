@@ -1,4 +1,7 @@
 export interface IAuthOnuProps {
+    userId: number | undefined,
+    cityId: number,
+    oltId: number,
     ip: string[],
     slot?: number,
     pon: number,

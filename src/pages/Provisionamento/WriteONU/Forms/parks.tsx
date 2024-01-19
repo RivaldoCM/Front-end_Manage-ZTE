@@ -1,21 +1,27 @@
 
 import { useAuthOnu } from "../../../../hooks/useAuthOnu";
 import { useLoading } from "../../../../hooks/useLoading";
+import { useAuth } from "../../../../hooks/useAuth";
 import { useError } from "../../../../hooks/useError";
+
 import { isValidCpf } from "../../../../config/regex";
-import { setCorrectOltValues } from "../../../../config/verifywhichOltIs";
+import { setCorrectOltValues } from "../../../../config/verifyWhichOltIs";
 import { verifyOnuType } from "../../../../config/verifyOnuType";
+
 import { getPeopleId } from "../../../../services/apiVoalle/getPeopleId";
 import { getConnectionId } from "../../../../services/apiManageONU/getConnectionId";
 import { authorizationToOlt } from "../../../../services/apiManageONU/authOnu";
 import { updateConnection } from "../../../../services/apiVoalle/updateConnection";
+
 import { IOnu } from "../../../../interfaces/IOnus";
 
 import { InputContainer } from "../../../../styles/globalStyles";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Alert, Button, CircularProgress, TextField } from "@mui/material";
 
+
 export function PARKSForm({onu}: IOnu){
+    const { user } = useAuth();
     const { authOnu, setAuthOnu } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
@@ -60,6 +66,9 @@ export function PARKSForm({onu}: IOnu){
             }
 
             const hasAuth = await authorizationToOlt({
+                userId: user?.uid,
+                cityId: authOnu.cityId,
+                oltId: authOnu.oltId[0],
                 ip: authOnu.ip,
                 pon: onu.pon,
                 serialNumber: onu.serialNumber,

@@ -4,12 +4,18 @@ import { IResponseData, IResponseError } from '../../interfaces/IDefaultResponse
 
 export async function authorizationToOlt(props: IAuthOnuProps): Promise<IResponseData | IResponseError>{
     const {
+        userId,
+        cityId,
+        oltId,
         ip,
         pon,
         serialNumber,
         type,
         contract,
         pppoeUser,
+        pppPass,
+        wifiSSID,
+        wifiPass,
     } = props;
 
     const hasAuth = await axios({
@@ -19,12 +25,18 @@ export async function authorizationToOlt(props: IAuthOnuProps): Promise<IRespons
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
         },
         data: {
+            userId,
+            cityId,
+            oltId,
             ip: ip,
             pon: pon,
             serialNumber: serialNumber,
             type: type,
             contract: contract,
             pppoeUser: pppoeUser,
+            pppPass,
+            wifiSSID,
+            wifiPass,
         }
     })
     .then(response => {

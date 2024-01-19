@@ -1,5 +1,6 @@
 import { useLoading } from '../../../../hooks/useLoading';
 import { useError } from '../../../../hooks/useError';
+import { useAuth } from '../../../../hooks/useAuth';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
 import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
 import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
@@ -8,7 +9,7 @@ import { authorizationToOlt } from '../../../../services/apiManageONU/authOnu';
 import { getPeopleId } from '../../../../services/apiVoalle/getPeopleId';
 import { getConnectionId } from '../../../../services/apiManageONU/getConnectionId';
 import { updateConnection } from '../../../../services/apiVoalle/updateConnection';
-import { setCorrectOltValues } from '../../../../config/verifywhichOltIs';
+import { setCorrectOltValues } from '../../../../config/verifyWhichOltIs';
 import { IOnu } from '../../../../interfaces/IOnus';
 
 import { InputContainer } from '../../../../styles/globalStyles';
@@ -20,6 +21,7 @@ import { Alert } from '@mui/material';
 
 
 export function ZTEForm({onu}: IOnu){
+    const { user } = useAuth();
     const { authOnu, setAuthOnu } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
@@ -72,6 +74,9 @@ export function ZTEForm({onu}: IOnu){
             }
 
             const hasAuth = await authorizationToOlt({
+                userId: user?.uid,
+                cityId: authOnu.cityId,
+                oltId: authOnu.oltId[0],
                 ip: authOnu.ip,
                 slot: onu.slot,
                 pon: onu.pon,
@@ -92,7 +97,7 @@ export function ZTEForm({onu}: IOnu){
             }
             handleError(hasAuth.responses.status!);
 
-            const onuId = hasAuth.responses.response.onuId;
+            const onuId: number = hasAuth.responses.response.onuId;
 
             if(connectionData.connectionId){
                 updateConnection({
