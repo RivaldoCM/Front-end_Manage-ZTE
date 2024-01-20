@@ -58,8 +58,14 @@ export function PARKSForm({onu}: IOnu){
 
             if (peopleId){
                 connectionData = await getConnectionId(peopleId, authOnu.pppoeUser);
-                if (!connectionData.contractId){
-                    connectionData.contractId = 0
+                if(connectionData){
+                    if (!connectionData.contractId){
+                        connectionData.contractId = 0;
+                    }
+                } else {
+                    handleError('error/no-connection-with-API');
+                    stopLoading();
+                    return;
                 }
             }else{
                 connectionData.contractId = 0;
@@ -78,11 +84,17 @@ export function PARKSForm({onu}: IOnu){
             });
             stopLoading();
 
-            if(!hasAuth.success){
-                handleError(hasAuth.messages.message);
+            if(hasAuth){
+                if(!hasAuth.success){
+                    handleError(hasAuth.messages.message);
+                    return;
+                }
+                handleError(hasAuth.responses.status!);
+            } else {
+                handleError('error/no-connection-with-API');
                 return;
             }
-            handleError(hasAuth.responses.status!);
+
 
             if(connectionData.connectionId){
                 updateConnection({

@@ -47,6 +47,7 @@ export function ZTEForm({onu}: IOnu){
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        startLoading();
 
         if(isLoading){
             handleError('warning/has-action-in-progress');
@@ -59,15 +60,19 @@ export function ZTEForm({onu}: IOnu){
         }else if(typePppoeZte.includes(onu.model) && authOnu.wifiPassword.length < 8){
             handleError('info/wrong-type-passoword');
         }else{
-            startLoading();
-
             const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
             if (peopleId){
                 connectionData = await getConnectionId(peopleId, authOnu.pppoeUser);
-                if (!connectionData.contractId){
-                    connectionData.contractId = 0
+                if(connectionData){
+                    if (!connectionData.contractId){
+                        connectionData.contractId = 0;
+                    }
+                } else {
+                    handleError('error/no-connection-with-API');
+                    stopLoading();
+                    return;
                 }
             }else{
                 connectionData.contractId = 0;
@@ -82,7 +87,8 @@ export function ZTEForm({onu}: IOnu){
                 pon: onu.pon,
                 isPizzaBox: authOnu.isPizzaBox,
                 serialNumber: onu.serialNumber,
-                type: authOnu.onuModel,
+                type: authOnu.oltType,
+                model: authOnu.onuModel,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
                 pppPass: authOnu.pppoePassword,
@@ -91,14 +97,18 @@ export function ZTEForm({onu}: IOnu){
             });
             stopLoading();
 
-            if(!hasAuth.success){
-                handleError(hasAuth.messages.message);
+            if(hasAuth){
+                if(!hasAuth.success){
+                    handleError(hasAuth.messages.message);
+                    return;
+                }
+                handleError(hasAuth.responses.status!);
+            } else {
+                handleError('error/no-connection-with-API');
                 return;
             }
-            handleError(hasAuth.responses.status!);
 
             const onuId: number = hasAuth.responses.response.onuId;
-
             if(connectionData.connectionId){
                 updateConnection({
                     onuId: onuId,

@@ -108,6 +108,7 @@ export function SearchONU() {
         ...authOnu,
         city: e.target.value
     })};
+    
     const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -121,7 +122,7 @@ export function SearchONU() {
         });
         setOnus([]);
         startLoading();
-    
+
         if(isLoading){
             handleError('warning/has-action-in-progress');
         }else if(!isAlphaNumeric.test(matchSerialNumber)){

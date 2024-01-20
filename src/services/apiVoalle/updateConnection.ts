@@ -45,11 +45,9 @@ export async function updateConnection(props: IUpdateConnectionProps){
         url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/updateconnection/${props.connectionId}`,
         data: data
     })
-    .then((response) => {
-        console.log(response)
+    .then(() => {
         return;
-    }).catch((err) => {
-        console.log(err)
+    }).catch(() => {
         return;
     });
 }
