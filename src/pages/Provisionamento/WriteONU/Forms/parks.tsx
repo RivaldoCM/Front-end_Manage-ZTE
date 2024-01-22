@@ -71,6 +71,8 @@ export function PARKSForm({onu}: IOnu){
                 connectionData.contractId = 0;
             }
 
+            console.log(onu)
+
             const hasAuth = await authorizationToOlt({
                 userId: user?.uid,
                 cityId: authOnu.cityId,
@@ -81,6 +83,7 @@ export function PARKSForm({onu}: IOnu){
                 type: authOnu.oltType,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
+                rxPower: onu.rxPower
             });
             stopLoading();
 
@@ -94,7 +97,6 @@ export function PARKSForm({onu}: IOnu){
                 handleError('error/no-connection-with-API');
                 return;
             }
-
 
             if(connectionData.connectionId){
                 updateConnection({
