@@ -5,14 +5,15 @@ import { IOlt } from "../../interfaces/IOlt";
 import { deleteOnu } from "../../services/apiManageONU/deleteOnu";
 import { useError } from "../../hooks/useError";
 import { useLoading } from "../../hooks/useLoading";
+import { handleOltByCity } from "../../config/renderOltByCity";
 
 import { Form } from "./style";
 import { Alert } from "@mui/material";
 import {CircularProgress} from "@mui/material";
-import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import TextField from '@mui/material/TextField';
+
 
 export function OnuDelete(){
     const { error, errorMessage, severityStatus, handleError } = useError();
@@ -49,38 +50,13 @@ export function OnuDelete(){
         });
     };
 
-    const handleCity = () => {
-        if (olt) {
-            const onlyToDisplayOltData = olt.filter((el) => {
-                if (el.city_id == 22){
-                    return el.name === 'TOMBOS';
-                }
-                return el;
-            });
-
-            return onlyToDisplayOltData.map((value: IOlt, index: number) => {
-                return (
-                    <MenuItem key={index} value={value.name}>
-                        {value.name}
-                    </MenuItem>
-                );
-            });
-        }
-    };
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         startLoading();
 
         let data: any = [];
 
-        const city = olt.filter((value) => {
-            if(value.name.match(/\bTOMBOS\b/g) && form.city.match(/\bTOMBOS\b/g)){
-                return value;
-            }else if(form.city === value.name){
-                return value;
-            }
-        });
+        const city = olt!.filter((olt) => olt.name.includes(form.city));
 
         for (let i of city) {
             let obj = {
@@ -113,7 +89,7 @@ export function OnuDelete(){
                     onChange={handleFormChange}
                     select
                 >
-                    {handleCity()}
+                    {handleOltByCity(olt)}
                 </TextField>
                 <TextField 
                     label="Digite o serial da ONU" 
