@@ -2,15 +2,21 @@ import { ReactElement, useEffect} from "react";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+
+
 import { isLogged } from "./config/isLogged";
 import { Login } from "./pages/Login";
 import { Provisionamento } from "./pages/Provisionamento";
 import { HandleManageOlt } from "./pages/admin/manageOlt";
 import { HandleManageUsers } from "./pages/admin/users";
+import { OnuDelete } from "./pages/onuDelete";
+import { LogsOnu } from "./pages/logs/onu";
+
 import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
-import { OnuDelete } from "./pages/onuDelete";
+
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
+
 
 interface PrivateRouteProps {
     element: ReactElement;
@@ -63,6 +69,10 @@ export function AppRoutes() {
                 <Route
                     path="onuDelete"
                     element={<PrivateRoute element={<OnuDelete />} />}
+                />
+                <Route
+                    path="logs_onu"
+                    element={<PrivateRoute element={<LogsOnu />} />}
                 />
             </Route>
         </Routes>

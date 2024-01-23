@@ -6,6 +6,7 @@ import MiscellaneousServicesOutlinedIcon from '@mui/icons-material/Miscellaneous
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -28,6 +29,14 @@ export const handlePages: IAllPages[] = [
             },
             {
                 olts: "OLT's"
+            }
+        ]
+    },
+    {
+        name: 'Auditoria',
+        pages: [
+            {
+                logs_onu: 'Log de Onu',
             }
         ]
     }
@@ -61,6 +70,8 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <AdminPanelSettingsOutlinedIcon />;
         case "olts":
             return <AccountTreeOutlinedIcon />;
+        case 'logs_onu':
+            return <TroubleshootOutlinedIcon />;
         default:
             return <></>;
     }
