@@ -10,7 +10,6 @@ export async function getOnuLogs(): Promise<IResponseData | IResponseError>{
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
         },
     }).then((response) => {
-        console.log(response)
         return response.data;
     }).catch(() => {
         return undefined;
