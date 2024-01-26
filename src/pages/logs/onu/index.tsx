@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { getOnuLogs } from '../../../services/apiManageONU/getOnuLogs';
+import { FilterOptions } from './filterOptions';
+
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -12,10 +15,9 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { getOnuLogs } from '../../../services/apiManageONU/getOnuLogs';
-import { FilterOptions } from './filterOptions';
 
-function Row(props: any) {
+
+function Row(props: IOnuLogsProps) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
 
@@ -59,20 +61,26 @@ function Row(props: any) {
 }
 
 export function LogsOnu() {
-    const [onu, setOnu] = useState([]);
+    const [onu, setOnu] = useState<IOnuLogs[]>([]);
+    const [filterParams, setFilterParams] = useState<any>();
+    
     useEffect(() => {
         async function getData(){
-            const data = await getOnuLogs();
+            const data = await getOnuLogs(filterParams);
             if(data.success){
                 setOnu(data.responses.response);
             }
-        }
+        };
         getData();
-    },[]);
+    }, [filterParams]);
+
+    const handleFilterChange = (filter: IFilterOnuLogs) => {
+        setFilterParams(filter);
+    };
 
     return (
         <TableContainer component={Paper}>
-            <FilterOptions />
+            <FilterOptions onFilterChange={handleFilterChange}/>
             <Table aria-label="collapsible table">
                 <TableHead>
                     <TableRow>

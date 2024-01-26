@@ -16,20 +16,20 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
 
-export function FilterOptions(){
+export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     const { isLoading, startLoading, stopLoading } = useLoading();
 
     const [users, setUsers] = useState<IUsers[]>([]);
-    const [cities, setCities] = useState<any>([]);
+    const [cities, setCities] = useState<ICities[]>([]);
     const [olts, setOlts] = useState<IOlt[]>([]);
 
-    const [dataFiltered, setDataFiltered] = useState({
+    const [dataFiltered, setDataFiltered] = useState<IFilterOnuLogs>({
         initialDate: '',
         lastDate: '',
         userId: 0 || null,
         cityId: 0 || null,
         oltId: 0 || null,
-        state: false
+        state: false || 'all'
     });
 
     const [open, setOpen] = useState({
@@ -146,8 +146,10 @@ export function FilterOptions(){
         e.preventDefault();
         if(dayjs(dataFiltered.lastDate).isBefore(dayjs(dataFiltered.initialDate))){
             //RETORNAR ERRO, ULTIMA DATA ANTES DA PRIMEIRA
+        } else {
+            onFilterChange(dataFiltered);
         }
-    }
+    };
     
     return(
         <Filter className="flex">
@@ -299,7 +301,7 @@ export function FilterOptions(){
                         value={dataFiltered.state}
                         onChange={handleStateChange}
                     >
-                        <MenuItem value={false}>Todos</MenuItem>
+                        <MenuItem value={'all'}>Ambos</MenuItem>
                         <MenuItem value={true}>Provisionada</MenuItem>
                         <MenuItem value={false}>Desprovisionada</MenuItem>
                     </Select>
