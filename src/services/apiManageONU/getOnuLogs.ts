@@ -8,14 +8,13 @@ function formatDataToEnFormat(date: string, last: boolean){
     const formated = `${splitedDate[1]}-${splitedDate[0]}-${splitedDate[2]}`
 
     if(last){
-        const teste = dayjs(formated).set('hour', 23).set('minute', 59).set('second', 59).set('millisecond', 999).endOf('day');
-        const offUTC = dayjs(teste).utcOffset(); // formato -3, subtrai da data atual depois 
-        return dayjs(offUTC).toISOString();
+        //O 'Z' ESTA PARA INDICAR QUUE É FORMATO UTC E O RESTANTE COMBINADO PARA ISO 8601,
+        //ASSIM A DATA É UTC MAS SEM SOMAR -03:00 DO NOSSO HORARIO LOCAL
+        const dateISO = dayjs(formated).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
+        return dateISO;
     }
 
-
-    const toISOFormat = dayjs(formated).toISOString();
-
+    const toISOFormat = dayjs(formated).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
     return toISOFormat;
 }
 
