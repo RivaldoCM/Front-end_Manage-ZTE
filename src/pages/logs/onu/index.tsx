@@ -63,10 +63,11 @@ function Row(props: IOnuLogsProps) {
 export function LogsOnu() {
     const [onu, setOnu] = useState<IOnuLogs[]>([]);
     const [filterParams, setFilterParams] = useState<any>();
-    
+
     useEffect(() => {
         async function getData(){
             const data = await getOnuLogs(filterParams);
+            console.log(data)
             if(data.success){
                 setOnu(data.responses.response);
             }

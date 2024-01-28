@@ -165,11 +165,11 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
             </div>
             <FormFilter className="flex" onSubmit={handleSubmit}>
                 <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
-                    <DatePicker label="Data Inicial" onChange={handleInitialDateChange}/>
+                    <DatePicker label="Data Inicial" onChange={handleInitialDateChange} format="DD/MM/YYYY"/>
                 </DemoContainer>
                 -
                 <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
-                    <DatePicker label="Data Final" onChange={handleLastDateChange} />
+                    <DatePicker label="Data Final" onChange={handleLastDateChange} format="DD/MM/YYYY"/>
                 </DemoContainer>
                 <Autocomplete
                     id="asynchronous-users"
