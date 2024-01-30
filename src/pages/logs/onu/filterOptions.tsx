@@ -7,8 +7,8 @@ import { getOlt } from "../../../services/apiManageONU/getOlt";
 
 import { useLoading } from "../../../hooks/useLoading";
 
-import { Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField, Typography} from "@mui/material";
-import { Filter, FilterButtons, FormFilter } from "./style";
+import { Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import { DateOptions, Filter, FilterButtons, FormFilter } from "./style";
 import LoadingButton from '@mui/lab/LoadingButton';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import FilterAltOffOutlinedIcon from '@mui/icons-material/FilterAltOffOutlined';
@@ -152,25 +152,17 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     };
     
     return(
-        <Filter className="flex">
-            <div className="flex">
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    variant="h6"
-                    component="div"
-                    className="flex"
-                >
-                    Filtros:
-                </Typography>
-            </div>
-            <FormFilter className="flex" onSubmit={handleSubmit}>
-                <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
-                    <DatePicker label="Data Inicial" onChange={handleInitialDateChange} format="DD/MM/YYYY"/>
-                </DemoContainer>
-                -
-                <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
-                    <DatePicker label="Data Final" onChange={handleLastDateChange} format="DD/MM/YYYY"/>
-                </DemoContainer>
+        <Filter className="flex" onSubmit={handleSubmit}>
+            <FormFilter className="flex">
+                <DateOptions className="flex">
+                    <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
+                        <DatePicker label="Data Inicial" onChange={handleInitialDateChange} format="DD/MM/YYYY"/>
+                    </DemoContainer>
+                    -
+                    <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
+                        <DatePicker label="Data Final" onChange={handleLastDateChange} format="DD/MM/YYYY"/>
+                    </DemoContainer>
+                </DateOptions>
                 <Autocomplete
                     id="asynchronous-users"
                     sx={{ width: 200 }}
@@ -306,31 +298,31 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                         <MenuItem value={false}>Desprovisionada</MenuItem>
                     </Select>
                 </FormControl>
-                <FilterButtons className="flex">
-                    <LoadingButton
-                        type="submit"
-                        id="send"
-                        loading={isLoading} 
-                        loadingPosition="start"
-                        variant="outlined"
-                        size="small"
-                        startIcon={<FilterAltOutlinedIcon />}
-                    >
-                        Filtrar
-                    </LoadingButton>
-                    <LoadingButton
-                        type="submit"
-                        id="clear"
-                        loading={isLoading} 
-                        loadingPosition="start"
-                        variant="outlined"
-                        size="small"
-                        startIcon={<FilterAltOffOutlinedIcon />}
-                    >
-                        Limpar
-                    </LoadingButton>
-                </FilterButtons>
             </FormFilter>
+            <FilterButtons className="flex">
+                <LoadingButton
+                    type="submit"
+                    id="send"
+                    loading={isLoading} 
+                    loadingPosition="start"
+                    variant="outlined"
+                    size="small"
+                    startIcon={<FilterAltOutlinedIcon />}
+                >
+                    Filtrar
+                </LoadingButton>
+                <LoadingButton
+                    type="submit"
+                    id="clear"
+                    loading={isLoading} 
+                    loadingPosition="start"
+                    variant="outlined"
+                    size="small"
+                    startIcon={<FilterAltOffOutlinedIcon />}
+                >
+                    Limpar
+                </LoadingButton>
+            </FilterButtons>
         </Filter>
     )
 }
