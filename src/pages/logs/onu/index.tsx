@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getOnuLogs } from '../../../services/apiManageONU/getOnuLogs';
 import { FilterOptions } from './filterOptions';
 
@@ -15,7 +15,16 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { ResponsiveTable } from './style';
+import { TablePagination } from '@mui/material';
 
+function stableSort<T>(array: readonly T[]) {
+    const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
+    stabilizedThis.sort((a, b) => {
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+}
 
 function Row(props: IOnuLogsProps) {
     const { row } = props;
@@ -61,7 +70,9 @@ function Row(props: IOnuLogsProps) {
 }
 
 export function LogsOnu() {
+    const [page, setPage] = useState(0);
     const [onu, setOnu] = useState<IOnuLogs[]>([]);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [filterParams, setFilterParams] = useState<any>();
 
     useEffect(() => {
@@ -75,6 +86,21 @@ export function LogsOnu() {
         getData();
     }, [filterParams]);
 
+    const visibleRows = useMemo(() => 
+    stableSort(onu).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage,
+    ),
+    [page, rowsPerPage, onu]
+);
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const handleChangePage = (_event: unknown, newPage: number) => { setPage(newPage); };
+
     const handleFilterChange = (filter: IFilterOnuLogs) => {
         setFilterParams(filter);
     };
@@ -82,27 +108,38 @@ export function LogsOnu() {
     return (
         <TableContainer component={Paper}>
             <FilterOptions onFilterChange={handleFilterChange}/>
-            <Table aria-label="collapsible table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell>Data</TableCell>
-                        <TableCell>Provisionado por</TableCell>
-                        <TableCell align="left">Cidade</TableCell>
-                        <TableCell align="left">OLT</TableCell>
-                        <TableCell align="left">Placa</TableCell>
-                        <TableCell align="left">Pon</TableCell>
-                        <TableCell align="left">Serial</TableCell>
-                        <TableCell align="left">PPPoE</TableCell>
-                        <TableCell align="left">Sinal recebido pela OLT</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {onu.map((row) => (
-                        <Row key={row.id} row={row} />
-                    ))}
-                </TableBody>
-            </Table>
+            <ResponsiveTable>
+                <Table aria-label="collapsible table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell />
+                            <TableCell>Data</TableCell>
+                            <TableCell>Provisionado por</TableCell>
+                            <TableCell align="left">Cidade</TableCell>
+                            <TableCell align="left">OLT</TableCell>
+                            <TableCell align="left">Placa</TableCell>
+                            <TableCell align="left">Pon</TableCell>
+                            <TableCell align="left">Serial</TableCell>
+                            <TableCell align="left">PPPoE</TableCell>
+                            <TableCell align="left">Sinal recebido pela OLT</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {visibleRows.map((row) => (
+                            <Row key={row.id} row={row} />
+                        ))}
+                    </TableBody>
+                </Table>
+            </ResponsiveTable>
+            <TablePagination
+                rowsPerPageOptions={[10, 15, 25]}
+                component="div"
+                count={onu.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
         </TableContainer>
     );
 }
