@@ -29,7 +29,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         userId: 0 || null,
         cityId: 0 || null,
         oltId: 0 || null,
-        state: false || 'all'
+        state: 1 || null
     });
 
     const [open, setOpen] = useState({
@@ -150,6 +150,8 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
             onFilterChange(dataFiltered);
         }
     };
+
+    console.log(dataFiltered.state)
     
     return(
         <Filter className="flex" onSubmit={handleSubmit}>
@@ -293,9 +295,9 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                         value={dataFiltered.state}
                         onChange={handleStateChange}
                     >
-                        <MenuItem value={'all'}>Ambos</MenuItem>
-                        <MenuItem value={true}>Provisionada</MenuItem>
-                        <MenuItem value={false}>Desprovisionada</MenuItem>
+                        <MenuItem value={'null'}>Ambos</MenuItem>
+                        <MenuItem value={'true'}>Provisionadas</MenuItem>
+                        <MenuItem value={'false'}>Desprovisionadas</MenuItem>
                     </Select>
                 </FormControl>
             </FormFilter>

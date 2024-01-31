@@ -4,7 +4,7 @@ type IFilterOnuLogs = {
     userId: number | null;
     cityId: number | null;
     oltId: number | null;
-    state: string | boolean;
+    state: number | null;
 }
 
 type IFilterOnuLogsProps = {
