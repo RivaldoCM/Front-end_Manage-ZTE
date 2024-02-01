@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { getOnuLogs } from '../../../services/apiManageONU/getOnuLogs';
+import { formatDataToEnFormat, getOnuLogs } from '../../../services/apiManageONU/getOnuLogs';
 import { FilterOptions } from './filterOptions';
 
 import Box from '@mui/material/Box';
@@ -86,9 +86,6 @@ export function LogsOnu() {
         };
         getData();
     }, [filterParams]);
-
-    const dataAtual = dayjs().utcOffset()
-    console.log(dataAtual);
 
     const visibleRows = useMemo(() => 
     stableSort(onu).slice(

@@ -3,14 +3,16 @@ import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 import dayjs from "dayjs";
 
-function formatDataToEnFormat(date: string, last: boolean){
+export function formatDataToEnFormat(date: string, last: boolean){
     const splitedDate = date.split('-');
     const formated = `${splitedDate[1]}-${splitedDate[0]}-${splitedDate[2]}`
+    console.log(date)
 
     if(last){
         //O 'Z' ESTA PARA INDICAR QUUE É FORMATO UTC E O RESTANTE COMBINADO PARA ISO 8601,
         //ASSIM A DATA É UTC MAS SEM SOMAR -03:00 DO NOSSO HORARIO LOCAL
         const dateISO = dayjs(formated).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
+
         return dateISO;
     }
 
@@ -25,7 +27,10 @@ export async function getOnuLogs(props: IFilterOnuLogs): Promise<IResponseData |
     let formatedLastDate;
 
     if(!props){
-        urlParams = `getLogsOnu/`
+        const startOfDay = formatDataToEnFormat(dayjs().format('DD-MM-YYYY'), false);
+        const endOfDay = formatDataToEnFormat(dayjs().format('DD-MM-YYYY'), true);
+
+        urlParams = `getLogsOnu/${startOfDay}/${endOfDay}`
     } else {
         const { initialDate, lastDate, userId, cityId, oltId, state } = props;
         if(initialDate){

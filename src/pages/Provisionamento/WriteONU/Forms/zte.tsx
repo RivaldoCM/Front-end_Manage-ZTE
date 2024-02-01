@@ -63,16 +63,13 @@ export function ZTEForm({onu}: IOnu){
             const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
+            console.log(connectionData.connectionId)
             if (peopleId){
-                connectionData = await getConnectionId(peopleId, authOnu.pppoeUser);
-                if(connectionData){
+                const response = await getConnectionId(peopleId, authOnu.pppoeUser);
+                if(response){
                     if (!connectionData.contractId){
                         connectionData.contractId = 0;
                     }
-                } else {
-                    handleError('error/no-connection-with-API');
-                    stopLoading();
-                    return;
                 }
             }else{
                 connectionData.contractId = 0;
