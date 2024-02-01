@@ -7,7 +7,7 @@ import { getOlt } from "../../../services/apiManageONU/getOlt";
 
 import { useLoading } from "../../../hooks/useLoading";
 
-import { Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import { Alert, Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import { DateOptions, Filter, FilterButtons, FormFilter } from "./style";
 import LoadingButton from '@mui/lab/LoadingButton';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
@@ -15,10 +15,13 @@ import FilterAltOffOutlinedIcon from '@mui/icons-material/FilterAltOffOutlined';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
+import { useError } from "../../../hooks/useError";
 
 export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     const { isLoading, startLoading, stopLoading } = useLoading();
+    const {error, handleError, severityStatus, errorMessage } = useError();
 
+    const [hasFilter, setHasFilter] = useState(false);
     const [users, setUsers] = useState<IUsers[]>([]);
     const [cities, setCities] = useState<ICities[]>([]);
     const [olts, setOlts] = useState<IOlt[]>([]);
@@ -29,7 +32,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         userId: 0 || null,
         cityId: 0 || null,
         oltId: 0 || null,
-        state: 1 || null
+        state: 'null'
     });
 
     const [open, setOpen] = useState({
@@ -142,17 +145,41 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         });
     };
 
+    const formatDate = (date: string) => {
+        let dates = date.split('-');
+
+        const day = dates[0];
+        const month = dates[1];
+        const year = dates[2]
+
+        const dayJsFormatDate = `${month}/${day}/${year}`
+        return dayJsFormatDate;
+    }
+
     const handleSubmit = (e: any) =>{
         e.preventDefault();
-        if(dayjs(dataFiltered.lastDate).isBefore(dayjs(dataFiltered.initialDate))){
-            //RETORNAR ERRO, ULTIMA DATA ANTES DA PRIMEIRA
+
+        if(hasFilter){
+            if(!dataFiltered.initialDate || !dataFiltered.lastDate){
+                handleError('error/expected-date');
+            } else if(dayjs(formatDate(dataFiltered.lastDate)).isBefore(dayjs(formatDate(dataFiltered.initialDate)))){
+                handleError('error/lastDate-isBefore-initialDate');
+            } else {
+                onFilterChange(dataFiltered);
+            }
         } else {
-            onFilterChange(dataFiltered);
+            setDataFiltered({
+                initialDate: '',
+                lastDate: '',
+                userId: null,
+                cityId: null,
+                oltId: null,
+                state: 'null'
+            });
+            onFilterChange(null);
         }
     };
 
-    console.log(dataFiltered.state)
-    
     return(
         <Filter className="flex" onSubmit={handleSubmit}>
             <FormFilter className="flex">
@@ -310,7 +337,8 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                     variant="outlined"
                     size="small"
                     startIcon={<FilterAltOutlinedIcon />}
-                >
+                    onClick={() => {setHasFilter(true)}}
+                    >
                     Filtrar
                 </LoadingButton>
                 <LoadingButton
@@ -321,10 +349,18 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                     variant="outlined"
                     size="small"
                     startIcon={<FilterAltOffOutlinedIcon />}
+                    onClick={() => {setHasFilter(false)}}
                 >
                     Limpar
                 </LoadingButton>
             </FilterButtons>
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
+                )
+            }
         </Filter>
     )
 }

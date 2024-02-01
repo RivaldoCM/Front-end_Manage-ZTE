@@ -4,9 +4,9 @@ type IFilterOnuLogs = {
     userId: number | null;
     cityId: number | null;
     oltId: number | null;
-    state: number | null;
+    state: string ;
 }
 
 type IFilterOnuLogsProps = {
-    onFilterChange: (filter: IFilterOnuLogs) => void
+    onFilterChange: (filter: IFilterOnuLogs | null) => void
 }

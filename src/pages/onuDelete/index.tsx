@@ -13,11 +13,13 @@ import {CircularProgress} from "@mui/material";
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import TextField from '@mui/material/TextField';
+import { useAuth } from "../../hooks/useAuth";
 
 
 export function OnuDelete(){
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
+    const { user } = useAuth();
 
     const [olt, setOlt] = useState<IOlt[]>([]);
     const [form, setForm] = useState({
@@ -60,6 +62,9 @@ export function OnuDelete(){
 
         for (let i of city) {
             let obj = {
+                userId: user?.uid,
+                oltId: i.id,
+                cityId: i.city_id,
                 ip: i.host,
                 type: i.type,
                 serial: form.serial,

@@ -17,6 +17,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ResponsiveTable } from './style';
 import { TablePagination } from '@mui/material';
+import dayjs from 'dayjs';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -78,13 +79,16 @@ export function LogsOnu() {
     useEffect(() => {
         async function getData(){
             const data = await getOnuLogs(filterParams);
-            console.log(data)
+
             if(data.success){
                 setOnu(data.responses.response);
             }
         };
         getData();
     }, [filterParams]);
+
+    const dataAtual = dayjs().utcOffset()
+    console.log(dataAtual);
 
     const visibleRows = useMemo(() => 
     stableSort(onu).slice(
@@ -101,7 +105,7 @@ export function LogsOnu() {
 
     const handleChangePage = (_event: unknown, newPage: number) => { setPage(newPage); };
 
-    const handleFilterChange = (filter: IFilterOnuLogs) => {
+    const handleFilterChange = (filter: IFilterOnuLogs | null) => {
         setFilterParams(filter);
     };
 
