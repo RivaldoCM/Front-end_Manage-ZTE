@@ -30,7 +30,7 @@ export async function getOnuLogs(props: IFilterOnuLogs): Promise<IResponseData |
         const startOfDay = formatDataToEnFormat(dayjs().format('DD-MM-YYYY'), false);
         const endOfDay = formatDataToEnFormat(dayjs().format('DD-MM-YYYY'), true);
 
-        urlParams = `getLogsOnu/${startOfDay}/${endOfDay}`
+        urlParams = `getLogsOnu/${startOfDay}/${endOfDay}/null/null/null/null`
     } else {
         const { initialDate, lastDate, userId, cityId, oltId, state } = props;
         if(initialDate){

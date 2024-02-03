@@ -21,6 +21,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     const { isLoading, startLoading, stopLoading } = useLoading();
     const {error, handleError, severityStatus, errorMessage } = useError();
 
+    const [valuesToShow, setValuesToShow] = useState('');
     const [hasFilter, setHasFilter] = useState(false);
     const [users, setUsers] = useState<IUsers[]>([]);
     const [cities, setCities] = useState<ICities[]>([]);
@@ -40,6 +41,8 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         cityFilter: false,
         oltFilter: false,
     });
+
+    const [viewName, setViewName] = useState('')
 
     const loading = open.userFilter && users.length === 0;
     const loadingCities = open.cityFilter && cities.length === 0;
@@ -118,23 +121,32 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     };
 
     const handleUserChange = (_e: unknown, value: any) => {
-        setDataFiltered({
-            ...dataFiltered,
-            userId: value.id
-        });
+        console.log(value)
+        if(value){
+            setValuesToShow(value.name)
+            setDataFiltered({
+                ...dataFiltered,
+                userId: value.id
+            });
+        }else{
+            setDataFiltered({
+                ...dataFiltered,
+                userId: value
+            });
+        }
     };
 
     const handleCityChange = (_e: unknown, value: any) => {
         setDataFiltered({
             ...dataFiltered,
-            cityId: value.id
+            cityId: value
         });
     };
 
     const handleOltChange = (_e: unknown, value: any) => {
         setDataFiltered({
             ...dataFiltered,
-            oltId: value.id
+            oltId: value
         });
     };
 
@@ -205,9 +217,9 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                         userFilter: false
                     })}}
                     onChange={handleUserChange}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    options={users.map(user => ({id: user.id, name: user.name}))}
-                    getOptionLabel={(user) => `${user.name}`}
+                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                    options={users}
+                    getOptionLabel={(user) => user.name}
                     loading={loading}
                     renderOption={(props, option) => {
                         return (
@@ -216,8 +228,9 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                             </li>
                         );
                     }}
-                    renderInput={(params) => (
-                        <TextField
+                    renderInput={(params) => {
+                        return(
+                            <TextField
                             {...params}
                             label="Tecnico"
                             InputProps={{
@@ -230,7 +243,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                                 ),
                             }}
                         />
-                    )}
+                    )}}
                 />
                 <Autocomplete
                     id="asynchronous-cities"
