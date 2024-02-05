@@ -6,13 +6,11 @@ import dayjs from "dayjs";
 export function formatDataToEnFormat(date: string, last: boolean){
     const splitedDate = date.split('-');
     const formated = `${splitedDate[1]}-${splitedDate[0]}-${splitedDate[2]}`
-    console.log(date)
 
     if(last){
         //O 'Z' ESTA PARA INDICAR QUUE É FORMATO UTC E O RESTANTE COMBINADO PARA ISO 8601,
         //ASSIM A DATA É UTC MAS SEM SOMAR -03:00 DO NOSSO HORARIO LOCAL
         const dateISO = dayjs(formated).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
-
         return dateISO;
     }
 
@@ -21,7 +19,6 @@ export function formatDataToEnFormat(date: string, last: boolean){
 }
 
 export async function getOnuLogs(props: IFilterOnuLogs): Promise<IResponseData | IResponseError>{
-
     let urlParams = '';
     let formatedInitialDate;
     let formatedLastDate;

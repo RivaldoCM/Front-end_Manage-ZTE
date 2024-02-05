@@ -21,7 +21,12 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     const { isLoading, startLoading, stopLoading } = useLoading();
     const {error, handleError, severityStatus, errorMessage } = useError();
 
-    const [valuesToShow, setValuesToShow] = useState('');
+    const [viewOlt, setViewOlt] = useState('');
+    const [viewDate, setViewDate] = useState<any>({
+        viewInitialDate: '',
+        viewLastDate: ''
+    });
+
     const [hasFilter, setHasFilter] = useState(false);
     const [users, setUsers] = useState<IUsers[]>([]);
     const [cities, setCities] = useState<ICities[]>([]);
@@ -42,11 +47,26 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         oltFilter: false,
     });
 
-    const [viewName, setViewName] = useState('')
-
     const loading = open.userFilter && users.length === 0;
     const loadingCities = open.cityFilter && cities.length === 0;
     const loadingOlts = open.oltFilter && olts.length === 0;
+
+    useEffect(() =>{
+        const today = dayjs();
+        setViewDate({
+            ...viewDate,
+            viewInitialDate: today,
+            viewLastDate: today
+        });
+
+        setDataFiltered({
+            ...dataFiltered,
+            initialDate: dayjs(today).format('DD-MM-YYYY'),
+            lastDate: dayjs(today).format('DD-MM-YYYY')
+        });
+    }, []);
+
+    console.log(dataFiltered)
 
     useEffect(() => {
         let active = true;
@@ -121,9 +141,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     };
 
     const handleUserChange = (_e: unknown, value: any) => {
-        console.log(value)
         if(value){
-            setValuesToShow(value.name)
             setDataFiltered({
                 ...dataFiltered,
                 userId: value.id
@@ -137,17 +155,33 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     };
 
     const handleCityChange = (_e: unknown, value: any) => {
-        setDataFiltered({
-            ...dataFiltered,
-            cityId: value
-        });
+        if(value){
+            setDataFiltered({
+                ...dataFiltered,
+                cityId: value.id
+            });
+        }else{
+            setDataFiltered({
+                ...dataFiltered,
+                cityId: value
+            });
+        }
     };
 
     const handleOltChange = (_e: unknown, value: any) => {
-        setDataFiltered({
-            ...dataFiltered,
-            oltId: value
-        });
+        if(value){
+            setViewOlt(value.name);
+            setDataFiltered({
+                ...dataFiltered,
+                oltId: value.id
+            })
+        } else {
+            setViewOlt('');
+            setDataFiltered({
+                ...dataFiltered,
+                oltId: value
+            });
+        }
     };
 
     const handleStateChange = (e: any) => {
@@ -162,9 +196,9 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
 
         const day = dates[0];
         const month = dates[1];
-        const year = dates[2]
+        const year = dates[2];
 
-        const dayJsFormatDate = `${month}/${day}/${year}`
+        const dayJsFormatDate = `${month}/${day}/${year}`;
         return dayJsFormatDate;
     }
 
@@ -180,14 +214,20 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                 onFilterChange(dataFiltered);
             }
         } else {
+            const today = dayjs();
+            setViewDate({
+                ...viewDate,
+                viewInitialDate: today,
+                viewLastDate: today
+            });
             setDataFiltered({
-                initialDate: '',
-                lastDate: '',
+                ...dataFiltered,
                 userId: null,
                 cityId: null,
                 oltId: null,
                 state: 'null'
             });
+            setViewOlt('');
             onFilterChange(null);
         }
     };
@@ -197,11 +237,21 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
             <FormFilter className="flex">
                 <DateOptions className="flex">
                     <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
-                        <DatePicker label="Data Inicial" onChange={handleInitialDateChange} format="DD/MM/YYYY"/>
+                        <DatePicker 
+                            label="Data Inicial" 
+                            format="DD/MM/YYYY"
+                            onChange={handleInitialDateChange}
+                            value={viewDate.viewInitialDate}
+                        />
                     </DemoContainer>
                     -
                     <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
-                        <DatePicker label="Data Final" onChange={handleLastDateChange} format="DD/MM/YYYY"/>
+                        <DatePicker 
+                        label="Data Final"
+                        format="DD/MM/YYYY"
+                        onChange={handleLastDateChange}
+                        value={viewDate.viewLastDate}
+                    />
                     </DemoContainer>
                 </DateOptions>
                 <Autocomplete
@@ -246,6 +296,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                     )}}
                 />
                 <Autocomplete
+                    filterSelectedOptions
                     id="asynchronous-cities"
                     sx={{ width: 200 }}
                     open={open.cityFilter}
@@ -298,6 +349,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                         oltFilter: false
                     })}}
                     onChange={handleOltChange}
+                    inputValue={viewOlt}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     options={olts.map(olts => ({id: olts.id, name: olts.name}))}
                     getOptionLabel={(olts) => `${olts.name}`}
