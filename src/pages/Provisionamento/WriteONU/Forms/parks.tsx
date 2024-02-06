@@ -22,7 +22,7 @@ import { Alert, Button, CircularProgress, TextField } from "@mui/material";
 
 export function PARKSForm({onu}: IOnu){
     const { user } = useAuth();
-    const { authOnu, setAuthOnu } = useAuthOnu();
+    const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
 
@@ -46,13 +46,13 @@ export function PARKSForm({onu}: IOnu){
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        startLoading();
 
         if(isLoading){
             handleError('warning/has-action-in-progress');
         }else if(!authOnu.cpf.match(isValidCpf)){
             handleError('warning/invalid-cpf-input');
         }else{
+            startLoading();
             const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
@@ -71,8 +71,6 @@ export function PARKSForm({onu}: IOnu){
                 connectionData.contractId = 0;
             }
 
-            console.log(onu)
-
             const hasAuth = await authorizationToOlt({
                 userId: user?.uid,
                 cityId: authOnu.cityId,
@@ -89,10 +87,38 @@ export function PARKSForm({onu}: IOnu){
 
             if(hasAuth){
                 if(!hasAuth.success){
+                    setOnus([]);
+                    setAuthOnu({
+                        ...authOnu,
+                        ip: [],
+                        oltId: [],
+                        cityId: 0,
+                        city: '',
+                        isPizzaBox: [],
+                        voalleAccessPointId: []
+                    });
                     handleError(hasAuth.messages.message);
                     return;
+                } else{
+                    handleError(hasAuth.responses.status!);
+                    setOnus([]);
+                    setAuthOnu({
+                        ip: [],
+                        oltId: [],
+                        cityId: 0,
+                        city: '',
+                        cpf: '',
+                        pppoeUser: '',
+                        pppoePassword: '',
+                        wifiName: '',
+                        wifiPassword: '',
+                        onuType: '',
+                        onuModel: '',
+                        oltType: 'zte',
+                        isPizzaBox: [],
+                        voalleAccessPointId: []
+                    });
                 }
-                handleError(hasAuth.responses.status!);
             } else {
                 handleError('error/no-connection-with-API');
                 return;

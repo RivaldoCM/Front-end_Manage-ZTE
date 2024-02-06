@@ -22,7 +22,7 @@ import { Alert } from '@mui/material';
 
 export function ZTEForm({onu}: IOnu){
     const { user } = useAuth();
-    const { authOnu, setAuthOnu } = useAuthOnu();
+    const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
 
@@ -47,7 +47,6 @@ export function ZTEForm({onu}: IOnu){
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        startLoading();
 
         if(isLoading){
             handleError('warning/has-action-in-progress');
@@ -60,16 +59,20 @@ export function ZTEForm({onu}: IOnu){
         }else if(typePppoeZte.includes(onu.model) && authOnu.wifiPassword.length < 8){
             handleError('info/wrong-type-passoword');
         }else{
+            startLoading();
             const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
-            console.log(connectionData.connectionId)
             if (peopleId){
                 const response = await getConnectionId(peopleId, authOnu.pppoeUser);
                 if(response){
                     if (!connectionData.contractId){
                         connectionData.contractId = 0;
                     }
+                } else {
+                    handleError('error/no-connection-with-API');
+                    stopLoading();
+                    return;
                 }
             }else{
                 connectionData.contractId = 0;
@@ -97,9 +100,36 @@ export function ZTEForm({onu}: IOnu){
             if(hasAuth){
                 if(!hasAuth.success){
                     handleError(hasAuth.messages.message);
+                    setOnus([]);
+                    setAuthOnu({
+                        ...authOnu,
+                        ip: [],
+                        oltId: [],
+                        cityId: 0,
+                        city: '',
+                        isPizzaBox: [],
+                        voalleAccessPointId: []
+                    })
                     return;
                 }
                 handleError(hasAuth.responses.status!);
+                setOnus([]);
+                setAuthOnu({
+                    ip: [],
+                    oltId: [],
+                    cityId: 0,
+                    city: '',
+                    cpf: '',
+                    pppoeUser: '',
+                    pppoePassword: '',
+                    wifiName: '',
+                    wifiPassword: '',
+                    onuType: '',
+                    onuModel: '',
+                    oltType: 'zte',
+                    isPizzaBox: [],
+                    voalleAccessPointId: []
+                });
             } else {
                 handleError('error/no-connection-with-API');
                 return;

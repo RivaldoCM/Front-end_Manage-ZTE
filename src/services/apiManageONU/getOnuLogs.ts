@@ -1,7 +1,7 @@
 import axios from "axios";
+import dayjs from "dayjs";
 
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
-import dayjs from "dayjs";
 
 export function formatDataToEnFormat(date: string, last: boolean){
     const splitedDate = date.split('-');
@@ -50,7 +50,7 @@ export async function getOnuLogs(props: IFilterOnuLogs): Promise<IResponseData |
     }).then((response) => {
         return response.data;
     }).catch(() => {
-        return undefined;
+        return null;
     });
     
     return onudata;

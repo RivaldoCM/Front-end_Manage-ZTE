@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { formatDataToEnFormat, getOnuLogs } from '../../../services/apiManageONU/getOnuLogs';
+
+import { useError } from '../../../hooks/useError';
+import { getOnuLogs } from '../../../services/apiManageONU/getOnuLogs';
 import { FilterOptions } from './filterOptions';
 
 import Box from '@mui/material/Box';
@@ -16,8 +18,9 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ResponsiveTable } from './style';
-import { TablePagination } from '@mui/material';
-import dayjs from 'dayjs';
+import { Alert, TablePagination } from '@mui/material';
+import { useLoading } from '../../../hooks/useLoading';
+
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -71,6 +74,8 @@ function Row(props: IOnuLogsProps) {
 }
 
 export function LogsOnu() {
+    const { error, errorMessage, severityStatus, handleError } = useError();
+
     const [page, setPage] = useState(0);
     const [onu, setOnu] = useState<IOnuLogs[]>([]);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -80,20 +85,27 @@ export function LogsOnu() {
         async function getData(){
             const data = await getOnuLogs(filterParams);
 
-            if(data.success){
-                setOnu(data.responses.response);
+            if(data){
+                if(data.success){
+                    setOnu(data.responses.response);
+                    setPage(0);
+                } else {
+                    setOnu([]);
+                }
+            } else {
+                handleError('error/no-connection-with-API');
+                setOnu([]);
             }
         };
         getData();
     }, [filterParams]);
 
     const visibleRows = useMemo(() => 
-    stableSort(onu).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage,
-    ),
-    [page, rowsPerPage, onu]
-);
+        stableSort(onu).slice(
+            page * rowsPerPage,
+            page * rowsPerPage + rowsPerPage,
+        ), [page, rowsPerPage, onu]
+    );
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
@@ -107,7 +119,8 @@ export function LogsOnu() {
     };
 
     return (
-        <TableContainer component={Paper}>
+        <React.Fragment>
+            <TableContainer component={Paper}>
             <FilterOptions onFilterChange={handleFilterChange}/>
             <ResponsiveTable>
                 <Table aria-label="collapsible table">
@@ -141,6 +154,14 @@ export function LogsOnu() {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </TableContainer>
+            </TableContainer>
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
+                )
+            }
+        </React.Fragment>
     );
 }

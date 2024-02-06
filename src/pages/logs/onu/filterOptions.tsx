@@ -1,33 +1,29 @@
 import { useEffect, useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
 import { getUsers } from "../../../services/apiManageONU/getUsers";
-import { IUsers } from "../../../interfaces/users";
-import { getCities } from "../../../services/apiManageONU/getCities";
-import { IOlt } from "../../../interfaces/IOlt";
 import { getOlt } from "../../../services/apiManageONU/getOlt";
-
+import { getCities } from "../../../services/apiManageONU/getCities";
 import { useLoading } from "../../../hooks/useLoading";
+import { IUsers } from "../../../interfaces/users";
+import { IOlt } from "../../../interfaces/IOlt";
 
 import { Alert, Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
 import { DateOptions, Filter, FilterButtons, FormFilter } from "./style";
 import LoadingButton from '@mui/lab/LoadingButton';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import FilterAltOffOutlinedIcon from '@mui/icons-material/FilterAltOffOutlined';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from "dayjs";
+
 import { useError } from "../../../hooks/useError";
 
 export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
-    const { isLoading, startLoading, stopLoading } = useLoading();
     const {error, handleError, severityStatus, errorMessage } = useError();
 
-    const [viewOlt, setViewOlt] = useState('');
     const [viewDate, setViewDate] = useState<any>({
         viewInitialDate: '',
         viewLastDate: ''
     });
 
-    const [hasFilter, setHasFilter] = useState(false);
     const [users, setUsers] = useState<IUsers[]>([]);
     const [cities, setCities] = useState<ICities[]>([]);
     const [olts, setOlts] = useState<IOlt[]>([]);
@@ -51,7 +47,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     const loadingCities = open.cityFilter && cities.length === 0;
     const loadingOlts = open.oltFilter && olts.length === 0;
 
-    useEffect(() =>{
+    useEffect(() => {
         const today = dayjs();
         setViewDate({
             ...viewDate,
@@ -65,8 +61,6 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
             lastDate: dayjs(today).format('DD-MM-YYYY')
         });
     }, []);
-
-    console.log(dataFiltered)
 
     useEffect(() => {
         let active = true;
@@ -170,13 +164,11 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
 
     const handleOltChange = (_e: unknown, value: any) => {
         if(value){
-            setViewOlt(value.name);
             setDataFiltered({
                 ...dataFiltered,
                 oltId: value.id
             })
         } else {
-            setViewOlt('');
             setDataFiltered({
                 ...dataFiltered,
                 oltId: value
@@ -202,33 +194,15 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         return dayJsFormatDate;
     }
 
-    const handleSubmit = (e: any) =>{
+    const handleSubmit = (e: any) => {
         e.preventDefault();
 
-        if(hasFilter){
-            if(!dataFiltered.initialDate || !dataFiltered.lastDate){
-                handleError('error/expected-date');
-            } else if(dayjs(formatDate(dataFiltered.lastDate)).isBefore(dayjs(formatDate(dataFiltered.initialDate)))){
-                handleError('error/lastDate-isBefore-initialDate');
-            } else {
-                onFilterChange(dataFiltered);
-            }
+        if(!dataFiltered.initialDate || !dataFiltered.lastDate){
+            handleError('error/expected-date');
+        } else if(dayjs(formatDate(dataFiltered.lastDate)).isBefore(dayjs(formatDate(dataFiltered.initialDate)))){
+            handleError('error/lastDate-isBefore-initialDate');
         } else {
-            const today = dayjs();
-            setViewDate({
-                ...viewDate,
-                viewInitialDate: today,
-                viewLastDate: today
-            });
-            setDataFiltered({
-                ...dataFiltered,
-                userId: null,
-                cityId: null,
-                oltId: null,
-                state: 'null'
-            });
-            setViewOlt('');
-            onFilterChange(null);
+            onFilterChange(dataFiltered);
         }
     };
 
@@ -349,7 +323,6 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                         oltFilter: false
                     })}}
                     onChange={handleOltChange}
-                    inputValue={viewOlt}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     options={olts.map(olts => ({id: olts.id, name: olts.name}))}
                     getOptionLabel={(olts) => `${olts.name}`}
@@ -397,26 +370,12 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                 <LoadingButton
                     type="submit"
                     id="send"
-                    loading={isLoading} 
                     loadingPosition="start"
                     variant="outlined"
                     size="small"
                     startIcon={<FilterAltOutlinedIcon />}
-                    onClick={() => {setHasFilter(true)}}
                     >
                     Filtrar
-                </LoadingButton>
-                <LoadingButton
-                    type="submit"
-                    id="clear"
-                    loading={isLoading} 
-                    loadingPosition="start"
-                    variant="outlined"
-                    size="small"
-                    startIcon={<FilterAltOffOutlinedIcon />}
-                    onClick={() => {setHasFilter(false)}}
-                >
-                    Limpar
                 </LoadingButton>
             </FilterButtons>
             {
