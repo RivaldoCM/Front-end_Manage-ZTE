@@ -7,7 +7,7 @@ export interface IAuthOnuProps {
     pon: number,
     serialNumber: string,
     contract: number,
-    isPizzaBox?: boolean[],
+    isPizzaBox?: (boolean | number)[],
     type: string,
     model?: string,
     rxPower?: string,
