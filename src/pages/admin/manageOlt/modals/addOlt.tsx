@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { getCities } from '../../../../services/apiManageONU/getCities';
 import { addOlt } from '../../../../services/apiManageONU/addOlt';
+import { useLoading } from '../../../../hooks/useLoading';
 import { useError } from '../../../../hooks/useError';
 
 import { FormController, DefaultStyledModal, FormModal, CloseButton, SubmitModal } from '../../../../styles/modal';
@@ -18,18 +19,19 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { useLoading } from '../../../../hooks/useLoading';
+
 import { CircularProgress } from '@mui/material';
-import { IOltProps } from '../../../../interfaces/IOltProps';
+import { IOlt } from '../../../../interfaces/IOlt';
 
 export function AddOltModal(props: any) {
     const { error, errorMessage, severityStatus, handleError } = useError();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
     const [cities, setCities] = useState<Array<any> | null>(null);
-    const [form, setForm] = useState<IOltProps>({
+    const [form, setForm] = useState<IOlt>({
+        id: 0,
         name: '',
-		cityId: 1,
+		city_id: 1,
 		host: '',
 		type: 10,
 		isPizzaBox: 1,
@@ -108,12 +110,12 @@ export function AddOltModal(props: any) {
                                 <FormControl fullWidth>
                                     <InputLabel id="demo-simple-select-label">Cidades</InputLabel>
                                     <Select
-                                    sx={{maxWidth: '205px'}}
+                                        sx={{maxWidth: '205px'}}
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
                                         name="cityId"
                                         label="Cidades"
-                                        value={form.cityId}
+                                        value={form.city_id}
                                         onChange={handleFormChange}
                                     >
                                         {

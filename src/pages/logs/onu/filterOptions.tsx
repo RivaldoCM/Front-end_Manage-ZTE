@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
+
 import { getUsers } from "../../../services/apiManageONU/getUsers";
 import { getOlt } from "../../../services/apiManageONU/getOlt";
 import { getCities } from "../../../services/apiManageONU/getCities";
-import { useLoading } from "../../../hooks/useLoading";
 import { IUsers } from "../../../interfaces/users";
 import { IOlt } from "../../../interfaces/IOlt";
+import { ICities } from "../../../interfaces/ICities";
+import { useError } from "../../../hooks/useError";
 
-import { Alert, Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import { Alert, Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
 import { DateOptions, Filter, FilterButtons, FormFilter } from "./style";
 import LoadingButton from '@mui/lab/LoadingButton';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import { useError } from "../../../hooks/useError";
 
 export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     const {error, handleError, severityStatus, errorMessage } = useError();
@@ -134,7 +135,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         });
     };
 
-    const handleUserChange = (_e: unknown, value: any) => {
+    const handleUserChange = (_e: unknown, value: IUsers | null) => {
         if(value){
             setDataFiltered({
                 ...dataFiltered,
@@ -148,7 +149,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         }
     };
 
-    const handleCityChange = (_e: unknown, value: any) => {
+    const handleCityChange = (_e: unknown, value: ICities | null) => {
         if(value){
             setDataFiltered({
                 ...dataFiltered,
@@ -162,7 +163,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         }
     };
 
-    const handleOltChange = (_e: unknown, value: any) => {
+    const handleOltChange = (_e: unknown, value: IOlt | null) => {
         if(value){
             setDataFiltered({
                 ...dataFiltered,
@@ -176,7 +177,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         }
     };
 
-    const handleStateChange = (e: any) => {
+    const handleStateChange = (e: SelectChangeEvent<string>) => {
         setDataFiltered({
             ...dataFiltered,
             state: e.target.value
@@ -194,7 +195,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         return dayJsFormatDate;
     }
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if(!dataFiltered.initialDate || !dataFiltered.lastDate){
@@ -260,10 +261,10 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                             InputProps={{
                                 ...params.InputProps,
                                 endAdornment: (
-                                    <>
+                                    <React.Fragment>
                                         {loading ? <CircularProgress color="inherit" size={20} /> : null}
                                         {params.InputProps.endAdornment}
-                                    </>
+                                    </React.Fragment>
                                 ),
                             }}
                         />
@@ -284,8 +285,8 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                     })}}
                     onChange={handleCityChange}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
-                    options={cities.map(city => ({id: city.id, name: city.name}))}
-                    getOptionLabel={(city) => `${city.name}`}
+                    options={cities}
+                    getOptionLabel={(city) => city.name}
                     loading={loadingCities}
                     renderOption={(props, option) => {
                         return (
@@ -301,17 +302,17 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                             InputProps={{
                                 ...params.InputProps,
                                 endAdornment: (
-                                    <>
+                                    <React.Fragment>
                                         {loadingCities ? <CircularProgress color="inherit" size={20} /> : null}
                                         {params.InputProps.endAdornment}
-                                    </>
+                                    </React.Fragment>
                                 ),
                             }}
                         />
                     )}
                 />
                 <Autocomplete
-                    id="asynchronous-cities"
+                    id="asynchronous-olts"
                     sx={{ width: 200 }}
                     open={open.oltFilter}
                     onOpen={() => { setOpen({
@@ -324,8 +325,8 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                     })}}
                     onChange={handleOltChange}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
-                    options={olts.map(olts => ({id: olts.id, name: olts.name}))}
-                    getOptionLabel={(olts) => `${olts.name}`}
+                    options={olts}
+                    getOptionLabel={(olt) => olt.name}
                     loading={loadingOlts}
                     renderOption={(props, option) => {
                         return (
@@ -341,10 +342,10 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                             InputProps={{
                                 ...params.InputProps,
                                 endAdornment: (
-                                    <>
+                                    <React.Fragment>
                                         {loadingOlts ? <CircularProgress color="inherit" size={20} /> : null}
                                         {params.InputProps.endAdornment}
-                                    </>
+                                    </React.Fragment>
                                 ),
                             }}
                         />

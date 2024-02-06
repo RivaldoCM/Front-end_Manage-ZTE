@@ -175,7 +175,7 @@ export function HandleManageOlt(){
     const [page, setPage] = useState(0);
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [ olt, setOlt ] = useState<IOlt[]>([]);
+    const [olt, setOlt] = useState<IOlt[]>([]);
 
     useEffect(() => {
         async function olts(){
