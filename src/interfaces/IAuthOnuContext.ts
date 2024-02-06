@@ -11,6 +11,6 @@ type IAuthOnuContext = {
     onuType: string;
     onuModel: string;
     oltType: string;
-    isPizzaBox: boolean[];
+    isPizzaBox: (number | boolean)[];
     voalleAccessPointId: number[];
 }

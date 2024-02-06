@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { getToken } from "./getToken";
-import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps";
+import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps.js";
 
 export async function updateConnection(props: IUpdateConnectionProps){
     let modelOLTVoalle: number = 0;
@@ -16,7 +16,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "fiberMac": "",
         "mac": "",
         "password": props.pppoePassword, //PPPoE
-        "equipmentType": props.onuType,
+        "equipmentType": modelOLTVoalle,
         "oltId": props.onuId,
         "slotOlt": props.slot,
         "portOlt": props.pon,

@@ -1,8 +1,7 @@
 import axios from "axios";
-import { IOltProps } from "../../interfaces/IOltProps";
+import { IOlt } from "../../interfaces/IOlt.js";
 
-export async function editOlt(form: IOltProps){
-
+export async function editOlt(form: IOlt){
     const res = await axios({
         method: 'put',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt`,

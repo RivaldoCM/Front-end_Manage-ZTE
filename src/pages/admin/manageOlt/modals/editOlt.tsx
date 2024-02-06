@@ -30,7 +30,7 @@ export function EditOltModal(props: any) {
 	const [form, setForm] = useState({
 		id: 0,
 		name: '',
-		cityId: 1,
+		city_id: 1,
 		host: '',
 		type: 10,
 		isPizzaBox: 0,
@@ -129,7 +129,7 @@ export function EditOltModal(props: any) {
 											id="demo-simple-select"
 											name="cityId"
 											label="Cidades"
-											value={form.cityId}
+											value={form.city_id}
 											onChange={handleFormChange}
 										>
 											{
