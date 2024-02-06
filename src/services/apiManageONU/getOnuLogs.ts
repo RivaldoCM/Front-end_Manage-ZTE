@@ -1,22 +1,8 @@
 import axios from "axios";
 import dayjs from "dayjs";
 
+import { formatDateToISOFormat } from "../../config/formatDate";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
-
-export function formatDataToEnFormat(date: string, last: boolean){
-    const splitedDate = date.split('-');
-    const formated = `${splitedDate[1]}-${splitedDate[0]}-${splitedDate[2]}`
-
-    if(last){
-        //O 'Z' ESTA PARA INDICAR QUUE É FORMATO UTC E O RESTANTE COMBINADO PARA ISO 8601,
-        //ASSIM A DATA É UTC MAS SEM SOMAR -03:00 DO NOSSO HORARIO LOCAL
-        const dateISO = dayjs(formated).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
-        return dateISO;
-    }
-
-    const toISOFormat = dayjs(formated).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z';
-    return toISOFormat;
-}
 
 export async function getOnuLogs(props: IFilterOnuLogs): Promise<IResponseData | IResponseError>{
     let urlParams = '';
@@ -24,18 +10,18 @@ export async function getOnuLogs(props: IFilterOnuLogs): Promise<IResponseData |
     let formatedLastDate;
 
     if(!props){
-        const startOfDay = formatDataToEnFormat(dayjs().format('DD-MM-YYYY'), false);
-        const endOfDay = formatDataToEnFormat(dayjs().format('DD-MM-YYYY'), true);
+        const startOfDay = formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), false);
+        const endOfDay = formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), true);
 
         urlParams = `getLogsOnu/${startOfDay}/${endOfDay}/null/null/null/null`
     } else {
         const { initialDate, lastDate, userId, cityId, oltId, state } = props;
         if(initialDate){
-            formatedInitialDate = formatDataToEnFormat(initialDate, false);
+            formatedInitialDate = formatDateToISOFormat(initialDate, false);
         }
 
         if(lastDate){
-            formatedLastDate = formatDataToEnFormat(lastDate, true);
+            formatedLastDate = formatDateToISOFormat(lastDate, true);
         }
 
         urlParams = `getLogsOnu/${formatedInitialDate || 'null'}/${formatedLastDate || 'null'}/${userId || 'null'}/${cityId || 'null'}/${oltId || 'null'}/${state || 'null'}`

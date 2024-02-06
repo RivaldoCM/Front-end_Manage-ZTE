@@ -8,14 +8,14 @@ import { IUsers } from "../../../interfaces/users";
 import { IOlt } from "../../../interfaces/IOlt";
 import { ICities } from "../../../interfaces/ICities";
 import { useError } from "../../../hooks/useError";
+import { formatDateToEn } from "../../../config/formatDate";
 
-import { Alert, Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
-import { DateOptions, Filter, FilterButtons, FormFilter } from "./style";
 import LoadingButton from '@mui/lab/LoadingButton';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import { Alert, Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
+import { DateOptions, Filter, FilterButtons, FormFilter } from "./style";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
 
 export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
     const {error, handleError, severityStatus, errorMessage } = useError();
@@ -184,23 +184,12 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         });
     };
 
-    const formatDate = (date: string) => {
-        let dates = date.split('-');
-
-        const day = dates[0];
-        const month = dates[1];
-        const year = dates[2];
-
-        const dayJsFormatDate = `${month}/${day}/${year}`;
-        return dayJsFormatDate;
-    }
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if(!dataFiltered.initialDate || !dataFiltered.lastDate){
             handleError('error/expected-date');
-        } else if(dayjs(formatDate(dataFiltered.lastDate)).isBefore(dayjs(formatDate(dataFiltered.initialDate)))){
+        } else if(dayjs(formatDateToEn(dataFiltered.lastDate)).isBefore(dayjs(formatDateToEn(dataFiltered.initialDate)))){
             handleError('error/lastDate-isBefore-initialDate');
         } else {
             onFilterChange(dataFiltered);

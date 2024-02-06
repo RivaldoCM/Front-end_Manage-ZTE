@@ -19,8 +19,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ResponsiveTable } from './style';
 import { Alert, TablePagination } from '@mui/material';
-import { useLoading } from '../../../hooks/useLoading';
-
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -33,6 +31,7 @@ function stableSort<T>(array: readonly T[]) {
 function Row(props: IOnuLogsProps) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
+    console.log(row)
 
     return (
         <React.Fragment>
@@ -46,17 +45,18 @@ function Row(props: IOnuLogsProps) {
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
-                <TableCell align="left">{row.created_at}</TableCell>
+                <TableCell align="center">{row.created_at}</TableCell>
                 <TableCell component="th" scope="row">
                     {row.User.name}
                 </TableCell>
-                <TableCell align="left">{row.City.name}</TableCell>
-                <TableCell align="left">{row.Olt.name}</TableCell>
-                <TableCell align="left">{row.slot}</TableCell>
-                <TableCell align="left">{row.pon}</TableCell>
-                <TableCell align="left">{row.serial_onu}</TableCell>
-                <TableCell align="left">{row.pppoe}</TableCell>
-                <TableCell align="left">{row.rx_power}</TableCell>
+                <TableCell align="center">{row.City.name}</TableCell>
+                <TableCell align="center">{row.Olt.name}</TableCell>
+                <TableCell align="center">{row.slot}</TableCell>
+                <TableCell align="center">{row.pon}</TableCell>
+                <TableCell align="center">{row.serial_onu}</TableCell>
+                <TableCell align="center">{row.pppoe}</TableCell>
+                <TableCell align="center">{row.rx_power}</TableCell>
+                <TableCell align="center">{row.is_auth ? 'Provisionada': 'Desprovisionada'}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -127,15 +127,16 @@ export function LogsOnu() {
                     <TableHead>
                         <TableRow>
                             <TableCell />
-                            <TableCell>Data</TableCell>
-                            <TableCell>Provisionado por</TableCell>
-                            <TableCell align="left">Cidade</TableCell>
-                            <TableCell align="left">OLT</TableCell>
-                            <TableCell align="left">Placa</TableCell>
-                            <TableCell align="left">Pon</TableCell>
-                            <TableCell align="left">Serial</TableCell>
-                            <TableCell align="left">PPPoE</TableCell>
-                            <TableCell align="left">Sinal recebido pela OLT</TableCell>
+                            <TableCell align="center">Data</TableCell>
+                            <TableCell align="center">Tecnico</TableCell>
+                            <TableCell align="center" sx={{width: 150}}>Cidade</TableCell>
+                            <TableCell align="center">OLT</TableCell>
+                            <TableCell align="center">Placa</TableCell>
+                            <TableCell align="center">Pon</TableCell>
+                            <TableCell align="center">Serial</TableCell>
+                            <TableCell align="center">PPPoE</TableCell>
+                            <TableCell align="center">Sinal(dBM)</TableCell>
+                            <TableCell align="center">Estado</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

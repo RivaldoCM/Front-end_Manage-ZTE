@@ -1,5 +1,4 @@
 type IOnuLogs = {
-
     id: number;
     created_at: string;
     slot: number;
@@ -7,6 +6,7 @@ type IOnuLogs = {
     serial_onu: string;
     pppoe: string;
     rx_power: string;
+    is_auth: boolean;
     User:{
         name: string;
     }
@@ -16,7 +16,6 @@ type IOnuLogs = {
     Olt: {
         name: string;
     }
-
 }
 
 type IOnuLogsProps = {
@@ -28,6 +27,7 @@ type IOnuLogsProps = {
         serial_onu: string;
         pppoe: string;
         rx_power: string;
+        is_auth: boolean;
         User:{
             name: string;
         }
