@@ -1,6 +1,6 @@
 
 import { ReactNode, createContext, useState, Dispatch, SetStateAction, useEffect } from "react";
-import { handleMessage } from "../config/handleResponse";
+import { handleMessage } from "../config/handleMessage";
 
 export const ResponseContext = createContext<{
     response: boolean;
