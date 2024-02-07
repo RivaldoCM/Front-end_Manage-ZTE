@@ -11,6 +11,8 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import { useResponse } from "../../hooks/useResponse";
+import { Alert } from "@mui/material";
 
 interface TabPanelProps {
     className?: string
@@ -54,6 +56,7 @@ function a11yProps(index: number) {
 }
 
 export function Provisionamento(){
+    const { response, responseMassage, severityStatus } = useResponse();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
 
 	const [value, setValue] = useState(0); //MUI-Core
@@ -109,6 +112,12 @@ export function Provisionamento(){
 					</Box>
 				</div>
 			</div>
+            {
+                response ?
+                    <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
+                :
+                    <></>
+            }
         </Container>
     )
 }

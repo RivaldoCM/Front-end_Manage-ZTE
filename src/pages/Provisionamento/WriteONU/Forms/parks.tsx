@@ -18,12 +18,14 @@ import { IOnu } from "../../../../interfaces/IOnus";
 import { InputContainer } from "../../../../styles/globalStyles";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Alert, Button, CircularProgress, TextField } from "@mui/material";
+import { useResponse } from "../../../../hooks/useResponse";
 
 
 export function PARKSForm({onu}: IOnu){
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
+    const { setFetchResponseMessage } = useResponse();
     const { error, errorMessage, severityStatus, handleError } = useError();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -97,10 +99,10 @@ export function PARKSForm({onu}: IOnu){
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
-                    handleError(hasAuth.messages.message);
+                    setFetchResponseMessage(hasAuth.messages.message);
                     return;
                 } else{
-                    handleError(hasAuth.responses.status!);
+                    setFetchResponseMessage(hasAuth.responses.status!);
                     setOnus([]);
                     setAuthOnu({
                         ip: [],

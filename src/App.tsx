@@ -5,16 +5,23 @@ import { AppRoutes } from "./routes";
 import { AuthContextProvider } from "./contexts/AuthContext";
 import { GlobalStyle } from "./styles/globalStyles";
 import { DataPickerContext } from "./contexts/DataPickerContext";
+import { HandleResponseContextProvider } from "./contexts/handleResponseContext";
+import { Alert } from "@mui/material";
+import { useResponse } from "./hooks/useResponse";
 
 export function App() {
+
+
     return (
         <AuthContextProvider>
             <DataPickerContext>
-                <BrowserRouter>
-                    <AppRoutes />
-                    <Analytics />
-                    <GlobalStyle />
-                </BrowserRouter>
+                <HandleResponseContextProvider>
+                    <BrowserRouter>
+                        <AppRoutes />
+                        <Analytics />
+                        <GlobalStyle />
+                    </BrowserRouter>
+                </HandleResponseContextProvider>
             </DataPickerContext>
         </AuthContextProvider>
     );
