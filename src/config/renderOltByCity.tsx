@@ -19,13 +19,15 @@ export const handleOltByCity = (olts: IOlt[] | undefined) => {
                 )
             } else {
                 //OLT's DA MESMA REGIÃO POREM EM LOCAIS DIFERENTES
-                let match = olt.name.match(/([a-zA-Z]_+)/);
 
+
+                let match = olt.name.match(/([a-zA-Z]+)/);
                 for(let name of oltNames){
-                    if(match && !name.includes(match[1])){
+                    if(match && !name.includes(match[1]) && !oltNames.has(match[1])){
+                        console.log(match)
                         return(
                             <MenuItem key={index} value={match[1]}>
-                                {match[1]}
+                                {match.input}
                             </MenuItem>
                         )
                     }
