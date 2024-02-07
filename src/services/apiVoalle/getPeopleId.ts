@@ -17,6 +17,6 @@ export async function getPeopleId(cpf:string): Promise<any>{
     }).catch((_err) => {
         return null;
     });
-
+    
     return peopleId;
 }

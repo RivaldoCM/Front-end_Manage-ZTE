@@ -1,7 +1,7 @@
 import axios from "axios";
-import { IOltProps } from "../../interfaces/IOltProps";
+import { IOlt } from "../../interfaces/IOlt";
 
-export async function addOlt(form: IOltProps){
+export async function addOlt(form: IOlt){
     // ISSO ACONTECE PQ TODO INPUT RETORNA STRING, E NESTE CASO PRECISA DE NUMBER
     form.voalleAccessPointId = form.voalleAccessPointId * 1; 
 

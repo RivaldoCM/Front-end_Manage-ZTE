@@ -124,8 +124,24 @@ export function useError(){
                 setErrorMessage('Não foi possivel criar uma nova OLT.');
                 setSeverityStatus('error');
             break;
+            case 'error/no-connection-with-API':
+                setErrorMessage('Erro ao conectar a API, verifique com o suporte.');
+                setSeverityStatus('error');
+            break;
+            case 'error/expected-date':
+                setErrorMessage('Você precisa informar a data nos filtros.');
+                setSeverityStatus('error');
+            break;
+            case 'error/lastDate-isBefore-initialDate':
+                setErrorMessage('A ultima data não pode ser antes da primeira.');
+                setSeverityStatus('error');
+            break;
+            case 'error/initial-isAfter-lastDate':
+                setErrorMessage('A primeira data não pode ser depois da ultima.');
+                setSeverityStatus('error');
+            break;
             default:
-                handleError('Erro interno, verifique com o suporte.');
+                setErrorMessage('Erro interno, verifique com o suporte.');
                 setSeverityStatus('error');
             break;
         }

@@ -3,7 +3,7 @@ export type IResponseData = {
     messages: null;
     responses: {
         status: string | null;
-        response: string | number | Object | any[] | undefined;
+        response: any;
     };
 }
 

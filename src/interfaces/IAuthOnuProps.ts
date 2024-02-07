@@ -1,20 +1,18 @@
-import { WriteONUProps } from "./WriteONUProps";
-
-export interface IDataOnu {
-    ip?: string;
-    signal?: string;
-    placa: number; 
-    pon: number; 
-    model: string; 
-    serial: string; 
-    accessPoint: number[];
-}
-
-export interface IAuthOnuProps extends WriteONUProps{
-    dataOnu: IDataOnu,
-    cpf: string,
-    pppoe: string,
-    pppoePass: string,
-    wifiSSID: string,
-    wifiPass: string,
+export interface IAuthOnuProps {
+    userId: number | undefined,
+    cityId: number,
+    oltId: number,
+    ip: string[],
+    slot?: number,
+    pon: number,
+    serialNumber: string,
+    contract: number,
+    isPizzaBox?: (boolean | number)[],
+    type: string,
+    model?: string,
+    rxPower?: string,
+    pppoeUser: string,
+    pppPass?: string,
+    wifiSSID?: string,
+    wifiPass?: string,
 }

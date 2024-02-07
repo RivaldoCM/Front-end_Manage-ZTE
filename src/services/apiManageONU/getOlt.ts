@@ -1,8 +1,8 @@
 import axios from "axios";
-import { SetStateAction } from 'react';
-import { Olt } from "../../interfaces/olt";
 
-export async function getOlt(type: string): Promise<SetStateAction<Olt[]>>{
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
+
+export async function getOlt(type: string): Promise<IResponseData | IResponseError>{
     const oltData = await axios({
         method: 'get',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt/${type}`,
@@ -11,8 +11,9 @@ export async function getOlt(type: string): Promise<SetStateAction<Olt[]>>{
         },
     }).then((response) => {
         return response.data;
-    }).catch((err) => {
-        return err.response.data.messages.message;
+    }).catch(() => {
+        return undefined;
     });
+    
     return oltData;
 }

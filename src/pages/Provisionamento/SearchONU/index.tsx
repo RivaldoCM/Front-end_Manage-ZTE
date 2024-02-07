@@ -1,69 +1,130 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { SearchONUProps } from "../../../interfaces/SearchONUProps";
+import { useAuthOnu } from "../../../hooks/useAuthOnu";
+import { useError } from "../../../hooks/useError";
+import { useLoading } from "../../../hooks/useLoading";
+import { getOlt } from "../../../services/apiManageONU/getOlt";
 import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
+import { isAlphaNumeric } from "../../../config/regex";
+import { handleOltByCity } from "../../../config/renderOltByCity";
 
 import { Form } from './style';
 import { InputContainer } from "../../../styles/globalStyles";
-import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Alert } from "@mui/material";
 
-export function SearchONU(props: SearchONUProps) {
+export function SearchONU() {
+    const { authOnu, setAuthOnu, setViewOnlyOlt, viewOnlyOlt, setOnus  } = useAuthOnu();
+    const { isLoading, startLoading, stopLoading } = useLoading();
+    const { error, errorMessage, severityStatus, handleError } = useError();
+
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
-    const handleMapOltData: any = () => {
-
-        if(props.type === 'zte'){
-            return(
-                props.OltInfo.map((option: any) => {
-                    return(
-                        <MenuItem key={option.id} value={option.name}>
-                            {option.name}
-                        </MenuItem>
-                    )
-                })
-            );
-        }else{
-            return(
-                props.OltInfo.map((subArray) => {
-                    if(subArray.length <= 4){
-                        return(
-                            <MenuItem key="TOMBOS" value="TOMBOS">
-                                TOMBOS
-                            </MenuItem>
-                        );
-                    }else{
-                        return subArray.map((data) => (
-                            <MenuItem key={data.id} value={data.name}>
-                                {data.name}
-                            </MenuItem>
-                        ));
+    useEffect(() => {
+        switch(authOnu.oltType){
+            case 'zte':
+                async function oltZte(){
+                    const oltData = await getOlt('zte');
+                    if(oltData){
+                        if(oltData.success){
+                            setViewOnlyOlt(oltData.responses.response);
+                            setAuthOnu({
+                                ...authOnu,
+                                city: oltData.responses.response[0].name
+                            });
+                        }
+                    } else {
+                        setViewOnlyOlt([]);
+                        handleError('error/no-connection-with-API');
                     }
-                })
-            );
+                }
+                oltZte();
+            break;
+            case 'parks':
+                async function oltParks(){
+                    const oltData = await getOlt('parks');
+                    if(oltData){
+                        if(oltData.success){
+                            setViewOnlyOlt(oltData.responses.response);
+                            setAuthOnu({
+                                ...authOnu,
+                                city: oltData.responses.response[0].name
+                            })
+                        }
+                    } else {
+                        setViewOnlyOlt([]);
+                        handleError('error/no-connection-with-API');
+                    }
+                }
+                oltParks();
+            break;
         }
-    }
+    }, [authOnu.oltType]);
 
-    const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { props.setCity(e.target.value); };
-    const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); };
+    useEffect(() => {
+        //LIMPANDO OS DADOS DE ONU'S CASO TROQUE DE CIDADE
+        setOnus([]);
+    }, [authOnu.city]);
+
+    const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
+        setAuthOnu({
+        ...authOnu,
+        city: e.target.value
+    })};
+    
+    const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); }
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        props.setDataFromApi([]);
-        props.setSerialNumber('');
+        setAuthOnu({
+            ...authOnu,
+            ip: [],
+            oltId: [],
+            isPizzaBox: [],
+            voalleAccessPointId: []
+        });
+        setOnus([]);
+        startLoading();
 
-        const verifyAlphaNumber = /^[a-zA-Z0-9_]+$/;
-    
-        if(props.isLoading){
-            const err = 'warning/has-action-in-progress';
-            props.handleError(err);
-        }else if(!verifyAlphaNumber.test(matchSerialNumber)){
-            props.handleError('info/non-expect-caracter-not-alphaNumeric');
+        if(isLoading){
+            handleError('warning/has-action-in-progress');
+        }else if(!isAlphaNumeric.test(matchSerialNumber)){
+            handleError('info/non-expect-caracter-not-alphaNumeric');
         }else{
-            verifyIfOnuExists({...props, matchSerialNumber});
+            const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
+            let ips: string[] = [];
+
+            olt.map((data) => {
+                ips.push(data.host);
+                setAuthOnu((prevState) => ({
+                    ...prevState,
+                    ip: [...prevState.ip, data.host],
+                    voalleAccessPointId: [...prevState.voalleAccessPointId, data.voalleAccessPointId],
+                    oltId: [...prevState.oltId, data.id],
+                    cityId: data.city_id,
+                    isPizzaBox: [...prevState.isPizzaBox, data.isPizzaBox],
+                }));
+            });
+
+            const response = await verifyIfOnuExists({
+                ip: ips, 
+                oltType: authOnu.oltType, 
+                matchSerialNumber: matchSerialNumber
+            });
+            stopLoading();
+
+            if(response){
+                if(!response.success){
+                    handleError(response.messages.message);
+                    return;
+                }
+                setOnus(response.responses.response);
+            } else {
+                handleError('error/no-connection-with-API');
+            }
         }
     }
 
@@ -78,10 +139,10 @@ export function SearchONU(props: SearchONUProps) {
                         id='select-city'
                         select
                         label="Cidades"
-                        value={props.city}
+                        value={authOnu.city}
                         onChange={handleCityChange}
                     >
-                        {handleMapOltData()}
+                        {handleOltByCity(viewOnlyOlt)}
                     </TextField>
                 </div>
             </InputContainer>
@@ -99,7 +160,7 @@ export function SearchONU(props: SearchONUProps) {
                 </div>
             </InputContainer>
             {
-                (props.isLoading && props.serialNumber?.length === 0? 
+                (isLoading ? 
                     <CircularProgress className="MUI-CircularProgress" color="primary"/>
                 :
                     (matchSerialNumber.length < 4 ?
@@ -111,6 +172,13 @@ export function SearchONU(props: SearchONUProps) {
                             Procurar ONU
                         </Button>
                     )
+                )
+            }
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
                 )
             }
         </Form>
