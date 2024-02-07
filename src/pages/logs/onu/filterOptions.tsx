@@ -260,7 +260,6 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                     )}}
                 />
                 <Autocomplete
-                    filterSelectedOptions
                     id="asynchronous-cities"
                     sx={{ width: 200 }}
                     open={open.cityFilter}
