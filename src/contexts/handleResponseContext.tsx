@@ -1,16 +1,17 @@
 
 import { ReactNode, createContext, useState, Dispatch, SetStateAction, useEffect } from "react";
 import { handleMessage } from "../config/handleMessage";
+import { AlertColor } from "@mui/material";
 
 export const ResponseContext = createContext<{
     response: boolean;
-    setResponse: any,
+    setResponse: Dispatch<SetStateAction<boolean>>,
     responseMassage: string;
-    setResponseMassage: any;
-    severityStatus: any;
-    setSeverityStatus: any;
+    setResponseMassage: Dispatch<SetStateAction<string>>;
+    severityStatus: AlertColor;
+    setSeverityStatus: Dispatch<SetStateAction<AlertColor>>;
     fetchResponseMessage: string | null; 
-    setFetchResponseMessage: any;
+    setFetchResponseMessage: Dispatch<SetStateAction<string | null>>;
 } | undefined>(undefined);
 
 export function HandleResponseContextProvider({ children }: { children: ReactNode }){
