@@ -6,6 +6,7 @@ type IOnuLogs = {
     serial_onu: string;
     pppoe: string;
     rx_power: string;
+    onuRx_power: string;
     is_auth: boolean;
     User:{
         name: string;
@@ -27,6 +28,7 @@ type IOnuLogsProps = {
         serial_onu: string;
         pppoe: string;
         rx_power: string;
+        onuRx_power: string;
         is_auth: boolean;
         User:{
             name: string;

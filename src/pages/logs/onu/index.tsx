@@ -56,6 +56,7 @@ function Row(props: IOnuLogsProps) {
                 <TableCell align="center">{row.serial_onu}</TableCell>
                 <TableCell align="center">{row.pppoe}</TableCell>
                 <TableCell align="center">{row.rx_power}</TableCell>
+                <TableCell align="center">{row.onuRx_power}</TableCell>
                 <TableCell align="center">{row.is_auth ? 'Provisionada': 'Desprovisionada'}</TableCell>
             </TableRow>
             <TableRow>
@@ -135,7 +136,8 @@ export function LogsOnu() {
                             <TableCell align="center">Pon</TableCell>
                             <TableCell align="center">Serial</TableCell>
                             <TableCell align="center">PPPoE</TableCell>
-                            <TableCell align="center">Sinal(dBM)</TableCell>
+                            <TableCell align="center">Sinal recebido pela OLT(dBM)</TableCell>
+                            <TableCell align="center">Sinal recebido pela ONU(dBM)</TableCell>
                             <TableCell align="center">Estado</TableCell>
                         </TableRow>
                     </TableHead>

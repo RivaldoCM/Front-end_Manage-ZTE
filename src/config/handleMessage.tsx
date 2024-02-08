@@ -1,0 +1,163 @@
+import { AlertColor } from "@mui/material"
+
+export const handleMessage = (res: string): {responseMessage: string, severityStatus: AlertColor} => {
+
+    switch(res){
+        case 'warning/has-action-in-progress':
+            return{
+                responseMessage: 'Aguarde a ultima ação ser finalizada.',
+                severityStatus: 'warning'
+            }
+        case 'warning/equipament-not-found':
+            return{
+                responseMessage: 'ONU não encontrada, tente novamente.',
+                severityStatus: 'warning'
+            }
+        case 'error/connection-issue':
+            return{
+                responseMessage: 'Não foi possível acessar a OLT.',
+                severityStatus: 'error'
+            }
+        case 'error/internal-issue':
+            return{
+                responseMessage: 'Erro interno, verifique com o suporte.',
+                severityStatus: 'error'
+            }
+        case 'success/write-data-complete':
+            return{
+                responseMessage: 'ONU Provisionada com sucesso.',
+                severityStatus: 'success'
+            }
+        case 'info/non-expect-caracter-not-alphaNumeric':
+            return{
+                responseMessage: 'Digite apenas letras e/ou números.',
+                severityStatus: 'info'
+            }
+        case 'info/non-expect-caracter-NAN':
+            return{
+                responseMessage: 'Digite apenas números no campo de contrato.',
+                severityStatus: 'info'
+            }
+        case 'info/required-input':
+            return{
+                responseMessage: 'Preencha todos os campos.',
+                severityStatus: 'info'
+            }
+        case 'ERR_NETWORK':
+            return{
+                responseMessage: 'Não foi possível se conectar ao serviço.',
+                severityStatus: 'error'
+            }
+        case 'info/wifi-password-did-not-match':
+            return{
+                responseMessage: 'Não são permitidos carcteres especiais na senha.',
+                severityStatus: 'info'
+            }
+        case 'info/wrong-type-passoword':
+            return{
+                responseMessage: 'A senha do wifi deve ter no minimo 8 caracteres.',
+                severityStatus: 'info'
+            }
+        case 'info/wifi-ssid-did-not-match':
+            return{
+                responseMessage: 'O único caracter especial permitido no nome do wifi é o underline(_).',
+                severityStatus: 'info'
+            }
+        case 'success/user-updated':
+            return{
+                responseMessage: 'Usuário atualizado com sucesso.',
+                severityStatus: 'success'
+            }
+        case 'success/user-created':
+            return{
+                responseMessage: 'Usuário criado com sucesso.',
+                severityStatus: 'success'
+            }
+        case 'error/already-exists-email':
+            return{
+                responseMessage: 'Este email já existe na base de dados.',
+                severityStatus: 'error'
+            }
+        case 'Invalid Token':
+            return{
+                responseMessage: 'Usuário não autenticado, você precisa fazer login novamente.',
+                severityStatus: 'error'
+            }
+        case 'Invalid Secret':
+            return{
+                responseMessage: 'Erro interno, verifique com o suporte.',
+                severityStatus: 'error'
+            }
+        case 'Invalid Email':
+            return{
+                responseMessage: 'Este Email não existe em nossa base de dados.',
+                severityStatus: 'error'
+            }
+        case 'Invalid Password':
+            return{
+                responseMessage: 'A senha está incorreta, verifique novamente.',
+                severityStatus: 'error'
+            }
+        case 'warning/invalid-cpf-input':
+            return{
+                responseMessage: 'CPF ou CNPJ inválidos.',
+                severityStatus: 'warning'
+            }
+        case 'unable-load-data':
+            return{
+                responseMessage: 'Não foi possível carregar os dados, tente fazer login novamente.',
+                severityStatus: 'error'
+            }
+        case 'success/onu-delete-completed':
+            return{
+                responseMessage: 'ONU desprovisionada com sucesso.',
+                severityStatus: 'success'
+            }
+        case 'success/olt-deleted':
+            return{
+                responseMessage: 'OLT deletada com sucesso.',
+                severityStatus: 'success'
+            }
+        case 'success/new-olt-created':
+            return{
+                responseMessage: 'OLT criada com sucesso.',
+                severityStatus: 'success'
+            }
+        case 'success/olt-edited':
+            return{
+                responseMessage: 'OLT editada com sucesso.',
+                severityStatus: 'success'
+            }
+        case 'error/impossible-to-create-new-data':
+            return{
+                responseMessage: 'Não foi possivel criar uma nova OLT.',
+                severityStatus: 'error'
+            }
+        case 'error/no-connection-with-API':
+            return{
+                responseMessage: 'Erro ao conectar a API, verifique com o suporte.',
+                severityStatus: 'error'
+            }
+        case 'error/expected-date':
+            return{
+                responseMessage: 'Você precisa informar a data nos filtros.',
+                severityStatus: 'error'
+            }
+        case 'error/lastDate-isBefore-initialDate':
+            return{
+                responseMessage: 'A ultima data não pode ser antes da primeira.',
+                severityStatus: 'error'
+            }
+        case 'error/initial-isAfter-lastDate':
+            return{
+                responseMessage: 'A primeira data não pode ser depois da ultima.',
+                severityStatus: 'error'
+            }
+
+        default:
+            return{
+                responseMessage: 'Erro interno, verifique com o suporte.',
+                severityStatus: 'error'
+            }
+        }
+    }
