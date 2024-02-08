@@ -1,24 +1,25 @@
 
 import { ReactNode, createContext, useState, Dispatch, SetStateAction, useEffect } from "react";
 import { handleMessage } from "../config/handleMessage";
+import { AlertColor } from "@mui/material";
 
 export const ResponseContext = createContext<{
     response: boolean;
-    setResponse: any,
+    setResponse: Dispatch<SetStateAction<boolean>>,
     responseMassage: string;
-    setResponseMassage: any;
-    severityStatus: any;
-    setSeverityStatus: any;
+    setResponseMassage: Dispatch<SetStateAction<string>>;
+    severityStatus: AlertColor | undefined;
+    setSeverityStatus: Dispatch<SetStateAction<AlertColor | undefined>>;
     fetchResponseMessage: string | null; 
-    setFetchResponseMessage: any;
+    setFetchResponseMessage: Dispatch<SetStateAction<string | null>>;
 } | undefined>(undefined);
 
 export function HandleResponseContextProvider({ children }: { children: ReactNode }){
     const [response, setResponse] = useState(false);
     const [responseMassage, setResponseMassage] = useState('');
-    const [severityStatus, setSeverityStatus] = useState<any>();
+    const [severityStatus, setSeverityStatus] = useState<AlertColor | undefined>();
     const [fetchResponseMessage, setFetchResponseMessage] = useState<string | null>(null);
-
+    
     useEffect(() => {
         if(fetchResponseMessage){
             const res = handleMessage(fetchResponseMessage);
@@ -32,7 +33,8 @@ export function HandleResponseContextProvider({ children }: { children: ReactNod
         if(response){
             setTimeout(() => {
                 setResponse(false);
-            }, 10000);
+                setFetchResponseMessage(null);
+            }, 8000);
         }
     }, [response]);
 

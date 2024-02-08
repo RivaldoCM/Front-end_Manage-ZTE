@@ -62,8 +62,8 @@ export function PARKSForm({onu}: IOnu){
                         connectionData.contractId = 0;
                     }
                 } else {
-                    setFetchResponseMessage('error/no-connection-with-API');
                     stopLoading();
+                    setFetchResponseMessage('error/no-connection-with-API');
                     return;
                 }
             }else{
@@ -86,6 +86,7 @@ export function PARKSForm({onu}: IOnu){
 
             if(hasAuth){
                 if(!hasAuth.success){
+                    setFetchResponseMessage(hasAuth.messages.message);
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
@@ -95,9 +96,8 @@ export function PARKSForm({onu}: IOnu){
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
-                    setFetchResponseMessage(hasAuth.messages.message);
                     return;
-                } else{
+                } else {
                     setFetchResponseMessage(hasAuth.responses.status!);
                     setOnus([]);
                     setAuthOnu({

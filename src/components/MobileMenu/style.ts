@@ -7,7 +7,7 @@ export const Container = styled.div`
     header{
         justify-content: space-between;
         width: 100%;
-        height: 56px;
+        height: 62px;
         nav{
             height: inherit;
             .menu{

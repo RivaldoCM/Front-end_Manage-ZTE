@@ -6,6 +6,7 @@ export const Container = styled.div`
     justify-content: flex-start;
     flex-direction: column;
     width: 100%;
+    min-height: calc(100vh - 62px);
 
     .input-content{
         display: flex;

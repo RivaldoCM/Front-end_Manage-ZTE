@@ -59,6 +59,7 @@ export function Provisionamento(){
     const { response, responseMassage, severityStatus } = useResponse();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
 
+    console.log(response)
 	const [value, setValue] = useState(0); //MUI-Core
 
     const handleTypeZte = () => {

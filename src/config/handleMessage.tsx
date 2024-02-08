@@ -1,4 +1,6 @@
-export const handleMessage = (res: string) => {
+import { AlertColor } from "@mui/material"
+
+export const handleMessage = (res: string): {responseMessage: string, severityStatus: AlertColor} => {
 
     switch(res){
         case 'warning/has-action-in-progress':

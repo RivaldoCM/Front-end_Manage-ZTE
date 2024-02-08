@@ -1,5 +1,4 @@
 import { useLoading } from '../../../../hooks/useLoading';
-import { useError } from '../../../../hooks/useError';
 import { useAuth } from '../../../../hooks/useAuth';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
 import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
@@ -24,7 +23,7 @@ export function ZTEForm({onu}: IOnu){
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
-    const { setFetchResponseMessage } = useResponse();
+    const { setFetchResponseMessage, fetchResponseMessage } = useResponse();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
@@ -32,6 +31,8 @@ export function ZTEForm({onu}: IOnu){
             [e.target.name]: e.target.value
         });
     };
+
+    console.log(fetchResponseMessage)
 
     const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({
