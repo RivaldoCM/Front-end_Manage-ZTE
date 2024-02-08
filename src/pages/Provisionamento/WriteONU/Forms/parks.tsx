@@ -2,7 +2,7 @@
 import { useAuthOnu } from "../../../../hooks/useAuthOnu";
 import { useLoading } from "../../../../hooks/useLoading";
 import { useAuth } from "../../../../hooks/useAuth";
-import { useError } from "../../../../hooks/useError";
+import { useResponse } from "../../../../hooks/useResponse";
 
 import { isValidCpf } from "../../../../config/regex";
 import { setCorrectOltValues } from "../../../../config/verifyWhichOltIs";
@@ -17,8 +17,8 @@ import { IOnu } from "../../../../interfaces/IOnus";
 
 import { InputContainer } from "../../../../styles/globalStyles";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { Alert, Button, CircularProgress, TextField } from "@mui/material";
-import { useResponse } from "../../../../hooks/useResponse";
+import { Button, CircularProgress, TextField } from "@mui/material";
+
 
 
 export function PARKSForm({onu}: IOnu){
@@ -26,7 +26,6 @@ export function PARKSForm({onu}: IOnu){
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
-    const { error, errorMessage, severityStatus, handleError } = useError();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
@@ -50,9 +49,9 @@ export function PARKSForm({onu}: IOnu){
         e.preventDefault();
 
         if(isLoading){
-            handleError('warning/has-action-in-progress');
+            setFetchResponseMessage('warning/has-action-in-progress');
         }else if(!authOnu.cpf.match(isValidCpf)){
-            handleError('warning/invalid-cpf-input');
+            setFetchResponseMessage('warning/invalid-cpf-input');
         }else{
             startLoading();
             const peopleId = await getPeopleId(authOnu.cpf);
@@ -65,8 +64,8 @@ export function PARKSForm({onu}: IOnu){
                         connectionData.contractId = 0;
                     }
                 } else {
-                    handleError('error/no-connection-with-API');
                     stopLoading();
+                    setFetchResponseMessage('error/no-connection-with-API');
                     return;
                 }
             }else{
@@ -89,26 +88,25 @@ export function PARKSForm({onu}: IOnu){
 
             if(hasAuth){
                 if(!hasAuth.success){
+                    setFetchResponseMessage(hasAuth.messages.message);
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
                         ip: [],
                         oltId: [],
                         cityId: 0,
-                        city: '',
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
-                    setFetchResponseMessage(hasAuth.messages.message);
                     return;
                 } else{
                     setFetchResponseMessage(hasAuth.responses.status!);
                     setOnus([]);
                     setAuthOnu({
+                        ...authOnu,
                         ip: [],
                         oltId: [],
                         cityId: 0,
-                        city: '',
                         cpf: '',
                         pppoeUser: '',
                         pppoePassword: '',
@@ -116,13 +114,12 @@ export function PARKSForm({onu}: IOnu){
                         wifiPassword: '',
                         onuType: '',
                         onuModel: '',
-                        oltType: 'zte',
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
                 }
             } else {
-                handleError('error/no-connection-with-API');
+                setFetchResponseMessage('error/no-connection-with-API');
                 return;
             }
 
@@ -188,13 +185,6 @@ export function PARKSForm({onu}: IOnu){
                         Provisionar
                     </Button>
                 </div>
-            }
-            {
-                (error ?
-                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-                :
-                    <></>
-                )
             }
         </form>
     )

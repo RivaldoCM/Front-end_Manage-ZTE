@@ -135,7 +135,8 @@ export function LogsOnu() {
                             <TableCell align="center">Pon</TableCell>
                             <TableCell align="center">Serial</TableCell>
                             <TableCell align="center">PPPoE</TableCell>
-                            <TableCell align="center">Sinal(dBM)</TableCell>
+                            <TableCell align="center">Sinal recebido pela OLT(dBm)</TableCell>
+                            <TableCell align="center">Sinal recebido pela ONU(dBm)</TableCell>
                             <TableCell align="center">Estado</TableCell>
                         </TableRow>
                     </TableHead>
