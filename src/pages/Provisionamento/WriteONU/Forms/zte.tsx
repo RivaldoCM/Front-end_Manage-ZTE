@@ -17,14 +17,14 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { Alert } from '@mui/material';
+import { useResponse } from '../../../../hooks/useResponse';
 
 
 export function ZTEForm({onu}: IOnu){
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
-    const { error, errorMessage, severityStatus, handleError } = useError();
+    const { setFetchResponseMessage } = useResponse();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
@@ -49,15 +49,15 @@ export function ZTEForm({onu}: IOnu){
         e.preventDefault();
 
         if(isLoading){
-            handleError('warning/has-action-in-progress');
+            setFetchResponseMessage('warning/has-action-in-progress');
         }else if(!authOnu.cpf.match(isValidCpf)){
-            handleError('warning/invalid-cpf-input');
+            setFetchResponseMessage('warning/invalid-cpf-input');
         }else if(typePppoeZte.includes(onu.model) && !authOnu.wifiName.match(isAlphaNumeric)){
-            handleError('info/wifi-ssid-did-not-match');
+            setFetchResponseMessage('info/wifi-ssid-did-not-match');
         }else if(typePppoeZte.includes(onu.model) && !authOnu.wifiPassword.match(isAlphaNumeric)){
-            handleError('info/wifi-password-did-not-match');
+            setFetchResponseMessage('info/wifi-password-did-not-match');
         }else if(typePppoeZte.includes(onu.model) && authOnu.wifiPassword.length < 8){
-            handleError('info/wrong-type-passoword');
+            setFetchResponseMessage('info/wrong-type-passoword');
         }else{
             startLoading();
             const peopleId = await getPeopleId(authOnu.cpf);
@@ -70,7 +70,7 @@ export function ZTEForm({onu}: IOnu){
                         connectionData.contractId = 0;
                     }
                 } else {
-                    handleError('error/no-connection-with-API');
+                    setFetchResponseMessage('error/no-connection-with-API');
                     stopLoading();
                     return;
                 }
@@ -99,39 +99,38 @@ export function ZTEForm({onu}: IOnu){
 
             if(hasAuth){
                 if(!hasAuth.success){
-                    handleError(hasAuth.messages.message);
+                    setFetchResponseMessage(hasAuth.messages.message);
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
                         ip: [],
                         oltId: [],
                         cityId: 0,
-                        city: '',
                         isPizzaBox: [],
                         voalleAccessPointId: []
-                    })
+                    });
                     return;
+                } else {
+                    setFetchResponseMessage(hasAuth.responses.status!);
+                    setOnus([]);
+                    setAuthOnu({
+                        ...authOnu,
+                        ip: [],
+                        oltId: [],
+                        cityId: 0,
+                        cpf: '',
+                        pppoeUser: '',
+                        pppoePassword: '',
+                        wifiName: '',
+                        wifiPassword: '',
+                        onuType: '',
+                        onuModel: '',
+                        isPizzaBox: [],
+                        voalleAccessPointId: []
+                    });
                 }
-                handleError(hasAuth.responses.status!);
-                setOnus([]);
-                setAuthOnu({
-                    ip: [],
-                    oltId: [],
-                    cityId: 0,
-                    city: '',
-                    cpf: '',
-                    pppoeUser: '',
-                    pppoePassword: '',
-                    wifiName: '',
-                    wifiPassword: '',
-                    onuType: '',
-                    onuModel: '',
-                    oltType: 'zte',
-                    isPizzaBox: [],
-                    voalleAccessPointId: []
-                });
             } else {
-                handleError('error/no-connection-with-API');
+                setFetchResponseMessage('error/no-connection-with-API');
                 return;
             }
 
@@ -265,13 +264,6 @@ export function ZTEForm({onu}: IOnu){
                         Provisionar
                     </Button>
                 </div>
-            }
-            {
-                (error ?
-                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-                :
-                    <></>
-                )
             }
         </form>
     )   
