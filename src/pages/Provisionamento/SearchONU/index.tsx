@@ -24,45 +24,24 @@ export function SearchONU() {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
     useEffect(() => {
-        switch(authOnu.oltType){
-            case 'zte':
-                async function oltZte(){
-                    const oltData = await getOlt('zte');
-                    if(oltData){
-                        if(oltData.success){
-                            setViewOnlyOlt(oltData.responses.response);
-                            setAuthOnu({
-                                ...authOnu,
-                                city: oltData.responses.response[0].name
-                            });
-                        }
-                    } else {
-                        setViewOnlyOlt([]);
-                        handleError('error/no-connection-with-API');
-                    }
+
+        async function oltZte(){
+            const oltData = await getOlt('all');
+            if(oltData){
+                if(oltData.success){
+                    setViewOnlyOlt(oltData.responses.response);
+                    setAuthOnu({
+                        ...authOnu,
+                        city: oltData.responses.response[0].name
+                    });
                 }
-                oltZte();
-            break;
-            case 'parks':
-                async function oltParks(){
-                    const oltData = await getOlt('parks');
-                    if(oltData){
-                        if(oltData.success){
-                            setViewOnlyOlt(oltData.responses.response);
-                            setAuthOnu({
-                                ...authOnu,
-                                city: oltData.responses.response[0].name
-                            })
-                        }
-                    } else {
-                        setViewOnlyOlt([]);
-                        handleError('error/no-connection-with-API');
-                    }
-                }
-                oltParks();
-            break;
+            } else {
+                setViewOnlyOlt([]);
+                handleError('error/no-connection-with-API');
+            }
         }
-    }, [authOnu.oltType]);
+        oltZte();
+    }, []);
 
     useEffect(() => {
         //LIMPANDO OS DADOS DE ONU'S CASO TROQUE DE CIDADE

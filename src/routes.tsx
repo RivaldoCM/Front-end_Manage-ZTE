@@ -16,6 +16,7 @@ import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
 
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
+import { AuthOnuController } from "./pages/Provisionamento/newIndex";
 
 
 interface PrivateRouteProps {
@@ -73,6 +74,16 @@ export function AppRoutes() {
                 <Route
                     path="logs_onu"
                     element={<PrivateRoute element={<LogsOnu />} />}
+                />
+                <Route
+                    path="auth_onu"
+                    element={
+                        <AuthOnuContextProvider>
+                            <PrivateRoute
+                                element={<AuthOnuController />}
+                            />
+                        </AuthOnuContextProvider>
+                    }
                 />
             </Route>
         </Routes>
