@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function getConnectionId(peopleId: any, pppoe: string): Promise<any>{
+export async function getConnectionId(cpf: string, peopleId: number, pppoe: string): Promise<any>{
     const connectionId = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getConnectionId`,
@@ -8,6 +8,7 @@ export async function getConnectionId(peopleId: any, pppoe: string): Promise<any
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
         },
         data: {
+            cpf: cpf,
             peopleId: peopleId,
             pppoe: pppoe
         }

@@ -56,7 +56,7 @@ export function PARKSForm({onu}: IOnu){
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
             if (peopleId){
-                connectionData = await getConnectionId(peopleId, authOnu.pppoeUser);
+                connectionData = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
                 if(connectionData){
                     if (!connectionData.contractId){
                         connectionData.contractId = 0;

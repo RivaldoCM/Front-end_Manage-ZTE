@@ -65,7 +65,7 @@ export function ZTEForm({onu}: IOnu){
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
             if (peopleId){
-                const response = await getConnectionId(peopleId, authOnu.pppoeUser);
+                const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
                 if(response){
                     if (!connectionData.contractId){
                         connectionData.contractId = 0;
