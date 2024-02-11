@@ -8,9 +8,9 @@ type IAuthOnuContext = {
     pppoePassword: string,
     wifiName: string,
     wifiPassword: string,
-    onuType: string;
-    onuModel: string;
-    oltType: string;
+    typeOnu: string;
+    modelOnu: string;
+    modelOlt: number[];
     isPizzaBox: (number | boolean)[];
     voalleAccessPointId: number[];
 }

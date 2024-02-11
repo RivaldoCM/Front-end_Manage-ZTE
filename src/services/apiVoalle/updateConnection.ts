@@ -5,9 +5,9 @@ import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps.
 
 export async function updateConnection(props: IUpdateConnectionProps){
     let modelOLTVoalle: number = 0;
-    if(props.onuType === 'zte'){
+    if(props.modelOlt === 10){
         modelOLTVoalle = 7;
-    }else if(props.onuType === 'parks'){
+    }else if(props.modelOlt === 20){
         modelOLTVoalle = 4;
     }
 

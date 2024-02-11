@@ -77,7 +77,7 @@ export function PARKSForm({onu}: IOnu){
                 ip: authOnu.ip,
                 pon: onu.pon,
                 serialNumber: onu.serialNumber,
-                type: authOnu.oltType,
+                modelOlt: authOnu.modelOlt[0],
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
                 rxPower: onu.rxPower
@@ -110,8 +110,8 @@ export function PARKSForm({onu}: IOnu){
                         pppoePassword: '',
                         wifiName: '',
                         wifiPassword: '',
-                        onuType: '',
-                        onuModel: '',
+                        typeOnu: '',
+                        modelOnu: '',
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
@@ -130,7 +130,7 @@ export function PARKSForm({onu}: IOnu){
                     pon: onu.pon,
                     slot: 1,
                     serialNumber: onu.serialNumber,
-                    onuType: authOnu.onuType,
+                    modelOlt: authOnu.modelOlt[0],
                     accessPointId: authOnu.voalleAccessPointId,
                 });
             }

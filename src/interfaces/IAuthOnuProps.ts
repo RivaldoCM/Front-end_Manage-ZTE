@@ -8,7 +8,7 @@ export interface IAuthOnuProps {
     serialNumber: string,
     contract: number,
     isPizzaBox?: (boolean | number)[],
-    type: string,
+    modelOlt: number,
     model?: string,
     rxPower?: string,
     pppoeUser: string,

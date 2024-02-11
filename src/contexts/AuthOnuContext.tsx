@@ -23,9 +23,9 @@ export function AuthOnuContextProvider({ children }: { children: ReactNode }){
         pppoePassword: '',
         wifiName: '',
         wifiPassword: '',
-        onuType: '',
-        onuModel: '',
-        oltType: 'zte',
+        typeOnu: '',
+        modelOnu: '',
+        modelOlt: [],
         isPizzaBox: [],
         voalleAccessPointId: []
     });

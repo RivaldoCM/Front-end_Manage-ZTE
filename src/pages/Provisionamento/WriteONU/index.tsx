@@ -23,9 +23,9 @@ export function WriteONU(){
         setDropDownIndex(index);
     }
 
-    const handleShowOnuByType = (type: string) => {
+    const handleShowOnuByType = (type: number) => {
         switch(type){
-            case 'zte':
+            case 10:
                 return(
                     onus?.map((item, index) => {
                         return(
@@ -63,7 +63,7 @@ export function WriteONU(){
                         )
                     })
                 );
-            case 'parks':
+            case 20:
                 return(
                     onus?.map((item, index) => {
                        return(
@@ -105,6 +105,6 @@ export function WriteONU(){
     }
 
     return (
-        handleShowOnuByType(authOnu.oltType)
+        handleShowOnuByType(authOnu.modelOlt[0])
     );
 }

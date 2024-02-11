@@ -75,9 +75,11 @@ export function SearchONU() {
         }else{
             const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
             let ips: string[] = [];
+            let modelOlt: number[] = [];
 
             olt.map((data) => {
                 ips.push(data.host);
+                modelOlt.push(data.type);
                 setAuthOnu((prevState) => ({
                     ...prevState,
                     ip: [...prevState.ip, data.host],
@@ -90,7 +92,7 @@ export function SearchONU() {
 
             const response = await verifyIfOnuExists({
                 ip: ips, 
-                oltType: authOnu.oltType, 
+                modelOlt: modelOlt, 
                 matchSerialNumber: matchSerialNumber
             });
             stopLoading();

@@ -88,8 +88,8 @@ export function ZTEForm({onu}: IOnu){
                 pon: onu.pon,
                 isPizzaBox: authOnu.isPizzaBox,
                 serialNumber: onu.serialNumber,
-                type: authOnu.oltType,
-                model: authOnu.onuModel,
+                modelOlt: authOnu.modelOlt[0],
+                model: authOnu.modelOnu,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
                 pppPass: authOnu.pppoePassword,
@@ -124,8 +124,8 @@ export function ZTEForm({onu}: IOnu){
                         pppoePassword: '',
                         wifiName: '',
                         wifiPassword: '',
-                        onuType: '',
-                        onuModel: '',
+                        typeOnu: '',
+                        modelOnu: '',
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
@@ -145,7 +145,7 @@ export function ZTEForm({onu}: IOnu){
                     slot: onu.slot,
                     pon: onu.pon,
                     serialNumber: onu.serialNumber,
-                    onuType: authOnu.onuType,
+                    modelOlt: authOnu.modelOlt[0],
                     accessPointId: authOnu.voalleAccessPointId,
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
