@@ -18,7 +18,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useResponse } from '../../../../hooks/useResponse';
 
-
 export function ZTEForm({onu}: IOnu){
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
@@ -31,8 +30,6 @@ export function ZTEForm({onu}: IOnu){
             [e.target.name]: e.target.value
         });
     };
-
-    console.log(fetchResponseMessage)
 
     const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({

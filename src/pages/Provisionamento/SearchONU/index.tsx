@@ -24,7 +24,6 @@ export function SearchONU() {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
     useEffect(() => {
-
         async function oltZte(){
             const oltData = await getOlt('all');
             if(oltData){
