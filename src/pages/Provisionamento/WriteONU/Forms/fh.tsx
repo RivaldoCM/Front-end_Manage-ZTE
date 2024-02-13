@@ -7,6 +7,7 @@ import { useResponse } from "../../../../hooks/useResponse";
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { IOnu } from "../../../../interfaces/IOnus";
+
 export function FHForm({onu}: IOnu){
 
     const { user } = useAuth();
@@ -21,11 +22,10 @@ export function FHForm({onu}: IOnu){
         });
     };
 
-    console.log(onu)
-    const handleSubmit = () => {
-
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(onu)
     }
-
 
     return(
         <form onSubmit={handleSubmit} className="flex">

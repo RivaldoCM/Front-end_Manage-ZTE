@@ -19,7 +19,7 @@ export const verifyIfOnuExists = async (props: IVerifyIfOnuExistisProps) => {
         return response.data;
     })
     .catch(() => {
-        //SÓ ENTRA AQUI SE ANÃO TIVER CONEXÃO COM A API
+        //SÓ ENTRA AQUI SE NÃO TIVER CONEXÃO COM A API
         return undefined;
     });
 

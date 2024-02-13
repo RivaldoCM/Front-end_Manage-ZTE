@@ -13,7 +13,7 @@ import { PARKSForm } from "./Forms/parks";
 import { FHForm } from "./Forms/fh";
 
 export function WriteONU(){
-    const { authOnu, onus } = useAuthOnu(); 
+    const { onus } = useAuthOnu(); 
 
 	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
@@ -24,22 +24,20 @@ export function WriteONU(){
         setDropDownIndex(index);
     }
 
-    const handleShowOnuByType = (type: number) => {
+    const handleShowOnuByType = () => {
         if(onus){
-            console.log(onus)
-            for(const onu of onus){
-
-                switch(onu.modelOlt){
+            return onus.map((element, index) => {
+                switch(element.modelOlt){
                     case 10:
                         return(
-                            <Container key={onu.serialNumber}>
+                            <Container key={element.serialNumber}>
                                 <div className="onu-callback flex">
                                     <div className="info-onu-controller flex">
                                         <div className="add-onu flex">
                                             <ul className="flex">
-                                                <li>Placa: {onu.slot}</li>
-                                                <li>Pon: {onu.pon}</li>
-                                                <li>Serial: {onu.serialNumber}</li>
+                                                <li>Placa: {element.slot}</li>
+                                                <li>Pon: {element.pon}</li>
+                                                <li>Serial: {element.serialNumber}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -47,15 +45,18 @@ export function WriteONU(){
                                         <Accordion className="dropdown-box flex">
                                             <AccordionSummary
                                                 className="dropdown-header"
-                                                
+                                                expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
+                                                onClick={(e) => {
+                                                    handleDropDownArrow(e, index);
+                                                }}
 
                                             >
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>
                                             <AccordionDetails>
-                                                <ZTEForm onu={onu}/>
+                                                <ZTEForm onu={element}/>
                                             </AccordionDetails>
                                         </Accordion>
                                     </div>
@@ -64,14 +65,14 @@ export function WriteONU(){
                         );
                     case 20:
                         return(
-                            <Container key={onu.serialNumber}>
+                            <Container key={element.serialNumber}>
                                 <div className="onu-callback flex">
                                     <div className="info-onu-controller flex">
                                         <div className="add-onu flex">
                                             <ul className="flex">
-                                                <li>Pon: {onu.pon}</li>
-                                                <li>Serial: {onu.serialNumber}</li>
-                                                <li>Sinal: {onu.rxPower}</li>
+                                                <li>Pon: {element.pon}</li>
+                                                <li>Serial: {element.serialNumber}</li>
+                                                <li>Sinal: {element.rxPower}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -79,31 +80,33 @@ export function WriteONU(){
                                         <Accordion className="dropdown-box flex">
                                             <AccordionSummary
                                                 className="dropdown-header"
-                                                expandIcon={isDropDownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                                expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
-                                                onClick={() => setIsDropDownOpen(!isDropDownOpen)}
+                                                onClick={(e) => {
+                                                    handleDropDownArrow(e, index);
+                                                }}
                                             >
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>
                                             <AccordionDetails>
-                                                <PARKSForm onu={onu} />
+                                                <PARKSForm onu={element} />
                                             </AccordionDetails>
                                         </Accordion>
                                     </div>
                                 </div>
                             </Container>
-                       )
+                        );
                     case 30:
                         return(
-                            <Container key={onu.serialNumber}>
+                            <Container key={element.serialNumber}>
                                 <div className="onu-callback flex">
                                     <div className="info-onu-controller flex">
                                         <div className="add-onu flex">
                                             <ul className="flex">
-                                                <li>Placa: {onu.slot}</li>
-                                                <li>Pon: {onu.pon}</li>
-                                                <li>Serial: {onu.serialNumber}</li>
+                                                <li>Placa: {element.slot}</li>
+                                                <li>Pon: {element.pon}</li>
+                                                <li>Serial: {element.serialNumber}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -111,15 +114,17 @@ export function WriteONU(){
                                         <Accordion className="dropdown-box flex">
                                             <AccordionSummary
                                                 className="dropdown-header"
-                                                
+                                                expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
-
+                                                onClick={(e) => {
+                                                    handleDropDownArrow(e, index);
+                                                }}
                                             >
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>
                                             <AccordionDetails>
-                                                <ZTEForm onu={onu}/>
+                                                <FHForm onu={element}/>
                                             </AccordionDetails>
                                         </Accordion>
                                     </div>
@@ -127,136 +132,17 @@ export function WriteONU(){
                             </Container>
                         );
                     default:
-                        return(
-                            <></>
-                        )
+                    return(
+                        <></>
+                    );
                 };
-                
-            }
+            });
         } else {
             return <></>;
         }
-        /*
-        switch(type){
-            case 10:
-                return(
-                    onus?.map((item, index) => {
-                        return(
-                            <Container key={index}>
-                                <div className="onu-callback flex">
-                                    <div className="info-onu-controller flex">
-                                        <div className="add-onu flex">
-                                            <ul className="flex">
-                                                <li>Placa: {item.slot}</li>
-                                                <li>Pon: {item.pon}</li>
-                                                <li>Serial: {item.serialNumber}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div className="write-onu-controller flex">
-                                        <Accordion className="dropdown-box flex">
-                                            <AccordionSummary
-                                                className="dropdown-header"
-                                                expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                                aria-controls="panel1a-content"
-                                                id="panel1a-header"
-                                                onClick={(e) => {
-                                                    handleDropDownArrow(e, index);
-                                                }}
-                                            >
-                                                <Typography>Provisione aqui</Typography>
-                                            </AccordionSummary>
-                                            <AccordionDetails>
-                                                <ZTEForm onu={item}/>
-                                            </AccordionDetails>
-                                        </Accordion>
-                                    </div>
-                                </div>
-                            </Container>
-                        )
-                    })
-                );
-            case 20:
-                return(
-                    onus?.map((item, index) => {
-                       return(
-                            <Container key={index}>
-                                <div className="onu-callback flex">
-                                    <div className="info-onu-controller flex">
-                                        <div className="add-onu flex">
-                                            <ul className="flex">
-                                                <li>Pon: {item.pon}</li>
-                                                <li>Serial: {item.serialNumber}</li>
-                                                <li>Sinal: {item.rxPower}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div className="write-onu-controller flex">
-                                        <Accordion className="dropdown-box flex">
-                                            <AccordionSummary
-                                                className="dropdown-header"
-                                                expandIcon={isDropDownOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                                aria-controls="panel1a-content"
-                                                id="panel1a-header"
-                                                onClick={() => setIsDropDownOpen(!isDropDownOpen)}
-                                            >
-                                                <Typography>Provisione aqui</Typography>
-                                            </AccordionSummary>
-                                            <AccordionDetails>
-                                                <PARKSForm onu={item} />
-                                            </AccordionDetails>
-                                        </Accordion>
-                                    </div>
-                                </div>
-                            </Container>
-                       )
-                    })
-                );
-            case 30:
-                return(
-                    onus?.map((item, index) => {
-                        return(
-                            <Container key={index}>
-                                <div className="onu-callback flex">
-                                    <div className="info-onu-controller flex">
-                                        <div className="add-onu flex">
-                                            <ul className="flex">
-                                                <li>Placa: {item.slot}</li>
-                                                <li>Pon: {item.pon}</li>
-                                                <li>Serial: {item.serialNumber}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div className="write-onu-controller flex">
-                                        <Accordion className="dropdown-box flex">
-                                            <AccordionSummary
-                                                className="dropdown-header"
-                                                expandIcon={isDropDownOpen && index === dropDownIndex ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                                aria-controls="panel1a-content"
-                                                id="panel1a-header"
-                                                onClick={(e) => {
-                                                    handleDropDownArrow(e, index);
-                                                }}
-                                            >
-                                                <Typography>Provisione aqui</Typography>
-                                            </AccordionSummary>
-                                            <AccordionDetails>
-                                                <FHForm onu={item}/>
-                                            </AccordionDetails>
-                                        </Accordion>
-                                    </div>
-                                </div>
-                            </Container>
-                        )
-                    })
-                );
-            default:
-                return <></>
-        }
-        */
     }
 
     return (
-        handleShowOnuByType(authOnu.modelOlt[0])
+        handleShowOnuByType()
     );
 }
