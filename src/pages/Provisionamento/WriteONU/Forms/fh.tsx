@@ -7,13 +7,18 @@ import { useResponse } from "../../../../hooks/useResponse";
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { IOnu } from "../../../../interfaces/IOnus";
+import { setCorrectOltValues } from "../../../../config/verifyWhichOltIs";
+import { verifyOnuType } from "../../../../config/verifyOnuType";
+import { getPeopleId } from "../../../../services/apiVoalle/getPeopleId";
+import { getConnectionId } from "../../../../services/apiManageONU/getConnectionId";
+import { isValidCpf } from "../../../../config/regex";
+import { authorizationToOlt } from "../../../../services/apiManageONU/authOnu";
 
 export function FHForm({onu}: IOnu){
-
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
-    //const { setFetchResponseMessage, fetchResponseMessage } = useResponse();
+    const { setFetchResponseMessage, fetchResponseMessage } = useResponse();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
@@ -22,9 +27,99 @@ export function FHForm({onu}: IOnu){
         });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleUpdateOltData = () => {
+        setAuthOnu((prevAuthOnu) => ({
+            ...prevAuthOnu,
+            ip: [setCorrectOltValues(onu, authOnu.ip)],
+            oltId: [setCorrectOltValues(onu, authOnu.oltId)],
+            onuType: verifyOnuType(onu.serialNumber),
+            isPizzaBox: [setCorrectOltValues(onu, authOnu.isPizzaBox)],
+            voalleAccessPointId: [setCorrectOltValues(onu, authOnu.voalleAccessPointId)]
+        }));
+    }
+
+    console.log(authOnu)
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(onu)
+
+        if(isLoading){
+            setFetchResponseMessage('warning/has-action-in-progress');
+        }else if(!authOnu.cpf.match(isValidCpf)){
+            setFetchResponseMessage('warning/invalid-cpf-input');
+        }else{
+            startLoading();
+            const peopleId = await getPeopleId(authOnu.cpf);
+            let connectionData = {contractId: 0, connectionId: 0, password: ''}
+
+            if (peopleId){
+                connectionData = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
+                if(connectionData){
+                    if (!connectionData.contractId){
+                        connectionData.contractId = 0;
+                    }
+                } else {
+                    stopLoading();
+                    setFetchResponseMessage('error/no-connection-with-API');
+                    return;
+                }
+            }else{
+                connectionData.contractId = 0;
+            }
+
+            console.log(authOnu)
+
+            const hasAuth = await authorizationToOlt({
+                userId: user?.uid,
+                cityId: authOnu.cityId,
+                oltId: authOnu.oltId[0],
+                ip: authOnu.ip,
+                pon: onu.pon,
+                serialNumber: onu.serialNumber,
+                modelOlt: authOnu.modelOlt[0],
+                contract: connectionData.contractId,
+                pppoeUser: authOnu.pppoeUser,
+                rxPower: onu.rxPower
+            });
+            stopLoading();
+
+            if(hasAuth){
+                if(!hasAuth.success){
+                    setFetchResponseMessage(hasAuth.messages.message);
+                    setOnus([]);
+                    setAuthOnu({
+                        ...authOnu,
+                        ip: [],
+                        oltId: [],
+                        cityId: 0,
+                        isPizzaBox: [],
+                        voalleAccessPointId: []
+                    });
+                    return;
+                } else {
+                    setFetchResponseMessage(hasAuth.responses.status!);
+                    setOnus([]);
+                    setAuthOnu({
+                        ...authOnu,
+                        ip: [],
+                        oltId: [],
+                        cityId: 0,
+                        cpf: '',
+                        pppoeUser: '',
+                        pppoePassword: '',
+                        wifiName: '',
+                        wifiPassword: '',
+                        typeOnu: '',
+                        modelOnu: '',
+                        isPizzaBox: [],
+                        voalleAccessPointId: []
+                    });
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
+                return;
+            }
+        }
     }
 
     return(
@@ -68,6 +163,7 @@ export function FHForm({onu}: IOnu){
                         type="submit" 
                         variant="outlined" 
                         endIcon={<AddOutlinedIcon />}
+                        onClick={handleUpdateOltData}
                     >
                         Provisionar
                     </Button>
