@@ -9,7 +9,7 @@ export interface IAuthOnuProps {
     contract: number,
     isPizzaBox?: (boolean | number)[],
     modelOlt: number,
-    model?: string,
+    modelOnu?: string,
     rxPower?: string,
     pppoeUser: string,
     pppPass?: string,

@@ -26,18 +26,19 @@ export function FHForm({onu}: IOnu){
             [e.target.name]: e.target.value
         });
     };
-    console.log(authOnu)
 
     const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
             ip: [setCorrectOltValues(onu, authOnu.ip)],
             oltId: [setCorrectOltValues(onu, authOnu.oltId)],
-            onuType: verifyOnuType(onu.serialNumber),
+            modelOnu: verifyOnuType(onu.serialNumber),
             isPizzaBox: [setCorrectOltValues(onu, authOnu.isPizzaBox)],
             voalleAccessPointId: [setCorrectOltValues(onu, authOnu.voalleAccessPointId)]
         }));
     }
+
+
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -49,6 +50,7 @@ export function FHForm({onu}: IOnu){
         }else{
             startLoading();
 
+            console.log(authOnu.modelOnu)
             //const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
             /*
@@ -77,6 +79,7 @@ export function FHForm({onu}: IOnu){
                 slot: onu.slot,
                 pon: onu.pon,
                 serialNumber: onu.serialNumber,
+                modelOnu: authOnu.modelOnu,
                 modelOlt: onu.modelOlt,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
