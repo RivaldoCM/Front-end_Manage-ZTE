@@ -85,7 +85,7 @@ export function ZTEForm({onu}: IOnu){
                 pon: onu.pon,
                 isPizzaBox: authOnu.isPizzaBox,
                 serialNumber: onu.serialNumber,
-                modelOlt: authOnu.modelOlt[0],
+                modelOlt: onu.modelOlt,
                 model: authOnu.modelOnu,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,

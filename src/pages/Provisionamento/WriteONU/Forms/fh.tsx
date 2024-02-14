@@ -26,6 +26,7 @@ export function FHForm({onu}: IOnu){
             [e.target.name]: e.target.value
         });
     };
+    console.log(authOnu)
 
     const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({
@@ -38,8 +39,6 @@ export function FHForm({onu}: IOnu){
         }));
     }
 
-    console.log(authOnu)
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -49,9 +48,10 @@ export function FHForm({onu}: IOnu){
             setFetchResponseMessage('warning/invalid-cpf-input');
         }else{
             startLoading();
-            const peopleId = await getPeopleId(authOnu.cpf);
-            let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
+            //const peopleId = await getPeopleId(authOnu.cpf);
+            let connectionData = {contractId: 0, connectionId: 0, password: ''}
+            /*
             if (peopleId){
                 connectionData = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
                 if(connectionData){
@@ -67,19 +67,19 @@ export function FHForm({onu}: IOnu){
                 connectionData.contractId = 0;
             }
 
-            console.log(authOnu)
+            */
 
             const hasAuth = await authorizationToOlt({
                 userId: user?.uid,
                 cityId: authOnu.cityId,
                 oltId: authOnu.oltId[0],
                 ip: authOnu.ip,
+                slot: onu.slot,
                 pon: onu.pon,
                 serialNumber: onu.serialNumber,
-                modelOlt: authOnu.modelOlt[0],
+                modelOlt: onu.modelOlt,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
-                rxPower: onu.rxPower
             });
             stopLoading();
 

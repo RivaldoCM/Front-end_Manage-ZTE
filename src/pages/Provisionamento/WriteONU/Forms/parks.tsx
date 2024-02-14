@@ -77,7 +77,7 @@ export function PARKSForm({onu}: IOnu){
                 ip: authOnu.ip,
                 pon: onu.pon,
                 serialNumber: onu.serialNumber,
-                modelOlt: authOnu.modelOlt[0],
+                modelOlt: onu.modelOlt,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
                 rxPower: onu.rxPower

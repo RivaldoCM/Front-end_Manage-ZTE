@@ -37,7 +37,7 @@ export async function authorizationToOlt(props: IAuthOnuProps): Promise<IRespons
             pon: pon,
             isPizzaBox: isPizzaBox,
             serialNumber: serialNumber,
-            type: modelOlt,
+            modelOlt: modelOlt,
             model: model,
             rxPower,
             contract: contract,
