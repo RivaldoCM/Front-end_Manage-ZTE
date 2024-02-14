@@ -1,4 +1,4 @@
-import { Button, CircularProgress, TextField } from "@mui/material";
+import { Button, CircularProgress, MenuItem, TextField } from "@mui/material";
 import { InputContainer } from "../../../../styles/globalStyles";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useAuthOnu } from "../../../../hooks/useAuthOnu";
@@ -32,13 +32,11 @@ export function FHForm({onu}: IOnu){
             ...prevAuthOnu,
             ip: [setCorrectOltValues(onu, authOnu.ip)],
             oltId: [setCorrectOltValues(onu, authOnu.oltId)],
-            modelOnu: verifyOnuType(onu.serialNumber),
+            typeOnu: verifyOnuType(onu.serialNumber),
             isPizzaBox: [setCorrectOltValues(onu, authOnu.isPizzaBox)],
             voalleAccessPointId: [setCorrectOltValues(onu, authOnu.voalleAccessPointId)]
         }));
     }
-
-
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -48,9 +46,11 @@ export function FHForm({onu}: IOnu){
         }else if(!authOnu.cpf.match(isValidCpf)){
             setFetchResponseMessage('warning/invalid-cpf-input');
         }else{
+            console.log(authOnu)
+
             startLoading();
 
-            console.log(authOnu.modelOnu)
+            
             //const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
             /*
@@ -68,8 +68,8 @@ export function FHForm({onu}: IOnu){
             }else{
                 connectionData.contractId = 0;
             }
-
             */
+            
 
             const hasAuth = await authorizationToOlt({
                 userId: user?.uid,
@@ -81,6 +81,7 @@ export function FHForm({onu}: IOnu){
                 serialNumber: onu.serialNumber,
                 modelOnu: authOnu.modelOnu,
                 modelOlt: onu.modelOlt,
+                typeOnu: authOnu.typeOnu,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
             });
@@ -157,6 +158,26 @@ export function FHForm({onu}: IOnu){
                     </TextField>
                 </div>
             </InputContainer>
+            {
+                onu.serialNumber.startsWith('ZTEG') ? 
+                    <InputContainer>
+                        <div className="text">
+                            <p>Qual o modelo da ONU: </p>
+                        </div>
+                        <TextField
+                            id='select-city'
+                            select
+                            label="Modelo"
+                            name="modelOnu"
+                            onChange={handleChange}
+                            value={authOnu.modelOnu}
+                        >
+                            <MenuItem value={'F601'}>F601</MenuItem>
+                            <MenuItem value={'F612'}>F612</MenuItem>
+                        </TextField>
+                    </InputContainer> 
+                : <></>
+            }
             {
                 isLoading ?
                 <CircularProgress className="MUI-CircularProgress" color="primary"/>
