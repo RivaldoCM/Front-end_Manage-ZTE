@@ -30,7 +30,7 @@ export function EditOltModal(props: any) {
 	const [form, setForm] = useState({
 		id: 0,
 		name: '',
-		cityId: 1,
+		city_id: 1,
 		host: '',
 		type: 10,
 		isPizzaBox: 0,
@@ -49,13 +49,12 @@ export function EditOltModal(props: any) {
 
 	if (typeof props.oltDataSelected === 'object' && id !== props.oltDataSelected['id']) {
 		if ('id' in props.oltDataSelected && props.oltDataSelected['id'] !== id) {
-			console.log(props)
 			setId(props.oltDataSelected['id']);
 			setForm(() => ({
 				...form,
 				id: props.oltDataSelected['id'],
 				name: props.oltDataSelected['name'],
-				cityId: props.oltDataSelected['city_id'],
+				city_id: props.oltDataSelected['city_id'],
 				host: props.oltDataSelected['host'],
 				type: props.oltDataSelected['type'],
 				isPizzaBox: props.oltDataSelected['isPizzaBox'] ? 1 : 0,
@@ -131,7 +130,7 @@ export function EditOltModal(props: any) {
 											id="demo-simple-select"
 											name="cityId"
 											label="Cidades"
-											value={form.cityId}
+											value={form.city_id}
 											onChange={handleFormChange}
 										>
 											{

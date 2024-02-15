@@ -7,6 +7,7 @@ export const handleOltByCity = (olts: IOlt[] | undefined) => {
     const oltNames = new Set<string>();
 
     if(olts){
+        console.log(olts)
         return olts.map((olt, index: number) => {
             if(!cityIds.has(olt.city_id) && !oltNames.has(olt.name)){
                 cityIds.add(olt.city_id);

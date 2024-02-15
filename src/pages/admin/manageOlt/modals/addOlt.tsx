@@ -31,7 +31,7 @@ export function AddOltModal(props: any) {
     const [form, setForm] = useState<IOlt>({
         id: 0,
         name: '',
-		cityId: 1,
+		city_id: 1,
 		host: '',
 		type: 10,
 		isPizzaBox: 1,
@@ -113,9 +113,9 @@ export function AddOltModal(props: any) {
                                         sx={{maxWidth: '205px'}}
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        name="cityId"
+                                        name="city_id"
                                         label="Cidades"
-                                        value={form.cityId}
+                                        value={form.city_id}
                                         onChange={handleFormChange}
                                     >
                                         {
