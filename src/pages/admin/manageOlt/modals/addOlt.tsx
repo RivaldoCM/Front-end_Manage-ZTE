@@ -55,8 +55,6 @@ export function AddOltModal(props: any) {
         });
 	}
 
-    console.log(form)
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
         startLoading();
