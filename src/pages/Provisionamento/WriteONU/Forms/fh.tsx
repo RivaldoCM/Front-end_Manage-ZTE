@@ -38,6 +38,8 @@ export function FHForm({onu}: IOnu){
         }));
     }
 
+    console.log(authOnu)
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -46,11 +48,10 @@ export function FHForm({onu}: IOnu){
         }else if(!authOnu.cpf.match(isValidCpf)){
             setFetchResponseMessage('warning/invalid-cpf-input');
         }else{
-            console.log(authOnu)
+
 
             startLoading();
 
-            
             //const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
             /*
@@ -69,8 +70,6 @@ export function FHForm({onu}: IOnu){
                 connectionData.contractId = 0;
             }
             */
-            
-
             const hasAuth = await authorizationToOlt({
                 userId: user?.uid,
                 cityId: authOnu.cityId,
@@ -107,14 +106,14 @@ export function FHForm({onu}: IOnu){
                         ...authOnu,
                         ip: [],
                         oltId: [],
-                        cityId: 0,
                         cpf: '',
                         pppoeUser: '',
                         pppoePassword: '',
                         wifiName: '',
                         wifiPassword: '',
                         typeOnu: '',
-                        modelOnu: '',
+                        modelOnu: 'F601',
+                        modelOlt: [],
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });

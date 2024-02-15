@@ -42,9 +42,26 @@ export function SearchONU() {
         oltZte();
     }, []);
 
+    console.log(authOnu)
+
     useEffect(() => {
-        //LIMPANDO OS DADOS DE ONU'S CASO TROQUE DE CIDADE
+        //LIMPANDO OS DADOS CASO TROQUE DE CIDADE
         setOnus([]);
+        setAuthOnu({
+            ...authOnu,
+            ip: [],
+            oltId: [],
+            cpf: '',
+            pppoeUser: '',
+            pppoePassword: '',
+            wifiName: '',
+            wifiPassword: '',
+            typeOnu: '',
+            modelOnu: 'F601',
+            modelOlt: [],
+            isPizzaBox: [],
+            voalleAccessPointId: []
+        });
     }, [authOnu.city]);
 
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { 

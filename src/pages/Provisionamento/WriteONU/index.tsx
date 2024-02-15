@@ -23,7 +23,7 @@ export function WriteONU(){
         setIsDropDownOpen(!isDropDownOpen);
         setDropDownIndex(index);
     }
-
+    
     const handleShowOnuByType = () => {
         if(onus){
             return onus.map((element, index) => {
