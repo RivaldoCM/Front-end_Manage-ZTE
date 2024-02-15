@@ -3,7 +3,7 @@ export type IOlt = {
     name: string,
     host: string,
     type: number,
-    city_id: number,
+    cityId: number,
     isPizzaBox: number | boolean,
     voalleAccessPointId: number,
 } 

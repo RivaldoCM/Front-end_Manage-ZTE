@@ -31,7 +31,7 @@ export function AddOltModal(props: any) {
     const [form, setForm] = useState<IOlt>({
         id: 0,
         name: '',
-		city_id: 1,
+		cityId: 1,
 		host: '',
 		type: 10,
 		isPizzaBox: 1,
@@ -54,6 +54,8 @@ export function AddOltModal(props: any) {
             [e.target.name]: e.target.value
         });
 	}
+
+    console.log(form)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -115,7 +117,7 @@ export function AddOltModal(props: any) {
                                         id="demo-simple-select"
                                         name="cityId"
                                         label="Cidades"
-                                        value={form.city_id}
+                                        value={form.cityId}
                                         onChange={handleFormChange}
                                     >
                                         {
