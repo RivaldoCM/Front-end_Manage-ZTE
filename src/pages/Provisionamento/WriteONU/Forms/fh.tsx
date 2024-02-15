@@ -38,8 +38,6 @@ export function FHForm({onu}: IOnu){
         }));
     }
 
-    console.log(authOnu)
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 

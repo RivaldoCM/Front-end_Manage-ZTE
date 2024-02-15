@@ -42,8 +42,6 @@ export function SearchONU() {
         oltZte();
     }, []);
 
-    console.log(authOnu)
-
     useEffect(() => {
         //LIMPANDO OS DADOS CASO TROQUE DE CIDADE
         setOnus([]);
@@ -106,6 +104,7 @@ export function SearchONU() {
                 }));
             });
 
+            console.log(ips, modelOlt)
             const response = await verifyIfOnuExists({
                 ip: ips, 
                 modelOlt: modelOlt, 
