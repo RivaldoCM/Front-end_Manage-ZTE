@@ -32,8 +32,6 @@ export function ZTEForm({onu}: IOnu){
         });
     };
 
-    console.log(fetchResponseMessage)
-
     const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
@@ -63,17 +61,12 @@ export function ZTEForm({onu}: IOnu){
             startLoading();
             const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
-
             if (peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
                 if(response){
                     if (!connectionData.contractId){
                         connectionData.contractId = 0;
                     }
-                } else {
-                    setFetchResponseMessage('error/no-connection-with-API');
-                    stopLoading();
-                    return;
                 }
             }else{
                 connectionData.contractId = 0;
