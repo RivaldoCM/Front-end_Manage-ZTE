@@ -3,10 +3,8 @@ import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-
 import { isLogged } from "./config/isLogged";
 import { Login } from "./pages/Login";
-import { Provisionamento } from "./pages/Provisionamento";
 import { HandleManageOlt } from "./pages/admin/manageOlt";
 import { HandleManageUsers } from "./pages/admin/users";
 import { OnuDelete } from "./pages/onuDelete";
@@ -16,7 +14,7 @@ import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
 
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
-import { AuthOnuController } from "./pages/Provisionamento/newIndex";
+import { AuthOnuController } from "./pages/Provisionamento";
 
 
 interface PrivateRouteProps {
@@ -49,16 +47,6 @@ export function AppRoutes() {
         <Routes>
             <Route index path="login" element={<Login />} />
             <Route path="" element={matches ? <MobileDrawerMenu /> : <MenuDrawer />}>
-                <Route
-                    path="provisionamento"
-                    element={
-                        <AuthOnuContextProvider>
-                            <PrivateRoute
-                                element={<Provisionamento />}
-                            />
-                        </AuthOnuContextProvider>
-                    }
-                />
                 <Route
                     path="olts"
                     element={<PrivateRoute element={<HandleManageOlt />} />}

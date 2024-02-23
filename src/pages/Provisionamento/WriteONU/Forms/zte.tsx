@@ -22,7 +22,7 @@ export function ZTEForm({onu}: IOnu){
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
-    const { setFetchResponseMessage, fetchResponseMessage } = useResponse();
+    const { setFetchResponseMessage } = useResponse();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({

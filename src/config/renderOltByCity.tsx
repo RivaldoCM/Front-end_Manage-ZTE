@@ -7,7 +7,6 @@ export const handleOltByCity = (olts: IOlt[] | undefined) => {
 
     if(olts){
         return olts.map((olt, index: number) => {
-            console.log(olt)
             if(!oltByCnl.has(olt.cnl_by_location)){
                 oltByCnl.add(olt.cnl_by_location);
                 return(

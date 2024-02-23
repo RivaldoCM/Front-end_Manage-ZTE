@@ -13,12 +13,13 @@ import { getPeopleId } from "../../../../services/apiVoalle/getPeopleId";
 import { getConnectionId } from "../../../../services/apiManageONU/getConnectionId";
 import { isValidCpf } from "../../../../config/regex";
 import { authorizationToOlt } from "../../../../services/apiManageONU/authOnu";
+import { updateConnection } from "../../../../services/apiVoalle/updateConnection";
 
 export function FHForm({onu}: IOnu){
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
-    const { setFetchResponseMessage, fetchResponseMessage } = useResponse();
+    const { setFetchResponseMessage } = useResponse();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
@@ -46,13 +47,11 @@ export function FHForm({onu}: IOnu){
         }else if(!authOnu.cpf.match(isValidCpf)){
             setFetchResponseMessage('warning/invalid-cpf-input');
         }else{
-
-
             startLoading();
 
-            //const peopleId = await getPeopleId(authOnu.cpf);
+            const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
-            /*
+            
             if (peopleId){
                 connectionData = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
                 if(connectionData){
@@ -67,7 +66,7 @@ export function FHForm({onu}: IOnu){
             }else{
                 connectionData.contractId = 0;
             }
-            */
+            
             const hasAuth = await authorizationToOlt({
                 userId: user?.uid,
                 cityId: authOnu.cityId,
@@ -119,6 +118,21 @@ export function FHForm({onu}: IOnu){
             } else {
                 setFetchResponseMessage('error/no-connection-with-API');
                 return;
+            }
+
+            if(connectionData.connectionId){
+                updateConnection({
+                    connectionId: connectionData.connectionId,
+                    pppoeUser: authOnu.pppoeUser,
+                    pppoePassword: connectionData.password,
+                    slot: onu.slot,
+                    pon: onu.pon,
+                    serialNumber: onu.serialNumber,
+                    modelOlt: authOnu.modelOlt[0],
+                    accessPointId: authOnu.voalleAccessPointId,
+                    wifiSSID: authOnu.wifiName,
+                    wifiPass: authOnu.wifiPassword
+                });
             }
         }
     }

@@ -104,7 +104,6 @@ export function SearchONU() {
                 }));
             });
 
-            console.log(ips, modelOlt)
             const response = await verifyIfOnuExists({
                 ip: ips, 
                 modelOlt: modelOlt, 
