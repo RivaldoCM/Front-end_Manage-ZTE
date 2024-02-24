@@ -23,9 +23,9 @@ export function HandleResponseContextProvider({ children }: { children: ReactNod
     useEffect(() => {
         if(fetchResponseMessage){
             const res = handleMessage(fetchResponseMessage);
-            setResponse(true);
             setResponseMassage(res.responseMessage);
             setSeverityStatus(res.severityStatus);
+            setResponse(true);
         }
     }, [fetchResponseMessage]);
 

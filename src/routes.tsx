@@ -35,7 +35,7 @@ export function AppRoutes() {
         const token = localStorage.getItem('Authorization');
     
         if(token && location.pathname === '/login' || token && location.pathname === '/'){
-            navigate('/provisionamento');
+            navigate('/auth_onu');
         }
         
         if (!token && location.pathname !== '/login') {

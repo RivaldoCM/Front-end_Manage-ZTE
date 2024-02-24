@@ -22,7 +22,5 @@ export const verifyIfOnuExists = async (props: IVerifyIfOnuExistisProps) => {
         //SÓ ENTRA AQUI SE NÃO TIVER CONEXÃO COM A API
         return undefined;
     });
-    console.log(res)
-
     return res;
 }
