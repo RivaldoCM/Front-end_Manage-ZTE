@@ -60,6 +60,7 @@ export function SearchONU() {
             isPizzaBox: [],
             voalleAccessPointId: []
         });
+        stopLoading();
     }, [authOnu.city]);
 
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
@@ -86,6 +87,7 @@ export function SearchONU() {
             handleError('warning/has-action-in-progress');
         }else if(!isAlphaNumeric.test(matchSerialNumber)){
             handleError('info/non-expect-caracter-not-alphaNumeric');
+            stopLoading();
         }else{
             const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
             let ips: string[] = [];
