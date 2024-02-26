@@ -14,7 +14,7 @@ export const handlePages: IAllPages[] = [
         name: "Area Tecnica",
         pages: [
            {
-                provisionamento: 'Provisiona ONU'
+                auth_onu: 'Provisiona ONU'
            },
            {
                 onuDelete: 'Desprovisiona ONU'
@@ -55,7 +55,6 @@ export const handleShowPageByRule = (rule?: number) => {
         return handleDynamicPagesByRule = withoutOlt;
         default:
             let onlyAuthOnu = cloneDeep(handlePages);
-            console.log(onlyAuthOnu)
             onlyAuthOnu.splice(1, 2);
         return handleDynamicPagesByRule = onlyAuthOnu;
     }
@@ -63,7 +62,7 @@ export const handleShowPageByRule = (rule?: number) => {
 
 export const handleIconMenu = (text: string): React.ReactElement => {
     switch(text){
-        case 'provisionamento':
+        case 'auth_onu':
             return <MiscellaneousServicesOutlinedIcon />;
         case 'onuDelete':
             return <HighlightOffOutlinedIcon />;

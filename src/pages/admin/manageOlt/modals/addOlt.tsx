@@ -113,7 +113,7 @@ export function AddOltModal(props: any) {
                                         sx={{maxWidth: '205px'}}
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
-                                        name="cityId"
+                                        name="city_id"
                                         label="Cidades"
                                         value={form.city_id}
                                         onChange={handleFormChange}

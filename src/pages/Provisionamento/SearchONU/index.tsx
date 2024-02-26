@@ -24,49 +24,43 @@ export function SearchONU() {
     const [matchSerialNumber, setMatchSerialNumber] = useState('');
 
     useEffect(() => {
-        switch(authOnu.oltType){
-            case 'zte':
-                async function oltZte(){
-                    const oltData = await getOlt('zte');
-                    if(oltData){
-                        if(oltData.success){
-                            setViewOnlyOlt(oltData.responses.response);
-                            setAuthOnu({
-                                ...authOnu,
-                                city: oltData.responses.response[0].name
-                            });
-                        }
-                    } else {
-                        setViewOnlyOlt([]);
-                        handleError('error/no-connection-with-API');
-                    }
+        async function oltZte(){
+            const oltData = await getOlt('all');
+            if(oltData){
+                if(oltData.success){
+                    setViewOnlyOlt(oltData.responses.response);
+                    setAuthOnu({
+                        ...authOnu,
+                        city: oltData.responses.response[0].name
+                    });
                 }
-                oltZte();
-            break;
-            case 'parks':
-                async function oltParks(){
-                    const oltData = await getOlt('parks');
-                    if(oltData){
-                        if(oltData.success){
-                            setViewOnlyOlt(oltData.responses.response);
-                            setAuthOnu({
-                                ...authOnu,
-                                city: oltData.responses.response[0].name
-                            })
-                        }
-                    } else {
-                        setViewOnlyOlt([]);
-                        handleError('error/no-connection-with-API');
-                    }
-                }
-                oltParks();
-            break;
+            } else {
+                setViewOnlyOlt([]);
+                handleError('error/no-connection-with-API');
+            }
         }
-    }, [authOnu.oltType]);
+        oltZte();
+    }, []);
 
     useEffect(() => {
-        //LIMPANDO OS DADOS DE ONU'S CASO TROQUE DE CIDADE
+        //LIMPANDO OS DADOS CASO TROQUE DE CIDADE
         setOnus([]);
+        setAuthOnu({
+            ...authOnu,
+            ip: [],
+            oltId: [],
+            cpf: '',
+            pppoeUser: '',
+            pppoePassword: '',
+            wifiName: '',
+            wifiPassword: '',
+            typeOnu: '',
+            modelOnu: 'F601',
+            modelOlt: [],
+            isPizzaBox: [],
+            voalleAccessPointId: []
+        });
+        stopLoading();
     }, [authOnu.city]);
 
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
@@ -93,12 +87,15 @@ export function SearchONU() {
             handleError('warning/has-action-in-progress');
         }else if(!isAlphaNumeric.test(matchSerialNumber)){
             handleError('info/non-expect-caracter-not-alphaNumeric');
+            stopLoading();
         }else{
             const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
             let ips: string[] = [];
+            let modelOlt: number[] = [];
 
             olt.map((data) => {
                 ips.push(data.host);
+                modelOlt.push(data.type);
                 setAuthOnu((prevState) => ({
                     ...prevState,
                     ip: [...prevState.ip, data.host],
@@ -111,7 +108,7 @@ export function SearchONU() {
 
             const response = await verifyIfOnuExists({
                 ip: ips, 
-                oltType: authOnu.oltType, 
+                modelOlt: modelOlt, 
                 matchSerialNumber: matchSerialNumber
             });
             stopLoading();

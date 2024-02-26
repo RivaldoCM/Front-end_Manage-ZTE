@@ -31,7 +31,6 @@ function stableSort<T>(array: readonly T[]) {
 function Row(props: IOnuLogsProps) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
-    console.log(row)
 
     return (
         <React.Fragment>

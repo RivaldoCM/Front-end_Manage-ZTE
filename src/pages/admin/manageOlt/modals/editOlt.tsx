@@ -54,6 +54,7 @@ export function EditOltModal(props: any) {
 				...form,
 				id: props.oltDataSelected['id'],
 				name: props.oltDataSelected['name'],
+				city_id: props.oltDataSelected['city_id'],
 				host: props.oltDataSelected['host'],
 				type: props.oltDataSelected['type'],
 				isPizzaBox: props.oltDataSelected['isPizzaBox'] ? 1 : 0,

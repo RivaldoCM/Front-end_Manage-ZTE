@@ -1,8 +1,8 @@
 import { AlertColor } from "@mui/material"
 
 export const handleMessage = (res: string): {responseMessage: string, severityStatus: AlertColor} => {
-
-    switch(res){
+    console.log(res)
+    switch(res){ 
         case 'warning/has-action-in-progress':
             return{
                 responseMessage: 'Aguarde a ultima ação ser finalizada.',

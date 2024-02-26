@@ -18,7 +18,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useResponse } from '../../../../hooks/useResponse';
 
-
 export function ZTEForm({onu}: IOnu){
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
@@ -37,7 +36,7 @@ export function ZTEForm({onu}: IOnu){
             ...prevAuthOnu,
             ip: [setCorrectOltValues(onu, authOnu.ip)],
             oltId: [setCorrectOltValues(onu, authOnu.oltId)],
-            onuModel: cleanUpModelName(onu.model),
+            modelOnu: cleanUpModelName(onu.model),
             onuType: verifyOnuType(onu.serialNumber),
             isPizzaBox: [setCorrectOltValues(onu, authOnu.isPizzaBox)],
             voalleAccessPointId: [setCorrectOltValues(onu, authOnu.voalleAccessPointId)]
@@ -81,8 +80,8 @@ export function ZTEForm({onu}: IOnu){
                 pon: onu.pon,
                 isPizzaBox: authOnu.isPizzaBox,
                 serialNumber: onu.serialNumber,
-                type: authOnu.oltType,
-                model: authOnu.onuModel,
+                modelOlt: onu.modelOlt,
+                modelOnu: authOnu.modelOnu,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
                 pppPass: authOnu.pppoePassword,
@@ -111,14 +110,14 @@ export function ZTEForm({onu}: IOnu){
                         ...authOnu,
                         ip: [],
                         oltId: [],
-                        cityId: 0,
                         cpf: '',
                         pppoeUser: '',
                         pppoePassword: '',
                         wifiName: '',
                         wifiPassword: '',
-                        onuType: '',
-                        onuModel: '',
+                        typeOnu: '',
+                        modelOnu: 'F601',
+                        modelOlt: [],
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
@@ -138,7 +137,7 @@ export function ZTEForm({onu}: IOnu){
                     slot: onu.slot,
                     pon: onu.pon,
                     serialNumber: onu.serialNumber,
-                    onuType: authOnu.onuType,
+                    modelOlt: authOnu.modelOlt[0],
                     accessPointId: authOnu.voalleAccessPointId,
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
