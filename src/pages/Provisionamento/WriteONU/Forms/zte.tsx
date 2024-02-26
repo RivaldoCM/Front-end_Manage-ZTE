@@ -65,6 +65,10 @@ export function ZTEForm({onu}: IOnu){
                 if(response){
                     if (!connectionData.contractId){
                         connectionData.contractId = 0;
+                    } else {
+                        connectionData.connectionId = response.data.connectionId;
+                        connectionData.contractId = response.data.contractId;
+                        connectionData.password = response.data.password;
                     }
                 }
             }else{

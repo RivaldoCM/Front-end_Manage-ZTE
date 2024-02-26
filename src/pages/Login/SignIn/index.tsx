@@ -42,7 +42,7 @@ export function SignIn(){
             localStorage.setItem('Authorization', response.data.token);
             const jwtDecoded: IDecodedJTW = jwtDecode(response.data.token);
             setUser(jwtDecoded);
-            navigate('/provisionamento');
+            navigate('/auth_onu');
         })
         .catch(err => {
             handleError(err.response.data.error);

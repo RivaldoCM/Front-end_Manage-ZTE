@@ -56,15 +56,15 @@ export function PARKSForm({onu}: IOnu){
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
 
             if (peopleId){
-                connectionData = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
-                if(connectionData){
+                const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
+                if(response){
                     if (!connectionData.contractId){
                         connectionData.contractId = 0;
+                    } else {
+                        connectionData.connectionId = response.data.connectionId;
+                        connectionData.contractId = response.data.contractId;
+                        connectionData.password = response.data.password;
                     }
-                } else {
-                    stopLoading();
-                    setFetchResponseMessage('error/no-connection-with-API');
-                    return;
                 }
             }else{
                 connectionData.contractId = 0;
