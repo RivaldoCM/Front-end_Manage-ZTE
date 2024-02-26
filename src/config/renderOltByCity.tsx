@@ -7,15 +7,17 @@ export const handleOltByCity = (olts: IOlt[] | undefined) => {
 
     if(olts){
         return olts.map((olt, index: number) => {
-            if(!oltByCnl.has(olt.cnl_by_location)){
-                oltByCnl.add(olt.cnl_by_location);
-                return(
-                    <MenuItem key={index} value={olt.name}>
-                        {olt.name}
-                    </MenuItem>
-                );
+            if(olt.cnl_by_location){
+                if(!oltByCnl.has(olt.cnl_by_location)){
+                    oltByCnl.add(olt.cnl_by_location);
+                    return(
+                        <MenuItem key={index} value={olt.name}>
+                            {olt.name}
+                        </MenuItem>
+                    );
+                }
+                return null;
             }
-            return null;
         });
     }
     return [];
