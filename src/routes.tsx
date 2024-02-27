@@ -4,18 +4,19 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { isLogged } from "./config/isLogged";
+
 import { Login } from "./pages/Login";
 import { HandleManageOlt } from "./pages/admin/manageOlt";
 import { HandleManageUsers } from "./pages/admin/users";
 import { OnuDelete } from "./pages/onuDelete";
 import { LogsOnu } from "./pages/logs/onu";
+import { AuthOnuController } from "./pages/Provisionamento";
+import { MyAuthorizedOnus } from "./pages/MyAuthorizedOnus";
 
 import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
 
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
-import { AuthOnuController } from "./pages/Provisionamento";
-
 
 interface PrivateRouteProps {
     element: ReactElement;
@@ -72,6 +73,10 @@ export function AppRoutes() {
                             />
                         </AuthOnuContextProvider>
                     }
+                />
+                <Route
+                    path="my_auth_onus"
+                    element={<PrivateRoute element={<MyAuthorizedOnus />} />}
                 />
             </Route>
         </Routes>
