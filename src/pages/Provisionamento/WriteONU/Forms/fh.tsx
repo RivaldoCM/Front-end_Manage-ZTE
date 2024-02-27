@@ -53,14 +53,12 @@ export function FHForm({onu}: IOnu){
             
             if (peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
-                if(response){
-                    if (!connectionData.contractId){
-                        connectionData.contractId = 0;
-                    } else {
-                        connectionData.connectionId = response.data.connectionId;
-                        connectionData.contractId = response.data.contractId;
-                        connectionData.password = response.data.password;
-                    }
+                if(response.success){
+                    connectionData.connectionId = response.responses.response.connectionId;
+                    connectionData.contractId = response.responses.response.contractId;
+                    connectionData.password = response.responses.response.password;
+                } else {
+                    connectionData.contractId = 0;
                 }
             }else{
                 connectionData.contractId = 0;
@@ -109,7 +107,6 @@ export function FHForm({onu}: IOnu){
                         wifiPassword: '',
                         typeOnu: '',
                         modelOnu: 'F601',
-                        modelOlt: [],
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
@@ -120,6 +117,7 @@ export function FHForm({onu}: IOnu){
             }
 
             if(connectionData.connectionId){
+                console.log('aq, vou atualizar', onu)
                 updateConnection({
                     connectionId: connectionData.connectionId,
                     pppoeUser: authOnu.pppoeUser,
@@ -127,11 +125,12 @@ export function FHForm({onu}: IOnu){
                     slot: onu.slot,
                     pon: onu.pon,
                     serialNumber: onu.serialNumber,
-                    modelOlt: authOnu.modelOlt[0],
+                    modelOlt: onu.modelOlt,
                     accessPointId: authOnu.voalleAccessPointId,
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
                 });
+                
             }
         }
     }
