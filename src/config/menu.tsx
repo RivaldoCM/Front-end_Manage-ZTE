@@ -7,6 +7,7 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
+import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -37,6 +38,14 @@ export const handlePages: IAllPages[] = [
         pages: [
             {
                 logs_onu: 'Log de Onu',
+            }
+        ]
+    },
+    {
+        name: 'Massiva',
+        pages: [
+            {
+                massive: "Massivas"
             }
         ]
     }
@@ -72,6 +81,8 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <AccountTreeOutlinedIcon />;
         case 'logs_onu':
             return <TroubleshootOutlinedIcon />;
+        case 'massive':
+            return <PublicRoundedIcon />;
         default:
             return <></>;
     }

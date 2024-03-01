@@ -15,6 +15,7 @@ import { MobileDrawerMenu } from "./components/MobileMenu";
 
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
 import { AuthOnuController } from "./pages/Provisionamento";
+import { Massive } from "./pages/massive";
 
 
 interface PrivateRouteProps {
@@ -71,6 +72,12 @@ export function AppRoutes() {
                                 element={<AuthOnuController />}
                             />
                         </AuthOnuContextProvider>
+                    }
+                />
+                <Route 
+                    path="massive"
+                    element={
+                        <PrivateRoute element={ <Massive />}/>
                     }
                 />
             </Route>
