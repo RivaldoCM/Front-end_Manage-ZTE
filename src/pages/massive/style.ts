@@ -16,18 +16,26 @@ export const Cards = styled.ul`
 export const Card = styled.div`
     position: relative;
     display: block;
+    max-width: 400px;
     height: 100%;  
     border-radius: calc(var(--curve) * 1px);
     overflow: hidden;
     text-decoration: none;
 
-    > :hover .card__overlay, > :hover .card__header{
-        transform: translateY(0);
+    &:hover {
+        background-color: #6A515E;
+        .card__overlay{
+            transform: translateY(0);
+            .card__header{
+                transform: translateY(0);
+            }
+        }
     }
 
     .card__image { 
         width: 100%;
-        height: auto;
+        height: 100%;
+        height: 400px;
     }
 
     .card__overlay {
@@ -59,16 +67,12 @@ export const Card = styled.div`
                 bottom: 100%;
                 right: 0;      
                 z-index: 1;
-            }
-            
-            .card__arc path {
-                fill: var(--surface-color);
-                d: path("M 40 80 c 22 0 40 -22 40 -40 v 40 Z");
-            }       
-            
-            .card:hover .card__header {
-                transform: translateY(0);
-            }
+
+                path{
+                    fill: var(--surface-color);
+                    d: path("M 40 80 c 22 0 40 -22 40 -40 v 40 Z");
+                }
+            }  
             
             .card__thumb {
                 flex-shrink: 0;
@@ -95,8 +99,9 @@ export const Card = styled.div`
                 font-size: .8em;
                 color: #D7BDCA;
             }
+        }
 
-            .card__description {
+        .card__description {
                 padding: 0 2em 2em;
                 margin: 0;
                 color: #D7BDCA;
@@ -106,7 +111,6 @@ export const Card = styled.div`
                 -webkit-line-clamp: 3;
                 overflow: hidden;
             }
-        }
     }
 `
 
