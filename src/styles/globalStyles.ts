@@ -9,7 +9,7 @@ interface MyStyledComponentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
 export const GlobalStyle = createGlobalStyle`
     :root {
         //colors
-        --surface-color: #fff;
+        --surface-color: #F8F8FF;
         --curve: 40;
     }
     * {

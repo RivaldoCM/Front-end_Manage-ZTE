@@ -1,43 +1,53 @@
-import { Card, Cards, MassiveContainer } from "./style";
+import { IconButton } from "@mui/material";
+import { Card, Cards, OffCard, CardController } from "./style";
+
+import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
+import { useState } from "react";
 
 export function Massive(){
+    const [showOffCard, setShowOffCard] = useState(true);
+
     return(
-        <MassiveContainer>
             <Cards>
-                <li>
-                    <Card className="card">
-                    <img src="https://i.imgur.com/oYiTqum.jpg" className="card__image" alt="" />
-                    <div className="card__overlay">
-                        <div className="card__header">
-                        <svg className="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
-                        <img className="card__thumb" src="https://i.imgur.com/7D7I6dI.png" alt="" />
-                        <div className="card__header-text">
-                            <h3 className="card__title">Jessica Parker</h3>            
-                            <span className="card__status">1 hour ago</span>
-                        </div>
-                        </div>
-                        <p className="card__description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, blanditiis?</p>
-                    </div>
-                    </Card>      
-                </li>
-                <li>
-                    <Card className="card">
-                    <img src="https://i.imgur.com/oYiTqum.jpg" className="card__image" alt="" />
-                    <div className="card__overlay">
-                        <div className="card__header">
-                        <svg className="card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                     
-                        <img className="card__thumb" src="https://i.imgur.com/7D7I6dI.png" alt="" />
-                        <div className="card__header-text">
-                            <h3 className="card__title">Jessica Parker</h3>
-                            <span className="card__tagline">Lorem ipsum dolor sit amet consectetur</span>            
-                            <span className="card__status">1 hour ago</span>
-                        </div>
-                        </div>
-                        <p className="card__description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores, blanditiis?</p>
-                    </div>
+                <CardController className="flex">
+                    <Card className="flex ">
                     </Card>
-                </li>
+                    <OffCard className="flex" offCardOpen={showOffCard}>
+                        <IconButton
+                            className="off-card-button" 
+                            color="primary"
+                            onClick={() => setShowOffCard(!showOffCard)}
+                        >
+                            <KeyboardArrowUpOutlinedIcon />
+                        </IconButton>
+                    </OffCard>
+                </CardController>
+                <CardController className="flex">
+                    <Card className="flex ">
+                    </Card>
+                    <OffCard className="flex" offCardOpen={showOffCard}>
+                        <IconButton
+                            className="off-card-button" 
+                            color="primary"
+                            onClick={() => setShowOffCard(!showOffCard)}
+                        >
+                            <KeyboardArrowUpOutlinedIcon />
+                        </IconButton>
+                    </OffCard>
+                </CardController>
+                <CardController className="flex">
+                    <Card className="flex ">
+                    </Card>
+                    <OffCard className="flex" offCardOpen={showOffCard}>
+                        <IconButton
+                            className="off-card-button" 
+                            color="primary"
+                            onClick={() => setShowOffCard(!showOffCard)}
+                        >
+                            <KeyboardArrowUpOutlinedIcon />
+                        </IconButton>
+                    </OffCard>
+                </CardController>
             </Cards>
-        </MassiveContainer>
     );
 }
