@@ -48,6 +48,84 @@ export function Massive(){
                         </IconButton>
                     </OffCard>
                 </CardController>
+                <CardController className="flex">
+                    <Card className="flex ">
+                    </Card>
+                    <OffCard className="flex" offCardOpen={showOffCard}>
+                        <IconButton
+                            className="off-card-button" 
+                            color="primary"
+                            onClick={() => setShowOffCard(!showOffCard)}
+                        >
+                            <KeyboardArrowUpOutlinedIcon />
+                        </IconButton>
+                    </OffCard>
+                </CardController>
+                <CardController className="flex">
+                    <Card className="flex ">
+                    </Card>
+                    <OffCard className="flex" offCardOpen={showOffCard}>
+                        <IconButton
+                            className="off-card-button" 
+                            color="primary"
+                            onClick={() => setShowOffCard(!showOffCard)}
+                        >
+                            <KeyboardArrowUpOutlinedIcon />
+                        </IconButton>
+                    </OffCard>
+                </CardController>
+                <CardController className="flex">
+                    <Card className="flex ">
+                    </Card>
+                    <OffCard className="flex" offCardOpen={showOffCard}>
+                        <IconButton
+                            className="off-card-button" 
+                            color="primary"
+                            onClick={() => setShowOffCard(!showOffCard)}
+                        >
+                            <KeyboardArrowUpOutlinedIcon />
+                        </IconButton>
+                    </OffCard>
+                </CardController>
+                <CardController className="flex">
+                    <Card className="flex ">
+                    </Card>
+                    <OffCard className="flex" offCardOpen={showOffCard}>
+                        <IconButton
+                            className="off-card-button" 
+                            color="primary"
+                            onClick={() => setShowOffCard(!showOffCard)}
+                        >
+                            <KeyboardArrowUpOutlinedIcon />
+                        </IconButton>
+                    </OffCard>
+                </CardController>
+                <CardController className="flex">
+                    <Card className="flex ">
+                    </Card>
+                    <OffCard className="flex" offCardOpen={showOffCard}>
+                        <IconButton
+                            className="off-card-button" 
+                            color="primary"
+                            onClick={() => setShowOffCard(!showOffCard)}
+                        >
+                            <KeyboardArrowUpOutlinedIcon />
+                        </IconButton>
+                    </OffCard>
+                </CardController>
+                <CardController className="flex">
+                    <Card className="flex ">
+                    </Card>
+                    <OffCard className="flex" offCardOpen={showOffCard}>
+                        <IconButton
+                            className="off-card-button" 
+                            color="primary"
+                            onClick={() => setShowOffCard(!showOffCard)}
+                        >
+                            <KeyboardArrowUpOutlinedIcon />
+                        </IconButton>
+                    </OffCard>
+                </CardController>
             </Cards>
     );
 }

@@ -99,7 +99,6 @@ export const InputContainer = styled.div<MyStyledComponentProps>`
         }
     }
     
-
     @media (max-width: 450px){
         width: 100%;
     }
