@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 export const Cards = styled.div`
-    width: 100%;
     display: grid;
-    background-color: #eaeef6;
     grid-template-columns: repeat(auto-fit, 400px);
     justify-content: center;
     gap: 1rem;
+    width: 100%;
+    margin: 1rem;
 `
 
 export const CardController = styled.div`
@@ -22,11 +22,32 @@ export const Card = styled.div`
     position: relative;
     flex-direction: column;
     width: inherit;
-    height: inherit; 
-    background-color: #E8E8E8;
-    border: 2px solid #fff;
+    height: inherit;
+    padding: 1rem;
+    background-color: #D8DEE9;
+    border: 2px solid #B6BEC2;
     border-radius: 1.5rem;
     overflow: hidden;
+
+    .header{
+        flex-direction: column;
+        width: 100%;
+        height: 20%;
+
+        p{
+            font-weight: bolder;
+            font-size: 1.2rem;
+        }
+    }
+    .content{
+        width: 100%;
+        height: 80%;
+        padding-top: 1rem;
+
+        p{
+            margin: .2rem 0;
+        }
+    }
 `
 
 export const OffCard = styled.div`
@@ -34,7 +55,7 @@ export const OffCard = styled.div`
     width: calc(100% - 6rem);
     height: 250px;
     border-radius: 1rem;
-    background-color: #fff;
+    background-color: #B6BEC2  ;
     transform: ${(props) => props.offCardOpen ? 'translateY(5%)' : 'translateY(100%)'};
     transition: .2s ease-in-out;
 
