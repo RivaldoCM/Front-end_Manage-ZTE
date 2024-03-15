@@ -57,10 +57,14 @@ export function PARKSForm({onu}: IOnu){
 
             if (peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
-                if(response.success){
-                    connectionData.connectionId = response.responses.response.connectionId;
-                    connectionData.contractId = response.responses.response.contractId;
-                    connectionData.password = response.responses.response.password;
+                if(response){
+                    if(response.success){
+                        connectionData.connectionId = response.responses.response.connectionId;
+                        connectionData.contractId = response.responses.response.contractId;
+                        connectionData.password = response.responses.response.password;
+                    } else {
+                        connectionData.contractId = 0;
+                    }
                 } else {
                     connectionData.contractId = 0;
                 }
