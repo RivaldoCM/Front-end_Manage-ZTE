@@ -121,7 +121,6 @@ export function FHForm({onu}: IOnu){
             }
 
             if(connectionData.connectionId){
-                console.log('aq, vou atualizar', onu)
                 updateConnection({
                     connectionId: connectionData.connectionId,
                     pppoeUser: authOnu.pppoeUser,
@@ -187,6 +186,7 @@ export function FHForm({onu}: IOnu){
                         >
                             <MenuItem value={'F601'}>F601</MenuItem>
                             <MenuItem value={'F612'}>F612</MenuItem>
+                            <MenuItem value={'ONT'}>ONT(4 LAN's)</MenuItem>
                         </TextField>
                     </InputContainer> 
                 : <></>
