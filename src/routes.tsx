@@ -17,6 +17,7 @@ import { MenuDrawer } from "./components/DesktopMenu";
 import { MobileDrawerMenu } from "./components/MobileMenu";
 
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
+import { MyAuthorizedOnusMobile } from "./pages/MyAuthorizedOnus/mobile";
 
 interface PrivateRouteProps {
     element: ReactElement;
@@ -76,7 +77,7 @@ export function AppRoutes() {
                 />
                 <Route
                     path="my_auth_onus"
-                    element={<PrivateRoute element={<MyAuthorizedOnus />} />}
+                    element={<PrivateRoute element={matches ? <MyAuthorizedOnusMobile /> : <MyAuthorizedOnus />} />}
                 />
             </Route>
         </Routes>
