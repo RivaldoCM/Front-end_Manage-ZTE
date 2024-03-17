@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+    flex-direction: column;
     width: 100%;
     padding: 1rem;
     min-height: 100vh;
@@ -16,7 +17,8 @@ export const HelpButton = styled.div`
 
 export const CardMyOnus = styled.div`
     width: 100%;
-    height: 150px;
+    max-width: 500px;
+    height: 156px;
     margin: .5rem 0;
     background: #e6e3e3;
     border-radius: .6rem;
@@ -34,7 +36,14 @@ export const CardMyOnus = styled.div`
         }
     }
     .content{
+        flex-direction: column;
         height: 40%;
+
+        > div{
+            width: 100%;
+            margin-top: .5rem;
+            padding-left: 1rem;
+        }
     }
 `
 

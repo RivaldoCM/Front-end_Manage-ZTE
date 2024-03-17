@@ -10,7 +10,7 @@ export function MyAuthorizedOnusMobile(){
 
     useEffect(() => {
         async function getData(){
-            const response = await getOnuLogs({initialDate: dayjs().subtract(7, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: 150439});
+            const response = await getOnuLogs({initialDate: dayjs().subtract(3, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: 150439});
             if(response){
                 if(response.success){
                     setOnu(response.responses.response);
@@ -38,22 +38,25 @@ export function MyAuthorizedOnusMobile(){
     const id = open ? 'simple-popover' : undefined;
 
     return (
-        <Container>
+        <Container className="flex">
             <HelpButton className="flex">
             <IconButton aria-label="delete" onClick={handleClick}>
                 <HelpOutlineOutlinedIcon fontSize="large" color="primary"/>
             </IconButton>
                 <Popover
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
                 >
-                    <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+                    <Typography sx={{ p: 2 }}>
+                        Aqui aparecerá as suas ONU's provisionadas dos ultimos 3 dias.<br/>
+                        Apenas verifique a perda da ONU novamente caso tenha feito alguma manutenção na fibra.
+                    </Typography>
                 </Popover>
             </HelpButton>
             {
@@ -72,6 +75,9 @@ export function MyAuthorizedOnusMobile(){
                             </div>
                             <div className="content flex">
                                 <Button variant="contained">Verificar Perda Atual</Button>
+                                <div>
+                                    {onu.created_at}
+                                </div>
                             </div>
                         </CardMyOnus>
                     );
