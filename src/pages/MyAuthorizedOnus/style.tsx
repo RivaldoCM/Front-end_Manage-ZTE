@@ -18,16 +18,15 @@ export const HelpButton = styled.div`
 export const CardMyOnus = styled.div`
     width: 100%;
     max-width: 500px;
-    height: 156px;
+    height: auto;
     margin: .5rem 0;
     background: #e6e3e3;
     border-radius: .6rem;
 
     .header{
-        height: 60%;
-        justify-content: flex-start;
         flex-direction: column;
-        flex-wrap: wrap;
+        justify-content: flex-start;
+        height: 60%;
         padding: 0.5rem 0;
 
         p{
@@ -37,7 +36,9 @@ export const CardMyOnus = styled.div`
     }
     .content{
         flex-direction: column;
+        justify-content: flex-end;
         height: 40%;
+        min-height: 100px;
 
         > div{
             width: 100%;
