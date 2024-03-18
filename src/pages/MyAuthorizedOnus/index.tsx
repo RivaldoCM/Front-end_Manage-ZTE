@@ -1,4 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import dayjs from 'dayjs';
+
+import { useAuth } from '../../hooks/useAuth';
+import { useResponse } from '../../hooks/useResponse';
+import { getOnuLogs } from '../../services/apiManageONU/getOnuLogs';
 
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -15,9 +20,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ResponsiveTable } from '../logs/onu/style';
 import { Alert, TablePagination } from '@mui/material';
-import { getOnuLogs } from '../../services/apiManageONU/getOnuLogs';
-import { useAuth } from '../../hooks/useAuth';
-import dayjs from 'dayjs';
+
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -66,6 +69,7 @@ function Row(props: IOnuLogsProps) {
 
 export function MyAuthorizedOnus() {
     const { user } = useAuth();
+    const {response, severityStatus, responseMassage, setFetchResponseMessage} = useResponse();
 
     const [page, setPage] = useState(0);
     const [onu, setOnu] = useState<IOnuLogs[]>([]);
@@ -73,7 +77,7 @@ export function MyAuthorizedOnus() {
 
     useEffect(() => {
         async function getData(){
-            const response = await getOnuLogs({initialDate: dayjs().subtract(2, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: 150439});
+            const response = await getOnuLogs({initialDate: dayjs().subtract(2, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: user?.uid});
 
             if(response){
                 if(response.success){
@@ -83,6 +87,7 @@ export function MyAuthorizedOnus() {
                     setOnu([]);
                 }
             } else {
+                setFetchResponseMessage('error/no-connection-with-API');
                 setOnu([]);
             }
         };
@@ -136,6 +141,11 @@ export function MyAuthorizedOnus() {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
             </TableContainer>
+            {
+                response ? 
+                <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
+                : <></>
+            }
         </React.Fragment>
     );
 }

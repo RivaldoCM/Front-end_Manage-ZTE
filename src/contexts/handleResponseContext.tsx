@@ -39,15 +39,16 @@ export function HandleResponseContextProvider({ children }: { children: ReactNod
     }, [response]);
 
     return(
-        <ResponseContext.Provider value={{ 
-            response, 
-            setResponse, 
-            responseMassage, 
-            setResponseMassage, 
-            severityStatus, 
-            setSeverityStatus, 
-            fetchResponseMessage, 
-            setFetchResponseMessage 
+        <ResponseContext.Provider 
+            value={{ 
+                response, 
+                setResponse, 
+                responseMassage, 
+                setResponseMassage, 
+                severityStatus, 
+                setSeverityStatus, 
+                fetchResponseMessage, 
+                setFetchResponseMessage 
             }}> 
             {children}
         </ResponseContext.Provider>
