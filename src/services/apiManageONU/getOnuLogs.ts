@@ -9,8 +9,6 @@ export async function getOnuLogs(props: IFilterOnuLogs): Promise<IResponseData |
     let formatedInitialDate;
     let formatedLastDate;
 
-    console.log(props)
-
     if(!props){
         const startOfDay = formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), false);
         const endOfDay = formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), true);

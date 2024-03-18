@@ -30,16 +30,25 @@ export const CardMyOnus = styled.div`
         height: 60%;
         padding: 0.5rem 0;
 
-        p{
-            margin: 0 .5rem;
-            color: #2c2c2c;
+        > div{
+            .color{
+                color: ${(props) => props.signalColor ? 'red' : 'green'};
+            }
+            p{
+                margin: 0 .5rem;
+                color: #2c2c2c;
+            }
+
+            @media (max-width: 420px){
+                flex-direction: column;
+                margin-top: .5rem;
+            }
         }
     }
     .content{
         flex-direction: column;
         justify-content: flex-end;
         height: 40%;
-
 
         > div{
             width: 100%;

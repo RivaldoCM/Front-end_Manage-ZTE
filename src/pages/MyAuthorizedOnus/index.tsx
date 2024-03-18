@@ -73,7 +73,7 @@ export function MyAuthorizedOnus() {
 
     useEffect(() => {
         async function getData(){
-            const response = await getOnuLogs({initialDate: dayjs().subtract(7, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: 150439});
+            const response = await getOnuLogs({initialDate: dayjs().subtract(2, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: 150439});
 
             if(response){
                 if(response.success){
