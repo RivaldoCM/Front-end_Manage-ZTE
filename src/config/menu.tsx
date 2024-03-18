@@ -7,7 +7,7 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
-import ManageHistoryRoundedIcon from '@mui/icons-material/ManageHistoryRounded';
+import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -77,7 +77,7 @@ export const handleIconMenu = (text: string): React.ReactElement => {
         case 'logs_onu':
             return <TroubleshootOutlinedIcon />;
         case 'my_auth_onus':
-            return <ManageHistoryRoundedIcon />;
+            return <BallotOutlinedIcon />;
         default:
             return <></>;
     }

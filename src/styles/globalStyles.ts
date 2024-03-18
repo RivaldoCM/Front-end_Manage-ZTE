@@ -31,6 +31,7 @@ export const GlobalStyle = createGlobalStyle`
             }
         }
     }
+
     body {
         //background: #eef1f6 !important;
         -webkit-font-smoothing: antialiased;
@@ -46,6 +47,26 @@ export const GlobalStyle = createGlobalStyle`
     button {cursor: pointer;}
     //a{color: var(--black)}
     [disable] {opacity: 0.6%; cursor: not-allowed;}
+
+    ::-webkit-scrollbar {
+        width: 8px; /* Largura da barra de rolagem */
+    }
+
+    /* Track (trilha) */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1; /* Cor de fundo da trilha */
+    }
+
+    /* Handle (alça) */
+    ::-webkit-scrollbar-thumb {
+        background: #bdbebd; /* Cor do fundo da alça */
+        border-radius: 10px; /* Raio da borda da alça */
+    }
+
+    /* Handle on hover (alça ao passar o mouse) */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555; /* Cor do fundo da alça ao passar o mouse */
+    }
 
     .flex{
         display: flex;

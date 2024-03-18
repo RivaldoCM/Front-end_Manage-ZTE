@@ -9,11 +9,11 @@ export const Container = styled.div`
 `
 
 export const HelpButton = styled.div`
+    position: relative;
     width: 100%;
     height: auto;
-    justify-content: flex-end;
-    align-items: flex-end;
-
+    flex-direction: row-reverse;
+    justify-content: space-between;
 `
 
 export const CardMyOnus = styled.div`
@@ -31,9 +31,6 @@ export const CardMyOnus = styled.div`
         padding: 0.5rem 0;
 
         > div{
-            .color{
-                color: ${(props) => props.signalColor ? 'red' : 'green'};
-            }
             p{
                 margin: 0 .5rem;
                 color: #2c2c2c;
