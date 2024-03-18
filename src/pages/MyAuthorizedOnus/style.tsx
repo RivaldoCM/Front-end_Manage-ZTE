@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     flex-direction: column;
+    justify-content: flex-start;
     width: 100%;
     padding: 1rem;
     min-height: 100vh;
@@ -38,7 +39,7 @@ export const CardMyOnus = styled.div`
         flex-direction: column;
         justify-content: flex-end;
         height: 40%;
-        min-height: 100px;
+
 
         > div{
             width: 100%;

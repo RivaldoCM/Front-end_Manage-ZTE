@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getOnuLogs } from "../../services/apiManageONU/getOnuLogs";
 import dayjs from "dayjs";
 import { CardMyOnus, Container, HelpButton } from "./style";
-import { Button, Typography, Popover, IconButton } from "@mui/material";
+import { Button, Typography, Popover, IconButton, Divider } from "@mui/material";
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 
 export function MyAuthorizedOnusMobile(){
@@ -10,7 +10,7 @@ export function MyAuthorizedOnusMobile(){
 
     useEffect(() => {
         async function getData(){
-            const response = await getOnuLogs({initialDate: dayjs().subtract(3, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: 150439});
+            const response = await getOnuLogs({initialDate: dayjs().subtract(2, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: 150439});
             if(response){
                 if(response.success){
                     setOnu(response.responses.response);
@@ -54,13 +54,16 @@ export function MyAuthorizedOnusMobile(){
                     }}
                 >
                     <Typography sx={{ p: 2 }}>
-                        Aqui aparecerá as suas ONU's provisionadas dos ultimos 3 dias.<br/>
-                        Apenas verifique a perda da ONU novamente caso tenha feito alguma manutenção na fibra.
+                        Aqui aparecerá as suas ONU's provisionadas dos ultimos 2 dias.<br/>
+                        <Divider />
+                        Apenas verifique a perda da ONU novamente caso tenha feito alguma manutenção na fibra.<br/>
+                        <Divider />
+                        Se você provisionou uma ONU agora, pode demorar até 15 segundos para que você consiga vê-la aqui.
                     </Typography>
                 </Popover>
             </HelpButton>
             {
-                onu.map((onu) => {
+                onu.reverse().map((onu) => {
                     return (
                         <CardMyOnus>
                             <div className="header flex">
@@ -74,7 +77,9 @@ export function MyAuthorizedOnusMobile(){
                                 </div>
                             </div>
                             <div className="content flex">
+                                {/*
                                 <Button variant="contained">Verificar Perda Atual</Button>
+                                */}
                                 <div>
                                     {onu.created_at}
                                 </div>
