@@ -5,7 +5,7 @@ export const Container = styled.div`
     justify-content: flex-start;
     width: 100%;
     padding: 1rem;
-    min-height: 100vh;
+    min-height: calc(100vh - 62px);
 `
 
 export const HelpButton = styled.div`
