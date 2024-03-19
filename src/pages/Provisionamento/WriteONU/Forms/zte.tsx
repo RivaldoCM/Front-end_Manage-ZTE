@@ -66,16 +66,19 @@ export function ZTEForm({onu}: IOnu){
             startLoading();
             const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
+            
             if (peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
                 if(response){
-                    if (!connectionData.contractId){
-                        connectionData.contractId = 0;
+                    if(response.success){
+                        connectionData.connectionId = response.responses.response.connectionId;
+                        connectionData.contractId = response.responses.response.contractId;
+                        connectionData.password = response.responses.response.password;
                     } else {
-                        connectionData.connectionId = response.data.connectionId;
-                        connectionData.contractId = response.data.contractId;
-                        connectionData.password = response.data.password;
+                        connectionData.contractId = 0;
                     }
+                } else {
+                    connectionData.contractId = 0;
                 }
             }else{
                 connectionData.contractId = 0;
@@ -127,7 +130,6 @@ export function ZTEForm({onu}: IOnu){
                         wifiPassword: '',
                         typeOnu: '',
                         modelOnu: 'F601',
-                        modelOlt: [],
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
@@ -150,7 +152,7 @@ export function ZTEForm({onu}: IOnu){
                     slot: onu.slot,
                     pon: onu.pon,
                     serialNumber: onu.serialNumber,
-                    modelOlt: authOnu.modelOlt[0],
+                    modelOlt: onu.modelOlt,
                     accessPointId: authOnu.voalleAccessPointId,
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword

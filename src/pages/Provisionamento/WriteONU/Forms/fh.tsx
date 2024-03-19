@@ -57,13 +57,15 @@ export function FHForm({onu}: IOnu){
             if (peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
                 if(response){
-                    if (!connectionData.contractId){
-                        connectionData.contractId = 0;
+                    if(response.success){
+                        connectionData.connectionId = response.responses.response.connectionId;
+                        connectionData.contractId = response.responses.response.contractId;
+                        connectionData.password = response.responses.response.password;
                     } else {
-                        connectionData.connectionId = response.data.connectionId;
-                        connectionData.contractId = response.data.contractId;
-                        connectionData.password = response.data.password;
+                        connectionData.contractId = 0;
                     }
+                } else {
+                    connectionData.contractId = 0;
                 }
             }else{
                 connectionData.contractId = 0;
@@ -112,7 +114,6 @@ export function FHForm({onu}: IOnu){
                         wifiPassword: '',
                         typeOnu: '',
                         modelOnu: 'F601',
-                        modelOlt: [],
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
@@ -133,11 +134,12 @@ export function FHForm({onu}: IOnu){
                     slot: onu.slot,
                     pon: onu.pon,
                     serialNumber: onu.serialNumber,
-                    modelOlt: authOnu.modelOlt[0],
+                    modelOlt: onu.modelOlt,
                     accessPointId: authOnu.voalleAccessPointId,
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
                 });
+                
             }
         }
     }
@@ -190,6 +192,7 @@ export function FHForm({onu}: IOnu){
                         >
                             <MenuItem value={'F601'}>F601</MenuItem>
                             <MenuItem value={'F612'}>F612</MenuItem>
+                            <MenuItem value={'ONT'}>ONT(4 LAN's)</MenuItem>
                         </TextField>
                     </InputContainer> 
                 : <></>

@@ -4,11 +4,14 @@ import { getToken } from "./getToken";
 import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps.js";
 
 export async function updateConnection(props: IUpdateConnectionProps){
+    console.log(props)
     let modelOLTVoalle: number = 0;
     if(props.modelOlt === 10){
         modelOLTVoalle = 7;
     }else if(props.modelOlt === 20){
         modelOLTVoalle = 4;
+    } else {
+        modelOLTVoalle = 6;
     }
 
     const data = {

@@ -61,13 +61,15 @@ export function PARKSForm({onu}: IOnu){
             if (peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
                 if(response){
-                    if (!connectionData.contractId){
-                        connectionData.contractId = 0;
+                    if(response.success){
+                        connectionData.connectionId = response.responses.response.connectionId;
+                        connectionData.contractId = response.responses.response.contractId;
+                        connectionData.password = response.responses.response.password;
                     } else {
-                        connectionData.connectionId = response.data.connectionId;
-                        connectionData.contractId = response.data.contractId;
-                        connectionData.password = response.data.password;
+                        connectionData.contractId = 0;
                     }
+                } else {
+                    connectionData.contractId = 0;
                 }
             }else{
                 connectionData.contractId = 0;
@@ -136,7 +138,7 @@ export function PARKSForm({onu}: IOnu){
                     pon: onu.pon,
                     slot: 1,
                     serialNumber: onu.serialNumber,
-                    modelOlt: authOnu.modelOlt[0],
+                    modelOlt: onu.modelOlt,
                     accessPointId: authOnu.voalleAccessPointId,
                 });
             }

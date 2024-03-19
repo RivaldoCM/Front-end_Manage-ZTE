@@ -15,12 +15,10 @@ export async function getConnectionId(cpf: string, peopleId: number, pppoe: stri
         }
     })
     .then(response => {
-        if (!response.data.success) return response.data.messages.response;
-        return response.data.responses.response;
+        return response.data;
     })
     .catch(() => {
         return null;
     });
-
     return connectionId;
 }
