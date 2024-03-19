@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 
 import { useAuthOnu } from "../../../../hooks/useAuthOnu";
 import { useLoading } from "../../../../hooks/useLoading";
@@ -19,7 +20,9 @@ import { InputContainer } from "../../../../styles/globalStyles";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, CircularProgress, TextField } from "@mui/material";
 
+
 export function PARKSForm({onu}: IOnu){
+    const navigate = useNavigate();
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
@@ -115,6 +118,9 @@ export function PARKSForm({onu}: IOnu){
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
+                    setTimeout(() => {
+                        navigate('/my_auth_onus');
+                    }, 2000);
                 }
             } else {
                 setFetchResponseMessage('error/no-connection-with-API');

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../hooks/useAuth';
+import { useResponse } from '../../hooks/useResponse';
 import { handleDynamicPagesByRule, handleIconMenu } from '../../config/menu';
 
 import { Container } from './style';
@@ -16,11 +17,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { Alert } from '@mui/material';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 export function MobileDrawerMenu() {
     const navigate = useNavigate();
+    const {response, severityStatus, responseMassage} = useResponse();
     const { setUser } = useAuth();
 
     const [state, setState] = useState({
@@ -127,6 +130,11 @@ export function MobileDrawerMenu() {
                 </div>
             </header>
             <Outlet/>
+            {
+                response ? 
+                    <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
+                    : <></>
+            	}
         </Container>
     );
 }

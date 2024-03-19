@@ -23,6 +23,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { Alert } from '@mui/material';
+import { useResponse } from '../../hooks/useResponse';
 
 const drawerWidth = 320;
 
@@ -98,6 +100,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export function MenuDrawer() {
 	const navigate = useNavigate();
 	const { user, setUser } = useAuth();
+	const {response, severityStatus, responseMassage} = useResponse();
 	const theme = useTheme();
 
 	const [ open, setOpen ] = useState(false);
@@ -198,6 +201,11 @@ export function MenuDrawer() {
 			</Drawer>
 			<Box component="main" className='flex' sx={{ flexGrow: 1, mt: '62px' }}>
 				<Outlet />
+				{
+                response ? 
+                	<Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
+                	: <></>
+            	}
 			</Box>
 		</Box>
 	);

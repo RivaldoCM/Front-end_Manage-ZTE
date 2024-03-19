@@ -19,7 +19,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ResponsiveTable } from '../logs/onu/style';
-import { Alert, TablePagination } from '@mui/material';
+import { TablePagination } from '@mui/material';
 
 
 function stableSort<T>(array: readonly T[]) {
@@ -69,7 +69,7 @@ function Row(props: IOnuLogsProps) {
 
 export function MyAuthorizedOnus() {
     const { user } = useAuth();
-    const {response, severityStatus, responseMassage, setFetchResponseMessage} = useResponse();
+    const { setFetchResponseMessage } = useResponse();
 
     const [page, setPage] = useState(0);
     const [onu, setOnu] = useState<IOnuLogs[]>([]);
@@ -77,8 +77,7 @@ export function MyAuthorizedOnus() {
 
     useEffect(() => {
         async function getData(){
-            const response = await getOnuLogs({initialDate: dayjs().subtract(2, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: user?.uid});
-
+            const response = await getOnuLogs({initialDate: dayjs().subtract(2, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: user?.uid, state: 'true'});
             if(response){
                 if(response.success){
                     setOnu(response.responses.response);
@@ -141,11 +140,6 @@ export function MyAuthorizedOnus() {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
             </TableContainer>
-            {
-                response ? 
-                <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
-                : <></>
-            }
         </React.Fragment>
     );
 }

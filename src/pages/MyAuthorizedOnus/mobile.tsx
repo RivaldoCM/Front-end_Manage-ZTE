@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import { useAuth } from "../../hooks/useAuth";
+import { useResponse } from "../../hooks/useResponse";
 import { getOnuLogs } from "../../services/apiManageONU/getOnuLogs";
 
 import { CardMyOnus, Container, HelpButton } from "./style";
@@ -12,11 +13,13 @@ import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 
 export function MyAuthorizedOnusMobile(){
     const { user } = useAuth();
+    const { setFetchResponseMessage } = useResponse();
+
     const [onu, setOnu] = useState<IOnuLogs[]>([]);
 
     useEffect(() => {
         async function getData(){
-            const response = await getOnuLogs({initialDate: dayjs().subtract(2, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: user?.uid});
+            const response = await getOnuLogs({initialDate: dayjs().subtract(2, 'day').format('DD-MM-YYYY'), lastDate: dayjs().format('DD-MM-YYYY'), userId: user?.uid, state: 'true'});
             if(response){
                 if(response.success){
                     setOnu(response.responses.response);
@@ -24,6 +27,7 @@ export function MyAuthorizedOnusMobile(){
                     setOnu([]);
                 }
             } else {
+                setFetchResponseMessage('error/no-connection-with-API');
                 setOnu([]);
             }
         };
@@ -42,9 +46,9 @@ export function MyAuthorizedOnusMobile(){
     return (
         <Container className="flex">
             <HelpButton className="flex">
-            <IconButton onClick={handleClick}>
-                <HelpOutlineOutlinedIcon fontSize="large" color="primary"/>
-            </IconButton>
+                <IconButton onClick={handleClick}>
+                    <HelpOutlineOutlinedIcon fontSize="large" color="primary"/>
+                </IconButton>
                 <Popover
                     id={id}
                     open={open}
