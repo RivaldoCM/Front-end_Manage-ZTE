@@ -4,6 +4,7 @@ import { useAuth } from "../../../../hooks/useAuth";
 import { useAuthOnu } from "../../../../hooks/useAuthOnu";
 import { useLoading } from "../../../../hooks/useLoading";
 import { useResponse } from "../../../../hooks/useResponse";
+import { useNavigate } from "react-router-dom";
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { IOnu } from "../../../../interfaces/IOnus";
@@ -16,7 +17,9 @@ import { authorizationToOlt } from "../../../../services/apiManageONU/authOnu";
 import { updateConnection } from "../../../../services/apiVoalle/updateConnection";
 
 export function FHForm({onu}: IOnu){
+    const navigate = useNavigate();
     const { user } = useAuth();
+
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
@@ -114,6 +117,9 @@ export function FHForm({onu}: IOnu){
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
+                    setTimeout(() => {
+                        navigate('/my_auth_onus');
+                    }, 2000);
                 }
             } else {
                 setFetchResponseMessage('error/no-connection-with-API');

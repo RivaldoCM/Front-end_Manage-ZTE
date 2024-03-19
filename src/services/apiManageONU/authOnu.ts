@@ -22,7 +22,7 @@ export async function authorizationToOlt(props: IAuthOnuProps): Promise<IRespons
         wifiSSID,
         wifiPass,
     } = props;
-    console.log('aq')
+
     const hasAuth = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,

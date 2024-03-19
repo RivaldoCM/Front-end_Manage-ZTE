@@ -1,14 +1,20 @@
+import { useNavigate } from 'react-router-dom';
+
 import { useLoading } from '../../../../hooks/useLoading';
 import { useAuth } from '../../../../hooks/useAuth';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
+import { useResponse } from '../../../../hooks/useResponse';
+
+import { setCorrectOltValues } from '../../../../config/verifyWhichOltIs';
 import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
 import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
 import { verifyOnuType } from '../../../../config/verifyOnuType';
+
 import { authorizationToOlt } from '../../../../services/apiManageONU/authOnu';
 import { getPeopleId } from '../../../../services/apiVoalle/getPeopleId';
 import { getConnectionId } from '../../../../services/apiManageONU/getConnectionId';
 import { updateConnection } from '../../../../services/apiVoalle/updateConnection';
-import { setCorrectOltValues } from '../../../../config/verifyWhichOltIs';
+
 import { IOnu } from '../../../../interfaces/IOnus';
 
 import { InputContainer } from '../../../../styles/globalStyles';
@@ -16,9 +22,9 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { useResponse } from '../../../../hooks/useResponse';
 
 export function ZTEForm({onu}: IOnu){
+    const navigate = useNavigate();
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
@@ -127,6 +133,9 @@ export function ZTEForm({onu}: IOnu){
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
+                    setTimeout(() => {
+                        navigate('/my_auth_onus');
+                    }, 2000);
                 }
             } else {
                 setFetchResponseMessage('error/no-connection-with-API');
