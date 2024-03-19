@@ -1,12 +1,23 @@
 import styled from "styled-components";
 
+export const Container = styled.div`
+    min-width: calc(100vw - 65px);
+    min-height: calc(100vh - 64px);
+    padding: 1rem;
+
+    .add-massive{
+        position: absolute;
+        bottom: 32px;
+        right: 2rem;
+    }
+`
+
 export const Cards = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, 400px);
     justify-content: center;
     gap: 1rem;
     width: 100%;
-    margin: 1rem;
 `
 
 export const CardController = styled.div`
@@ -28,6 +39,7 @@ export const Card = styled.div`
     border: 2px solid #B6BEC2;
     border-radius: 1.5rem;
     overflow: hidden;
+    filter: ${(props) => props.offCardOpen ? 'blur(2px)' : 'blur(0)'};
 
     .header{
         flex-direction: column;
@@ -35,6 +47,7 @@ export const Card = styled.div`
         height: 20%;
 
         p{
+            text-decoration: underline;
             font-weight: lighter;
             font-size: 1.2rem;
         }
@@ -46,7 +59,7 @@ export const Card = styled.div`
 
         .basic-info{
             height: 50%;
-            overflow: scroll;
+            overflow: auto;
             p{
                 margin: .2rem 0;
             }
@@ -55,10 +68,13 @@ export const Card = styled.div`
 
         .description{
             align-items: flex-start;
-
             height: 50%;
             padding: .5rem;
-            overflow: scroll;
+            overflow: auto;
+
+            p{
+                text-align: center;
+            }
         }
     }
 `
