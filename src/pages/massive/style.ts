@@ -23,7 +23,7 @@ export const Card = styled.div`
     flex-direction: column;
     width: inherit;
     height: inherit;
-    padding: 1rem;
+    padding: .5rem .5rem 2.5rem .5rem;
     background-color: #D8DEE9;
     border: 2px solid #B6BEC2;
     border-radius: 1.5rem;
@@ -35,7 +35,7 @@ export const Card = styled.div`
         height: 20%;
 
         p{
-            font-weight: bolder;
+            font-weight: lighter;
             font-size: 1.2rem;
         }
     }
@@ -44,8 +44,21 @@ export const Card = styled.div`
         height: 80%;
         padding-top: 1rem;
 
-        p{
-            margin: .2rem 0;
+        .basic-info{
+            height: 50%;
+            overflow: scroll;
+            p{
+                margin: .2rem 0;
+            }
+        }
+
+
+        .description{
+            align-items: flex-start;
+
+            height: 50%;
+            padding: .5rem;
+            overflow: scroll;
         }
     }
 `

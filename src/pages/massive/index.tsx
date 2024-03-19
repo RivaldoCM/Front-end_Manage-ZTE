@@ -12,14 +12,16 @@ export function Massive(){
                 <CardController className="flex">
                     <Card className="flex ">
                         <div className="header flex">
-                            <h2>PARADO</h2>
+                            <h2>PARADO - 16:52h</h2>
                             <p>PATRIMONIO DA PENHA</p>
                         </div>
                         <div className="content">
-                            <p>Afetado:</p>
-                            <p>Horário da Falha:</p>
-                            <p>Aberto em: </p>
-                            <p>Descrição: </p>
+                            <div className="basic-info">
+                                <p>Afetado: bairro do rque, santa cecilia, jao clara e area de lazer</p>
+                            </div>
+                            <div className="description flex">
+                               <p>Poste pegou fogo, parou total de 300 clientes</p>
+                            </div>
                         </div>
                     </Card>
                     <OffCard className="flex" offCardOpen={showOffCard}>
