@@ -1,12 +1,19 @@
-import { Fab, IconButton } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
-import { Card, Cards, OffCard, CardController, Container } from "./style";
-
-import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
 import { useState } from "react";
+
+import { AddMassive } from "./addMassive";
+
+import { Card, Cards, OffCard, CardController, Container } from "./style";
+import { Fab, IconButton, Modal } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
+
 
 export function Massive(){
     const [showOffCard, setShowOffCard] = useState(true);
+
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     return(
         <Container>
@@ -62,9 +69,19 @@ export function Massive(){
                     </OffCard>
                 </CardController>
             </Cards>
-            <Fab className='add-massive' color="primary" aria-label="add" size="medium">
+            <Fab className='add-massive' color="primary" size="medium" onClick={handleOpen}>
                 <AddIcon />
             </Fab>
+            {
+                open && (
+                    <Modal
+                        open={open}
+                        onClose={handleClose}
+                    >
+                        <AddMassive />
+                    </Modal>
+                )
+            }
         </Container>
     );
 }
