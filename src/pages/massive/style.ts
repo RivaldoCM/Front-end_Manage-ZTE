@@ -96,3 +96,20 @@ export const OffCard = styled.div`
         overflow: hidden;
     }
 `
+
+export const FormAddMassive = styled.form`
+    width: 500px;
+    height: 500px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: left;
+
+
+    .teste{
+        position: absolute;
+        transform: translate(-50%, -50%);
+        border: 1px solid black;
+        border-radius: 1rem;
+    }
+`

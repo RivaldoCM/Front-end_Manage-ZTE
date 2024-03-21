@@ -7,7 +7,6 @@ import { Fab, IconButton, Modal } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
 
-
 export function Massive(){
     const [showOffCard, setShowOffCard] = useState(true);
 
@@ -19,7 +18,7 @@ export function Massive(){
         <Container>
             <Cards>
                 <CardController className="flex">
-                    <Card className="flex "offCardOpen={showOffCard}>
+                    <Card className="flex" offCardOpen={showOffCard}>
                         <div className="header flex">
                             <h2>PARADO - 16:52h</h2>
                             <p>PATRIMONIO DA PENHA</p>
@@ -75,6 +74,7 @@ export function Massive(){
             {
                 open && (
                     <Modal
+                        className="flex"
                         open={open}
                         onClose={handleClose}
                     >
