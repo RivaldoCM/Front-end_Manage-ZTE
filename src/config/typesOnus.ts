@@ -1,7 +1,7 @@
 export const typeOnuMapping = {
     'F670L': 'F670L',
-    'F6600': 'F6600',
     'F6600P': 'F6600P',
+    'F6600': 'F6600',
     'F680': 'F680',
     'F601': 'F601',
     'F612': 'F612',
@@ -9,7 +9,7 @@ export const typeOnuMapping = {
 };
 
 export const typeBridgeZte = ['F601', 'F612', 'F2801S'];
-export const typePppoeZte = ['F680', 'F6600', 'F670L', 'F6600P'];
+export const typePppoeZte = ['F680', 'F6600P', 'F670L', 'F6600'];
 
 export const cleanUpModelName = (model: string) => {
     const keys = Object.keys(typeOnuMapping);
