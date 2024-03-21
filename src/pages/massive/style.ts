@@ -98,6 +98,7 @@ export const OffCard = styled.div`
 `
 
 export const FormAddMassive = styled.form`
+    flex-direction: column;
     width: 500px;
     height: 500px;
     background: #fff;
