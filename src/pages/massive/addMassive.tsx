@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { StaticTimePicker } from '@mui/x-date-pickers/StaticTimePicker';
 
-import { InputContainer } from "../../styles/globalStyles";
 import { FormAddMassive } from "./style";
-import { FormControl, IconButton, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { FormControl, IconButton, Input, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import dayjs from "dayjs";
 
@@ -12,7 +11,7 @@ export function AddMassive(){
 
     const [form, setForm] = useState({
         forecastReturn: '',
-        problemTime: '',
+        failureTime: '',
         cityName: '',
         problemType: '',
         description: '',
@@ -20,27 +19,26 @@ export function AddMassive(){
     });
 
     const [open, setOpen] = useState(false);
+    const [openReturnTime, setOpenReturnTime] = useState(false);
   
     const handleTimeChange = (newTime: any) => {
-      setSelectedTime(dayjs(newTime).format('HH:mm:ss'));
+        setForm({
+            ...form,
+            failureTime: dayjs(newTime).format('HH:mm:ss')
+        });
     };
   
     const handleAccept = () => {
-      setOpen(false);
+        setOpen(false);
     };
   
     const handleOpenPicker = () => {
-      setOpen(true);
+        setOpen(true);
     };
     return(
         <FormAddMassive className="flex">
-            <InputContainer>
-                <div className="text">
-                    Tipo de problema:
-                </div>
-                <div className="content flex">
                 <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                    <InputLabel id="demo-simple-select-label">Tipo de problema</InputLabel>
                     <Select
                         label="teste"
                     >
@@ -52,77 +50,61 @@ export function AddMassive(){
                         <MenuItem value={30}>Queda</MenuItem>
                     </Select>
                     </FormControl>
-                </div>
-            </InputContainer>
-            <InputContainer>
-                <div className="text">
-                    Cidade:
-                </div>
-                <div className="content flex">
-                </div>
-            </InputContainer>
-            <InputContainer>
-                <div className="text">
-                    Locais afetados:
-                </div>
-                <div className="content flex">
-                    <TextField id="standard-basic" label="Standard" variant="standard" />
-                </div>
-            </InputContainer>
-            <InputContainer>
-                <div className="text">
-                    Horario da falha:
-                </div>
-                <div className="content flex">
-                    <p>{selectedTime}</p>
-                    <IconButton color="primary" onClick={handleOpenPicker}>
-                        <AccessTimeOutlinedIcon />
-                    </IconButton>
-                    
-                    {
-                        open && (
-                            <StaticTimePicker
-                                className="teste"
-                                ampm={false}
-                                value={selectedTime}
-                                onChange={handleTimeChange}
-                                onAccept={handleAccept}
-                                displayStaticWrapperAs='desktop'
-                            />
-                        )
-                    }
-                </div>
-            </InputContainer>
-            <InputContainer>
-                <div className="text">
-                    Previsão de retorno:
-                </div>
-                <div className="content flex">
-                    <p>{selectedTime}</p>
-                    <IconButton color="primary" onClick={handleOpenPicker}>
-                        <AccessTimeOutlinedIcon />
-                    </IconButton>
-                    {
-                        open && (
-                            <StaticTimePicker
-                                className="teste"
-                                ampm={false}
-                                value={selectedTime}
-                                onChange={handleTimeChange}
-                                onAccept={handleAccept}
-                                displayStaticWrapperAs='desktop'
-                            />
-                        )
-                    }
-                </div>
-            </InputContainer>
-            <InputContainer>
-                <div className="text">
-                    Descrição:
-                </div>
-                <div className="content flex">
-                </div>
-            </InputContainer>
+                    <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                        <InputLabel htmlFor="outlined-adornment-password">Horario de falha</InputLabel>
+                        <OutlinedInput
+                            label="Horario de falha"
+                            name="failureTime"
+                            type='text'
+                            value={form.failureTime}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton edge="end" onClick={handleOpenPicker}>
+                                        <AccessTimeOutlinedIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                        {
+                            open && (
+                                <StaticTimePicker
+                                    className="teste"
+                                    ampm={false}
+                                    onChange={handleTimeChange}
+                                    onAccept={handleAccept}
+                                    displayStaticWrapperAs='desktop'
+                                />
+                            )
+                        }
+                    </FormControl>
+                    <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                        <InputLabel htmlFor="outlined-adornment-password">Previsão de retorno</InputLabel>
+                        <OutlinedInput
+                            label="Previsão de retorno"
+                            type='text'
+                            name="forecastReturn"
+                            value={form.forecastReturn}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton edge="end" onClick={handleOpenPicker}>
+                                        <AccessTimeOutlinedIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                        {
+                            open && (
+                                <StaticTimePicker
+                                    className="teste"
+                                    ampm={false}
+                                    onChange={handleTimeChange}
+                                    onAccept={handleAccept}
+                                    displayStaticWrapperAs='desktop'
+                                />
+                            )
+                        }
+                    </FormControl>
+                    <TextField id="standard-basic" label="Standard" variant="outlined" fullWidth/>
         </FormAddMassive>
     )
 }

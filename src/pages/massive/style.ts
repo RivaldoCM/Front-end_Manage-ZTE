@@ -99,18 +99,22 @@ export const OffCard = styled.div`
 
 export const FormAddMassive = styled.form`
     flex-direction: column;
-    width: 500px;
+    width: 350px;
     height: 500px;
     background: #fff;
     padding: 20px;
     border-radius: 8px;
     text-align: left;
 
-
     .teste{
         position: absolute;
         transform: translate(-50%, -50%);
-        border: 1px solid black;
         border-radius: 1rem;
+        z-index: 99;
     }
+`
+
+export const DateContainer = styled.div`
+
+
 `
