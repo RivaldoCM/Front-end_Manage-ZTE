@@ -99,20 +99,23 @@ export const OffCard = styled.div`
 
 export const FormAddMassive = styled.form`
     flex-direction: column;
-    width: 350px;
-    height: 500px;
+    width: 464px;
+    height: auto;
     background: #fff;
     padding: 20px;
     border-radius: 8px;
     text-align: left;
+    user-select: none;
 
-    .teste{
+    .date-timer{
         position: absolute;
         transform: translate(-50%, -50%);
+        box-shadow: 0px 0px 100px 49px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1);
         border-radius: 1rem;
         z-index: 99;
     }
 `
+
 
 export const DateContainer = styled.div`
 

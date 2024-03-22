@@ -9,8 +9,8 @@ import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutl
 
 export function Massive(){
     const [showOffCard, setShowOffCard] = useState(true);
-
     const [open, setOpen] = useState(false);
+    
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
