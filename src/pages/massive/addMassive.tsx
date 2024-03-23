@@ -1,15 +1,18 @@
     import React, { useEffect, useState } from "react";
     import dayjs from "dayjs";
 
+    import { getCities } from "../../services/apiManageONU/getCities";
+    import { addMassive } from "../../services/apiManageONU/addMassive";
+
+    import { ICities } from "../../interfaces/ICities";
+    import { IAddMassive } from "../../interfaces/IAddMassiveForm";
+
     import { FormAddMassive } from "./style";
     import { Autocomplete, CircularProgress, Fab, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
     import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+    import { StaticDateTimePicker } from "@mui/x-date-pickers";
     import DoneIcon from '@mui/icons-material/Done';
     import CloseIcon from '@mui/icons-material/Close';
-    import { StaticDateTimePicker } from "@mui/x-date-pickers";
-    import { getCities } from "../../services/apiManageONU/getCities";
-    import { ICities } from "../../interfaces/ICities";
-    import { IAddMassive } from "../../interfaces/IAddMassiveForm";
     import AddIcon from '@mui/icons-material/Add';
 
     export function AddMassive(props: any){
@@ -32,24 +35,26 @@
         const loadingCities = openAutoCompleteCities && cities.length === 0;
         useEffect(() => {
             (async () => {
-                const cities = await getCities();
-                setCities(cities);
+                if(loadingCities){
+                    const cities = await getCities();
+                    setCities(cities);
+                }
             })();
         }, [loadingCities]);
 
         const handleTimeChange = (newTime: any) => {
             setForm({
                 ...form,
-                failureTime: dayjs(newTime).format('DD/MM/YY - HH:mm'),
-                failureDateToISO: newTime
+                failureTime: dayjs(newTime).format('DD/MM/YY - HH:mm') + 'h',
+                failureDateToISO: dayjs(newTime).format()
             });
         };
 
         const handleForecastTimeChange = (newTime: any) => {
             setForm({
                 ...form,
-                forecastReturn: dayjs(newTime).format('DD/MM/YY - HH:mm'),
-                forecastDateToISO: newTime
+                forecastReturn: dayjs(newTime).format('DD/MM/YY - HH:mm') + 'h',
+                forecastDateToISO: dayjs(newTime).format()
             });
         };
     
@@ -90,6 +95,11 @@
             setOpenForecastTime(true);
         };
 
+        const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            const response = await addMassive(form);
+        }
+
         return(
             <React.Fragment>
                 <Fab className='add-massive' color="primary" size="medium" onClick={props.handleOpen}>
@@ -100,7 +110,7 @@
                     open={props.open}
                     onClose={props.handleClose}
                 >
-                    <FormAddMassive className="flex">
+                    <FormAddMassive className="flex" onSubmit={handleSubmit}>
                         <FormControl fullWidth sx={{ mt: 2 }}>
                         <Autocomplete
                             id="asynchronous-cities"
@@ -229,7 +239,7 @@
                             <IconButton color="error" onClick={props.handleClose}>
                                 <CloseIcon />
                             </IconButton>
-                            <IconButton color="success">
+                            <IconButton color="success" type="submit">
                                 <DoneIcon />
                             </IconButton>
                         </div>
