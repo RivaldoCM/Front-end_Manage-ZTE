@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { getCities } from '../../../../services/apiManageONU/getCities';
 import { addOlt } from '../../../../services/apiManageONU/addOlt';
@@ -68,161 +68,161 @@ export function AddOltModal(props: any) {
 		handleError(response.responses.status);
 	}
 
-  return (
-    <>
-        <IconButton onClick={props.handleOpen} title="Delete">
-            <AddOutlinedIcon/>
-        </IconButton>
-        <Modal
-            open={props.open}
-            onClose={props.handleClose}
-            aria-labelledby="modal-add-OLT"
-            aria-describedby="modal-to-handle-new-OLT's"
-        >
-            <DefaultStyledModal onSubmit={handleSubmit}>
-                <FormController>
-                    <CloseButton className="flex">
-                        <IconButton aria-label="close" onClick={props.handleClose}>
-                            <CloseIcon />
-                        </IconButton>
-                    </CloseButton>
-                    <FormModal className='flex'>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Nome da OLT: </p>
-                            </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    id="standard-basic"
-                                    name="name"
-                                    value={form.name}
-                                    variant="standard"
-                                    onChange={handleFormChange}
-                                />
-                            </div>
-                        </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Cidade: </p>
-                            </div>
-                            <div className="content">
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Cidades</InputLabel>
-                                    <Select
-                                        sx={{maxWidth: '205px'}}
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        name="city_id"
-                                        label="Cidades"
-                                        value={form.city_id}
+    return (
+        <React.Fragment>
+            <IconButton onClick={props.handleOpen} title="Delete">
+                <AddOutlinedIcon/>
+            </IconButton>
+            <Modal
+                open={props.open}
+                onClose={props.handleClose}
+                aria-labelledby="modal-add-OLT"
+                aria-describedby="modal-to-handle-new-OLT's"
+            >
+                <DefaultStyledModal onSubmit={handleSubmit}>
+                    <FormController>
+                        <CloseButton className="flex">
+                            <IconButton aria-label="close" onClick={props.handleClose}>
+                                <CloseIcon />
+                            </IconButton>
+                        </CloseButton>
+                        <FormModal className='flex'>
+                            <InputContainer>
+                                <div className="text">
+                                    <p>Nome da OLT: </p>
+                                </div>
+                                <div className="content">
+                                    <TextField
+                                        required
+                                        id="standard-basic"
+                                        name="name"
+                                        value={form.name}
+                                        variant="standard"
                                         onChange={handleFormChange}
-                                    >
-                                        {
-                                            cities && cities.map((el: { id: number; name: string }, index: number) => {
-                                                return(
-                                                    <MenuItem key={index} value={el.id}>{el.name}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </div>
-                        </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>IP: </p>
-                            </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    id="standard-basic"
-                                    name="host"
-                                    value={form.host}
-                                    variant="standard"
-                                    onChange={handleFormChange}
-                                />
-                            </div>
-                        </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Ponto de acesso: </p>
-                            </div>
-                            <div className="content">
-                                <input 
-                                    required
-                                    type="number"
-                                    name="voalleAccessPointId"
-                                    value={form.voalleAccessPointId}
-                                    onChange={handleFormChange}
-                                />
-                            </div>
-                        </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>PizzaBox: </p>
-                            </div>
-                            <div className="content">
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        name="isPizzaBox"
-                                        value={form.isPizzaBox}
-                                        label="Status"
+                                    />
+                                </div>
+                            </InputContainer>
+                            <InputContainer>
+                                <div className="text">
+                                    <p>Cidade: </p>
+                                </div>
+                                <div className="content">
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Cidades</InputLabel>
+                                        <Select
+                                            sx={{maxWidth: '205px'}}
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            name="city_id"
+                                            label="Cidades"
+                                            value={form.city_id}
+                                            onChange={handleFormChange}
+                                        >
+                                            {
+                                                cities && cities.map((el: { id: number; name: string }, index: number) => {
+                                                    return(
+                                                        <MenuItem key={index} value={el.id}>{el.name}</MenuItem>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                            </InputContainer>
+                            <InputContainer>
+                                <div className="text">
+                                    <p>IP: </p>
+                                </div>
+                                <div className="content">
+                                    <TextField
+                                        required
+                                        id="standard-basic"
+                                        name="host"
+                                        value={form.host}
+                                        variant="standard"
                                         onChange={handleFormChange}
-                                    >
-                                        <MenuItem value={1}>Sim</MenuItem>
-                                        <MenuItem value={0}>Não</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </div>
-                        </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Modelo: </p>
-                            </div>
-                            <div className="content">
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Modelo da OLT</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        name="type"
-                                        value={form.type}
-                                        label="Modelo da OLT"
+                                    />
+                                </div>
+                            </InputContainer>
+                            <InputContainer>
+                                <div className="text">
+                                    <p>Ponto de acesso: </p>
+                                </div>
+                                <div className="content">
+                                    <input 
+                                        required
+                                        type="number"
+                                        name="voalleAccessPointId"
+                                        value={form.voalleAccessPointId}
                                         onChange={handleFormChange}
-                                    >
-                                        <MenuItem value={10}>ZTE</MenuItem>
-                                        <MenuItem value={20}>PARKS</MenuItem>
-                                        <MenuItem value={30}>FIBERHOME</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </div>
-                        </InputContainer>
-                    </FormModal>
-                    {
-                        (isLoading ?
-                            <div className="flex">
-                                <CircularProgress className="MUI-CircularProgress" color="primary"/>
-                            </div>
-                            :
-                            <SubmitModal className="button flex">
-                                <Button type='submit' variant="contained">Criar OLT</Button>
-                            </SubmitModal>
-                        )
-                    }
-                </FormController>
-            </DefaultStyledModal>
-        </Modal>
-        {
-            (error ?
-                <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-            :
-                <></>
-            )
-        }
-    </>
-  );
+                                    />
+                                </div>
+                            </InputContainer>
+                            <InputContainer>
+                                <div className="text">
+                                    <p>PizzaBox: </p>
+                                </div>
+                                <div className="content">
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            name="isPizzaBox"
+                                            value={form.isPizzaBox}
+                                            label="Status"
+                                            onChange={handleFormChange}
+                                        >
+                                            <MenuItem value={1}>Sim</MenuItem>
+                                            <MenuItem value={0}>Não</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                            </InputContainer>
+                            <InputContainer>
+                                <div className="text">
+                                    <p>Modelo: </p>
+                                </div>
+                                <div className="content">
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Modelo da OLT</InputLabel>
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            name="type"
+                                            value={form.type}
+                                            label="Modelo da OLT"
+                                            onChange={handleFormChange}
+                                        >
+                                            <MenuItem value={10}>ZTE</MenuItem>
+                                            <MenuItem value={20}>PARKS</MenuItem>
+                                            <MenuItem value={30}>FIBERHOME</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                            </InputContainer>
+                        </FormModal>
+                        {
+                            (isLoading ?
+                                <div className="flex">
+                                    <CircularProgress className="MUI-CircularProgress" color="primary"/>
+                                </div>
+                                :
+                                <SubmitModal className="button flex">
+                                    <Button type='submit' variant="contained">Criar OLT</Button>
+                                </SubmitModal>
+                            )
+                        }
+                    </FormController>
+                </DefaultStyledModal>
+            </Modal>
+            {
+                (error ?
+                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
+                :
+                    <></>
+                )
+            }
+        </React.Fragment>
+    );
 }

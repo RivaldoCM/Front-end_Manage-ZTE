@@ -3,8 +3,7 @@ import { useState } from "react";
 import { AddMassive } from "./addMassive";
 
 import { Card, Cards, OffCard, CardController, Container } from "./style";
-import { Fab, IconButton, Modal } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
+import { IconButton } from "@mui/material";
 import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
 
 export function Massive(){
@@ -68,20 +67,12 @@ export function Massive(){
                     </OffCard>
                 </CardController>
             </Cards>
-            <Fab className='add-massive' color="primary" size="medium" onClick={handleOpen}>
-                <AddIcon />
-            </Fab>
-            {
-                open && (
-                    <Modal
-                        className="flex"
-                        open={open}
-                        onClose={handleClose}
-                    >
-                        <AddMassive />
-                    </Modal>
-                )
-            }
+            <AddMassive
+                handleOpen={handleOpen}
+                open={open}
+                handleClose={handleClose}
+            >
+            </AddMassive>
         </Container>
     );
 }

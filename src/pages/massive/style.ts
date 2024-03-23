@@ -1,4 +1,9 @@
+import { DetailedHTMLProps, HTMLAttributes } from "react";
 import styled from "styled-components";
+
+interface IOffCard extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>{
+    offCardOpen?: boolean;
+}
 
 export const Container = styled.div`
     min-width: calc(100vw - 65px);
@@ -29,7 +34,7 @@ export const CardController = styled.div`
     overflow: hidden;
 `
 
-export const Card = styled.div`
+export const Card = styled.div<IOffCard>`
     position: relative;
     flex-direction: column;
     width: inherit;
@@ -79,7 +84,7 @@ export const Card = styled.div`
     }
 `
 
-export const OffCard = styled.div`
+export const OffCard = styled.div<IOffCard>`
     position: absolute;
     width: calc(100% - 6rem);
     height: 250px;
@@ -101,10 +106,10 @@ export const FormAddMassive = styled.form`
     flex-direction: column;
     width: 464px;
     height: auto;
-    background: #fff;
     padding: 20px;
-    border-radius: 8px;
     text-align: left;
+    background: #fff;
+    border-radius: 8px;
     user-select: none;
 
     .date-timer{
