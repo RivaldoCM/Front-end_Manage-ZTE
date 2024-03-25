@@ -1,5 +1,5 @@
     import React, { useEffect, useState } from "react";
-    import dayjs from "dayjs";
+    import dayjs, { Dayjs } from "dayjs";
 
     import { getCities } from "../../services/apiManageONU/getCities";
     import { addMassive } from "../../services/apiManageONU/addMassive";
@@ -14,13 +14,17 @@
     import DoneIcon from '@mui/icons-material/Done';
     import CloseIcon from '@mui/icons-material/Close';
     import AddIcon from '@mui/icons-material/Add';
+    import { useAuth } from "../../hooks/useAuth";
 
     export function AddMassive(props: any){
+        const { user } = useAuth();
+
         const [openAutoCompleteCities, setOpenAutoCompleteCities] = useState(false);
         const [open, setOpen] = useState(false);
         const [openForecastTime, setOpenForecastTime] = useState(false);
         const [cities, setCities] = useState<ICities[]>([]);
         const [form, setForm] = useState<IAddMassive>({
+            user: user?.uid,
             cityId: 0 || null,
             forecastReturn: '',
             failureTime: '',
@@ -42,19 +46,19 @@
             })();
         }, [loadingCities]);
 
-        const handleTimeChange = (newTime: any) => {
+        const handleTimeChange = (newTime: Date | null) => {
             setForm({
                 ...form,
                 failureTime: dayjs(newTime).format('DD/MM/YY - HH:mm') + 'h',
-                failureDateToISO: dayjs(newTime).format()
+                failureDateToISO: dayjs(newTime).format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z'
             });
         };
 
-        const handleForecastTimeChange = (newTime: any) => {
+        const handleForecastTimeChange = (newTime: Date | null) => {
             setForm({
                 ...form,
                 forecastReturn: dayjs(newTime).format('DD/MM/YY - HH:mm') + 'h',
-                forecastDateToISO: dayjs(newTime).format()
+                forecastDateToISO: dayjs(newTime).format('YYYY-MM-DDTHH:mm:ss.SSS') + 'Z'
             });
         };
     

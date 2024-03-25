@@ -1,4 +1,5 @@
 export type IAddMassive = {
+    user: number | undefined,
     cityId: number | null
     forecastReturn: string,
     failureTime: string,
