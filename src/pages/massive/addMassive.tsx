@@ -15,9 +15,11 @@
     import CloseIcon from '@mui/icons-material/Close';
     import AddIcon from '@mui/icons-material/Add';
     import { useAuth } from "../../hooks/useAuth";
+import { useResponse } from "../../hooks/useResponse";
 
     export function AddMassive(props: any){
         const { user } = useAuth();
+        const { response, responseMassage, setFetchResponseMessage, severityStatus} = useResponse();
 
         const [openAutoCompleteCities, setOpenAutoCompleteCities] = useState(false);
         const [open, setOpen] = useState(false);
@@ -44,7 +46,7 @@
                     setCities(cities);
                 }
             })();
-        }, [loadingCities]);
+        }, [loadingCities]); 
 
         const handleTimeChange = (newTime: Date | null) => {
             setForm({
@@ -102,6 +104,17 @@
         const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             const response = await addMassive(form);
+            if(response){
+                if(response.success){
+                    
+                } else {
+
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
+            }
+
+
         }
 
         return(
@@ -136,6 +149,7 @@
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
+                                    required
                                     label="Cidade"
                                     InputProps={{
                                         ...params.InputProps,
@@ -170,6 +184,7 @@
                             <FormControl fullWidth variant="outlined" sx={{ mt: 2, mr:1 }}>
                                 <InputLabel htmlFor="outlined-adornment-password">Horario de falha</InputLabel>
                                 <OutlinedInput
+                                    required
                                     label="Horario de falha"
                                     name="failureTime"
                                     type='text'
@@ -222,7 +237,8 @@
                                 }
                             </FormControl>
                         </div>
-                        <TextField 
+                        <TextField
+                            required
                             label="Locais afetados. Ex: Bairros, Ruas" 
                             variant="outlined"
                             name="affectedLocals"

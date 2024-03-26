@@ -1,6 +1,7 @@
 import axios from "axios";
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function getMassive(){
+export async function getMassive(): Promise<IResponseData | IResponseError>{
     const res = await axios({
         method: 'GET',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/massive`,
@@ -9,8 +10,8 @@ export async function getMassive(){
         }
     }).then((response) => {
         return response.data;
-    }).catch((err) =>{
-        return err;
+    }).catch(() =>{
+        return null;
     });
 
     return res;

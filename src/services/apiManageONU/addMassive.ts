@@ -1,8 +1,6 @@
 import axios from "axios";
 
 export async function addMassive(props: any){
-
-    console.log(props)
     const response = await axios({
         method: 'POST',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/massive`,
@@ -20,9 +18,11 @@ export async function addMassive(props: any){
             description: props.description,
             created_by: props.user,
         }
-    }).then(() => {
-
-    }).catch((err) => {
-
+    }).then((response) => {
+        return response.data;
+    }).catch(() => {
+        return null;
     });
+
+    return response;
 }
