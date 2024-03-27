@@ -1,5 +1,5 @@
     import React, { useEffect, useState } from "react";
-    import dayjs, { Dayjs } from "dayjs";
+    import dayjs from "dayjs";
 
     import { getCities } from "../../services/apiManageONU/getCities";
     import { addMassive } from "../../services/apiManageONU/addMassive";
@@ -46,7 +46,7 @@ import { useResponse } from "../../hooks/useResponse";
                     setCities(cities);
                 }
             })();
-        }, [loadingCities]); 
+        }, [loadingCities]);
 
         const handleTimeChange = (newTime: Date | null) => {
             setForm({
@@ -82,7 +82,7 @@ import { useResponse } from "../../hooks/useResponse";
             setForm({
                 ...form,
                 [e.target.name]: e.target.value
-            })
+            });
         }
 
         const handleAccept = () => {
@@ -106,15 +106,14 @@ import { useResponse } from "../../hooks/useResponse";
             const response = await addMassive(form);
             if(response){
                 if(response.success){
-                    
+                    setFetchResponseMessage('success/data-massive-created');
+                    props.handleClose();
                 } else {
-
+                    setFetchResponseMessage('error/impossible-to-create-data');
                 }
             } else {
                 setFetchResponseMessage('error/no-connection-with-API');
             }
-
-
         }
 
         return(

@@ -39,7 +39,7 @@ export const Card = styled.div<IOffCard>`
     flex-direction: column;
     width: inherit;
     height: inherit;
-    padding: .5rem .5rem 2.5rem .5rem;
+    padding: .5rem .5rem 2rem .5rem;
     background-color: #D8DEE9;
     border: 2px solid #B6BEC2;
     border-radius: 1.5rem;
@@ -59,17 +59,16 @@ export const Card = styled.div<IOffCard>`
     }
     .content{
         width: 100%;
-        height: 80%;
-        padding-top: 1rem;
+        height: 85%;
+        padding-top: .5rem;
 
         .basic-info{
-            height: 50%;
+            height: 35%;
             overflow: auto;
             p{
                 margin: .2rem 0;
             }
         }
-
 
         .description{
             align-items: flex-start;
@@ -81,24 +80,38 @@ export const Card = styled.div<IOffCard>`
                 text-align: center;
             }
         }
+
+        .teste{
+            width: 100%;
+            height: 15%;
+
+            p{
+                text-align: end;
+            }
+        }
     }
 `
 
 export const OffCard = styled.div<IOffCard>`
     position: absolute;
+    align-items: flex-start;
+    justify-content: center;
     width: calc(100% - 6rem);
     height: 250px;
     border-radius: 1rem;
-    background-color: #B6BEC2  ;
-    transform: ${(props) => props.offCardOpen ? 'translateY(5%)' : 'translateY(100%)'};
+    background-color: #B6BEC2;
+    transform: ${(props) => props.offCardOpen ? 'translateY(5%)' : 'translateY(96%)'};
     transition: .2s ease-in-out;
 
     .off-card-button{
-        position: relative;
-        top: -50%;
-        background-color: #e9e9e9;
         z-index: 3;
         overflow: hidden;
+        color: #ffffff;
+        
+        :hover{
+            background-color: transparent;
+
+        }
     }
 `
 
@@ -119,10 +132,4 @@ export const FormAddMassive = styled.form`
         border-radius: 1rem;
         z-index: 99;
     }
-`
-
-
-export const DateContainer = styled.div`
-
-
 `
