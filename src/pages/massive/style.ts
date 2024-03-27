@@ -6,14 +6,13 @@ interface IOffCard extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTM
 }
 
 export const Container = styled.div`
-    min-width: calc(100vw - 65px);
-    min-height: calc(100vh - 64px);
-    padding: 1rem;
-
+    min-width: 100%;
+    min-height: calc(100vh - 200px);
+    padding: .5rem 0;
     .add-massive{
-        position: absolute;
-        bottom: 32px;
-        right: 2rem;
+        position: fixed;
+        bottom: 16px;
+        right: 1rem;
     }
 `
 
