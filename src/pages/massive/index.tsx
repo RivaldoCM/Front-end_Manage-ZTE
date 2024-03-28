@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 
 import { Card, Cards, OffCard, CardController, Container } from "./style";
 import { Alert, IconButton } from "@mui/material";
-import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
-import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
+import DoneIcon from '@mui/icons-material/Done';
 import { getMassive } from "../../services/apiManageONU/getMassive";
 import { AddMassive } from "./addMassive";
 import { useResponse } from "../../hooks/useResponse";
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import dayjs from "dayjs";
 
 export function Massive(){
@@ -51,6 +52,8 @@ export function Massive(){
         }
     }
 
+    console.log(massives)
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -87,7 +90,20 @@ export function Massive(){
                                     >
                                         {showOffCard.includes(index) ? <ExpandMoreOutlinedIcon /> : <ExpandLessOutlinedIcon />}
                                     </IconButton>
-                                    
+                                    <div className="off-card-information">
+                                        <p>Aberto por: {massive.User.name} às {massive.created_at}</p>
+                                    </div>
+                                    <div className="off-card-action-buttons flex">
+                                        <IconButton size="small" color="primary">
+                                            <PersonAddOutlinedIcon />
+                                        </IconButton>
+                                        <IconButton size="small" color="secondary">
+                                            <CreateOutlinedIcon />
+                                        </IconButton>
+                                        <IconButton size="small" color="success">
+                                            <DoneIcon />
+                                        </IconButton>
+                                    </div>
                                 </OffCard>
                             </CardController>
                         );

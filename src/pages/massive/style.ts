@@ -31,6 +31,7 @@ export const CardController = styled.div`
     width: inherit;
     height: 300px; 
     overflow: hidden;
+
 `
 
 export const Card = styled.div<IOffCard>`
@@ -93,12 +94,17 @@ export const Card = styled.div<IOffCard>`
 
 export const OffCard = styled.div<IOffCard>`
     position: absolute;
-    align-items: flex-start;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
     width: calc(100% - 6rem);
     height: 250px;
-    border-radius: 1rem;
-    background-color: #B6BEC2;
+    background: rgba(231, 219, 219, 0.53);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(8, 174, 215, 0.3);
     transform: ${(props) => props.offCardOpen ? 'translateY(5%)' : 'translateY(96%)'};
     transition: .2s ease-in-out;
 
@@ -109,9 +115,19 @@ export const OffCard = styled.div<IOffCard>`
         
         :hover{
             background-color: transparent;
-
         }
     }
+
+    .off-card-information{
+        height: 60%;
+    }
+
+    .off-card-action-buttons{
+        justify-content: space-evenly;
+        width: 100%;
+        height: 20%;
+    }
+
 `
 
 export const FormAddMassive = styled.form`
