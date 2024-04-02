@@ -118,9 +118,13 @@ import { useResponse } from "../../hooks/useResponse";
 
         return(
             <React.Fragment>
-                <Fab className='add-massive' color="primary" size="medium" onClick={props.handleOpen}>
-                    <AddIcon />
-                </Fab>
+                {
+                    user?.rule! > 13 ? 
+                    <Fab className='add-massive' color="primary" size="medium" onClick={props.handleOpen}>
+                        <AddIcon />
+                    </Fab>
+                    : <></>
+                }
                 <Modal
                     className="flex"
                     open={props.open}

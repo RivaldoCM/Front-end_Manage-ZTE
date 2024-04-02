@@ -11,8 +11,10 @@ import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import dayjs from "dayjs";
+import { useAuth } from "../../hooks/useAuth";
 
 export function Massive(){
+    const { user } = useAuth();
     const { response, setFetchResponseMessage, responseMassage, severityStatus } = useResponse();
 
     const [open, setOpen] = useState(false);
@@ -51,8 +53,6 @@ export function Massive(){
             setShowOffCard([...showOffCard, whichCard]);
         }
     }
-
-    console.log(massives)
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -97,12 +97,18 @@ export function Massive(){
                                         <IconButton size="small" color="primary">
                                             <PersonAddOutlinedIcon />
                                         </IconButton>
-                                        <IconButton size="small" color="secondary">
-                                            <CreateOutlinedIcon />
-                                        </IconButton>
-                                        <IconButton size="small" color="success">
-                                            <DoneIcon />
-                                        </IconButton>
+                                        {
+                                            user?.rule! > 13 ? 
+                                            <>
+                                                <IconButton size="small" color="secondary">
+                                                    <CreateOutlinedIcon />
+                                                </IconButton>
+                                                <IconButton size="small" color="success">
+                                                    <DoneIcon />
+                                                </IconButton>
+                                            </> : 
+                                            <></>
+                                        }
                                     </div>
                                 </OffCard>
                             </CardController>
