@@ -93,9 +93,7 @@ export function SignUp() {
                     onChange={handlePasswordChange}
                     startAdornment={
                         <InputAdornment position="end">
-                            <IconButton edge="start">
-                                <LockOpenIcon />
-                            </IconButton>
+                            <LockOpenIcon />
                         </InputAdornment>
                     }
                     endAdornment={
