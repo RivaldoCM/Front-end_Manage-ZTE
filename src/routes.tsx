@@ -18,6 +18,7 @@ import { MobileDrawerMenu } from "./components/MobileMenu";
 
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
 import { MyAuthorizedOnusMobile } from "./pages/MyAuthorizedOnus/mobile";
+import { BreakTime } from "./pages/breakTime";
 
 interface PrivateRouteProps {
     element: ReactElement;
@@ -71,6 +72,16 @@ export function AppRoutes() {
                         <AuthOnuContextProvider>
                             <PrivateRoute
                                 element={<AuthOnuController />}
+                            />
+                        </AuthOnuContextProvider>
+                    }
+                />
+                <Route
+                    path="break_time"
+                    element={
+                        <AuthOnuContextProvider>
+                            <PrivateRoute
+                                element={<BreakTime />}
                             />
                         </AuthOnuContextProvider>
                     }

@@ -8,6 +8,7 @@ import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
 import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -41,6 +42,14 @@ export const handlePages: IAllPages[] = [
         pages: [
             {
                 logs_onu: 'Log de Onu',
+            }
+        ]
+    },
+    {
+        name: 'Pausas',
+        pages: [
+            {
+                break_time: 'Intervalo'
             }
         ]
     }
@@ -78,6 +87,8 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <TroubleshootOutlinedIcon />;
         case 'my_auth_onus':
             return <BallotOutlinedIcon />;
+        case 'break_time':
+            return <AccessTimeRoundedIcon />;
         default:
             return <></>;
     }
