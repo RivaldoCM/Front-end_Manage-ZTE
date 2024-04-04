@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { start, timer } from "../../config/cron";
+import { io } from "socket.io-client";
 
 const Timer = () => {
     const [time, setTime] = useState({ hh: 0, mm: 0, ss: 10 });
@@ -51,6 +51,13 @@ const Timer = () => {
   };
 
 export function BreakTime(){
+    const socket = io('http://localhost:4000/breakTime');
+
+    socket.on("connect", () => {
+        console.log('aq')
+        console.log(socket.id)
+    });
+
     return(
         <>
         <Timer />
