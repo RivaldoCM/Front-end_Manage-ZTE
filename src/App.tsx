@@ -6,19 +6,22 @@ import { AuthContextProvider } from "./contexts/AuthContext";
 import { GlobalStyle } from "./styles/globalStyles";
 import { DataPickerContext } from "./contexts/DataPickerContext";
 import { HandleResponseContextProvider } from "./contexts/handleResponseContext";
+import { SocketContextProvider } from "./contexts/SocketContext";
 
 export function App() {
     return (
         <AuthContextProvider>
-            <DataPickerContext>
-                <HandleResponseContextProvider>
-                    <BrowserRouter>
-                        <AppRoutes />
-                        <Analytics />
-                        <GlobalStyle />
-                    </BrowserRouter>
-                </HandleResponseContextProvider>
-            </DataPickerContext>
+            <SocketContextProvider>
+                <DataPickerContext>
+                    <HandleResponseContextProvider>
+                        <BrowserRouter>
+                            <AppRoutes />
+                            <Analytics />
+                            <GlobalStyle />
+                        </BrowserRouter>
+                    </HandleResponseContextProvider>
+                </DataPickerContext>
+            </SocketContextProvider>
         </AuthContextProvider>
     );
 }

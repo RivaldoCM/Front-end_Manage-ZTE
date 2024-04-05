@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { io } from "socket.io-client";
+import { useSocket } from "../../hooks/useSocket";
 
 const Timer = () => {
     const [time, setTime] = useState({ hh: 0, mm: 0, ss: 10 });
@@ -51,16 +52,10 @@ const Timer = () => {
   };
 
 export function BreakTime(){
-    const socket = io('http://localhost:4000/breakTime');
-
-    socket.on("connect", () => {
-        console.log('aq')
-        console.log(socket.id)
-    });
-
+    const { socket } = useSocket();
     return(
         <>
-        <Timer />
+            <Timer />
         </>
     )
 }
