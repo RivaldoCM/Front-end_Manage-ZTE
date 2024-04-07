@@ -1,4 +1,4 @@
-import { ReactElement, useEffect} from "react";
+import { ReactElement, useEffect, useState} from "react";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -20,11 +20,7 @@ import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
 import { MyAuthorizedOnusMobile } from "./pages/MyAuthorizedOnus/mobile";
 import { BreakTime } from "./pages/breakTime";
 
-interface PrivateRouteProps {
-    element: ReactElement;
-}
-
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ element }) => {
+const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
 }
 
@@ -34,9 +30,20 @@ export function AppRoutes() {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('md'));
 
+    const [lastRoutes, setLastRoutes] = useState<any>([]);
+
+
+    console.log(lastRoutes)
+
     useEffect(() => {
         const token = localStorage.getItem('Authorization');
-    
+        
+        const path = location.pathname
+        setLastRoutes({
+            ...lastRoutes,
+            path
+        })
+
         if(token && location.pathname === '/login' || token && location.pathname === '/'){
             navigate('/auth_onu');
         }
@@ -44,7 +51,7 @@ export function AppRoutes() {
         if (!token && location.pathname !== '/login') {
             navigate('/login');
         }
-    }, [navigate, location]);
+    }, [location]);
 
     return (
         <Routes>
@@ -78,13 +85,7 @@ export function AppRoutes() {
                 />
                 <Route
                     path="break_time"
-                    element={
-                        <AuthOnuContextProvider>
-                            <PrivateRoute
-                                element={<BreakTime />}
-                            />
-                        </AuthOnuContextProvider>
-                    }
+                    element={<PrivateRoute element={<BreakTime />} />}
                 />
                 <Route
                     path="my_auth_onus"

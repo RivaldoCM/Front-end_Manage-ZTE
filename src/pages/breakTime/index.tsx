@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
-import { io } from "socket.io-client";
 import { useSocket } from "../../hooks/useSocket";
+import { useAuth } from "../../hooks/useAuth";
+import { useLocation } from "react-router-dom";
 
 const Timer = () => {
     const [time, setTime] = useState({ hh: 0, mm: 0, ss: 10 });
@@ -52,10 +53,27 @@ const Timer = () => {
   };
 
 export function BreakTime(){
+    const { user } = useAuth();
+    const local = useLocation();
     const { socket } = useSocket();
+
+    if(socket){
+        socket.emit("select_room", {
+            uid: user?.uid,
+            room: local.pathname
+        });
+    }
+
+    setTimeout(() => {
+        socket.emit("leave_room", {
+            uid: user?.uid,
+            room: local.pathname
+        });
+    }, 5000)
+
     return(
-        <>
+        <div>
             <Timer />
-        </>
+        </div>
     )
 }
