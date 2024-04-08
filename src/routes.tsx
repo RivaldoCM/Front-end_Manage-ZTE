@@ -19,30 +19,33 @@ import { MobileDrawerMenu } from "./components/MobileMenu";
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
 import { MyAuthorizedOnusMobile } from "./pages/MyAuthorizedOnus/mobile";
 import { BreakTime } from "./pages/breakTime";
+import { useSocket } from "./hooks/useSocket";
+import { useAuth } from "./hooks/useAuth";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
 }
 
 export function AppRoutes() {
+    const { user } = useAuth(); 
+    const { socket } = useSocket();
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [lastRoutes, setLastRoutes] = useState<any>([]);
-
-
-    console.log(lastRoutes)
+    const [lastRoutes, setLastRoutes] = useState<string[]>([]);
 
     useEffect(() => {
         const token = localStorage.getItem('Authorization');
-        
-        const path = location.pathname
-        setLastRoutes({
-            ...lastRoutes,
-            path
-        })
+        setLastRoutes(prevRoutes => [...prevRoutes, location.pathname]);
+
+        if(lastRoutes.at(-1) === '/break_time'){
+            socket.emit("leave_room", {
+                uid: user?.uid,
+                room: lastRoutes.at(-1)
+            });
+        }
 
         if(token && location.pathname === '/login' || token && location.pathname === '/'){
             navigate('/auth_onu');

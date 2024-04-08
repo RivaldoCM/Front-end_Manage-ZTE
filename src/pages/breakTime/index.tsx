@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useSocket } from "../../hooks/useSocket";
 import { useAuth } from "../../hooks/useAuth";
 import { useLocation } from "react-router-dom";
+import { BreakTimeContainer, BreakTimeOptions } from "./style";
 
 const Timer = () => {
     const [time, setTime] = useState({ hh: 0, mm: 0, ss: 10 });
@@ -54,8 +55,8 @@ const Timer = () => {
 
 export function BreakTime(){
     const { user } = useAuth();
-    const local = useLocation();
     const { socket } = useSocket();
+    const local = useLocation();
 
     if(socket){
         socket.emit("select_room", {
@@ -64,16 +65,12 @@ export function BreakTime(){
         });
     }
 
-    setTimeout(() => {
-        socket.emit("leave_room", {
-            uid: user?.uid,
-            room: local.pathname
-        });
-    }, 5000)
-
     return(
-        <div>
-            <Timer />
-        </div>
+        <BreakTimeContainer className="flex">
+            Agentes em pausa
+            <BreakTimeOptions className="flex">
+                <div>Menu de pausa</div>
+            </BreakTimeOptions>
+        </BreakTimeContainer>
     )
 }
