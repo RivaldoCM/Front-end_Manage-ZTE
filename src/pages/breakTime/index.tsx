@@ -3,6 +3,8 @@ import { useSocket } from "../../hooks/useSocket";
 import { useAuth } from "../../hooks/useAuth";
 import { useLocation } from "react-router-dom";
 import { BreakTimeContainer, BreakTimeOptions } from "./style";
+import { addBreakTime } from "../../services/apiManageONU/addBreakTime";
+import { getBreakTime } from "../../services/apiManageONU/getBreakTime";
 
 const Timer = () => {
     const [time, setTime] = useState({ hh: 0, mm: 0, ss: 10 });
@@ -58,6 +60,9 @@ export function BreakTime(){
     const { socket } = useSocket();
     const local = useLocation();
 
+    const [breakTimeData, setBreakTimeData] = useState<any[] | null>(null);
+    const [userInBrakTime, setUserInBrakeTime] = useState<Boolean>(false);
+
     if(socket){
         socket.emit("select_room", {
             uid: user?.uid,
@@ -65,11 +70,44 @@ export function BreakTime(){
         });
     }
 
+    useEffect(() => {
+        const getData = async () => {
+            const response = await getBreakTime(true);
+            if(response.success){
+                setBreakTimeData(response.responses.response);
+            }
+        }
+        getData();
+    }, []);
+
+    useEffect(() => {
+        verifyUserInBrakeTime();
+    }, [breakTimeData]);
+
+    const verifyUserInBrakeTime = () => {
+        if(breakTimeData){
+            const userIn = breakTimeData.find(user => user.user_id === user?.uid);
+            if(userIn){
+                setUserInBrakeTime(userIn);
+            }
+        }
+    }
+
+    const handleSubmit = async () => {
+        const response = await addBreakTime()
+    }
+
+
     return(
         <BreakTimeContainer className="flex">
             Agentes em pausa
+
+            {
+                breakTimeData ? <div>100%</div> : <></>
+            }
             <BreakTimeOptions className="flex">
                 <div>Menu de pausa</div>
+                <button onClick={handleSubmit}>teste</button>
             </BreakTimeOptions>
         </BreakTimeContainer>
     )

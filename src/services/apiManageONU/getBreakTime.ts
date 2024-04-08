@@ -1,16 +1,14 @@
 import axios from "axios";
 
-export async function addBreakTime(){
+export async function getBreakTime(isRunning: Boolean){
     const res = await axios({
-        method: 'post',
+        method: 'GET',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/breakTime`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
-        data:{
-            typeId: 1,
-            active: true,
-            userId:150592
+        params: {
+            isRunning: isRunning
         }
     }).then((response) => {
         return response.data;
