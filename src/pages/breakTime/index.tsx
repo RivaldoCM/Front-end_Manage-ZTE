@@ -2,12 +2,12 @@ import { useEffect, useState } from "react"
 import { useSocket } from "../../hooks/useSocket";
 import { useAuth } from "../../hooks/useAuth";
 import { useLocation } from "react-router-dom";
-import { BreakTimeContainer, BreakTimeOptions } from "./style";
+import { BreakTimeContainer, BreakTimeOptions, TimerContainer, TimerWrapper } from "./style";
 import { addBreakTime } from "../../services/apiManageONU/addBreakTime";
 import { getBreakTime } from "../../services/apiManageONU/getBreakTime";
 
 const Timer = () => {
-    const [time, setTime] = useState({ hh: 0, mm: 0, ss: 10 });
+    const [time, setTime] = useState({ hh: 0, mm: 1, ss: 10 });
     const [timeIsRunning, setTimeIsRunning] = useState(true);
     const tempo = 1000;
   
@@ -49,9 +49,20 @@ const Timer = () => {
     };
   
     return (
-        <div>
-            <p>{`${time.hh < 10 ? '0' + time.hh : time.hh}:${time.mm < 10 ? '0' + time.mm : time.mm}:${time.ss < 10 ? '0' + time.ss : time.ss}`}</p>
-        </div>
+        <TimerContainer className="flex">
+            <TimerWrapper className="flex">
+                <p>{`${time.hh < 10 ? '0' + time.hh : time.hh}`}</p>
+                <p>Horas</p>
+            </TimerWrapper>
+            <TimerWrapper className="flex">
+                <p>{`${time.mm < 10 ? '0' + time.mm : time.mm}`}</p>
+                <p>Minutos</p>
+            </TimerWrapper>
+            <TimerWrapper className="flex">
+                <p>{`${time.ss < 10 ? '0' + time.ss : time.ss}`}</p>
+                <p>Segundos</p>
+            </TimerWrapper>
+        </TimerContainer>
     );
   };
 
@@ -100,7 +111,7 @@ export function BreakTime(){
 
     return(
         <BreakTimeContainer className="flex">
-            Agentes em pausa
+            <Timer />
 
             {
                 breakTimeData ? <div>100%</div> : <></>

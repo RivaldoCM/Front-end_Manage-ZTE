@@ -14,6 +14,24 @@ export const BreakTimeOptions = styled.div`
     width: 86%;
     height: 86px;
     border-radius: .5rem;
-    box-shadow: 19px 22px 24px 28px rgba(0,0,0,0.1);
+
 `
 
+export const TimerContainer = styled.div`
+    width: calc(64px*6);
+    height: 72px;
+    border-top: 1px solid grey;
+    border-radius: 1rem;
+    box-shadow: 17px 29px 15px -3px rgba(0,0,0,0.1);
+`
+
+export const TimerWrapper = styled.div`
+    flex-direction: column;
+    width: 128px;
+    height: 100%;
+
+    > p:first-of-type {
+        font-size: 2rem;
+    }
+
+`
