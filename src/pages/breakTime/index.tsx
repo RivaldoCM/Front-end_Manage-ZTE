@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useSocket } from "../../hooks/useSocket";
 import { useAuth } from "../../hooks/useAuth";
 import { useLocation } from "react-router-dom";
-import { BreakTimeContainer, BreakTimeOptions } from "./style";
+import { BackDrop, BreakTimeContainer, BreakTimeOptions } from "./style";
 import { addBreakTime } from "../../services/apiManageONU/addBreakTime";
 import { getBreakTime } from "../../services/apiManageONU/getBreakTime";
-import { Backdrop } from "@mui/material";
+import { Backdrop, Button } from "@mui/material";
 import dayjs from "dayjs";
 import { Timer } from "./timer";
+
+import CheckIcon from '@mui/icons-material/Check';
 
 export function BreakTime(){
     const { user } = useAuth();
@@ -72,23 +74,28 @@ export function BreakTime(){
 
     return(
         <BreakTimeContainer className="flex">
+            <BreakTimeOptions className="flex">
+                <button onClick={handleSubmit}>teste</button>
+            </BreakTimeOptions>
             {
                 userInBrakTime ?
                     <div>
                         <Backdrop
                             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                             open={openBackDrop}
-                            >
-                                <Timer initialTime={userInBrakTime}/>
+                                >
+                                <BackDrop className="backdrop flex">
+                                    <Timer initialTime={userInBrakTime}/>
+                                    <Button variant="contained" endIcon={<CheckIcon />}>
+                                        Finalizar
+                                    </Button>
+                                </BackDrop>
                         </Backdrop>
+
                     </div>
                 : 
                     <></>
             }
-            <BreakTimeOptions className="flex">
-                <div>Menu de pausa</div>
-                <button onClick={handleSubmit}>teste</button>
-            </BreakTimeOptions>
         </BreakTimeContainer>
     )
 }

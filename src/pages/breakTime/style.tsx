@@ -10,11 +10,10 @@ export const BreakTimeContainer = styled.div`
 `;
 
 export const BreakTimeOptions = styled.div`
-    position: fixed;
-    bottom: 2rem;
     width: 86%;
     height: 86px;
     border-radius: .5rem;
+    box-shadow: 32px 36px 15px -3px rgba(0,0,0,0.1);
 
 `
 
@@ -24,4 +23,9 @@ export const TimerContainer = styled.div`
     border-top: 1px solid grey;
     border-radius: 1rem;
     font-size: 4rem;
+`
+
+export const BackDrop = styled.div`
+    flex-direction: column;
+
 `
