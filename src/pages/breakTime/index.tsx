@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { Timer } from "./timer";
 
 import CheckIcon from '@mui/icons-material/Check';
+import { getBreakTimeTypes } from "../../services/apiManageONU/getBreakTimeTypes";
 
 export function BreakTime(){
     const { user } = useAuth();
@@ -17,6 +18,7 @@ export function BreakTime(){
     const local = useLocation();
 
     const [breakTimeData, setBreakTimeData] = useState<any[] | null>(null);
+    const [breakTimeTypes, setBreakTimeTypes] = useState<any[] | null>(null);
     const [userInBrakTime, setUserInBrakeTime] = useState<any | null>(null);
     const [openBackDrop, setOpenBackDrop] = useState(false);
     
@@ -36,11 +38,20 @@ export function BreakTime(){
 
     useEffect(() => {
         const getData = async () => {
+            const getTypes = await getBreakTimeTypes();
             const response = await getBreakTime(true);
+
             if(response.success){
                 setBreakTimeData(response.responses.response);
             } else {
                 setBreakTimeData(null);
+            }
+
+            if(getTypes.success){
+                console.log(response, 'teste')
+                setBreakTimeTypes(response.responses.response);
+            } else {
+                setBreakTimeTypes(null);
             }
         }
         getData();
@@ -54,7 +65,6 @@ export function BreakTime(){
         if(breakTimeData){
             const userIn = breakTimeData.find(userIn => userIn.user_id === user?.uid);
             if(userIn){
-
                 const TimeRemaining = dayjs(userIn.created_at).format('HH:mm:ss');
                 const formated = TimeRemaining.split(':') as any;
 
@@ -75,7 +85,18 @@ export function BreakTime(){
     return(
         <BreakTimeContainer className="flex">
             <BreakTimeOptions className="flex">
-                <button onClick={handleSubmit}>teste</button>
+                {
+                    breakTimeTypes && breakTimeTypes.map((type: any) => {
+                        return(
+                            <div>
+                                <button>
+                                    {type.name}
+                                </button>
+                            </div>
+                        )
+                    })
+
+                }
             </BreakTimeOptions>
             {
                 userInBrakTime ?
