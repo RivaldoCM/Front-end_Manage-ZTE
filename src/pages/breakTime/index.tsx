@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react"
 import { useSocket } from "../../hooks/useSocket";
 import { useAuth } from "../../hooks/useAuth";
 import { useLocation } from "react-router-dom";
-import { BackDrop, BreakTimeContainer, BreakTimeOptions } from "./style";
+import { ActionButton, BackDrop, BreakTimeContainer, BreakTimeOptions, ViewActiviesBreakTimes } from "./style";
 import { addBreakTime } from "../../services/apiManageONU/addBreakTime";
 import { getBreakTime } from "../../services/apiManageONU/getBreakTime";
 import { Backdrop, Button } from "@mui/material";
 import dayjs from "dayjs";
 import { Timer } from "./timer";
-
+import MoreTimeRoundedIcon from '@mui/icons-material/MoreTimeRounded';
+import QueryBuilderRoundedIcon from '@mui/icons-material/QueryBuilderRounded';
 import CheckIcon from '@mui/icons-material/Check';
 import { getBreakTimeTypes } from "../../services/apiManageONU/getBreakTimeTypes";
 
@@ -38,28 +39,27 @@ export function BreakTime(){
 
     useEffect(() => {
         const getData = async () => {
-            const getTypes = await getBreakTimeTypes();
-            const response = await getBreakTime(true);
+            const getTimes = getBreakTime(true);
+            const getTypes = getBreakTimeTypes();
 
-            if(response.success){
-                setBreakTimeData(response.responses.response);
-            } else {
-                setBreakTimeData(null);
+            const [ times, types ] = await Promise.all([getTimes, getTypes]);
+
+            if(times.success){
+                setBreakTimeData(times.responses.response);
             }
 
-            if(getTypes.success){
-                console.log(response, 'teste')
-                setBreakTimeTypes(response.responses.response);
-            } else {
-                setBreakTimeTypes(null);
+            if(types.success){
+                setBreakTimeTypes(types.responses.response);
             }
         }
         getData();
     }, []);
 
+/*
     useEffect(() => {
         verifyUserInBrakeTime();
     }, [breakTimeData]);
+*/
 
     const verifyUserInBrakeTime = () => {
         if(breakTimeData){
@@ -85,20 +85,36 @@ export function BreakTime(){
     return(
         <BreakTimeContainer className="flex">
             <BreakTimeOptions className="flex">
+                <div><p><b>HORÁRIOS DE PAUSA</b></p></div>
+                <div className="flex">
                 {
                     breakTimeTypes && breakTimeTypes.map((type: any) => {
                         return(
-                            <div>
-                                <button>
+                            <ActionButton className="flex" key={type.id}>
+                                <Button variant="contained" size="small" endIcon={<MoreTimeRoundedIcon />}>
                                     {type.name}
-                                </button>
-                            </div>
+                                </Button>
+                                <div className="flex">
+                                    <QueryBuilderRoundedIcon fontSize="small"/>{type.duration + ' min'} 
+                                </div>
+                            </ActionButton>
                         )
                     })
-
                 }
+                </div>
             </BreakTimeOptions>
+            <ViewActiviesBreakTimes>
+                <div>
+                    <b>AGENTES EM PAUSA</b>
+                </div>
+                <div className="teste">
+                    nego: drama<br/>
+                    restante: 10 dias
+                </div>
+
+            </ViewActiviesBreakTimes>
             {
+                /*
                 userInBrakTime ?
                     <div>
                         <Backdrop
@@ -116,6 +132,7 @@ export function BreakTime(){
                     </div>
                 : 
                     <></>
+                    */
             }
         </BreakTimeContainer>
     )
