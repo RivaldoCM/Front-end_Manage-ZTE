@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useSocket } from "../../hooks/useSocket";
 import { useAuth } from "../../hooks/useAuth";
 import { useLocation } from "react-router-dom";
-import { ActionButton, BackDrop, BreakTimeContainer, BreakTimeOptions, ViewActiviesBreakTimes } from "./style";
+import { ActionButton, BackDrop, BreakTimeContainer, BreakTimeOptions, CardBreakTime, ViewActiviesBreakTimes } from "./style";
 import { addBreakTime } from "../../services/apiManageONU/addBreakTime";
 import { getBreakTime } from "../../services/apiManageONU/getBreakTime";
 import { Backdrop, Button } from "@mui/material";
@@ -55,31 +55,43 @@ export function BreakTime(){
         getData();
     }, []);
 
-/*
+    
     useEffect(() => {
         verifyUserInBrakeTime();
     }, [breakTimeData]);
-*/
 
     const verifyUserInBrakeTime = () => {
         if(breakTimeData){
             const userIn = breakTimeData.find(userIn => userIn.user_id === user?.uid);
+            
             if(userIn){
                 const TimeRemaining = dayjs(userIn.created_at).format('HH:mm:ss');
                 const formated = TimeRemaining.split(':') as any;
+                const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
 
-                setUserInBrakeTime({
-                    hours: formated[0]*1,
-                    minutes: formated[1]*1,
-                    seconds: formated[2]*1
-                });
+                setUserInBrakeTime(timeInSeconds);
                 setOpenBackDrop(true);
+                return timeInSeconds;
             }
         }
     }
 
+    const verifyUserInBrakeTimeTeste = (param: any) => {
+        console.log(param,'dewbt=')
+        const TimeRemaining = dayjs(param).format('HH:mm:ss');
+        const formated = TimeRemaining.split(':') as any;
+        const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
+
+        return timeInSeconds;
+        
+    }
+    
     const handleSubmit = async () => {
         const response = await addBreakTime()
+    }
+
+    function convertToSeconds( hours, minutes, seconds ) {
+        return hours * 3600 + minutes * 60 + seconds;
     }
 
     return(
@@ -91,7 +103,7 @@ export function BreakTime(){
                     breakTimeTypes && breakTimeTypes.map((type: any) => {
                         return(
                             <ActionButton className="flex" key={type.id}>
-                                <Button variant="contained" size="small" endIcon={<MoreTimeRoundedIcon />}>
+                                <Button variant="contained" size="small" endIcon={<MoreTimeRoundedIcon />} onClick={handleSubmit}>
                                     {type.name}
                                 </Button>
                                 <div className="flex">
@@ -107,32 +119,55 @@ export function BreakTime(){
                 <div>
                     <b>AGENTES EM PAUSA</b>
                 </div>
-                <div className="teste">
-                    nego: drama<br/>
-                    restante: 10 dias
+                <div className="break-times-container flex">
+                    {
+                        breakTimeData && breakTimeData.map((user: any) => {
+                            return(
+                                <CardBreakTime className="flex" key={user.id}>
+                                    <div className="flex">
+                                        <div>
+                                            Nome: {user.User.name}
+                                        </div>
+                                        <div>
+                                            Pausa: {user.break_Time_Types.name}
+                                        </div>
+                                        <div>
+                                            Tempo Excedido: 
+                                        </div>
+                                    </div>
+                                    <div className="flex">
+                                        <div>
+                                            <Timer initialTime={verifyUserInBrakeTimeTeste(user.created_at)} isBackDrop={false}/>
+                                        </div>
+                                        <div>
+                                            <Timer initialTime={verifyUserInBrakeTimeTeste(user.created_at)} isBackDrop={false}/>
+                                        </div>
+                                    </div>
+                                </CardBreakTime>
+                            )
+                        })
+                    }
                 </div>
-
             </ViewActiviesBreakTimes>
             {
-                /*
                 userInBrakTime ?
                     <div>
                         <Backdrop
                             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                             open={openBackDrop}
-                                >
-                                <BackDrop className="backdrop flex">
-                                    <Timer initialTime={userInBrakTime}/>
-                                    <Button variant="contained" endIcon={<CheckIcon />}>
-                                        Finalizar
-                                    </Button>
-                                </BackDrop>
+                        >
+                            <BackDrop className="backdrop flex">
+                                <Timer initialTime={userInBrakTime} isBackDrop={true}/>
+                                <Button variant="contained" endIcon={<CheckIcon />}>
+                                    Finalizar
+                                </Button>
+                            </BackDrop>
                         </Backdrop>
 
                     </div>
                 : 
                     <></>
-                    */
+                    
             }
         </BreakTimeContainer>
     )

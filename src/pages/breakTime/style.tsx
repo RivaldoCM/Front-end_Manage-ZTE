@@ -24,27 +24,62 @@ export const BreakTimeOptions = styled.div`
 `
 
 export const ViewActiviesBreakTimes = styled.div`
-    margin-top: 2rem;
     flex-direction: column;
+    text-align: center;
+    width: 100%;
+    margin-top: 2rem;
+
 
     >div{
         margin-bottom: 1rem;
     }
 
-    .teste{
-        width: 186px;
-        border: 1px solid black;
+    .break-times-container{
+        flex-wrap: wrap;
     }
 `
 
+export const CardBreakTime = styled.div`
+    width: 312px;
+    height: auto;
+    margin: 1rem;
+    border-radius: 1rem;
+    border-top: 2px solid grey;
+    border-right: 2px solid grey;
+    box-shadow: -44px 38px 15px -3px rgba(0,0,0,0.1);
 
+    div:first-child{
+        flex-direction: column;
+        width: 70%;
+
+        div{
+            width: 100%;
+            height: calc(100%/2);
+            padding: .2rem 0 .2rem .5rem;
+            text-align: initial;
+        }
+    }
+
+    div:last-child{
+        flex-direction: column;
+        justify-content: center;
+        width: 30%;
+        height: 100%;
+        
+
+        div{
+            width: 100%;
+            height: 50%;
+        }
+    }
+`
 
 export const TimerContainer = styled.div`
     width: calc(64px*6);
     height: 72px;
-    border-top: 1px solid grey;
+    border-top: ${(props) => (props.isBackDrop ? '1px solid grey' : 'none')};
     border-radius: 1rem;
-    font-size: 4rem;
+    font-size: ${(props) => (props.isBackDrop ? '4rem' : '1rem')};
 `
 
 export const BackDrop = styled.div`

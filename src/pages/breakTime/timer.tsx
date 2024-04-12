@@ -2,14 +2,13 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import dayjs from 'dayjs';
 import { TimerContainer } from './style';
 
-export function Timer({ initialTime }: any) {
+export function Timer({ initialTime, isBackDrop }: any) {
 	const [time, setTime] = useState(20*60);
 	const [timeIsRunning, setTimeIsRunning] = useState(true);
 
 	useEffect(() => {
 		const nowInSeconds = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
-		const initialTimeInSeconds = convertToSeconds(initialTime);
-		const timeDifferenceInSeconds = time - (nowInSeconds - initialTimeInSeconds);
+		const timeDifferenceInSeconds = time - (nowInSeconds - initialTime);
 
 		if (timeDifferenceInSeconds > 0) {
 			setTime(timeDifferenceInSeconds);
@@ -47,12 +46,8 @@ export function Timer({ initialTime }: any) {
 	}, [timeIsRunning]);
 
 	return (
-		<TimerContainer className='flex'>
+		<TimerContainer className='flex' isBackDrop={isBackDrop}>
 			<p>{timerDisplay}</p>
 		</TimerContainer>
 	);
-}
-
-function convertToSeconds({ hours, minutes, seconds }) {
-  return hours * 3600 + minutes * 60 + seconds;
 }
