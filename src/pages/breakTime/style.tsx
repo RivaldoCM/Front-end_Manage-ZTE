@@ -75,11 +75,16 @@ export const CardBreakTime = styled.div`
 `
 
 export const TimerContainer = styled.div`
+    flex-direction: column;
     width: calc(64px*6);
-    height: 72px;
+    height: auto;
     border-top: ${(props) => (props.isBackDrop ? '1px solid grey' : 'none')};
     border-radius: 1rem;
     font-size: ${(props) => (props.isBackDrop ? '4rem' : '1rem')};
+
+    p:last-of-type{
+        font-size: 1rem;
+    }
 `
 
 export const BackDrop = styled.div`

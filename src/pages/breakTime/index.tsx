@@ -63,35 +63,32 @@ export function BreakTime(){
     const verifyUserInBrakeTime = () => {
         if(breakTimeData){
             const userIn = breakTimeData.find(userIn => userIn.user_id === user?.uid);
-            
             if(userIn){
                 const TimeRemaining = dayjs(userIn.created_at).format('HH:mm:ss');
                 const formated = TimeRemaining.split(':') as any;
                 const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
+                const duration = userIn.break_Time_Types.duration;
 
-                setUserInBrakeTime(timeInSeconds);
+                setUserInBrakeTime({timeInSeconds, duration});
                 setOpenBackDrop(true);
                 return timeInSeconds;
             }
         }
     }
 
-    const verifyUserInBrakeTimeTeste = (param: any) => {
-        console.log(param,'dewbt=')
+    const formatTime = (param: any) => {
         const TimeRemaining = dayjs(param).format('HH:mm:ss');
         const formated = TimeRemaining.split(':') as any;
         const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
-
         return timeInSeconds;
-        
+    }
+
+    function convertToSeconds( hours: number, minutes: number, seconds: number ) {
+        return hours * 3600 + minutes * 60 + seconds;
     }
     
-    const handleSubmit = async () => {
-        const response = await addBreakTime()
-    }
-
-    function convertToSeconds( hours, minutes, seconds ) {
-        return hours * 3600 + minutes * 60 + seconds;
+    const handleSubmitInitBreakTime = async (typeId: number) => {
+        const response = await addBreakTime({userId: user?.uid,  whichType: typeId})
     }
 
     return(
@@ -99,20 +96,20 @@ export function BreakTime(){
             <BreakTimeOptions className="flex">
                 <div><p><b>HORÁRIOS DE PAUSA</b></p></div>
                 <div className="flex">
-                {
-                    breakTimeTypes && breakTimeTypes.map((type: any) => {
-                        return(
-                            <ActionButton className="flex" key={type.id}>
-                                <Button variant="contained" size="small" endIcon={<MoreTimeRoundedIcon />} onClick={handleSubmit}>
-                                    {type.name}
-                                </Button>
-                                <div className="flex">
-                                    <QueryBuilderRoundedIcon fontSize="small"/>{type.duration + ' min'} 
-                                </div>
-                            </ActionButton>
-                        )
-                    })
-                }
+                    {
+                        breakTimeTypes && breakTimeTypes.map((type: any) => {
+                            return(
+                                <ActionButton className="flex" key={type.id}>
+                                    <Button variant="contained" size="small" endIcon={<MoreTimeRoundedIcon />} onClick={() => handleSubmitInitBreakTime(type.id)}>
+                                        {type.name}
+                                    </Button>
+                                    <div className="flex">
+                                        <QueryBuilderRoundedIcon fontSize="small"/>{type.duration + ' min'} 
+                                    </div>
+                                </ActionButton>
+                            )
+                        })
+                    }
                 </div>
             </BreakTimeOptions>
             <ViewActiviesBreakTimes>
@@ -137,10 +134,7 @@ export function BreakTime(){
                                     </div>
                                     <div className="flex">
                                         <div>
-                                            <Timer initialTime={verifyUserInBrakeTimeTeste(user.created_at)} isBackDrop={false}/>
-                                        </div>
-                                        <div>
-                                            <Timer initialTime={verifyUserInBrakeTimeTeste(user.created_at)} isBackDrop={false}/>
+                                            <Timer initialTime={{timeInSeconds: formatTime(user.created_at), duration: user.break_Time_Types.duration}} isBackDrop={false}/>
                                         </div>
                                     </div>
                                 </CardBreakTime>
