@@ -112,7 +112,7 @@ export function BreakTime(){
                     }
                 </div>
             </BreakTimeOptions>
-            <ViewActiviesBreakTimes>
+            <ViewActiviesBreakTimes isBackDrop={openBackDrop}>
                 <div>
                     <b>AGENTES EM PAUSA</b>
                 </div>
@@ -128,13 +128,17 @@ export function BreakTime(){
                                         <div>
                                             Pausa: {user.break_Time_Types.name}
                                         </div>
-                                        <div>
-                                            Tempo Excedido: 
-                                        </div>
                                     </div>
                                     <div className="flex">
                                         <div>
-                                            <Timer initialTime={{timeInSeconds: formatTime(user.created_at), duration: user.break_Time_Types.duration}} isBackDrop={false}/>
+                                            <Timer 
+                                                initialTime={{
+                                                    timeInSeconds: formatTime(user.created_at), 
+                                                    duration: user.break_Time_Types.duration,
+                                                    userId: user.user_id
+                                                    }} 
+                                                    isBackDrop={false}
+                                                />
                                         </div>
                                     </div>
                                 </CardBreakTime>
@@ -147,10 +151,10 @@ export function BreakTime(){
                 userInBrakTime ?
                     <div>
                         <Backdrop
-                            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 } }
                             open={openBackDrop}
                         >
-                            <BackDrop className="backdrop flex">
+                            <BackDrop className="flex">
                                 <Timer initialTime={userInBrakTime} isBackDrop={true}/>
                                 <Button variant="contained" endIcon={<CheckIcon />}>
                                     Finalizar
@@ -162,7 +166,6 @@ export function BreakTime(){
                                 </Button>
                             </BackDrop>
                         </Backdrop>
-
                     </div>
                 : 
                     <></>

@@ -1,9 +1,12 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import dayjs from 'dayjs';
 import { TimerContainer } from './style';
+import { useAuth } from '../../hooks/useAuth';
 
 export function Timer({ initialTime, isBackDrop }: any) {
 	const startTime = initialTime.duration*60; //ESSA VARIAVEL NÃO PODE MUDAR
+
+	const { user } = useAuth();
 
 	const [increaseTime, setIncreaseTime] = useState(0);
 	const [decreasetime, setDecreaseTime] = useState(0);
@@ -17,7 +20,6 @@ export function Timer({ initialTime, isBackDrop }: any) {
 		} else {
 			setTimeIsRunning(false);
 		}
-
 	}, [initialTime]);
 
 	const formatTime = useCallback((value: any) => {
@@ -64,7 +66,6 @@ export function Timer({ initialTime, isBackDrop }: any) {
 			}, 1000);
 			return () => clearInterval(intervalId);
 		} else {
-
 			const intervalId = setInterval(() => {
 				setIncreaseTime((prevTime: any) => {
 					return prevTime + 1;
@@ -78,7 +79,7 @@ export function Timer({ initialTime, isBackDrop }: any) {
 		<TimerContainer className='flex' isBackDrop={isBackDrop}>
 			<p>{timerDisplay}</p>
 			{
-				!timeIsRunning ?
+				!timeIsRunning && isBackDrop ?
 					<p>{'-' + increaseTimerDisplay}</p>
 				:
 				<></>
