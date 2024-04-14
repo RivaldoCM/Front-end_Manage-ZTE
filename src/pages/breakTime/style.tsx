@@ -77,13 +77,16 @@ export const CardBreakTime = styled.div`
 export const TimerContainer = styled.div`
     flex-direction: column;
     width: calc(64px*6);
+    margin: 1rem 0;
     height: auto;
-    border-top: ${(props) => (props.isBackDrop ? '1px solid grey' : 'none')};
+    border-top: ${(props) => (props.isBackDrop ? '5px solid #393939' : 'none')};
+    border-bottom: ${(props) => (props.isBackDrop ? '5px solid #393939' : 'none')};
     border-radius: 1rem;
     font-size: ${(props) => (props.isBackDrop ? '4rem' : '1rem')};
 
-    p:last-of-type{
+    p:nth-child(2){
         font-size: 1rem;
+        color: #ff0037a2;
     }
 `
 

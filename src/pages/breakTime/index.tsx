@@ -154,6 +154,11 @@ export function BreakTime(){
                                 <Timer initialTime={userInBrakTime} isBackDrop={true}/>
                                 <Button variant="contained" endIcon={<CheckIcon />}>
                                     Finalizar
+                                    {
+                                        /*
+                                            adicionar quandlo clicar no botao para retirar o endAt do LocalStorage
+                                        */
+                                    }
                                 </Button>
                             </BackDrop>
                         </Backdrop>

@@ -6,14 +6,12 @@ export function Timer({ initialTime, isBackDrop }: any) {
 	const startTime = initialTime.duration*60; //ESSA VARIAVEL NÃO PODE MUDAR
 
 	const [increaseTime, setIncreaseTime] = useState(0);
-	const [decreasetime, setDecreaseTime] = useState(initialTime.duration*60);
-	const [increaseAt, setIncreaseAt] = useState<number>();
+	const [decreasetime, setDecreaseTime] = useState(0);
 	const [timeIsRunning, setTimeIsRunning] = useState(true);
 
 	useEffect(() => {
 		const nowInSeconds = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
 		const timeDifferenceInSeconds = startTime - (nowInSeconds - initialTime.timeInSeconds);
-
 		if (timeDifferenceInSeconds > 0) {
 			setDecreaseTime(timeDifferenceInSeconds);
 		} else {
@@ -35,13 +33,17 @@ export function Timer({ initialTime, isBackDrop }: any) {
 	}, [decreasetime]);
 
 	const increaseTimerDisplay = useMemo(() => {
-		const ver = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
+		const now = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
+		let exceeded = 0;
+		const endAt = localStorage.getItem('EndAt');
+		
+		if(endAt){
+			exceeded = now - parseInt(endAt);
+		}
 
-		const veer = ver - increaseAt
-		console.log(ver,increaseAt)
-		const hours = Math.floor(veer / 3600);
-		const minutes = Math.floor((veer % 3600) / 60);
-		const seconds = veer % 60;
+		const hours = Math.floor(exceeded / 3600);
+		const minutes = Math.floor((exceeded % 3600) / 60);
+		const seconds = exceeded % 60;
 
 		return `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
 	}, [increaseTime]);
@@ -49,8 +51,10 @@ export function Timer({ initialTime, isBackDrop }: any) {
 	useEffect(() => {
 		if (timeIsRunning) {
 			const intervalId = setInterval(() => {
+				const endAt = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
 				setDecreaseTime((prevTime: any) => {
 					if (prevTime <= 0) {
+						localStorage.setItem('EndAt', endAt.toString());
 						clearInterval(intervalId);
 						setTimeIsRunning(false);
 						return 0;
@@ -60,9 +64,7 @@ export function Timer({ initialTime, isBackDrop }: any) {
 			}, 1000);
 			return () => clearInterval(intervalId);
 		} else {
-			const teste = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
 
-			setIncreaseAt(teste)
 			const intervalId = setInterval(() => {
 				setIncreaseTime((prevTime: any) => {
 					return prevTime + 1;
@@ -77,11 +79,10 @@ export function Timer({ initialTime, isBackDrop }: any) {
 			<p>{timerDisplay}</p>
 			{
 				!timeIsRunning ?
-					<p>{'- ' + increaseTimerDisplay}</p>
+					<p>{'-' + increaseTimerDisplay}</p>
 				:
 				<></>
 			}
-
 		</TimerContainer>
 	);
 }
