@@ -79,6 +79,7 @@ export function BreakTime(){
     const formatTime = (param: any) => {
         const TimeRemaining = dayjs(param).format('HH:mm:ss');
         const formated = TimeRemaining.split(':') as any;
+
         const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
         return timeInSeconds;
     }
@@ -123,10 +124,10 @@ export function BreakTime(){
                                 <CardBreakTime className="flex" key={user.id}>
                                     <div className="flex">
                                         <div>
-                                            Nome: {user.User.name}
+                                            <p><b>Nome: </b>{user.User.name}</p>
                                         </div>
                                         <div>
-                                            Pausa: {user.break_Time_Types.name}
+                                            <p><b>Pausa: </b>{user.break_Time_Types.name}</p>
                                         </div>
                                     </div>
                                     <div className="flex">

@@ -40,7 +40,8 @@ export const ViewActiviesBreakTimes = styled.div`
 `
 
 export const CardBreakTime = styled.div`
-    width: 312px;
+    width: 348px;
+    height: 124px;
     margin: 1rem;
     padding: 1rem;
     border-radius: 1rem;
@@ -51,12 +52,18 @@ export const CardBreakTime = styled.div`
     div:first-child{
         flex-direction: column;
         width: 70%;
+        overflow: auto;
 
         div{
             width: 100%;
             height: auto;
             padding: .2rem 0 .2rem .5rem;
             text-align: initial;
+
+            p{
+                max-width: 100%;
+                overflow: hidden;
+            }
         }
     }
 

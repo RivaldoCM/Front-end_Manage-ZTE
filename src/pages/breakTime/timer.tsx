@@ -34,23 +34,24 @@ export function Timer({ initialTime, isBackDrop }: any) {
 
 	const increaseTimerDisplay = useMemo(() => {
 		const now = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
-		const exceeded = now - initialTime.timeInSeconds;
-		console.log(exceeded)
-
+		const exceeded = (now - 2) - (initialTime.timeInSeconds + startTime);
+		console.log(now,exceeded,initialTime.timeInSeconds, startTime)
 		const hours = Math.floor(exceeded / 3600);
 		const minutes = Math.floor((exceeded % 3600) / 60);
 		const seconds = exceeded % 60;
 
-		return `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+		if(exceeded > 0){
+			return `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+		} else {
+			return "00:00:00"
+		}
 	}, [increaseTime]);
 
 	useEffect(() => {
 		if (timeIsRunning) {
 			const intervalId = setInterval(() => {
-				const endAt = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
 				setDecreaseTime((prevTime: any) => {
 					if (prevTime <= 0) {
-						localStorage.setItem('EndAt', endAt.toString());
 						clearInterval(intervalId);
 						setTimeIsRunning(false);
 						return 0;
