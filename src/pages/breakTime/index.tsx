@@ -135,7 +135,6 @@ export function BreakTime(){
                                                 initialTime={{
                                                     timeInSeconds: formatTime(user.created_at), 
                                                     duration: user.break_Time_Types.duration,
-                                                    userId: user.user_id
                                                     }} 
                                                     isBackDrop={false}
                                                 />

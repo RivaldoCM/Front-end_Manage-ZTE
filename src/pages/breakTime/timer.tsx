@@ -1,12 +1,10 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import dayjs from 'dayjs';
+
 import { TimerContainer } from './style';
-import { useAuth } from '../../hooks/useAuth';
 
 export function Timer({ initialTime, isBackDrop }: any) {
 	const startTime = initialTime.duration*60; //ESSA VARIAVEL NÃO PODE MUDAR
-
-	const { user } = useAuth();
 
 	const [increaseTime, setIncreaseTime] = useState(0);
 	const [decreasetime, setDecreaseTime] = useState(0);
@@ -36,12 +34,8 @@ export function Timer({ initialTime, isBackDrop }: any) {
 
 	const increaseTimerDisplay = useMemo(() => {
 		const now = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
-		let exceeded = 0;
-		const endAt = localStorage.getItem('EndAt');
-		
-		if(endAt){
-			exceeded = now - parseInt(endAt);
-		}
+		const exceeded = now - initialTime.timeInSeconds;
+		console.log(exceeded)
 
 		const hours = Math.floor(exceeded / 3600);
 		const minutes = Math.floor((exceeded % 3600) / 60);
@@ -79,7 +73,7 @@ export function Timer({ initialTime, isBackDrop }: any) {
 		<TimerContainer className='flex' isBackDrop={isBackDrop}>
 			<p>{timerDisplay}</p>
 			{
-				!timeIsRunning && isBackDrop ?
+				!timeIsRunning ?
 					<p>{'-' + increaseTimerDisplay}</p>
 				:
 				<></>
