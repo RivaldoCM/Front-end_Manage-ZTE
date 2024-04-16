@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 
 import { TimerContainer } from './style';
 
-export function Timer({ initialTime, isBackDrop }: any) {
+export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 	const startTime = initialTime.duration*60; //ESSA VARIAVEL NÃO PODE MUDAR
 
 	const [increaseTime, setIncreaseTime] = useState(0);
@@ -13,39 +13,13 @@ export function Timer({ initialTime, isBackDrop }: any) {
 	useEffect(() => {
 		const nowInSeconds = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
 		const timeDifferenceInSeconds = startTime - (nowInSeconds - initialTime.timeInSeconds);
+
 		if (timeDifferenceInSeconds > 0) {
 			setDecreaseTime(timeDifferenceInSeconds);
 		} else {
 			setTimeIsRunning(false);
 		}
 	}, [initialTime]);
-
-	const formatTime = useCallback((value: any) => {
-		return value < 10 ? `0${value}` : value;
-	}, []);
-
-	const timerDisplay = useMemo(() => {
-		const hours = Math.floor(decreasetime / 3600);
-		const minutes = Math.floor((decreasetime % 3600) / 60);
-		const seconds = decreasetime % 60;
-
-		return `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
-	}, [decreasetime]);
-
-	const increaseTimerDisplay = useMemo(() => {
-		const now = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
-		const exceeded = (now - 2) - (initialTime.timeInSeconds + startTime);
-		console.log(now,exceeded,initialTime.timeInSeconds, startTime)
-		const hours = Math.floor(exceeded / 3600);
-		const minutes = Math.floor((exceeded % 3600) / 60);
-		const seconds = exceeded % 60;
-
-		if(exceeded > 0){
-			return `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
-		} else {
-			return "00:00:00"
-		}
-	}, [increaseTime]);
 
 	useEffect(() => {
 		if (timeIsRunning) {
@@ -69,6 +43,40 @@ export function Timer({ initialTime, isBackDrop }: any) {
 			return () => clearInterval(intervalId);
 		}
 	}, [timeIsRunning]);
+
+	const formatTime = useCallback((value: any) => {
+		return value < 10 ? `0${value}` : value;
+	}, []);
+
+	const timerDisplay = useMemo(() => {
+		const hours = Math.floor(decreasetime / 3600);
+		const minutes = Math.floor((decreasetime % 3600) / 60);
+		const seconds = decreasetime % 60;
+
+		if(getFinishedData){
+			getFinishedData({inTime: decreasetime, outTime: 0});
+		}
+
+		return `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+	}, [decreasetime]);
+
+	const increaseTimerDisplay = useMemo(() => {
+		const now = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
+		const exceeded = (now - 2) - (initialTime.timeInSeconds + startTime);
+		const hours = Math.floor(exceeded / 3600);
+		const minutes = Math.floor((exceeded % 3600) / 60);
+		const seconds = exceeded % 60;
+	
+		if(getFinishedData){
+			getFinishedData({inTime: 0, outTime: exceeded});
+		}
+
+		if(exceeded > 0){
+			return `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+		} else {
+			return "00:00:00"
+		}
+	}, [increaseTime]);
 
 	return (
 		<TimerContainer className='flex' isBackDrop={isBackDrop}>

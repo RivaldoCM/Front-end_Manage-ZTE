@@ -18,10 +18,19 @@ export function BreakTime(){
     const { socket } = useSocket();
     const local = useLocation();
 
+    if(socket){
+        socket.emit("select_room", {
+            uid: user?.uid,
+            room: local.pathname
+        });
+    }
+
     const [breakTimeData, setBreakTimeData] = useState<any[] | null>(null);
     const [breakTimeTypes, setBreakTimeTypes] = useState<any[] | null>(null);
+    const [realTimeData, setRealTimeData] = useState<any | null>(null);
     const [userInBrakTime, setUserInBrakeTime] = useState<any | null>(null);
     const [openBackDrop, setOpenBackDrop] = useState(false);
+    const [stopTimers, setStopTimers] = useState(false);
     
     const handleClose = () => {
         setOpenBackDrop(false);
@@ -30,18 +39,10 @@ export function BreakTime(){
         setOpenBackDrop(true);
     };
 
-    if(socket){
-        socket.emit("select_room", {
-            uid: user?.uid,
-            room: local.pathname
-        });
-    }
-
     useEffect(() => {
         const getData = async () => {
             const getTimes = getBreakTime(true);
             const getTypes = getBreakTimeTypes();
-
             const [ times, types ] = await Promise.all([getTimes, getTypes]);
 
             if(times.success){
@@ -55,6 +56,9 @@ export function BreakTime(){
         getData();
     }, []);
 
+    useEffect(() => {
+
+    }, []);
     
     useEffect(() => {
         verifyUserInBrakeTime();
@@ -89,7 +93,15 @@ export function BreakTime(){
     }
     
     const handleSubmitInitBreakTime = async (typeId: number) => {
-        const response = await addBreakTime({userId: user?.uid,  whichType: typeId})
+        const response = await addBreakTime({userId: user?.uid,  whichType: typeId});
+    }
+
+    const getFinishedData = ({inTime, outTime}: {inTime: number, outTime: number}) => {
+        setRealTimeData({inTime, outTime});
+    }
+
+    const handleFinishBreakTime = async () => {
+        console.log(realTimeData)
     }
 
     return(
@@ -155,8 +167,8 @@ export function BreakTime(){
                             open={openBackDrop}
                         >
                             <BackDrop className="flex">
-                                <Timer initialTime={userInBrakTime} isBackDrop={true}/>
-                                <Button variant="contained" endIcon={<CheckIcon />}>
+                                <Timer initialTime={userInBrakTime} isBackDrop={true} getFinishedData={getFinishedData}/>
+                                <Button variant="contained" endIcon={<CheckIcon />} onClick={handleFinishBreakTime}>
                                     Finalizar
                                     {
                                         /*
