@@ -12,6 +12,7 @@ import MoreTimeRoundedIcon from '@mui/icons-material/MoreTimeRounded';
 import QueryBuilderRoundedIcon from '@mui/icons-material/QueryBuilderRounded';
 import CheckIcon from '@mui/icons-material/Check';
 import { getBreakTimeTypes } from "../../services/apiManageONU/getBreakTimeTypes";
+import { updateBreakTime } from "../../services/apiManageONU/updateBreakTime";
 
 export function BreakTime(){
     const { user } = useAuth();
@@ -55,10 +56,6 @@ export function BreakTime(){
         }
         getData();
     }, []);
-
-    useEffect(() => {
-
-    }, []);
     
     useEffect(() => {
         verifyUserInBrakeTime();
@@ -68,13 +65,15 @@ export function BreakTime(){
         if(breakTimeData){
             const userIn = breakTimeData.find(userIn => userIn.user_id === user?.uid);
             if(userIn){
+                const id = userIn.id;
                 const TimeRemaining = dayjs(userIn.created_at).format('HH:mm:ss');
                 const formated = TimeRemaining.split(':') as any;
                 const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
                 const duration = userIn.break_Time_Types.duration;
 
-                setUserInBrakeTime({timeInSeconds, duration});
+                setUserInBrakeTime({id, timeInSeconds, duration});
                 setOpenBackDrop(true);
+
                 return timeInSeconds;
             }
         }
@@ -83,25 +82,30 @@ export function BreakTime(){
     const formatTime = (param: any) => {
         const TimeRemaining = dayjs(param).format('HH:mm:ss');
         const formated = TimeRemaining.split(':') as any;
-
         const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
+        
         return timeInSeconds;
     }
 
     function convertToSeconds( hours: number, minutes: number, seconds: number ) {
         return hours * 3600 + minutes * 60 + seconds;
     }
-    
+
     const handleSubmitInitBreakTime = async (typeId: number) => {
         const response = await addBreakTime({userId: user?.uid,  whichType: typeId});
     }
 
-    const getFinishedData = ({inTime, outTime}: {inTime: number, outTime: number}) => {
-        setRealTimeData({inTime, outTime});
+    const getFinishedData = (secondsleft: number) => {
+        /*
+            NÃO É POSSÍVEL PASSAR DIRETAMENTE UM ESTADO PARA O COMPONENNTE FILHO E ATUALIZAR
+            ENTAO ESSA FUNÇÃO SERVE EXATAMENTE PARA RECEBER E ATUALIZAR OS DADOS PARA ENVIO
+            A API DE FORMA SINCRONA.
+        */
+        setRealTimeData(secondsleft);
     }
 
     const handleFinishBreakTime = async () => {
-        console.log(realTimeData)
+        const response = await updateBreakTime(userInBrakTime.id, realTimeData);
     }
 
     return(
@@ -160,7 +164,7 @@ export function BreakTime(){
                 </div>
             </ViewActiviesBreakTimes>
             {
-                userInBrakTime ?
+                (userInBrakTime ?
                     <div>
                         <Backdrop
                             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 } }
@@ -170,18 +174,13 @@ export function BreakTime(){
                                 <Timer initialTime={userInBrakTime} isBackDrop={true} getFinishedData={getFinishedData}/>
                                 <Button variant="contained" endIcon={<CheckIcon />} onClick={handleFinishBreakTime}>
                                     Finalizar
-                                    {
-                                        /*
-                                            adicionar quandlo clicar no botao para retirar o endAt do LocalStorage
-                                        */
-                                    }
                                 </Button>
                             </BackDrop>
                         </Backdrop>
                     </div>
                 : 
                     <></>
-                    
+                )
             }
         </BreakTimeContainer>
     )

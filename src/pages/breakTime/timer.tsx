@@ -9,8 +9,25 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 	const [increaseTime, setIncreaseTime] = useState(0);
 	const [decreasetime, setDecreaseTime] = useState(0);
 	const [timeIsRunning, setTimeIsRunning] = useState(true);
+	const [finalValues, setFinalValues] = useState(0);
 
 	useEffect(() => {
+		/*
+			ATUALIZA E ENVIA OS DADOS PARA O COMPONENTE PAI EM TEMPO REAL.
+			É FEITO ISSO PARA QUE TENHA DADOS CORRETOS E ENVIE PARA A API.
+			É USADO UM STATE ESPECIFICO PARA ESSE CASO PARA NAO TERMOS PROBLEMA
+			DE ATUALIZAÇÃO DE HOOKS DIFERENTES AO MESMO TEMPO COMNFLITANDO
+			EM COMPONENTES DIFERENTES.
+		*/
+
+		if(getFinishedData){
+			getFinishedData(finalValues);
+		}
+	},[increaseTime, decreasetime]);
+
+	useEffect(() => {
+		//AQUI REALIZA O CALCULO DO TEM QUE SE ESTA EM PAUSA PARA SEMPRE QUE ATUALIZAR
+		//A PAGINA ESTAR DE ACORDO COM O HORARIO CORRETO.
 		const nowInSeconds = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
 		const timeDifferenceInSeconds = startTime - (nowInSeconds - initialTime.timeInSeconds);
 
@@ -22,6 +39,10 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 	}, [initialTime]);
 
 	useEffect(() => {
+		/*
+			AQUI TEMOS OS DOIS CONTADORES, O CRONOMETRO, E CASO O TEMPO ACABE
+			COMEÇA A ADICIONAR TEMPO E ATUALIZA OS ESTADOS.
+		*/
 		if (timeIsRunning) {
 			const intervalId = setInterval(() => {
 				setDecreaseTime((prevTime: any) => {
@@ -53,9 +74,7 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 		const minutes = Math.floor((decreasetime % 3600) / 60);
 		const seconds = decreasetime % 60;
 
-		if(getFinishedData){
-			getFinishedData({inTime: decreasetime, outTime: 0});
-		}
+		setFinalValues(decreasetime);
 
 		return `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
 	}, [decreasetime]);
@@ -66,10 +85,8 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 		const hours = Math.floor(exceeded / 3600);
 		const minutes = Math.floor((exceeded % 3600) / 60);
 		const seconds = exceeded % 60;
-	
-		if(getFinishedData){
-			getFinishedData({inTime: 0, outTime: exceeded});
-		}
+
+		setFinalValues(exceeded*-1);
 
 		if(exceeded > 0){
 			return `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
