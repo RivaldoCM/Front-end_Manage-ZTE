@@ -24,6 +24,10 @@ export function BreakTime(){
             uid: user?.uid,
             room: local.pathname
         });
+
+        socket.on('update', data =>{
+            setBreakTimeData(data.responses.response);
+        })
     }
 
     const [breakTimeData, setBreakTimeData] = useState<any[] | null>(null);
@@ -47,6 +51,7 @@ export function BreakTime(){
             const [ times, types ] = await Promise.all([getTimes, getTypes]);
 
             if(times.success){
+                console.log(times)
                 setBreakTimeData(times.responses.response);
             }
 
@@ -66,9 +71,7 @@ export function BreakTime(){
             const userIn = breakTimeData.find(userIn => userIn.user_id === user?.uid);
             if(userIn){
                 const id = userIn.id;
-                const TimeRemaining = dayjs(userIn.created_at).format('HH:mm:ss');
-                const formated = TimeRemaining.split(':') as any;
-                const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
+                const timeInSeconds = formatTime(userIn.created_at);
                 const duration = userIn.break_Time_Types.duration;
 
                 setUserInBrakeTime({id, timeInSeconds, duration});
@@ -80,7 +83,7 @@ export function BreakTime(){
     }
 
     const formatTime = (param: any) => {
-        const TimeRemaining = dayjs(param).format('HH:mm:ss');
+        const TimeRemaining = dayjs(param).add(3, "hour").format('HH:mm:ss');
         const formated = TimeRemaining.split(':') as any;
         const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
         
@@ -106,6 +109,8 @@ export function BreakTime(){
 
     const handleFinishBreakTime = async () => {
         const response = await updateBreakTime(userInBrakTime.id, realTimeData);
+
+        handleClose();
     }
 
     return(
