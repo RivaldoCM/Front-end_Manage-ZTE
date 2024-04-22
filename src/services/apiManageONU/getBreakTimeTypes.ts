@@ -1,6 +1,7 @@
 import axios from "axios";
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function getBreakTimeTypes(){
+export async function getBreakTimeTypes(): Promise<IResponseData | IResponseError>{
     const res = await axios({
         method: 'GET',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/breakTimeTypes`,
@@ -9,8 +10,8 @@ export async function getBreakTimeTypes(){
         },
     }).then((response) => {
         return response.data;
-    }).catch((err) =>{
-        return err;
+    }).catch(() =>{
+        return null;
     });
     return res;
 }

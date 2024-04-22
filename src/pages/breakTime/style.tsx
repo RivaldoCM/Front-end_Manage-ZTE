@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+interface StyledBackGround {
+    isBackDrop?: boolean;
+}
+
 export const BreakTimeContainer = styled.div`
     flex-direction: column;
     justify-content: flex-start;
@@ -21,7 +25,7 @@ export const BreakTimeOptions = styled.div`
     }
 `
 
-export const ViewActiviesBreakTimes = styled.div`
+export const ViewActiviesBreakTimes = styled.div<StyledBackGround>`
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
@@ -79,7 +83,7 @@ export const CardBreakTime = styled.div`
     }
 `
 
-export const TimerContainer = styled.div`
+export const TimerContainer = styled.div<StyledBackGround>`
     flex-direction: column;
     width: calc(64px*6);
     margin: 1rem 0;

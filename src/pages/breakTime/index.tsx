@@ -13,11 +13,20 @@ import QueryBuilderRoundedIcon from '@mui/icons-material/QueryBuilderRounded';
 import CheckIcon from '@mui/icons-material/Check';
 import { getBreakTimeTypes } from "../../services/apiManageONU/getBreakTimeTypes";
 import { updateBreakTime } from "../../services/apiManageONU/updateBreakTime";
+import { useResponse } from "../../hooks/useResponse";
 
 export function BreakTime(){
     const { user } = useAuth();
     const { socket } = useSocket();
+    const { setFetchResponseMessage } = useResponse();
     const local = useLocation();
+
+    const [breakTimeData, setBreakTimeData] = useState<IBreaktime[] | null>(null);
+    const [breakTimeTypes, setBreakTimeTypes] = useState<IBreaktimeTypes[] | null>(null);
+    const [dataUserInBrakTime, setDataUserInBrakeTime] = useState<IDataUserInBreakTime | null>(null);
+    const [realTimeData, setRealTimeData] = useState<number | null>(null);
+    const [openBackDrop, setOpenBackDrop] = useState(false);
+    const [stopTimers, setStopTimers] = useState(false);
 
     if(socket){
         socket.emit("select_room", {
@@ -25,24 +34,10 @@ export function BreakTime(){
             room: local.pathname
         });
 
-        socket.on('update', data =>{
+        socket.on('update', data => {
             setBreakTimeData(data.responses.response);
-        })
+        });
     }
-
-    const [breakTimeData, setBreakTimeData] = useState<any[] | null>(null);
-    const [breakTimeTypes, setBreakTimeTypes] = useState<any[] | null>(null);
-    const [realTimeData, setRealTimeData] = useState<any | null>(null);
-    const [userInBrakTime, setUserInBrakeTime] = useState<any | null>(null);
-    const [openBackDrop, setOpenBackDrop] = useState(false);
-    const [stopTimers, setStopTimers] = useState(false);
-    
-    const handleClose = () => {
-        setOpenBackDrop(false);
-    };
-    const handleOpen = () => {
-        setOpenBackDrop(true);
-    };
 
     useEffect(() => {
         const getData = async () => {
@@ -50,14 +45,8 @@ export function BreakTime(){
             const getTypes = getBreakTimeTypes();
             const [ times, types ] = await Promise.all([getTimes, getTypes]);
 
-            if(times.success){
-                console.log(times)
-                setBreakTimeData(times.responses.response);
-            }
-
-            if(types.success){
-                setBreakTimeTypes(types.responses.response);
-            }
+            times.success ? setBreakTimeData(times.responses.response) : setBreakTimeData([]);
+            types.success ? setBreakTimeTypes(types.responses.response) : setBreakTimeTypes([]);
         }
         getData();
     }, []);
@@ -66,41 +55,50 @@ export function BreakTime(){
         verifyUserInBrakeTime();
     }, [breakTimeData]);
 
+    const handleOpenBackDrop = () => { setOpenBackDrop(true); };
+    const handleCloseBackDrop = () => { setOpenBackDrop(false); };
+
     const verifyUserInBrakeTime = () => {
         if(breakTimeData){
-            const userIn = breakTimeData.find(userIn => userIn.user_id === user?.uid);
+            const userIn = breakTimeData.find(userIn => userIn.User.id === user?.uid);
             if(userIn){
-                const id = userIn.id;
-                const timeInSeconds = formatTime(userIn.created_at);
+                const id = userIn.id; //ID deste breakTime no DB, não do user, parametro para atualizar esta coluna no DB caso precise. 
+                const startAt = formatTime(userIn.created_at);
                 const duration = userIn.break_Time_Types.duration;
 
-                setUserInBrakeTime({id, timeInSeconds, duration});
-                setOpenBackDrop(true);
+                setDataUserInBrakeTime({id, startAt, duration});
+                handleOpenBackDrop();
 
-                return timeInSeconds;
+                return startAt;
+            } else {
+                handleCloseBackDrop();
             }
         }
     }
 
-    const formatTime = (param: any) => {
+    const formatTime = (param: Date) => {
         const TimeRemaining = dayjs(param).add(3, "hour").format('HH:mm:ss');
-        const formated = TimeRemaining.split(':') as any;
-        const timeInSeconds = convertToSeconds(formated[0]*1, formated[1]*1, formated[2]*1);
+        const separeted = TimeRemaining.split(':') as string[];
+        const timeInSeconds = parseInt(separeted[0]) * 3600 + parseInt(separeted[1]) * 60 + parseInt(separeted[2]);
         
         return timeInSeconds;
     }
 
-    function convertToSeconds( hours: number, minutes: number, seconds: number ) {
-        return hours * 3600 + minutes * 60 + seconds;
-    }
-
     const handleSubmitInitBreakTime = async (typeId: number) => {
         const response = await addBreakTime({userId: user?.uid,  whichType: typeId});
+
+        if(response){
+            if(!response.success){
+                setFetchResponseMessage('error/data-not-created');
+            }
+        } else {
+            setFetchResponseMessage('error/data-not-created');
+        }
     }
 
     const getFinishedData = (secondsleft: number) => {
         /*
-            NÃO É POSSÍVEL PASSAR DIRETAMENTE UM ESTADO PARA O COMPONENNTE FILHO E ATUALIZAR
+            NÃO É POSSÍVEL PASSAR DIRETAMENTE UM ESTADO PARA O COMPONENTE FILHO E ATUALIZAR
             ENTAO ESSA FUNÇÃO SERVE EXATAMENTE PARA RECEBER E ATUALIZAR OS DADOS PARA ENVIO
             A API DE FORMA SINCRONA.
         */
@@ -108,9 +106,16 @@ export function BreakTime(){
     }
 
     const handleFinishBreakTime = async () => {
-        const response = await updateBreakTime(userInBrakTime.id, realTimeData);
-
-        handleClose();
+        const response = await updateBreakTime(dataUserInBrakTime!.id, realTimeData);
+        if(response){
+            if(!response.success){
+                setFetchResponseMessage('error/data-not-created');
+            } else {
+                handleCloseBackDrop();
+            }
+        } else {
+            setFetchResponseMessage('error/data-not-created');
+        }
     }
 
     return(
@@ -119,7 +124,7 @@ export function BreakTime(){
                 <div><p><b>HORÁRIOS DE PAUSA</b></p></div>
                 <div className="flex">
                     {
-                        breakTimeTypes && breakTimeTypes.map((type: any) => {
+                        breakTimeTypes && breakTimeTypes.map((type) => {
                             return(
                                 <ActionButton className="flex" key={type.id}>
                                     <Button variant="contained" size="small" endIcon={<MoreTimeRoundedIcon />} onClick={() => handleSubmitInitBreakTime(type.id)}>
@@ -140,9 +145,9 @@ export function BreakTime(){
                 </div>
                 <div className="break-times-container flex">
                     {
-                        breakTimeData && breakTimeData.map((user: any) => {
+                        breakTimeData && breakTimeData.map((user) => {
                             return(
-                                <CardBreakTime className="flex" key={user.id}>
+                                <CardBreakTime className="flex" key={user.User.id}>
                                     <div className="flex">
                                         <div>
                                             <p><b>Nome: </b>{user.User.name}</p>
@@ -154,12 +159,12 @@ export function BreakTime(){
                                     <div className="flex">
                                         <div>
                                             <Timer 
-                                                initialTime={{
-                                                    timeInSeconds: formatTime(user.created_at), 
+                                                dataUserInBrakTime={{
+                                                    startAt: formatTime(user.created_at), 
                                                     duration: user.break_Time_Types.duration,
-                                                    }} 
-                                                    isBackDrop={false}
-                                                />
+                                                }} 
+                                                isBackDrop={false}
+                                            />
                                         </div>
                                     </div>
                                 </CardBreakTime>
@@ -169,14 +174,14 @@ export function BreakTime(){
                 </div>
             </ViewActiviesBreakTimes>
             {
-                (userInBrakTime ?
+                (dataUserInBrakTime ?
                     <div>
                         <Backdrop
                             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 } }
                             open={openBackDrop}
                         >
                             <BackDrop className="flex">
-                                <Timer initialTime={userInBrakTime} isBackDrop={true} getFinishedData={getFinishedData}/>
+                                <Timer dataUserInBrakTime={dataUserInBrakTime} isBackDrop={true} getFinishedData={getFinishedData}/>
                                 <Button variant="contained" endIcon={<CheckIcon />} onClick={handleFinishBreakTime}>
                                     Finalizar
                                 </Button>

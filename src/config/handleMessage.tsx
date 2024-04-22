@@ -153,7 +153,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'A primeira data não pode ser depois da ultima.',
                 severityStatus: 'error'
             }
-
+        case 'error/data-not-created':
+            return{
+                responseMessage: 'Não foi possivel salvar está ação.',
+                severityStatus: 'error'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',

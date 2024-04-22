@@ -3,8 +3,8 @@ import dayjs from 'dayjs';
 
 import { TimerContainer } from './style';
 
-export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
-	const startTime = initialTime.duration*60; //ESSA VARIAVEL NÃO PODE MUDAR
+export function Timer({ dataUserInBrakTime, isBackDrop, getFinishedData }: ITimer) {
+	const timeDuration = dataUserInBrakTime.duration*60; //ESSA VARIAVEL NÃO PODE MUDAR
 
 	const [increaseTime, setIncreaseTime] = useState(0);
 	const [decreasetime, setDecreaseTime] = useState(0);
@@ -19,7 +19,6 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 			DE ATUALIZAÇÃO DE HOOKS DIFERENTES AO MESMO TEMPO COMNFLITANDO
 			EM COMPONENTES DIFERENTES.
 		*/
-
 		if(getFinishedData){
 			getFinishedData(finalValues);
 		}
@@ -29,14 +28,14 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 		//AQUI REALIZA O CALCULO DO TEM QUE SE ESTA EM PAUSA PARA SEMPRE QUE ATUALIZAR
 		//A PAGINA ESTAR DE ACORDO COM O HORARIO CORRETO.
 		const nowInSeconds = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
-		const timeDifferenceInSeconds = startTime - (nowInSeconds - initialTime.timeInSeconds);
+		const timeDifferenceInSeconds = timeDuration - (nowInSeconds - dataUserInBrakTime.startAt);
 
 		if (timeDifferenceInSeconds > 0) {
 			setDecreaseTime(timeDifferenceInSeconds);
 		} else {
 			setTimeIsRunning(false);
 		}
-	}, [initialTime]);
+	}, [dataUserInBrakTime]);
 
 	useEffect(() => {
 		/*
@@ -45,7 +44,7 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 		*/
 		if (timeIsRunning) {
 			const intervalId = setInterval(() => {
-				setDecreaseTime((prevTime: any) => {
+				setDecreaseTime((prevTime: number) => {
 					if (prevTime <= 0) {
 						clearInterval(intervalId);
 						setTimeIsRunning(false);
@@ -57,7 +56,7 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 			return () => clearInterval(intervalId);
 		} else {
 			const intervalId = setInterval(() => {
-				setIncreaseTime((prevTime: any) => {
+				setIncreaseTime((prevTime: number) => {
 					return prevTime + 1;
 				});
 			}, 1000);
@@ -65,7 +64,7 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 		}
 	}, [timeIsRunning]);
 
-	const formatTime = useCallback((value: any) => {
+	const formatTime = useCallback((value: number) => {
 		return value < 10 ? `0${value}` : value;
 	}, []);
 
@@ -81,7 +80,7 @@ export function Timer({ initialTime, isBackDrop, getFinishedData }: any) {
 
 	const increaseTimerDisplay = useMemo(() => {
 		const now = dayjs().hour() * 3600 + dayjs().minute() * 60 + dayjs().second();
-		const exceeded = (now - 2) - (initialTime.timeInSeconds + startTime);
+		const exceeded = (now - 2) - (dataUserInBrakTime.startAt + timeDuration);
 		const hours = Math.floor(exceeded / 3600);
 		const minutes = Math.floor((exceeded % 3600) / 60);
 		const seconds = exceeded % 60;

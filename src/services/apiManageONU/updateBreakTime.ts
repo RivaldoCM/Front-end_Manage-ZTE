@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function updateBreakTime(id: number, secondsLeft: number){
+export async function updateBreakTime(id: number | undefined, secondsLeft: number | null){
     const response = await axios({
         method: 'PATCH',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/breakTime`,
