@@ -50,6 +50,9 @@ export const handlePages: IAllPages[] = [
         pages: [
             {
                 break_time: 'Intervalo'
+            },
+            {
+                panel: 'Painel de Pausas'
             }
         ]
     }
