@@ -41,7 +41,7 @@ export function AppRoutes() {
         const token = localStorage.getItem('Authorization');
         setLastRoutes(prevRoutes => [...prevRoutes, location.pathname]);
 
-        if(lastRoutes.at(-1) === '/break_time'){
+        if(lastRoutes.at(-1)?.includes('/break_time') && !location.pathname.includes('/break_time')){
             socket.emit("leave_room", {
                 uid: user?.uid,
                 room: lastRoutes.at(-1)
@@ -87,14 +87,16 @@ export function AppRoutes() {
                         </AuthOnuContextProvider>
                     }
                 />
-                <Route
-                    path="break_time"
-                    element={<PrivateRoute element={<BreakTime />} />}
-                />
-                <Route 
-                    path="break_time-dashboard" 
-                    element={<PrivateRoute element={<BreakPointDashBoard />} />}
-                />
+                <Route path="break_time">
+                    <Route 
+                        path="breaks" 
+                        element={<PrivateRoute element={<BreakTime />} />}
+                    />
+                    <Route 
+                        path="dashboard" 
+                        element={<PrivateRoute element={<BreakPointDashBoard />} />}
+                    />
+                </Route>
                 <Route
                     path="my_auth_onus"
                     element={<PrivateRoute element={matches ? <MyAuthorizedOnusMobile /> : <MyAuthorizedOnus />} />}

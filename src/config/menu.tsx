@@ -50,10 +50,10 @@ export const handlePages: IAllPages[] = [
         name: 'Pausas',
         pages: [
             {
-                break_time: 'Intervalo'
+                'break_time/breaks': 'Intervalo'
             },
             {
-                'break_time-dashboard': 'Dashboard de Pausas'
+                'break_time/dashboard': 'Dashboard de Pausas'
             }
         ]
     }
@@ -91,9 +91,9 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <TroubleshootOutlinedIcon />;
         case 'my_auth_onus':
             return <BallotOutlinedIcon />;
-        case 'break_time':
+        case 'break_time/breaks':
             return <AccessTimeRoundedIcon />;
-        case 'break_time-dashboard':
+        case 'break_time/dashboard':
             return <SpaceDashboardOutlinedIcon />;
         default:
             return <></>;
