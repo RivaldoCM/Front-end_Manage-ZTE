@@ -50,7 +50,7 @@ export function BreakTime(){
         }
         getData();
     }, []);
-    
+
     useEffect(() => {
         verifyUserInBrakeTime();
     }, [breakTimeData]);
@@ -62,10 +62,9 @@ export function BreakTime(){
         if(breakTimeData){
             const userIn = breakTimeData.find(userIn => userIn.User.id === user?.uid);
             if(userIn){
-                const id = userIn.id; //ID deste breakTime no DB, não do user, parametro para atualizar esta coluna no DB caso precise. 
+                const id = userIn.id; //ID deste breakTime no DB, não do user, parametro para atualizar esta coluna no DB caso precise.
                 const startAt = formatTime(userIn.created_at);
                 const duration = userIn.break_Time_Types.duration;
-
                 setDataUserInBrakeTime({id, startAt, duration});
                 handleOpenBackDrop();
 
@@ -86,7 +85,6 @@ export function BreakTime(){
 
     const handleSubmitInitBreakTime = async (typeId: number) => {
         const response = await addBreakTime({userId: user?.uid,  whichType: typeId});
-
         if(response){
             if(!response.success){
                 setFetchResponseMessage('error/data-not-created');

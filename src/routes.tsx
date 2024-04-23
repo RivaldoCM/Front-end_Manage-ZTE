@@ -21,7 +21,7 @@ import { MyAuthorizedOnusMobile } from "./pages/MyAuthorizedOnus/mobile";
 import { BreakTime } from "./pages/breakTime";
 import { useSocket } from "./hooks/useSocket";
 import { useAuth } from "./hooks/useAuth";
-import { Panel } from "./pages/breakTime/panel";
+import { BreakPointDashBoard } from "./pages/breakTime/dashboard";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -90,9 +90,11 @@ export function AppRoutes() {
                 <Route
                     path="break_time"
                     element={<PrivateRoute element={<BreakTime />} />}
-                >
-                    <Route path="panel" element={<PrivateRoute element={<Panel />}/>}/>
-                </Route>
+                />
+                <Route 
+                    path="break_time-dashboard" 
+                    element={<PrivateRoute element={<BreakPointDashBoard />} />}
+                />
                 <Route
                     path="my_auth_onus"
                     element={<PrivateRoute element={matches ? <MyAuthorizedOnusMobile /> : <MyAuthorizedOnus />} />}
