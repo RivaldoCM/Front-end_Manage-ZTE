@@ -10,6 +10,7 @@ import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
 import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
+import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -50,10 +51,10 @@ export const handlePages: IAllPages[] = [
         name: 'Pausas',
         pages: [
             {
-                'break_time/breaks': 'Intervalo'
+                'break_time/breaks': 'Horários de Pausa'
             },
             {
-                'break_time/dashboard': 'Dashboard de Pausas'
+                'break_time/panel': 'Painel de Pausas'
             }
         ]
     }
@@ -95,6 +96,8 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <AccessTimeRoundedIcon />;
         case 'break_time/dashboard':
             return <SpaceDashboardOutlinedIcon />;
+            case 'break_time/panel':
+                return <TvOutlinedIcon />;
         default:
             return <></>;
     }

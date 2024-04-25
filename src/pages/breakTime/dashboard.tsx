@@ -1,24 +1,40 @@
-import { useEffect, useState } from "react";
-import { getBreakTimeTypes } from "../../services/apiManageONU/getBreakTimeTypes";
-import { getBreakTime } from "../../services/apiManageONU/getBreakTime";
+import { formatTimeInSeconds } from "../../config/formatDate";
+import { useBreakTime } from "../../hooks/useBreakTime"
+import { Panel, CardBreakTime } from "./style";
+import { Timer } from "./timer";
 
-export function BreakPointDashBoard(){
-    const [breakTimes, setBreakTimes] = useState<IBreaktimeTypes[]>([]);
-    const [types, setTypes] = useState<IBreaktimeTypes[]>([]);
+export function BreakTimePanel(){
+    const { breakTimes } = useBreakTime();
 
-    useEffect(() => {
-        const getData = async () => {
-            const getTimes = getBreakTime(true);
-            const getTypes = getBreakTimeTypes();
-            const [ times, types ] = await Promise.all([getTimes, getTypes]);
-
-            times.success ? setBreakTimes(times.responses.response) : setBreakTimes([]);
-            types.success ? setTypes(types.responses.response) : setTypes([]);
-        }
-        getData();
-    }, []);
-    
     return(
-        <>oioioiioioi</>
+        <Panel className="flex">
+            {
+                breakTimes && breakTimes.map((single) => {
+                    return(
+                        <CardBreakTime className="flex" key={single.User.id}>
+                        <div className="flex">
+                            <div>
+                                <p><b>Nome: </b>{single.User.name}</p>
+                            </div>
+                            <div>
+                                <p><b>Pausa: </b>{single.break_Time_Types.name}</p>
+                            </div>
+                        </div>
+                        <div className="flex">
+                            <div>
+                                <Timer
+                                    dataUserInBrakTime={{
+                                        startAt: formatTimeInSeconds(single.created_at), 
+                                        duration: single.break_Time_Types.duration,
+                                    }} 
+                                    isBackDrop={false}
+                                />
+                            </div>
+                        </div>
+                    </CardBreakTime>
+                    )
+                })
+            }
+        </Panel>
     )
 }

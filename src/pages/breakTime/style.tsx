@@ -14,8 +14,9 @@ export const BreakTimeContainer = styled.div`
 
 export const BreakTimeOptions = styled.div`
     flex-direction: column;
-    width: 86%;
+    width: 85%;
     height: 98px;
+    margin-top: .5rem;
     border-radius: .5rem;
     box-shadow: 32px 36px 15px -3px rgba(0,0,0,0.1);
 
@@ -49,9 +50,7 @@ export const CardBreakTime = styled.div`
     margin: 1rem;
     padding: 1rem;
     border-radius: 1rem;
-    border-top: 2px solid grey;
-    border-right: 2px solid grey;
-    box-shadow: -44px 38px 15px -3px rgba(0,0,0,0.1);
+    border:2px solid grey;
 
     div:first-child{
         flex-direction: column;
@@ -109,4 +108,8 @@ export const ActionButton = styled.div`
     div{
         margin-top: 2%;
     }
+`
+
+export const Panel = styled.div`
+    flex-wrap: wrap;
 `
