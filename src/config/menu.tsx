@@ -51,11 +51,15 @@ export const handlePages: IAllPages[] = [
         name: 'Pausas',
         pages: [
             {
+                'break_time/dashboard': 'Dashboard de Pausas'
+            },
+            {
                 'break_time/breaks': 'Horários de Pausa'
             },
             {
                 'break_time/panel': 'Painel de Pausas'
-            }
+            },
+
         ]
     }
 ]
@@ -96,8 +100,8 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <AccessTimeRoundedIcon />;
         case 'break_time/dashboard':
             return <SpaceDashboardOutlinedIcon />;
-            case 'break_time/panel':
-                return <TvOutlinedIcon />;
+        case 'break_time/panel':
+            return <TvOutlinedIcon />;
         default:
             return <></>;
     }

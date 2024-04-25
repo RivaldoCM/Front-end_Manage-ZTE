@@ -113,3 +113,14 @@ export const ActionButton = styled.div`
 export const Panel = styled.div`
     flex-wrap: wrap;
 `
+
+export const Dashboard = styled.div`
+    width: calc(100vw - 65px);
+    main{
+        width: 70%;
+    }
+    aside{
+        flex-direction: column;
+        width: 30%;
+    }
+`

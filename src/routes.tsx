@@ -21,8 +21,9 @@ import { MyAuthorizedOnusMobile } from "./pages/MyAuthorizedOnus/mobile";
 import { BreakTime } from "./pages/breakTime";
 import { useSocket } from "./hooks/useSocket";
 import { useAuth } from "./hooks/useAuth";
-import { BreakTimePanel } from "./pages/breakTime/dashboard";
+import { BreakTimePanel } from "./pages/breakTime/panel";
 import { BreakTimeContextProvider } from "./contexts/BreakTimeContext";
+import { BreakTimeDashboard } from "./pages/breakTime/dashboard";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -89,6 +90,16 @@ export function AppRoutes() {
                     }
                 />
                 <Route path="break_time">
+                    <Route 
+                        path="dashboard" 
+                        element={
+                            <BreakTimeContextProvider>
+                                <PrivateRoute 
+                                    element={<BreakTimeDashboard />} 
+                                />
+                            </BreakTimeContextProvider>
+                        }
+                    />
                     <Route 
                         path="breaks" 
                         element={
