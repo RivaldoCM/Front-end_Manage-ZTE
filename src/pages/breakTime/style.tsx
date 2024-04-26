@@ -116,11 +116,69 @@ export const Panel = styled.div`
 
 export const Dashboard = styled.div`
     width: calc(100vw - 65px);
-    main{
+    height: calc(100vh - 68px);
+
+    .section-controller{
+        flex-direction: column;
         width: 70%;
+        height: inherit;
+        margin: .5rem;
+
+        section:first-child{
+            flex-direction: column;
+            justify-content: flex-start;
+            width: 100%;
+            height: 45%;
+            margin: .5rem;
+            border: 2px solid grey;
+            border-radius: 1rem;
+        }
+        .add-button{
+            justify-content: flex-end;
+            width: 100%;
+            margin-right: 1rem;
+        }
+
+        .card-controller{
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        >div:last-child{
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        section:last-child{
+            width: 100%;
+            height: 55%;
+            margin: .5rem;
+            border: 2px solid grey;
+            border-radius: 1rem;
+        }
     }
+
     aside{
         flex-direction: column;
+        justify-content: flex-start;
         width: 30%;
+        height: inherit;
+    }
+`
+
+export const CardTypes = styled.div`
+    width: 300px;
+    height: 80px;
+    padding: 0.5rem;
+    margin: .5rem;
+    border: 2px solid grey;
+    border-radius: 1rem;
+
+    div:first-child{
+        justify-content: space-around;
+    }
+    div:last-child{
+        justify-content: center;
     }
 `
