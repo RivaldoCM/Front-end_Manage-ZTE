@@ -163,6 +163,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Verifique os dados digitados e tente novamente.',
                 severityStatus: 'error'
             }
+        case 'error/column-in-use':
+            return{
+                responseMessage: 'Algum usuário está fazendo esta pausa.',
+                severityStatus: 'error'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',

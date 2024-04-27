@@ -37,6 +37,15 @@ export function BreakTimeDashboard(){
 
     const handleDeleteType = async (id: number) => {
         const response = await deleteBreakTimeTypes(id);
+
+        if(response){
+            if(!response.success){
+                setFetchResponseMessage(response.messages.message);
+            }
+        } else {
+            setFetchResponseMessage('error/internal-issue');
+        }
+
     }
 
 
@@ -51,10 +60,10 @@ export function BreakTimeDashboard(){
                 if(response.success){
                     handleClose();
                 } else {
-                    setFetchResponseMessage('error/data-not-created');
+                    setFetchResponseMessage(response.messages.message);
                 }
             } else {
-                setFetchResponseMessage('error/data-not-created');
+                setFetchResponseMessage('error/internal-issue');
             }
         }
     }
