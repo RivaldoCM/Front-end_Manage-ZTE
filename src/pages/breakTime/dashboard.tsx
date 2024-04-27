@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Modal, TextField } from "@mui/material";
+import { IconButton, Modal, TextField } from "@mui/material";
 import { formatTimeInSeconds } from "../../config/formatDate";
 import { useBreakTime } from "../../hooks/useBreakTime";
 import { AddBreakType, CardBreakTime, CardTypes, Dashboard } from "./style";
@@ -9,15 +9,19 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { useState } from "react";
-
+import { addBreakTimeTypes } from "../../services/apiManageONU/addBreakTimeTypes";
+import { useResponse } from "../../hooks/useResponse";
+import { isNumeric } from "../../config/regex";
+import { deleteBreakTimeTypes } from "../../services/apiManageONU/deleteBreakTypes";
 
 export function BreakTimeDashboard(){
     const { breakTimes, breakTypes } = useBreakTime();
+    const { setFetchResponseMessage } = useResponse();
 
     const [open, setOpen] = useState(false);
     const [form, setForm] = useState({
         name: '',
-        duration: 0
+        duration: ''
     });
 
     const handleOpen = () => setOpen(true);
@@ -30,8 +34,29 @@ export function BreakTimeDashboard(){
         });
     };
 
-    const handleSubmit = () => {
 
+    const handleDeleteType = async (id: number) => {
+        const response = await deleteBreakTimeTypes(id);
+    }
+
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if(!form.duration.match(isNumeric)){
+            setFetchResponseMessage('error/invalid-input');
+        } else {
+            const response = await addBreakTimeTypes({name: form.name, duration: parseInt(form.duration)});
+            if(response){
+                if(response.success){
+                    handleClose();
+                } else {
+                    setFetchResponseMessage('error/data-not-created');
+                }
+            } else {
+                setFetchResponseMessage('error/data-not-created');
+            }
+        }
     }
 
     return(
@@ -47,38 +72,38 @@ export function BreakTimeDashboard(){
                         onClose={handleClose}
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
-                        >
-                            <AddBreakType className="flex">
-                                <p><b>Adicionar Pausa</b></p>
-                                <div>
-                                    <TextField 
-                                        required 
-                                        name="name"
-                                        variant="outlined" 
-                                        label="Nome da Pausa" 
-                                        onChange={(e) => handleChange(e)}
-                                        value={form.name}
-                                    />
-                                </div>
-                                <div>
-                                    <TextField 
-                                        required
-                                        name="duration"
-                                        variant="outlined"
-                                        label="Duração em minutos" 
-                                        onChange={(e) => handleChange(e)}
-                                        value={form.duration}
-                                    />
-                                </div>
-                                <div className="flex">
-                                    <IconButton aria-label="delete" color="success">
-                                        <CheckOutlinedIcon />
-                                    </IconButton>
-                                    <IconButton onClick={handleClose} color="error">
-                                        <CloseOutlinedIcon />
-                                    </IconButton>
-                                </div>
-                            </AddBreakType>
+                    >
+                        <AddBreakType className="flex" onSubmit={handleSubmit}>
+                            <p><b>Adicionar Pausa</b></p>
+                            <div>
+                                <TextField 
+                                    required 
+                                    name="name"
+                                    variant="outlined" 
+                                    label="Nome da Pausa" 
+                                    onChange={(e) => handleChange(e)}
+                                    value={form.name}
+                                />
+                            </div>
+                            <div>
+                                <TextField 
+                                    required
+                                    name="duration"
+                                    variant="outlined"
+                                    label="Duração em minutos" 
+                                    onChange={(e) => handleChange(e)}
+                                    value={form.duration}
+                                />
+                            </div>
+                            <div className="flex">
+                                <IconButton type="submit" color="success">
+                                    <CheckOutlinedIcon />
+                                </IconButton>
+                                <IconButton onClick={handleClose} color="error">
+                                    <CloseOutlinedIcon />
+                                </IconButton>
+                            </div>
+                        </AddBreakType>
                     </Modal>
                 </div>
                 <div className="card-controller flex">
@@ -96,7 +121,7 @@ export function BreakTimeDashboard(){
                                     </div>
                                     <div className="flex">
                                         <div>
-                                            <IconButton aria-label="add" sx={{ color: '#e64040' }}>
+                                            <IconButton onClick={() => handleDeleteType(type.id)} aria-label="add" sx={{ color: '#e64040' }}>
                                                 <DeleteOutlinedIcon />
                                             </IconButton>
                                         </div>

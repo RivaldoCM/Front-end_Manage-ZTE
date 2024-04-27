@@ -158,6 +158,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Não foi possivel salvar está ação.',
                 severityStatus: 'error'
             }
+        case 'error/invalid-input':
+            return{
+                responseMessage: 'Verifique os dados digitados e tente novamente.',
+                severityStatus: 'error'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',

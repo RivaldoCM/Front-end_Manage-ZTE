@@ -36,6 +36,10 @@ export function BreakTimeContextProvider({ children }: { children: ReactNode }){
         socket.on('update', data => {
             setBreakTimes(data.responses.response);
         });
+
+        socket.on('update-types', data => {
+            setBreakTypes(data.responses.response);
+        });
     }
 
     return(

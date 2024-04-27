@@ -127,6 +127,8 @@ export const Dashboard = styled.div`
         width: 33%;
         height: inherit;
         padding: .5rem;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .add-button{
@@ -148,7 +150,7 @@ export const Dashboard = styled.div`
 `
 
 export const CardTypes = styled.div`
-    width: 300px;
+    width: 90%;
     height: 80px;
     padding: 0.5rem;
     margin: .5rem;

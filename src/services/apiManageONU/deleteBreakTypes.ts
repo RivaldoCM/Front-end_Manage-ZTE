@@ -1,16 +1,15 @@
 import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function addBreakTimeTypes({name, duration}: {name: string, duration: number}): Promise<IResponseData | IResponseError>{
+export async function deleteBreakTimeTypes(id: number): Promise<IResponseData | IResponseError>{
     const res = await axios({
-        method: 'post',
+        method: 'delete',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/breakType`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
         data:{
-            name: name,
-            duration: duration,
+            id: id
         }
     }).then((response) => {
         return response.data;

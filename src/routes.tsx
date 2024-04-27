@@ -51,7 +51,14 @@ export function AppRoutes() {
         }
 
         if(token && location.pathname === '/login' || token && location.pathname === '/'){
-            navigate('/auth_onu');
+            console.log(user)
+            if(user?.rule === 1 || user?.rule === 2){
+                navigate('/break_time/breaks');
+            } else if(user?.rule === 3){
+                navigate('/break_time/dashboard');
+            } else {
+                navigate('/auth_onu');
+            }
         }
         
         if (!token && location.pathname !== '/login') {

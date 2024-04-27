@@ -59,7 +59,6 @@ export const handlePages: IAllPages[] = [
             {
                 'break_time/panel': 'Painel de Pausas'
             },
-
         ]
     }
 ]
@@ -75,9 +74,18 @@ export const handleShowPageByRule = (rule?: number) => {
             let withoutOlt = cloneDeep(handlePages);
             withoutOlt[1].pages.splice(1, 1);
         return handleDynamicPagesByRule = withoutOlt;
+        case 1:
+        case 2: 
+            let withoutDashboardBreak = cloneDeep(handlePages);
+            withoutDashboardBreak.splice(0,3);
+        return handleDynamicPagesByRule = withoutDashboardBreak;
+        case 3:
+            let onlyBreakTime = cloneDeep(handlePages);
+            onlyBreakTime.splice(0,3);
+            return handleDynamicPagesByRule = onlyBreakTime;
         default:
             let onlyAuthOnu = cloneDeep(handlePages);
-            onlyAuthOnu.splice(1, 2);
+            onlyAuthOnu.splice(1, 1);
         return handleDynamicPagesByRule = onlyAuthOnu;
     }
 }

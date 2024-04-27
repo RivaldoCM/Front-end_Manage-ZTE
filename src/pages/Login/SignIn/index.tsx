@@ -21,7 +21,7 @@ import { IDecodedJTW } from '../../../interfaces/IDecodedJWT';
 export function SignIn(){
     const navigate = useNavigate();
     const { error, errorMessage, severityStatus, handleError } = useError();
-    const { setUser } = useAuth();
+    const { setUser, user } = useAuth();
 
     const [email, setEmail] = useState('');
     const [password, setPassord] = useState('');
@@ -42,7 +42,7 @@ export function SignIn(){
             localStorage.setItem('Authorization', response.data.token);
             const jwtDecoded: IDecodedJTW = jwtDecode(response.data.token);
             setUser(jwtDecoded);
-            navigate('/auth_onu');
+            navigate('/');
         })
         .catch(err => {
             handleError(err.response.data.error);

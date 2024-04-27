@@ -4,7 +4,7 @@ import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse
 export async function getBreakTimeTypes(): Promise<IResponseData | IResponseError>{
     const res = await axios({
         method: 'GET',
-        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/breakTimeTypes`,
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/breakType`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
