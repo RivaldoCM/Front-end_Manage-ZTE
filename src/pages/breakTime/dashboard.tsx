@@ -1,5 +1,5 @@
 import { IconButton, Modal, TextField } from "@mui/material";
-import { formatTimeInSeconds } from "../../config/formatDate";
+import { formatDateToISOFormat, formatTimeInSeconds } from "../../config/formatDate";
 import { useBreakTime } from "../../hooks/useBreakTime";
 import { AddBreakType, CardBreakTime, CardTypes, Dashboard } from "./style";
 import { Timer } from "./timer";
@@ -8,21 +8,37 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addBreakTimeTypes } from "../../services/apiManageONU/addBreakTimeTypes";
 import { useResponse } from "../../hooks/useResponse";
 import { isNumeric } from "../../config/regex";
 import { deleteBreakTimeTypes } from "../../services/apiManageONU/deleteBreakTypes";
+import { getBreakTime } from "../../services/apiManageONU/getBreakTime";
+import dayjs from "dayjs";
 
 export function BreakTimeDashboard(){
     const { breakTimes, breakTypes } = useBreakTime();
     const { setFetchResponseMessage } = useResponse();
 
     const [open, setOpen] = useState(false);
+    const [breaksHistoric, setBreakHistoric] = useState<IBreaktime[]>([]);
     const [form, setForm] = useState({
         name: '',
         duration: ''
     });
+
+    useEffect(() => {
+        setTimeout(() => {
+            const getData = async () => {
+                const getHistoric = await getBreakTime(false, formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), false));
+                if(getHistoric.success){
+                    setBreakHistoric(getHistoric.responses.response);
+                }
+            }
+            getData();
+        }, 2000);
+    }, []);
+
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -34,7 +50,6 @@ export function BreakTimeDashboard(){
         });
     };
 
-
     const handleDeleteType = async (id: number) => {
         const response = await deleteBreakTimeTypes(id);
 
@@ -45,9 +60,7 @@ export function BreakTimeDashboard(){
         } else {
             setFetchResponseMessage('error/internal-issue');
         }
-
     }
-
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -67,7 +80,7 @@ export function BreakTimeDashboard(){
             }
         }
     }
-
+    
     return(
         <Dashboard className="flex">
             <section>
@@ -143,6 +156,25 @@ export function BreakTimeDashboard(){
             </section>
             <section>
                 <p><b>Pausas realizadas</b></p>
+                {
+                        breaksHistoric && breaksHistoric.reverse().map((breaksHistoric) => {
+                            return(
+                                <CardBreakTime className="flex" key={breaksHistoric.id}>
+                                    <div className="flex">
+                                        <div>
+                                            <p><b>Nome: </b>{breaksHistoric.User.name}</p>
+                                        </div>
+                                        <div>
+                                            <p><b>Pausa: </b>{breaksHistoric.break_Time_Types.name}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex">
+                                        Restante: {(breaksHistoric.secondsLeft / 60).toFixed(2) + ' min'}
+                                    </div>
+                                </CardBreakTime>  
+                            )
+                        })
+                    }
             </section>
             <section>
                 <p><b>Agentes em Pausa</b></p>

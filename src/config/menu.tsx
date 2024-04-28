@@ -78,10 +78,12 @@ export const handleShowPageByRule = (rule?: number) => {
         case 2: 
             let withoutDashboardBreak = cloneDeep(handlePages);
             withoutDashboardBreak.splice(0,3);
+            withoutDashboardBreak[0].pages.splice(0,1);
         return handleDynamicPagesByRule = withoutDashboardBreak;
         case 3:
             let onlyBreakTime = cloneDeep(handlePages);
             onlyBreakTime.splice(0,3);
+
             return handleDynamicPagesByRule = onlyBreakTime;
         default:
             let onlyAuthOnu = cloneDeep(handlePages);

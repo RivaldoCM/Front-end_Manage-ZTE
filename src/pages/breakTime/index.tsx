@@ -23,7 +23,6 @@ export function BreakTime(){
     const [dataUserInBrakTime, setDataUserInBrakeTime] = useState<IDataUserInBreakTime | null>(null);
     const [realTimeData, setRealTimeData] = useState<number | null>(null);
     const [openBackDrop, setOpenBackDrop] = useState(false);
-    const [stopTimers, setStopTimers] = useState(false);
 
     useEffect(() => {
         verifyUserInBrakeTime();
