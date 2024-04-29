@@ -8,6 +8,9 @@ import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
 import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
+import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
+import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -43,6 +46,20 @@ export const handlePages: IAllPages[] = [
                 logs_onu: 'Log de Onu',
             }
         ]
+    },
+    {
+        name: 'Pausas',
+        pages: [
+            {
+                'break_time/dashboard': 'Dashboard de Pausas'
+            },
+            {
+                'break_time/breaks': 'Horários de Pausa'
+            },
+            {
+                'break_time/panel': 'Painel de Pausas'
+            },
+        ]
     }
 ]
 
@@ -57,9 +74,20 @@ export const handleShowPageByRule = (rule?: number) => {
             let withoutOlt = cloneDeep(handlePages);
             withoutOlt[1].pages.splice(1, 1);
         return handleDynamicPagesByRule = withoutOlt;
+        case 1:
+        case 2: 
+            let withoutDashboardBreak = cloneDeep(handlePages);
+            withoutDashboardBreak.splice(0,3);
+            withoutDashboardBreak[0].pages.splice(0,1);
+        return handleDynamicPagesByRule = withoutDashboardBreak;
+        case 3:
+            let onlyBreakTime = cloneDeep(handlePages);
+            onlyBreakTime.splice(0,3);
+
+            return handleDynamicPagesByRule = onlyBreakTime;
         default:
             let onlyAuthOnu = cloneDeep(handlePages);
-            onlyAuthOnu.splice(1, 2);
+            onlyAuthOnu.splice(1, 1);
         return handleDynamicPagesByRule = onlyAuthOnu;
     }
 }
@@ -78,6 +106,12 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <TroubleshootOutlinedIcon />;
         case 'my_auth_onus':
             return <BallotOutlinedIcon />;
+        case 'break_time/breaks':
+            return <AccessTimeRoundedIcon />;
+        case 'break_time/dashboard':
+            return <SpaceDashboardOutlinedIcon />;
+        case 'break_time/panel':
+            return <TvOutlinedIcon />;
         default:
             return <></>;
     }
