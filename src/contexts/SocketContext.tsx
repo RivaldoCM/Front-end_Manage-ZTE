@@ -13,7 +13,7 @@ export function SocketContextProvider({ children }: {children: ReactNode}) {
     const rooms = ['/break_time']
 
     useEffect(() => {
-        const newSocket = io('http://localhost:4000');
+        const newSocket = io(import.meta.env.VITE_BASEURL_MANAGE_ONU);
         setSocket(newSocket);
     }, []);
 
