@@ -51,7 +51,6 @@ export function AppRoutes() {
         }
 
         if(token && location.pathname === '/login' || token && location.pathname === '/'){
-            console.log(user)
             if(user?.rule === 1 || user?.rule === 2){
                 navigate('/break_time/breaks');
             } else if(user?.rule === 3){
