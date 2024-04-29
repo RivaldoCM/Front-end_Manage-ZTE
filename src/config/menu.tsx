@@ -87,7 +87,7 @@ export const handleShowPageByRule = (rule?: number) => {
             return handleDynamicPagesByRule = onlyBreakTime;
         default:
             let onlyAuthOnu = cloneDeep(handlePages);
-            onlyAuthOnu.splice(1, 1);
+            onlyAuthOnu.splice(1, 3);
         return handleDynamicPagesByRule = onlyAuthOnu;
     }
 }
