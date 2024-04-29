@@ -12,26 +12,26 @@ export function BreakTimePanel(){
                 breakTimes && breakTimes.map((single) => {
                     return(
                         <CardBreakTime className="flex" key={single.User.id}>
-                        <div className="flex">
-                            <div>
-                                <p><b>Nome: </b>{single.User.name}</p>
+                            <div className="flex">
+                                <div>
+                                    <p><b>Nome: </b>{single.User.name}</p>
+                                </div>
+                                <div>
+                                    <p><b>Pausa: </b>{single.break_Time_Types.name}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p><b>Pausa: </b>{single.break_Time_Types.name}</p>
+                            <div className="flex">
+                                <div>
+                                    <Timer
+                                        dataUserInBrakTime={{
+                                            startAt: formatTimeInSeconds(single.created_at), 
+                                            duration: single.break_Time_Types.duration,
+                                        }} 
+                                        isBackDrop={false}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex">
-                            <div>
-                                <Timer
-                                    dataUserInBrakTime={{
-                                        startAt: formatTimeInSeconds(single.created_at), 
-                                        duration: single.break_Time_Types.duration,
-                                    }} 
-                                    isBackDrop={false}
-                                />
-                            </div>
-                        </div>
-                    </CardBreakTime>
+                        </CardBreakTime>
                     )
                 })
             }

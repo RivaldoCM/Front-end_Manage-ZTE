@@ -18,7 +18,7 @@ import { MobileDrawerMenu } from "./components/MobileMenu";
 
 import { AuthOnuContextProvider } from "./contexts/AuthOnuContext";
 import { MyAuthorizedOnusMobile } from "./pages/MyAuthorizedOnus/mobile";
-import { BreakTime } from "./pages/breakTime";
+import { BreakTime } from "./pages/breakTime/breakTime";
 import { useSocket } from "./hooks/useSocket";
 import { useAuth } from "./hooks/useAuth";
 import { BreakTimePanel } from "./pages/breakTime/panel";

@@ -114,7 +114,7 @@ export function BreakTime(){
                                 <CardBreakTime className="flex" key={user.User.id}>
                                     <div className="flex">
                                         <div>
-                                            <p><b>Nome: </b>{user.User.name}</p>
+                                            <p><b>Nome: </b>{(user.User.name).substring(0,35)}</p>
                                         </div>
                                         <div>
                                             <p><b>Pausa: </b>{user.break_Time_Types.name}</p>

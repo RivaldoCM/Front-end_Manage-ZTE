@@ -132,7 +132,7 @@ export function BreakTimeDashboard(){
                     {
                         breakTypes && breakTypes.map((type) => {
                             return(
-                                <CardTypes key={type.id}>
+                                <CardTypes key={type.id} className="flex">
                                     <div className="flex">
                                         <div>
                                             <p><b>Tipo:</b> {type.name}</p>
@@ -155,26 +155,26 @@ export function BreakTimeDashboard(){
                 </div>
             </section>
             <section>
-                <p><b>Pausas realizadas</b></p>
+                <p><b>Pausas realizadas hoje</b></p>
                 {
-                        breaksHistoric && breaksHistoric.reverse().map((breaksHistoric) => {
-                            return(
-                                <CardBreakTime className="flex" key={breaksHistoric.id}>
-                                    <div className="flex">
-                                        <div>
-                                            <p><b>Nome: </b>{breaksHistoric.User.name}</p>
-                                        </div>
-                                        <div>
-                                            <p><b>Pausa: </b>{breaksHistoric.break_Time_Types.name}</p>
-                                        </div>
+                    breaksHistoric && breaksHistoric.reverse().map((breaksHistoric) => {
+                        return(
+                            <CardBreakTime className="flex" key={breaksHistoric.id}>
+                                <div className="flex">
+                                    <div>
+                                        <p><b>Nome: </b>{breaksHistoric.User.name}</p>
                                     </div>
-                                    <div className="flex">
-                                        Restante: {(breaksHistoric.secondsLeft / 60).toFixed(2) + ' min'}
+                                    <div>
+                                        <p><b>Pausa: </b>{breaksHistoric.break_Time_Types.name}</p>
                                     </div>
-                                </CardBreakTime>  
-                            )
-                        })
-                    }
+                                </div>
+                                <div className="flex">
+                                    Restante: {(breaksHistoric.secondsLeft / 60).toFixed(2) + ' min'}
+                                </div>
+                            </CardBreakTime>  
+                        )
+                    })
+                }
             </section>
             <section>
                 <p><b>Agentes em Pausa</b></p>

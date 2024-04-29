@@ -150,18 +150,23 @@ export const Dashboard = styled.div`
 `
 
 export const CardTypes = styled.div`
+    flex-direction: row;
     width: 90%;
+    max-width: 350px;
     height: 80px;
     padding: 0.5rem;
     margin: .5rem;
     border: 2px solid grey;
     border-radius: 1rem;
 
-    div:first-child{
-        justify-content: space-around;
+    > div:first-child{
+        flex-direction: column;
+        align-items: flex-start;
+        width: 90%;
     }
-    div:last-child{
-        justify-content: center;
+    > div:last-child{
+        width: 10%;
+
     }
 `
 
