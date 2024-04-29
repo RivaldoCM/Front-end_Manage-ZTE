@@ -21,7 +21,7 @@ import { IDecodedJTW } from '../../../interfaces/IDecodedJWT';
 export function SignIn(){
     const navigate = useNavigate();
     const { error, errorMessage, severityStatus, handleError } = useError();
-    const { setUser, user } = useAuth();
+    const { setUser } = useAuth();
 
     const [email, setEmail] = useState('');
     const [password, setPassord] = useState('');

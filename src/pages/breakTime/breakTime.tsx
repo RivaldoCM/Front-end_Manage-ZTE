@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "../../hooks/useAuth";
-
-import { ActionButton, BackDrop, BreakTimeContainer, BreakTimeOptions, CardBreakTime, ViewActiviesBreakTimes } from "./style";
+import { useResponse } from "../../hooks/useResponse";
+import { useBreakTime } from "../../hooks/useBreakTime";
 import { addBreakTime } from "../../services/apiManageONU/addBreakTime";
-
-import { Backdrop, Button } from "@mui/material";
+import { updateBreakTime } from "../../services/apiManageONU/updateBreakTime";
+import { formatTimeInSeconds } from "../../config/formatDate";
 import { Timer } from "./timer";
+import { ActionButton, BackDrop, BreakTimeContainer, BreakTimeOptions, CardBreakTime, ViewActiviesBreakTimes } from "./style";
+import { Backdrop, Button } from "@mui/material";
 import MoreTimeRoundedIcon from '@mui/icons-material/MoreTimeRounded';
 import QueryBuilderRoundedIcon from '@mui/icons-material/QueryBuilderRounded';
 import CheckIcon from '@mui/icons-material/Check';
-
-import { updateBreakTime } from "../../services/apiManageONU/updateBreakTime";
-import { useResponse } from "../../hooks/useResponse";
-import { useBreakTime } from "../../hooks/useBreakTime";
-import { formatTimeInSeconds } from "../../config/formatDate";
 
 export function BreakTime(){
     const { user } = useAuth();
@@ -47,7 +44,6 @@ export function BreakTime(){
             }
         }
     }
-
 
     const handleSubmitInitBreakTime = async (typeId: number) => {
         const response = await addBreakTime({userId: user?.uid,  whichType: typeId});

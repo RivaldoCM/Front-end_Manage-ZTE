@@ -1,20 +1,19 @@
-import { IconButton, Modal, TextField } from "@mui/material";
-import { formatDateToISOFormat, formatTimeInSeconds } from "../../config/formatDate";
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import { useBreakTime } from "../../hooks/useBreakTime";
-import { AddBreakType, CardBreakTime, CardTypes, Dashboard } from "./style";
+import { useResponse } from "../../hooks/useResponse";
+import { getBreakTime } from "../../services/apiManageONU/getBreakTime";
+import { addBreakTimeTypes } from "../../services/apiManageONU/addBreakTimeTypes";
+import { deleteBreakTimeTypes } from "../../services/apiManageONU/deleteBreakTypes";
+import { isNumeric } from "../../config/regex";
+import { formatDateToISOFormat, formatTimeInSeconds } from "../../config/formatDate";
 import { Timer } from "./timer";
-
+import { AddBreakType, CardBreakTime, CardTypes, Dashboard } from "./style";
+import { IconButton, Modal, TextField } from "@mui/material";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import { useEffect, useState } from "react";
-import { addBreakTimeTypes } from "../../services/apiManageONU/addBreakTimeTypes";
-import { useResponse } from "../../hooks/useResponse";
-import { isNumeric } from "../../config/regex";
-import { deleteBreakTimeTypes } from "../../services/apiManageONU/deleteBreakTypes";
-import { getBreakTime } from "../../services/apiManageONU/getBreakTime";
-import dayjs from "dayjs";
 
 export function BreakTimeDashboard(){
     const { breakTimes, breakTypes } = useBreakTime();

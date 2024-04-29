@@ -1,7 +1,7 @@
-import { formatTimeInSeconds } from "../../config/formatDate";
 import { useBreakTime } from "../../hooks/useBreakTime"
-import { Panel, CardBreakTime } from "./style";
+import { formatTimeInSeconds } from "../../config/formatDate";
 import { Timer } from "./timer";
+import { Panel, CardBreakTime } from "./style";
 
 export function BreakTimePanel(){
     const { breakTimes } = useBreakTime();
