@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 
 import { useAuthOnu } from "../../../../hooks/useAuthOnu";
 import { useLoading } from "../../../../hooks/useLoading";
@@ -19,7 +20,9 @@ import { InputContainer } from "../../../../styles/globalStyles";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, CircularProgress, TextField } from "@mui/material";
 
+
 export function PARKSForm({onu}: IOnu){
+    const navigate = useNavigate();
     const { user } = useAuth();
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
@@ -57,10 +60,14 @@ export function PARKSForm({onu}: IOnu){
 
             if (peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
-                if(response.success){
-                    connectionData.connectionId = response.responses.response.connectionId;
-                    connectionData.contractId = response.responses.response.contractId;
-                    connectionData.password = response.responses.response.password;
+                if(response){
+                    if(response.success){
+                        connectionData.connectionId = response.responses.response.connectionId;
+                        connectionData.contractId = response.responses.response.contractId;
+                        connectionData.password = response.responses.response.password;
+                    } else {
+                        connectionData.contractId = 0;
+                    }
                 } else {
                     connectionData.contractId = 0;
                 }
@@ -113,6 +120,9 @@ export function PARKSForm({onu}: IOnu){
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
+                    setTimeout(() => {
+                        navigate('/my_auth_onus');
+                    }, 2000);
                 }
             } else {
                 setFetchResponseMessage('error/no-connection-with-API');

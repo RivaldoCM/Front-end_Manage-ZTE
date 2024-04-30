@@ -91,7 +91,7 @@ export function Massive(){
                                         {showOffCard.includes(index) ? <ExpandMoreOutlinedIcon /> : <ExpandLessOutlinedIcon />}
                                     </IconButton>
                                     <div className="off-card-information">
-                                        <p>Aberto por: {massive.User.name} às {massive.created_at}</p>
+                                        <p>Aberto por: {massive.User_Massive_created_by.name} às {massive.created_at}</p>
                                     </div>
                                     <div className="off-card-action-buttons flex">
                                         <IconButton size="small" color="primary">

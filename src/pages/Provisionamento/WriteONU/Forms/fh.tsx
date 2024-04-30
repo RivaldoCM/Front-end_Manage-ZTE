@@ -4,6 +4,7 @@ import { useAuth } from "../../../../hooks/useAuth";
 import { useAuthOnu } from "../../../../hooks/useAuthOnu";
 import { useLoading } from "../../../../hooks/useLoading";
 import { useResponse } from "../../../../hooks/useResponse";
+import { useNavigate } from "react-router-dom";
 
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { IOnu } from "../../../../interfaces/IOnus";
@@ -16,7 +17,9 @@ import { authorizationToOlt } from "../../../../services/apiManageONU/authOnu";
 import { updateConnection } from "../../../../services/apiVoalle/updateConnection";
 
 export function FHForm({onu}: IOnu){
+    const navigate = useNavigate();
     const { user } = useAuth();
+
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
@@ -53,10 +56,14 @@ export function FHForm({onu}: IOnu){
             
             if (peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
-                if(response.success){
-                    connectionData.connectionId = response.responses.response.connectionId;
-                    connectionData.contractId = response.responses.response.contractId;
-                    connectionData.password = response.responses.response.password;
+                if(response){
+                    if(response.success){
+                        connectionData.connectionId = response.responses.response.connectionId;
+                        connectionData.contractId = response.responses.response.contractId;
+                        connectionData.password = response.responses.response.password;
+                    } else {
+                        connectionData.contractId = 0;
+                    }
                 } else {
                     connectionData.contractId = 0;
                 }
@@ -110,6 +117,9 @@ export function FHForm({onu}: IOnu){
                         isPizzaBox: [],
                         voalleAccessPointId: []
                     });
+                    setTimeout(() => {
+                        navigate('/my_auth_onus');
+                    }, 2000);
                 }
             } else {
                 setFetchResponseMessage('error/no-connection-with-API');
@@ -117,7 +127,6 @@ export function FHForm({onu}: IOnu){
             }
 
             if(connectionData.connectionId){
-                console.log('aq, vou atualizar', onu)
                 updateConnection({
                     connectionId: connectionData.connectionId,
                     pppoeUser: authOnu.pppoeUser,
@@ -183,6 +192,7 @@ export function FHForm({onu}: IOnu){
                         >
                             <MenuItem value={'F601'}>F601</MenuItem>
                             <MenuItem value={'F612'}>F612</MenuItem>
+                            <MenuItem value={'ONT'}>ONT(4 LAN's)</MenuItem>
                         </TextField>
                     </InputContainer> 
                 : <></>

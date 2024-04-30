@@ -25,3 +25,11 @@ export const formatDateToEn = (date: string) => {
     const dayJsFormatDate = `${month}/${day}/${year}`;
     return dayJsFormatDate;
 }
+
+export const formatTimeInSeconds = (param: Date): number => {
+    const TimeRemaining = dayjs(param).add(3, "hour").format('HH:mm:ss');
+    const separeted = TimeRemaining.split(':') as string[];
+    const timeInSeconds = parseInt(separeted[0]) * 3600 + parseInt(separeted[1]) * 60 + parseInt(separeted[2]);
+    
+    return timeInSeconds;
+}
