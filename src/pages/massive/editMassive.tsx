@@ -13,11 +13,11 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import { StaticDateTimePicker } from "@mui/x-date-pickers";
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import AddIcon from '@mui/icons-material/Add';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import { useAuth } from "../../hooks/useAuth";
 import { useResponse } from "../../hooks/useResponse";
 
-export function AddMassive(props: any){
+export function EditMassive(props: any){
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
@@ -27,15 +27,15 @@ export function AddMassive(props: any){
     const [cities, setCities] = useState<ICities[]>([]);
     const [form, setForm] = useState<IAddMassive>({
         user: user?.uid,
-        cityId: 0 || null,
-        forecastReturn: '',
-        failureTime: '',
+        cityId: props.massive.city_id,
+        forecastReturn: props.massive.forecast_return,
+        failureTime: props.massive.failure_date,
         forecastDateToISO: null,
         failureDateToISO: null,
-        cityName: '',
-        problemType: 'Energia',
-        description: '',
-        affectedLocals: ''
+        cityName: props.massive.city_name,
+        problemType: props.massive.type,
+        description: props.massive.description,
+        affectedLocals: props.massive.affected_locals
     });
 
     const loadingCities = openAutoCompleteCities && cities.length === 0;
@@ -119,13 +119,9 @@ export function AddMassive(props: any){
 
     return(
         <React.Fragment>
-            {
-                user?.rule! > 13 ? 
-                <Fab className='add-massive' color="primary" size="medium" onClick={props.handleOpen}>
-                    <AddIcon />
-                </Fab>
-                : <></>
-            }
+            <IconButton size="small" color="secondary" onClick={props.handleOpen}>
+                <CreateOutlinedIcon />
+            </IconButton>
             <Modal
                 className="flex"
                 open={props.open}

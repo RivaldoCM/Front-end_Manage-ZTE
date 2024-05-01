@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Card, Cards, OffCard, CardController, Container } from "./style";
 import { Alert, IconButton } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
+import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
 import { getMassive } from "../../services/apiManageONU/getMassive";
 import { AddMassive } from "./addMassive";
 import { useResponse } from "../../hooks/useResponse";
@@ -12,18 +13,20 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import dayjs from "dayjs";
 import { useAuth } from "../../hooks/useAuth";
+import { EditMassive } from "./editMassive";
 
 export function Massive(){
     const { user } = useAuth();
     const { response, setFetchResponseMessage, responseMassage, severityStatus } = useResponse();
 
-    const [open, setOpen] = useState(false);
+    const [openAddMassive, setOpenAddMassive] = useState(false);
+    const [openEditMassive, setOpenEditMassive] = useState(false);
+
     const [massives, setMassives] = useState<any>([]);
     const [showOffCard, setShowOffCard] = useState<number[]>([]);
 
-    
     useEffect(() => {
-        if(!open){
+        if(!openAddMassive){
             async function massives(){
                 const activeMassives = await getMassive();
                 if(activeMassives){
@@ -42,7 +45,7 @@ export function Massive(){
             }
             massives();
         }
-    }, [open]);
+    }, [openAddMassive]);
 
     const handleShowOffCard = (whichCard: number) => {
         if (showOffCard.includes(whichCard)) {
@@ -54,8 +57,14 @@ export function Massive(){
         }
     }
 
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleEditCard = (value: any) => {
+        console.log(value)
+    }
+
+    const handleOpenAddMassive = () => setOpenAddMassive(true);
+    const handleCloseAddMassive = () => setOpenAddMassive(false);
+    const handleOpenEditMassive = () => setOpenEditMassive(true);
+    const handleCloseEditMassive = () => setOpenEditMassive(false);
 
     return(
         <Container>
@@ -91,7 +100,7 @@ export function Massive(){
                                         {showOffCard.includes(index) ? <ExpandMoreOutlinedIcon /> : <ExpandLessOutlinedIcon />}
                                     </IconButton>
                                     <div className="off-card-information">
-                                        <p>Aberto por: {massive.User_Massive_created_by.name} às {massive.created_at}</p>
+                                        <p>Aberto por {massive.User_Massive_created_by.name} às {dayjs(massive.created_at).format('HH:mm-DD/MM')}</p>
                                     </div>
                                     <div className="off-card-action-buttons flex">
                                         <IconButton size="small" color="primary">
@@ -99,14 +108,18 @@ export function Massive(){
                                         </IconButton>
                                         {
                                             user?.rule! > 13 ? 
-                                            <>
-                                                <IconButton size="small" color="secondary">
-                                                    <CreateOutlinedIcon />
-                                                </IconButton>
+                                            <React.Fragment>
+                                                <EditMassive
+                                                    handleOpen={handleOpenEditMassive}
+                                                    open={openEditMassive}
+                                                    handleClose={handleCloseEditMassive}
+                                                    massive={massive}
+                                                />
                                                 <IconButton size="small" color="success">
                                                     <DoneIcon />
                                                 </IconButton>
-                                            </> : 
+                                            </React.Fragment> : 
+                                            
                                             <></>
                                         }
                                     </div>
@@ -117,9 +130,9 @@ export function Massive(){
                 }
             </Cards>
             <AddMassive
-                handleOpen={handleOpen}
-                open={open}
-                handleClose={handleClose}
+                handleOpen={handleOpenAddMassive}
+                open={openAddMassive}
+                handleClose={handleCloseAddMassive}
             />
             {
                 (response ? 

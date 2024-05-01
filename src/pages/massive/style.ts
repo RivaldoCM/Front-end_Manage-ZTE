@@ -20,7 +20,7 @@ export const Cards = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fit, 400px);
     justify-content: center;
-    gap: 1rem;
+    gap: .5rem;
     width: 100%;
 `
 
@@ -31,7 +31,6 @@ export const CardController = styled.div`
     width: inherit;
     height: 300px; 
     overflow: hidden;
-
 `
 
 export const Card = styled.div<IOffCard>`
@@ -97,8 +96,9 @@ export const OffCard = styled.div<IOffCard>`
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    width: calc(100% - 6rem);
+    width: calc(100% - 3rem);
     height: 250px;
+    padding: 0 0.5rem;
     background: rgba(231, 219, 219, 0.53);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
