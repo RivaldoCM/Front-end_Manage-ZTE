@@ -23,6 +23,7 @@ export function Massive(){
     const [openEditMassive, setOpenEditMassive] = useState(false);
 
     const [massives, setMassives] = useState<any>([]);
+    const [editMassiveData, setEditMassiveData] = useState<any>();
     const [showOffCard, setShowOffCard] = useState<number[]>([]);
 
     useEffect(() => {
@@ -58,7 +59,8 @@ export function Massive(){
     }
 
     const handleEditCard = (value: any) => {
-        console.log(value)
+        handleOpenEditMassive();
+        setEditMassiveData(value);
     }
 
     const handleOpenAddMassive = () => setOpenAddMassive(true);
@@ -109,12 +111,9 @@ export function Massive(){
                                         {
                                             user?.rule! > 13 ? 
                                             <React.Fragment>
-                                                <EditMassive
-                                                    handleOpen={handleOpenEditMassive}
-                                                    open={openEditMassive}
-                                                    handleClose={handleCloseEditMassive}
-                                                    massive={massive}
-                                                />
+                                                <IconButton size="small" color="secondary" onClick={() => handleEditCard(massive)}>
+                                                    <CreateOutlinedIcon />
+                                                </IconButton>
                                                 <IconButton size="small" color="success">
                                                     <DoneIcon />
                                                 </IconButton>
@@ -135,10 +134,12 @@ export function Massive(){
                 handleClose={handleCloseAddMassive}
             />
             {
-                (response ? 
-                    <Alert className="alert" severity={severityStatus}>{responseMassage}</Alert> 
-                    : 
-                    <></>
+                openEditMassive && (
+                    <EditMassive 
+                    open={openEditMassive}
+                    massive={editMassiveData}
+                    handleClose={handleCloseEditMassive}
+                    />
                 )
             }
         </Container>

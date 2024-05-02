@@ -13,7 +13,6 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import { StaticDateTimePicker } from "@mui/x-date-pickers";
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import { useAuth } from "../../hooks/useAuth";
 import { useResponse } from "../../hooks/useResponse";
 
@@ -21,7 +20,6 @@ export function EditMassive(props: any){
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
-    const [openAutoCompleteCities, setOpenAutoCompleteCities] = useState(false);
     const [open, setOpen] = useState(false);
     const [openForecastTime, setOpenForecastTime] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
@@ -35,18 +33,18 @@ export function EditMassive(props: any){
         cityName: props.massive.city_name,
         problemType: props.massive.type,
         description: props.massive.description,
-        affectedLocals: props.massive.affected_locals
+        affectedLocals: props.massive.affected_local
     });
 
-    const loadingCities = openAutoCompleteCities && cities.length === 0;
-    useEffect(() => {
-        (async () => {
-            if(loadingCities){
-                const cities = await getCities();
-                setCities(cities);
+    useEffect(()  => {
+        const getData = async () => {
+            const res = await getCities();
+            if(res){
+                setCities(res);
             }
-        })();
-    }, [loadingCities]);
+        }
+        getData();
+    }, [])
 
     const handleTimeChange = (newTime: Date | null) => {
         setForm({
@@ -64,18 +62,8 @@ export function EditMassive(props: any){
         });
     };
 
-    const handleCityChange = (_e: unknown, value: ICities | null) => {
-        if(value){
-            setForm({
-                ...form,
-                cityId: value.id
-            });
-        } else {
-            setForm({
-                ...form,
-                cityId: value
-            });
-        }
+    const handleCityChange = (e: any) => {
+        console.log(e.target.value)
     };
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
@@ -83,7 +71,6 @@ export function EditMassive(props: any){
             ...form,
             [e.target.name]: e.target.value
         });
-
     };
 
     const handleAccept = () => {
@@ -118,10 +105,6 @@ export function EditMassive(props: any){
     };
 
     return(
-        <React.Fragment>
-            <IconButton size="small" color="secondary" onClick={props.handleOpen}>
-                <CreateOutlinedIcon />
-            </IconButton>
             <Modal
                 className="flex"
                 open={props.open}
@@ -129,46 +112,29 @@ export function EditMassive(props: any){
             >
                 <FormAddMassive className="flex" onSubmit={handleSubmit}>
                     <FormControl fullWidth sx={{ mt: 2 }}>
-                    <Autocomplete
-                        id="asynchronous-cities"
-                        open={openAutoCompleteCities}
-                        onOpen={() => {setOpenAutoCompleteCities(true)}}
-                        onClose={() => {setOpenAutoCompleteCities(false)}}
-                        onChange={handleCityChange}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        options={cities}
-                        getOptionLabel={(city) => city.name}
-                        loading={loadingCities}
-                        renderOption={(props, option) => {
-                            return (
-                                <li {...props} key={option.id}>
-                                    {option.name}
-                                </li>
-                            );
-                        }}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                required
-                                label="Cidade"
-                                InputProps={{
-                                    ...params.InputProps,
-                                    endAdornment: (
-                                        <React.Fragment>
-                                            {loadingCities ? <CircularProgress color="inherit" size={20} /> : null}
-                                            {params.InputProps.endAdornment}
-                                        </React.Fragment>
-                                    ),
-                                }}
-                            />
-                        )}
-                    />
+                        <TextField
+                            select
+                            id='select-city'
+                            label="Cidades"
+                            value={form.cityId}
+                            onChange={(e) => handleCityChange(e)}
+                        >
+                            {
+                                cities && cities.map((city) => {
+                                    return (
+                                        <MenuItem key={city.id} value={city.id}>
+                                            {city.name}
+                                        </MenuItem> 
+                                    )
+                                })
+                            }
+                        </TextField>
                     </FormControl>
                     <FormControl fullWidth sx={{ mt: 2 }}>
                         <InputLabel>Tipo de problema</InputLabel>
                         <Select 
-                            label='Tipo de problema' 
-                            name="problemType" 
+                            label="Tipo de problema"
+                            name="problemType"
                             value={form.problemType}
                             onChange={handleFormChange} 
                         >
@@ -243,14 +209,16 @@ export function EditMassive(props: any){
                         variant="outlined"
                         name="affectedLocals"
                         fullWidth
+                        value={form.affectedLocals}
                         onChange={handleFormChange}
                         sx={{ mt: 2 }}
                     />
                     <TextField
                         label="Informações Adicionais"
                         name="description"
-                        multiline    
+                        multiline
                         fullWidth
+                        value={form.description}
                         onChange={handleFormChange}
                         rows={4}
                         sx={{ mt: 2 }}
@@ -265,6 +233,5 @@ export function EditMassive(props: any){
                     </div>
                 </FormAddMassive>
             </Modal>
-        </React.Fragment>
     )
 }
