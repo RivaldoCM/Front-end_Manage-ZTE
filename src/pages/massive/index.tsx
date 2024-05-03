@@ -90,7 +90,7 @@ export function Massive(){
                                             <p>{massive.description}</p>
                                         </div>
                                         <div className="teste flex">
-                                            <p>Previsão de retorno: {dayjs(massive.forecast_return).format('DD/MM/YY - HH:mm') + 'h'}</p>
+                                            <p>Previsão de retorno: {dayjs(massive.forecast_return).add(3, "hour").format('DD/MM/YY - HH:mm') + 'h'}</p>
                                         </div>
                                     </div>
                                 </Card>
@@ -104,7 +104,7 @@ export function Massive(){
                                         {showOffCard.includes(index) ? <ExpandMoreOutlinedIcon /> : <ExpandLessOutlinedIcon />}
                                     </IconButton>
                                     <div className="off-card-information">
-                                        <p>Aberto por {massive.User_Massive_created_by.name} às {dayjs(massive.created_at).format('HH:mm-DD/MM')}</p>
+                                        <p>Aberto por {massive.User_Massive_created_by.name} às {dayjs(massive.created_at).add(3, "hour").format('HH:mm-DD/MM')}</p>
                                     </div>
                                     <div className="off-card-action-buttons flex">
                                         <IconButton size="small" color="primary">
