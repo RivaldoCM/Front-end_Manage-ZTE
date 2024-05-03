@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Card, Cards, OffCard, CardController, Container } from "./style";
-import { Alert, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
 import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
 import { getMassive } from "../../services/apiManageONU/getMassive";
@@ -17,7 +17,7 @@ import { EditMassive } from "./editMassive";
 
 export function Massive(){
     const { user } = useAuth();
-    const { response, setFetchResponseMessage, responseMassage, severityStatus } = useResponse();
+    const { setFetchResponseMessage } = useResponse();
 
     const [openAddMassive, setOpenAddMassive] = useState(false);
     const [openEditMassive, setOpenEditMassive] = useState(false);
@@ -68,6 +68,8 @@ export function Massive(){
     const handleOpenEditMassive = () => setOpenEditMassive(true);
     const handleCloseEditMassive = () => setOpenEditMassive(false);
 
+    console.log(massives)
+
     return(
         <Container>
             <Cards>
@@ -78,7 +80,7 @@ export function Massive(){
                                 <Card className="flex" offCardOpen={showOffCard.includes(index)}>
                                     <div className="header flex">
                                         <h2>{massive.type}</h2>
-                                        <p>{massive.city_name}</p>
+                                        <p>{massive.Cities.name}</p>
                                     </div>
                                     <div className="content">
                                         <div className="basic-info">

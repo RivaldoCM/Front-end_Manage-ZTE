@@ -32,7 +32,6 @@ export function AddMassive(props: any){
         failureTime: '',
         forecastDateToISO: null,
         failureDateToISO: null,
-        cityName: '',
         problemType: 'Energia',
         description: '',
         affectedLocals: ''
@@ -133,40 +132,40 @@ export function AddMassive(props: any){
             >
                 <FormAddMassive className="flex" onSubmit={handleSubmit}>
                     <FormControl fullWidth sx={{ mt: 2 }}>
-                    <Autocomplete
-                        id="asynchronous-cities"
-                        open={openAutoCompleteCities}
-                        onOpen={() => {setOpenAutoCompleteCities(true)}}
-                        onClose={() => {setOpenAutoCompleteCities(false)}}
-                        onChange={handleCityChange}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        options={cities}
-                        getOptionLabel={(city) => city.name}
-                        loading={loadingCities}
-                        renderOption={(props, option) => {
-                            return (
-                                <li {...props} key={option.id}>
-                                    {option.name}
-                                </li>
-                            );
-                        }}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                required
-                                label="Cidade"
-                                InputProps={{
-                                    ...params.InputProps,
-                                    endAdornment: (
-                                        <React.Fragment>
-                                            {loadingCities ? <CircularProgress color="inherit" size={20} /> : null}
-                                            {params.InputProps.endAdornment}
-                                        </React.Fragment>
-                                    ),
-                                }}
-                            />
-                        )}
-                    />
+                        <Autocomplete
+                            id="asynchronous-cities"
+                            open={openAutoCompleteCities}
+                            onOpen={() => {setOpenAutoCompleteCities(true)}}
+                            onClose={() => {setOpenAutoCompleteCities(false)}}
+                            onChange={handleCityChange}
+                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                            options={cities}
+                            getOptionLabel={(city) => city.name}
+                            loading={loadingCities}
+                            renderOption={(props, option) => {
+                                return (
+                                    <li {...props} key={option.id}>
+                                        {option.name}
+                                    </li>
+                                );
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    required
+                                    label="Cidade"
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        endAdornment: (
+                                            <React.Fragment>
+                                                {loadingCities ? <CircularProgress color="inherit" size={20} /> : null}
+                                                {params.InputProps.endAdornment}
+                                            </React.Fragment>
+                                        ),
+                                    }}
+                                />
+                            )}
+                        />
                     </FormControl>
                     <FormControl fullWidth sx={{ mt: 2 }}>
                         <InputLabel>Tipo de problema</InputLabel>

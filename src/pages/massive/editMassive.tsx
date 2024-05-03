@@ -2,35 +2,37 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import { getCities } from "../../services/apiManageONU/getCities";
-import { addMassive } from "../../services/apiManageONU/addMassive";
 
 import { ICities } from "../../interfaces/ICities";
 import { IAddMassive } from "../../interfaces/IAddMassiveForm";
 
 import { FormAddMassive } from "./style";
-import { Autocomplete, CircularProgress, Fab, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import { StaticDateTimePicker } from "@mui/x-date-pickers";
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from "../../hooks/useAuth";
 import { useResponse } from "../../hooks/useResponse";
+import { updateMassive } from "../../services/apiManageONU/updateMassive";
+
+//CONFIG PARA TAMANHO DO MENU DE OPÇÕES DAS CIDADES
+const MenuProps = { PaperProps: { style: { maxHeight: 88 * 4.5 }}};
 
 export function EditMassive(props: any){
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
-
     const [open, setOpen] = useState(false);
     const [openForecastTime, setOpenForecastTime] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
     const [form, setForm] = useState<IAddMassive>({
+        massiveId: props.massive.id,
         user: user?.uid,
-        cityId: props.massive.city_id,
-        forecastReturn: props.massive.forecast_return,
-        failureTime: props.massive.failure_date,
+        cityId: props.massive.Cities.id,
+        forecastReturn: dayjs(props.massive.forecast_return).format('DD/MM/YY - HH:mm') + 'h',
+        failureTime: dayjs(props.massive.failure_date).format('DD/MM/YY - HH:mm') + 'h',
         forecastDateToISO: null,
         failureDateToISO: null,
-        cityName: props.massive.city_name,
         problemType: props.massive.type,
         description: props.massive.description,
         affectedLocals: props.massive.affected_local
@@ -62,11 +64,7 @@ export function EditMassive(props: any){
         });
     };
 
-    const handleCityChange = (e: any) => {
-        console.log(e.target.value)
-    };
-
-    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string | number | null>) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -91,7 +89,7 @@ export function EditMassive(props: any){
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await addMassive(form);
+        const response = await updateMassive(form);
         if(response){
             if(response.success){
                 setFetchResponseMessage('success/data-massive-created');
@@ -103,7 +101,7 @@ export function EditMassive(props: any){
             setFetchResponseMessage('error/no-connection-with-API');
         }
     };
-
+      
     return(
             <Modal
                 className="flex"
@@ -111,28 +109,28 @@ export function EditMassive(props: any){
                 onClose={props.handleClose}
             >
                 <FormAddMassive className="flex" onSubmit={handleSubmit}>
-                    <FormControl fullWidth sx={{ mt: 2 }}>
-                        <TextField
-                            select
-                            id='select-city'
-                            label="Cidades"
+                    <FormControl fullWidth sx={{ mt: 1, maxHeight:'363px' }}>
+                    <InputLabel id="demo-multiple-name-label">Name</InputLabel>
+                        <Select
+                            name='cityId'
                             value={form.cityId}
-                            onChange={(e) => handleCityChange(e)}
+                            onChange={(e) => handleFormChange(e)}
+                            input={<OutlinedInput label="Cidade" />}
+                            MenuProps={MenuProps}
                         >
-                            {
-                                cities && cities.map((city) => {
-                                    return (
-                                        <MenuItem key={city.id} value={city.id}>
-                                            {city.name}
-                                        </MenuItem> 
-                                    )
-                                })
-                            }
-                        </TextField>
+                        {cities.map((city) => (
+                            <MenuItem
+                                key={city.id}
+                                value={city.id}
+                            >
+                                {city.name}
+                            </MenuItem>
+                        ))}
+                        </Select>
                     </FormControl>
                     <FormControl fullWidth sx={{ mt: 2 }}>
                         <InputLabel>Tipo de problema</InputLabel>
-                        <Select 
+                        <Select
                             label="Tipo de problema"
                             name="problemType"
                             value={form.problemType}
