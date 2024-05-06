@@ -134,7 +134,7 @@ export const FormAddMassive = styled.form`
     flex-direction: column;
     width: 464px;
     height: auto;
-    padding: 20px;
+    padding: 1rem 1rem 0 1rem;
     text-align: left;
     background: #fff;
     border-radius: 8px;
@@ -147,4 +147,16 @@ export const FormAddMassive = styled.form`
         border-radius: 1rem;
         z-index: 99;
     }
+`
+export const FormAddPeopleMassive = styled.form`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    width: 464px;
+    padding: .5rem .5rem 0 .5rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 8px;
 `

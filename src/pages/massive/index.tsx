@@ -14,6 +14,7 @@ import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import dayjs from "dayjs";
 import { useAuth } from "../../hooks/useAuth";
 import { EditMassive } from "./editMassive";
+import { AddPeopleToMassive } from "./addPeopleMassive";
 
 export function Massive(){
     const { user } = useAuth();
@@ -21,9 +22,11 @@ export function Massive(){
 
     const [openAddMassive, setOpenAddMassive] = useState(false);
     const [openEditMassive, setOpenEditMassive] = useState(false);
+    const [openAddPeopleMassive, setOpenAddPeopleMassive] = useState(false);
 
     const [massives, setMassives] = useState<any>([]);
     const [editMassiveData, setEditMassiveData] = useState<any>();
+    const [addPeopleData, setAddPeopleData] = useState<any>();
     const [showOffCard, setShowOffCard] = useState<number[]>([]);
 
     useEffect(() => {
@@ -63,12 +66,21 @@ export function Massive(){
         setEditMassiveData(value);
     }
 
+    const handleAddPeopleToCard = (value: any) => {
+        handleOpenAddPeopleMassive();
+        setAddPeopleData({
+            userId: user?.uid,
+            cityId: value.Cities.id,
+            massiveId: value.id
+        });
+    }
+
     const handleOpenAddMassive = () => setOpenAddMassive(true);
     const handleCloseAddMassive = () => setOpenAddMassive(false);
     const handleOpenEditMassive = () => setOpenEditMassive(true);
     const handleCloseEditMassive = () => setOpenEditMassive(false);
-
-    console.log(massives)
+    const handleOpenAddPeopleMassive = () => setOpenAddPeopleMassive(true);
+    const handleCloseAddPeopleMassive = () => setOpenAddPeopleMassive(false);
 
     return(
         <Container>
@@ -107,7 +119,7 @@ export function Massive(){
                                         <p>Aberto por {massive.User_Massive_created_by.name} às {dayjs(massive.created_at).add(3, "hour").format('HH:mm-DD/MM')}</p>
                                     </div>
                                     <div className="off-card-action-buttons flex">
-                                        <IconButton size="small" color="primary">
+                                        <IconButton size="small" color="primary" onClick={() => handleAddPeopleToCard(massive)}>
                                             <PersonAddOutlinedIcon />
                                         </IconButton>
                                         {
@@ -138,9 +150,18 @@ export function Massive(){
             {
                 openEditMassive && (
                     <EditMassive 
-                    open={openEditMassive}
-                    massive={editMassiveData}
-                    handleClose={handleCloseEditMassive}
+                        open={openEditMassive}
+                        massive={editMassiveData}
+                        handleClose={handleCloseEditMassive}
+                    />
+                )
+            }
+            {
+                openAddPeopleMassive && (
+                    <AddPeopleToMassive
+                        open={openAddPeopleMassive}
+                        massive={addPeopleData}
+                        handleClose={handleCloseAddPeopleMassive}
                     />
                 )
             }

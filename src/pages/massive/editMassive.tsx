@@ -22,6 +22,7 @@ const MenuProps = { PaperProps: { style: { maxHeight: 88 * 4.5 }}};
 export function EditMassive(props: any){
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
+
     const [open, setOpen] = useState(false);
     const [openForecastTime, setOpenForecastTime] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
@@ -109,8 +110,8 @@ export function EditMassive(props: any){
                 onClose={props.handleClose}
             >
                 <FormAddMassive className="flex" onSubmit={handleSubmit}>
-                    <FormControl fullWidth sx={{ mt: 1, maxHeight:'363px' }}>
-                    <InputLabel id="demo-multiple-name-label">Name</InputLabel>
+                    <FormControl fullWidth sx={{ mt: 1 }}>
+                    <InputLabel>Cidade</InputLabel>
                         <Select
                             name='cityId'
                             value={form.cityId}
@@ -118,14 +119,9 @@ export function EditMassive(props: any){
                             input={<OutlinedInput label="Cidade" />}
                             MenuProps={MenuProps}
                         >
-                        {cities.map((city) => (
-                            <MenuItem
-                                key={city.id}
-                                value={city.id}
-                            >
-                                {city.name}
-                            </MenuItem>
-                        ))}
+                            {cities.map((city) => (
+                                <MenuItem key={city.id} value={city.id}>{city.name}</MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                     <FormControl fullWidth sx={{ mt: 2 }}>
@@ -146,7 +142,7 @@ export function EditMassive(props: any){
                     </FormControl>
                     <div className="flex">
                         <FormControl fullWidth variant="outlined" sx={{ mt: 2, mr:1 }}>
-                            <InputLabel htmlFor="outlined-adornment-password">Horario de falha</InputLabel>
+                            <InputLabel>Horario de falha</InputLabel>
                             <OutlinedInput
                                 required
                                 label="Horario de falha"
