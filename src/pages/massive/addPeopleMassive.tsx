@@ -6,6 +6,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { isValidCpf } from "../../config/regex";
 import { addClientMassive } from "../../services/apiManageONU/addClientMassive";
+import { getPeopleId } from "../../services/apiVoalle/getPeopleId";
 
 export function AddPeopleToMassive(props: any){
     const [cpf, setCpf] = useState<string>('');
@@ -15,16 +16,19 @@ export function AddPeopleToMassive(props: any){
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const clientName = await getPeopleId(cpf);
         if(cpf.match(isValidCpf)){
             const response = await addClientMassive({
                 cpf: cpf,
+                name: clientName.name || null,
                 cityId: props.massive.cityId,
                 massiveId: props.massive.massiveId,
                 userId: props.massive.userId
             });
+            console.log(response)
         }
+
     }
-    
     return(
         <Modal
             open={props.open}
