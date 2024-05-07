@@ -7,28 +7,53 @@ import CloseIcon from '@mui/icons-material/Close';
 import { isValidCpf } from "../../config/regex";
 import { addClientMassive } from "../../services/apiManageONU/addClientMassive";
 import { getPeopleId } from "../../services/apiVoalle/getPeopleId";
+import { useResponse } from "../../hooks/useResponse";
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
 export function AddPeopleToMassive(props: any){
+    const { setFetchResponseMessage } = useResponse();
+
     const [cpf, setCpf] = useState<string>('');
+
     const handleChangeCpf = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setCpf(e.target.value);
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const clientName = await getPeopleId(cpf);
-        if(cpf.match(isValidCpf)){
-            const response = await addClientMassive({
-                cpf: cpf,
-                name: clientName.name || null,
-                cityId: props.massive.cityId,
-                massiveId: props.massive.massiveId,
-                userId: props.massive.userId
-            });
-            console.log(response)
-        }
+        let response: IResponseData | IResponseError;
 
+        if(!cpf.match(isValidCpf)){
+            setFetchResponseMessage('warning/invalid-cpf-input');
+        } else {
+            const clientData = await getPeopleId(cpf) as {id: number, name: string};
+            if(clientData){
+                response = await addClientMassive({
+                    cpf: cpf,
+                    name: clientData.name,
+                    cityId: props.massive.cityId,
+                    massiveId: props.massive.massiveId,
+                    userId: props.massive.userId
+                });
+            } else {
+                response = await addClientMassive({
+                    cpf: cpf,
+                    cityId: props.massive.cityId,
+                    massiveId: props.massive.massiveId,
+                    userId: props.massive.userId
+                });
+            }
+
+            if(response.success){
+                props.handleClose();
+                setFetchResponseMessage(response.responses.status);
+            } else {
+                props.handleClose();
+                setFetchResponseMessage(response.messages.message);
+            }
+        }
     }
+
     return(
         <Modal
             open={props.open}

@@ -155,7 +155,7 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
             }
         case 'error/data-not-created':
             return{
-                responseMessage: 'Não foi possivel salvar está ação.',
+                responseMessage: 'Não foi possivel salvar os dados.',
                 severityStatus: 'error'
             }
         case 'error/invalid-input':
@@ -163,11 +163,22 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Verifique os dados digitados e tente novamente.',
                 severityStatus: 'error'
             }
+        case 'success/data-created':
+            return{
+                responseMessage: 'Dados criados com sucesso.',
+                severityStatus: 'success'
+            }
         case 'error/column-in-use':
             return{
                 responseMessage: 'Algum usuário está fazendo esta pausa.',
                 severityStatus: 'error'
             }
+        case 'error/data-already-exist':
+            return{
+                responseMessage: 'Estes dados já existem.',
+                severityStatus: 'error'
+            }
+            
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',
