@@ -77,6 +77,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Este email já existe na base de dados.',
                 severityStatus: 'error'
             }
+        case 'error/user-desactivated':
+            return{
+                responseMessage: 'Seu usuário não tem permissão para acessar.',
+                severityStatus: 'error'
+            }
         case 'Invalid Token':
             return{
                 responseMessage: 'Usuário não autenticado, você precisa fazer login novamente.',
