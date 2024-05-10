@@ -13,6 +13,7 @@ export const DefaultStyledModal = styled.form`
 `
 
 export const CloseButton = styled.div`
+	display: flex;
     width: 98%;
     height: 10%;
     justify-content: flex-end;

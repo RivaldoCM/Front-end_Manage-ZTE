@@ -1,7 +1,6 @@
 import { AlertColor } from "@mui/material"
 
 export const handleMessage = (res: string): {responseMessage: string, severityStatus: AlertColor} => {
-    console.log(res)
     switch(res){ 
         case 'warning/has-action-in-progress':
             return{
@@ -88,14 +87,9 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Erro interno, verifique com o suporte.',
                 severityStatus: 'error'
             }
-        case 'Invalid Email':
+        case 'error/user-not-found':
             return{
-                responseMessage: 'Este Email não existe em nossa base de dados.',
-                severityStatus: 'error'
-            }
-        case 'Invalid Password':
-            return{
-                responseMessage: 'A senha está incorreta, verifique novamente.',
+                responseMessage: 'Usuário ou senha não conferem.',
                 severityStatus: 'error'
             }
         case 'warning/invalid-cpf-input':

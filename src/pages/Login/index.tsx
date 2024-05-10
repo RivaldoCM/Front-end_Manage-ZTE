@@ -1,21 +1,22 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
-
 import { useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../../hooks/useAuth';
 import { IDecodedJWT } from '../../interfaces/IDecodedJWT';
+import { signIn } from '../../services/apiManageONU/signIn';
 
 import { Container } from './style';
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
+import { Alert, Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { signIn } from '../../services/apiManageONU/signIn';
+import { useResponse } from '../../hooks/useResponse';
 
 export function Login() {
     const { setUser } = useAuth();
+    const {response, setFetchResponseMessage, severityStatus, responseMassage } = useResponse();
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -31,60 +32,72 @@ export function Login() {
         e.preventDefault();
 
         const response = await signIn({email, password});
+        if(response){
+            if(response.success){
+                localStorage.setItem('Authorization', response.responses.response);
+                const jwtDecoded: IDecodedJWT = jwtDecode(response.responses.response);
+                setUser(jwtDecoded);
+                navigate('/auth_onu');
+            } else {
+                setFetchResponseMessage(response.messages.message)
+            }
+        } else {
 
-        localStorage.setItem('Authorization', response.data.token);
-            const jwtDecoded: IDecodedJWT = jwtDecode(response.data.token);
-            setUser(jwtDecoded);
-            navigate('/auth_onu');
+        }
     }
 
     return (
         <Container className='flex'>
             <form className='flex' onSubmit={handleLogin}>
-            <FormControl>
-                <InputLabel htmlFor="outlined-adornment-email">E-mail</InputLabel>
-                <OutlinedInput
-                    placeholder='Digite seu E-mail'
-                    type='text'
-                    onChange={handleEmailChange}
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <MailOutlineIcon />
-                        </InputAdornment>
-                    }
-                    label="E-mail"
-                />
-            </FormControl>
-            <FormControl>
-                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                <OutlinedInput
-                    placeholder='Digite sua senha'
-                    type={showPassword ? 'text' : 'password'}
-                    onChange={handlePasswordChange}
-                    startAdornment={
-                        <InputAdornment position="start">
-                                <LockOpenIcon />
-                        </InputAdornment>
-                    }
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                            >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                    label="Password"
-                />
-            </FormControl>
-            <Button variant="contained" size="large" type="submit">
-                Entrar
-            </Button>
-        </form>
+                <FormControl>
+                    <InputLabel htmlFor="outlined-adornment-email">E-mail</InputLabel>
+                    <OutlinedInput
+                        placeholder='Digite seu E-mail'
+                        type='text'
+                        onChange={handleEmailChange}
+                        startAdornment={
+                            <InputAdornment position="start">
+                                <MailOutlineIcon />
+                            </InputAdornment>
+                        }
+                        label="E-mail"
+                    />
+                </FormControl>
+                <FormControl>
+                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                    <OutlinedInput
+                        placeholder='Digite sua senha'
+                        type={showPassword ? 'text' : 'password'}
+                        onChange={handlePasswordChange}
+                        startAdornment={
+                            <InputAdornment position="start">
+                                    <LockOpenIcon />
+                            </InputAdornment>
+                        }
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        label="Password"
+                    />
+                </FormControl>
+                <Button variant="contained" size="large" type="submit">
+                    Entrar
+                </Button>
+            </form>
+            {
+                response ? 
+                    <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
+                : <></>
+            }
         </Container>
     )
 }
