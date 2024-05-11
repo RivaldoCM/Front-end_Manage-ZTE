@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-import { useError } from '../../../hooks/useError';
 import { EditUsersModal } from './modals';
 
 import { IUsers } from '../../../interfaces/users';
@@ -23,8 +22,9 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { IconButton, TableHead } from '@mui/material';
-import Alert from '@mui/material/Alert';
 import SearchIcon from '@mui/icons-material/Search';
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import { NewUser } from './modals/newUser';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -34,7 +34,10 @@ function stableSort<T>(array: readonly T[]) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-interface EnhancedTableToolbarProps { 
+interface EnhancedTableToolbarProps {
+    isOpenNewUserModal: boolean,
+    onOpenNewUserModal: any,
+    onCloseNewUserModal: any,
     numSelected: number; 
     selectedUserData: Array<any>;
     onInputValueChange: any;
@@ -125,75 +128,87 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 }),
             }}
         >
-        {numSelected > 0 ? (
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-            >
-                {numSelected} selecionado
-            </Typography>
-        ) : (
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                variant="h6"
-                id="tableTitle"
-                component="div"
-            >
-                Usuários
-            </Typography>
-        )}
-        {numSelected > 0 ? (
-            <>
-                <div>
-                    <EditUsersModal
-                        handleOpen={handleOpen}
-                        open={open}
-                        handleClose={handleClose}
-                        selectedUserData={selectedUserData}
-                    />
-                </div>
-                <div>
-                    
-                </div>
-            </>
-        ) : (
-            <Tooltip title="">
-                <SearchButton>
-                    <div className="search-container">
-                        <form onSubmit={handleSubmit} >
-                            <div className="search-box">
-                                <input 
-                                    type="text" 
-                                    placeholder="Digite o nome na busca" 
-                                    className="search-input" 
-                                    onChange={handleChangeValue}
-                                    value={inputSearchValue}
-                                />
-                                <IconButton type="submit" className="search-button" >
-                                    <SearchIcon />
-                                </IconButton>
-                            </div>
-                        </form>
+            {numSelected > 0 ? (
+                <Typography
+                    sx={{ flex: '1 1 100%' }}
+                    color="inherit"
+                    variant="subtitle1"
+                    component="div"
+                />
+            ) : (
+                <Typography
+                    sx={{ flex: '1 1 100%' }}
+                    variant="h6"
+                    id="tableTitle"
+                    component="div"
+                >
+                    Usuários
+                </Typography>
+            )}
+            {numSelected > 0 ? (
+                <React.Fragment>
+                    <div>
+                        <EditUsersModal
+                            handleOpen={handleOpen}
+                            open={open}
+                            handleClose={handleClose}
+                            selectedUserData={selectedUserData}
+                        />
                     </div>
-                </SearchButton>
-            </Tooltip>
-        )}
+                    <div>
+                        
+                    </div>
+                </React.Fragment>
+            ) : (
+                <React.Fragment>
+                    <IconButton color='primary' onClick={props.onOpenNewUserModal}>
+                        <PersonAddAltOutlinedIcon />
+                    </IconButton>
+                    <Tooltip title="">
+                        <SearchButton>
+                            <div className="search-container">
+                                <form onSubmit={handleSubmit} >
+                                    <div className="search-box">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Digite o nome na busca" 
+                                            className="search-input" 
+                                            onChange={handleChangeValue}
+                                            value={inputSearchValue}
+                                        />
+                                        <IconButton type="submit" className="search-button" >
+                                            <SearchIcon />
+                                        </IconButton>
+                                    </div>
+                                </form>
+                            </div>
+                        </SearchButton>
+                    </Tooltip>
+                </React.Fragment>
+            )}
         </Toolbar>
     );
 }
 
-export function HandleManageUsers() {
-    const { error, errorMessage, severityStatus, handleError } = useError();
-
-    const [selected, setSelected] = useState<number[]>([]);
-    const [page, setPage] = useState(0);
-    const [dense, setDense] = useState(false);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [filteredUser, setFilteredUser] = useState<Array<IUsers>>([]);
+export function HandleManageUsers(){
     const [users, setUsers] = useState<IUsers[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>([]);
+    const [filteredUser, setFilteredUser] = useState<Array<IUsers>>([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [selected, setSelected] = useState<number[]>([]);
+    const [dense, setDense] = useState(false);
+    const [openNewserModal, setOpenNewUserModal] = useState(false);
+
+    const [teste, setTeste] = useState(true)
+
+
+    const handlesetteste = () => {
+        setTeste(false)
+        console.log('aq carai')
+    }
+
+    console.log(teste)
 
     useEffect(() => {
         async function users(){
@@ -204,7 +219,7 @@ export function HandleManageUsers() {
                 setFilteredUser(userData);
             } else {
                 setUsers([]);
-                handleError('unable-load-data');
+                //error
             }
         }
         users();
@@ -232,7 +247,6 @@ export function HandleManageUsers() {
     };
 
     const handleChangePage = (_event: unknown, newPage: number) => { setPage(newPage); };
-
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
@@ -242,9 +256,7 @@ export function HandleManageUsers() {
 
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-    // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - filteredUser.length) : 0;
-
     const visibleRows = useMemo(() => 
         stableSort(filteredUser).slice(
             page * rowsPerPage,
@@ -253,12 +265,18 @@ export function HandleManageUsers() {
         [page, rowsPerPage, filteredUser]
     );
 
+    const handleOpenNewUserModal = () => setOpenNewUserModal(true);
+    const handleCloseNewUserModal = () => setOpenNewUserModal(false)
+
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar
                     numSelected={selected.length} 
                     selectedUserData={selectedUser}
+                    isOpenNewUserModal={openNewserModal}
+                    onOpenNewUserModal={handleOpenNewUserModal}
+                    onCloseNewUserModal={handleCloseNewUserModal}
                     onInputValueChange={handleSearchValueChange}
                 />
                 <TableContainer>
@@ -335,10 +353,11 @@ export function HandleManageUsers() {
                 label="Modo compacto"
             />
             {
-                (error ?
-                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-                :
-                    <></>
+                openNewserModal && (
+                    <NewUser
+                        open={openNewserModal}
+                        handleClose={handleCloseNewUserModal}
+                    />
                 )
             }
         </Box>
