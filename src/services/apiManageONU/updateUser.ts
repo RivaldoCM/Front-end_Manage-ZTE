@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function updateUser(id: number, name: string, rule: number, status: string, newPassword: string){
+export async function updateUser({id, name, rule, status, newPassword}: any){
     const res = await axios({
         method: 'patch',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getUsers`,

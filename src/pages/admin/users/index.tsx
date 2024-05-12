@@ -24,7 +24,10 @@ import Switch from '@mui/material/Switch';
 import { IconButton, TableHead } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { NewUser } from './modals/newUser';
+import { EditUser } from './modals/editUser';
+import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -37,9 +40,8 @@ function stableSort<T>(array: readonly T[]) {
 interface EnhancedTableToolbarProps {
     isOpenNewUserModal: boolean,
     onOpenNewUserModal: any,
-    onCloseNewUserModal: any,
+    onOpenEditUserModal: any,
     numSelected: number; 
-    selectedUserData: Array<any>;
     onInputValueChange: any;
 }
 
@@ -99,18 +101,15 @@ function EnhancedTableHead(){
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected, selectedUserData, onInputValueChange } = props;
+    const { numSelected, onInputValueChange } = props;
 
-    const [open, setOpen] = useState(false);
     const [inputSearchValue, setInputSearchValue] = useState('');
-
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {setInputSearchValue(e.target.value)};
 
     useEffect(() => {
         onInputValueChange(inputSearchValue);
     }, [inputSearchValue]);
+
+    const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {setInputSearchValue(e.target.value)};
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -148,15 +147,14 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             {numSelected > 0 ? (
                 <React.Fragment>
                     <div>
-                        <EditUsersModal
-                            handleOpen={handleOpen}
-                            open={open}
-                            handleClose={handleClose}
-                            selectedUserData={selectedUserData}
-                        />
+                        <IconButton>
+                            <LockResetOutlinedIcon color='secondary'/>
+                        </IconButton>
                     </div>
                     <div>
-                        
+                        <IconButton color='primary' onClick={props.onOpenEditUserModal}>
+                            <EditOutlinedIcon />
+                        </IconButton>
                     </div>
                 </React.Fragment>
             ) : (
@@ -199,16 +197,7 @@ export function HandleManageUsers(){
     const [selected, setSelected] = useState<number[]>([]);
     const [dense, setDense] = useState(false);
     const [openNewserModal, setOpenNewUserModal] = useState(false);
-
-    const [teste, setTeste] = useState(true)
-
-
-    const handlesetteste = () => {
-        setTeste(false)
-        console.log('aq carai')
-    }
-
-    console.log(teste)
+    const [openEditUserModal, setOpenEditUserModal] = useState(false);
 
     useEffect(() => {
         async function users(){
@@ -253,7 +242,6 @@ export function HandleManageUsers(){
     };
 
     const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => { setDense(event.target.checked); };
-
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
     const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - filteredUser.length) : 0;
@@ -267,16 +255,17 @@ export function HandleManageUsers(){
 
     const handleOpenNewUserModal = () => setOpenNewUserModal(true);
     const handleCloseNewUserModal = () => setOpenNewUserModal(false)
+    const handleOpenEditUserModal = () => setOpenEditUserModal(true);
+    const handleCloseEditUserModal = () => setOpenEditUserModal(false)
 
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar
                     numSelected={selected.length} 
-                    selectedUserData={selectedUser}
                     isOpenNewUserModal={openNewserModal}
                     onOpenNewUserModal={handleOpenNewUserModal}
-                    onCloseNewUserModal={handleCloseNewUserModal}
+                    onOpenEditUserModal={handleOpenEditUserModal}
                     onInputValueChange={handleSearchValueChange}
                 />
                 <TableContainer>
@@ -357,6 +346,15 @@ export function HandleManageUsers(){
                     <NewUser
                         open={openNewserModal}
                         handleClose={handleCloseNewUserModal}
+                    />
+                )
+            }
+            {
+                openEditUserModal && (
+                    <EditUser 
+                        open={openEditUserModal}
+                        handleClose={handleCloseEditUserModal}
+                        selectedUser={selectedUser}
                     />
                 )
             }

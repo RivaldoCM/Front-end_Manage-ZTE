@@ -1,32 +1,29 @@
+import { FormControl, IconButton, InputLabel, MenuItem, Modal, Select, TextField } from "@mui/material";
+import { NewUserWrapper } from "../style";
 import React, { useState } from "react";
-
-import { useResponse } from "../../../../hooks/useResponse";
-import { signUp } from "../../../../services/apiManageONU/signUp";
-import { isValidEmail } from "../../../../config/regex";
 
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import { NewUserWrapper } from "../style";
-import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, OutlinedInput, Select, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export function NewUser(props: any){
+
+import { isValidEmail } from "../../../../config/regex";
+import { signUp } from "../../../../services/apiManageONU/signUp";
+import { useResponse } from "../../../../hooks/useResponse";
+import { updateUser } from "../../../../services/apiManageONU/updateUser";
+
+export function EditUser(props: any){
     const { setFetchResponseMessage } = useResponse();
 
     const [form, setForm] = useState({
-        userName: '',
-        email: '',
-        accessLevel: 1,
-        password: ''
+        userName: props.selectedUser.name,
+        email: props.selectedUser.email,
+        accessLevel: props.selectedUser.department_id,
+        status: props.selectedUser.status
     });
-    const [showPassword, setShowPassword] = useState(false);
-    
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault();};
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<number>) => {
+
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -39,13 +36,13 @@ export function NewUser(props: any){
         if(!form.email.match(isValidEmail)){
             setFetchResponseMessage('error/invalid-format-email');
         } else {
-            const response = await signUp({
+            const response = await updateUser({
                 userName: form.userName,
                 email: form.email,
                 accessLevel: form.accessLevel,
-                password: form.password
+                status: form.status
             });
-
+            
             if(response){
                 if(response.success){
                     props.handleClose();
@@ -65,12 +62,13 @@ export function NewUser(props: any){
             onClose={props.handleClose}
         >
             <NewUserWrapper onSubmit={handleSubmit}>
-                <h3>CRIAR USUÁRIO</h3>
+                <h3>EDITAR USUÁRIO</h3>
                 <TextField
                     required
                     fullWidth
                     label="Nome"
                     name="userName"
+                    value={form.userName}
                     onChange={handleFormChange}
                     sx={{ mt: 2 }}
                 />
@@ -79,10 +77,11 @@ export function NewUser(props: any){
                     fullWidth
                     label="E-mail"
                     name="email"
+                    value={form.email}
                     onChange={handleFormChange}
                     sx={{ mt: 2 }}
                 />
-                <FormControl fullWidth sx={{ mt: 2, mb:2 }}>
+                <FormControl fullWidth sx={{ mt: 2 }}>
                     <InputLabel>Nível de Acesso</InputLabel>
                         <Select
                             label="Nível de Acesso"
@@ -97,24 +96,17 @@ export function NewUser(props: any){
                             <MenuItem value={16}>CGR</MenuItem>
                         </Select>
                     </FormControl>
-                <FormControl>
-                    <InputLabel htmlFor="outlined-adornment-password" required>Senha</InputLabel>
-                    <OutlinedInput
-                        label="Senha"
-                        name='password'
-                        type={showPassword ? 'text' : 'password'}
+                <FormControl fullWidth sx={{ mt: 2 }}>
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                        label="Status"
+                        name="status"
+                        value={form.status}
                         onChange={handleFormChange}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                    />
+                    >
+                        <MenuItem value="normal">Ativo</MenuItem>
+                        <MenuItem value="Desativado">Desativado</MenuItem>
+                    </Select>
                 </FormControl>
                 <div className="flex">
                     <IconButton color="success" type="submit">

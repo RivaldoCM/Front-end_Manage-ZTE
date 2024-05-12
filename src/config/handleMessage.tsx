@@ -167,6 +167,12 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Algum usuário está fazendo esta pausa.',
                 severityStatus: 'error'
             }
+            
+        case 'error/Invalid-format-email':
+            return{
+                responseMessage: 'Formato de E-mail inválido.',
+                severityStatus: 'warning'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',
