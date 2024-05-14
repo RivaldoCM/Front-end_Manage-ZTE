@@ -173,6 +173,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Formato de E-mail inválido.',
                 severityStatus: 'warning'
             }
+        case 'error/privilege-denied':
+            return{
+                responseMessage: 'Você não tem permissão para realizar está função.',
+                severityStatus: 'error'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',

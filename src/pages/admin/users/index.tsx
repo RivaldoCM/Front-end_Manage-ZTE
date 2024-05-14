@@ -28,6 +28,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { NewUser } from './modals/newUser';
 import { EditUser } from './modals/editUser';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
+import { useResponse } from '../../../hooks/useResponse';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -189,6 +190,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 }
 
 export function HandleManageUsers(){
+    const { setFetchResponseMessage } = useResponse();
+
     const [users, setUsers] = useState<IUsers[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>([]);
     const [filteredUser, setFilteredUser] = useState<Array<IUsers>>([]);
@@ -201,14 +204,18 @@ export function HandleManageUsers(){
 
     useEffect(() => {
         async function users(){
-            const userData = await getUsers();
+            const response = await getUsers();
 
-            if(typeof userData !== 'string'){
-                setUsers(userData);
-                setFilteredUser(userData);
+            if(response){
+                if(response.success){
+                    setUsers(response.responses.response);
+                    setFilteredUser(response.responses.response);
+                } else {
+                    setUsers([]);
+                    setFetchResponseMessage(response.messages.message);
+                }
             } else {
-                setUsers([]);
-                //error
+                setFetchResponseMessage('error/no-connection-with-API');
             }
         }
         users();

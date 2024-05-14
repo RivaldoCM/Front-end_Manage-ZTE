@@ -1,5 +1,5 @@
 import styled from "styled-components";
- 
+
 export const DefaultStyledModal = styled.form`
     position: absolute;
 	top: 50%;

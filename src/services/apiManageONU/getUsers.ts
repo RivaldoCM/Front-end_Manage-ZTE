@@ -1,19 +1,19 @@
 import axios from "axios";
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-import { IUsers } from "../../interfaces/users";
-
-export async function getUsers(): Promise<IUsers[]>{
-    const userData = await axios({
+export async function getUsers(): Promise<IResponseData | IResponseError>{
+    const users = await axios({
         method: 'post',
-        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/getUsers`,
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/users`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
         data: {},
     }).then((response) => {
         return response.data;
-    }).catch((err) => {
-        return err.response.data.messages.message;
+    }).catch(() => {
+        return null;
     });
-    return userData;
+
+    return users;
 }

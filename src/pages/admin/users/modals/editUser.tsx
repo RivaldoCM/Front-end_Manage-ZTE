@@ -7,13 +7,14 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 
-
 import { isValidEmail } from "../../../../config/regex";
 import { signUp } from "../../../../services/apiManageONU/signUp";
 import { useResponse } from "../../../../hooks/useResponse";
 import { updateUser } from "../../../../services/apiManageONU/updateUser";
+import { useAuth } from "../../../../hooks/useAuth";
 
 export function EditUser(props: any){
+    const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
     const [form, setForm] = useState({
@@ -35,6 +36,8 @@ export function EditUser(props: any){
 
         if(!form.email.match(isValidEmail)){
             setFetchResponseMessage('error/invalid-format-email');
+        } else if(user!.uid <= form.accessLevel){
+            setFetchResponseMessage('error/privilege-denied');
         } else {
             const response = await updateUser({
                 userName: form.userName,
@@ -94,6 +97,17 @@ export function EditUser(props: any){
                             <MenuItem value={10}>Tecnicos</MenuItem>
                             <MenuItem value={14}>NOC</MenuItem>
                             <MenuItem value={16}>CGR</MenuItem>
+                            <MenuItem value={17}>Administrador</MenuItem>
+                            <MenuItem disabled value={2}>Consultoria</MenuItem>
+                            <MenuItem disabled value={4}>Faturamento</MenuItem>
+                            <MenuItem disabled value={5}>Supervisor Faturamento</MenuItem>
+                            <MenuItem disabled value={6}>Comercial</MenuItem>
+                            <MenuItem disabled value={7}>Supervisor Comercial</MenuItem>
+                            <MenuItem disabled value={8}>Loja</MenuItem>
+                            <MenuItem disabled value={9}>Supervisor Loja</MenuItem>
+                            <MenuItem disabled value={11}>Cobrança</MenuItem>
+                            <MenuItem disabled value={12}>Supervisor Cobrança</MenuItem>
+                            <MenuItem disabled value={13}>Retenção</MenuItem>
                         </Select>
                     </FormControl>
                 <FormControl fullWidth sx={{ mt: 2 }}>
