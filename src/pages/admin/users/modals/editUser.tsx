@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 
 import { isValidEmail } from "../../../../config/regex";
-import { signUp } from "../../../../services/apiManageONU/signUp";
+
 import { useResponse } from "../../../../hooks/useResponse";
 import { updateUser } from "../../../../services/apiManageONU/updateUser";
 import { useAuth } from "../../../../hooks/useAuth";
@@ -18,6 +18,7 @@ export function EditUser(props: any){
     const { setFetchResponseMessage } = useResponse();
 
     const [form, setForm] = useState({
+        id: props.selectedUser.id,
         userName: props.selectedUser.name,
         email: props.selectedUser.email,
         accessLevel: props.selectedUser.department_id,
@@ -39,7 +40,9 @@ export function EditUser(props: any){
         } else if(user!.uid <= form.accessLevel){
             setFetchResponseMessage('error/privilege-denied');
         } else {
+
             const response = await updateUser({
+                id: form.id,
                 userName: form.userName,
                 email: form.email,
                 accessLevel: form.accessLevel,

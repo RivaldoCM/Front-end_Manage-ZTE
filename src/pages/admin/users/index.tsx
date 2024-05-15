@@ -1,7 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-
-import { EditUsersModal } from './modals';
-
 import { IUsers } from '../../../interfaces/users';
 import { getUsers } from '../../../services/apiManageONU/getUsers';
 
@@ -29,6 +26,7 @@ import { NewUser } from './modals/newUser';
 import { EditUser } from './modals/editUser';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import { useResponse } from '../../../hooks/useResponse';
+import { EditPassword } from './modals/editPassword';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -42,6 +40,7 @@ interface EnhancedTableToolbarProps {
     isOpenNewUserModal: boolean,
     onOpenNewUserModal: any,
     onOpenEditUserModal: any,
+    onOpenEditPasswordModal: any,
     numSelected: number; 
     onInputValueChange: any;
 }
@@ -148,8 +147,8 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             {numSelected > 0 ? (
                 <React.Fragment>
                     <div>
-                        <IconButton>
-                            <LockResetOutlinedIcon color='secondary'/>
+                        <IconButton color='secondary' onClick={props.onOpenEditPasswordModal}>
+                            <LockResetOutlinedIcon />
                         </IconButton>
                     </div>
                     <div>
@@ -201,6 +200,7 @@ export function HandleManageUsers(){
     const [dense, setDense] = useState(false);
     const [openNewserModal, setOpenNewUserModal] = useState(false);
     const [openEditUserModal, setOpenEditUserModal] = useState(false);
+    const [openEditPasswordModal, setOpenEditPasswordModal] = useState(false);
 
     useEffect(() => {
         async function users(){
@@ -263,7 +263,9 @@ export function HandleManageUsers(){
     const handleOpenNewUserModal = () => setOpenNewUserModal(true);
     const handleCloseNewUserModal = () => setOpenNewUserModal(false)
     const handleOpenEditUserModal = () => setOpenEditUserModal(true);
-    const handleCloseEditUserModal = () => setOpenEditUserModal(false)
+    const handleCloseEditUserModal = () => setOpenEditUserModal(false);
+    const handleOpenEditPasswordModal = () => setOpenEditPasswordModal(true);
+    const handleCloseEditPasswordModal = () => setOpenEditPasswordModal(false)
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -273,6 +275,7 @@ export function HandleManageUsers(){
                     isOpenNewUserModal={openNewserModal}
                     onOpenNewUserModal={handleOpenNewUserModal}
                     onOpenEditUserModal={handleOpenEditUserModal}
+                    onOpenEditPasswordModal={handleOpenEditPasswordModal}
                     onInputValueChange={handleSearchValueChange}
                 />
                 <TableContainer>
@@ -361,6 +364,15 @@ export function HandleManageUsers(){
                     <EditUser 
                         open={openEditUserModal}
                         handleClose={handleCloseEditUserModal}
+                        selectedUser={selectedUser}
+                    />
+                )
+            }
+            {
+                openEditPasswordModal && (
+                    <EditPassword 
+                        open={openEditPasswordModal}
+                        handleClose={handleCloseEditPasswordModal}
                         selectedUser={selectedUser}
                     />
                 )
