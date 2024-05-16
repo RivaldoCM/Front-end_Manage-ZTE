@@ -12,8 +12,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useAuth } from "../../../../hooks/useAuth";
 
 export function NewUser(props: any){
+    const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
     const [form, setForm] = useState({
@@ -38,6 +40,8 @@ export function NewUser(props: any){
 
         if(!form.email.match(isValidEmail)){
             setFetchResponseMessage('error/invalid-format-email');
+        } else if(user!.rule <= form.accessLevel){
+            setFetchResponseMessage('error/privilege-denied');
         } else {
             const response = await signUp({
                 userName: form.userName,
@@ -84,20 +88,20 @@ export function NewUser(props: any){
                 />
                 <FormControl fullWidth sx={{ mt: 2, mb:2 }}>
                     <InputLabel>Nível de Acesso</InputLabel>
-                        <Select
-                            label="Nível de Acesso"
-                            name="accessLevel"
-                            value={form.accessLevel}
-                            onChange={handleFormChange}
-                        >
-                            <MenuItem value={1}>Call Center</MenuItem>
-                            <MenuItem value={3}>Supervisor Call Center</MenuItem>
-                            <MenuItem value={10}>Tecnicos</MenuItem>
-                            <MenuItem value={14}>NOC</MenuItem>
-                            <MenuItem value={16}>CGR</MenuItem>
-                        </Select>
-                    </FormControl>
-                <FormControl>
+                    <Select
+                        label="Nível de Acesso"
+                        name="accessLevel"
+                        value={form.accessLevel}
+                        onChange={handleFormChange}
+                    >
+                        <MenuItem value={1}>Call Center</MenuItem>
+                        <MenuItem value={3}>Supervisor Call Center</MenuItem>
+                        <MenuItem value={10}>Tecnicos</MenuItem>
+                        <MenuItem value={14}>NOC</MenuItem>
+                        <MenuItem value={16}>CGR</MenuItem>
+                    </Select>
+                </FormControl>
+                <FormControl fullWidth>
                     <InputLabel htmlFor="outlined-adornment-password" required>Senha</InputLabel>
                     <OutlinedInput
                         label="Senha"

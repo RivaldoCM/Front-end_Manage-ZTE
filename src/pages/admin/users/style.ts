@@ -6,7 +6,7 @@ export const NewUserWrapper = styled.form`
     left: 50%;
     transform: translate(-50%, -50%);
     flex-direction: column;
-    width: 404px;
+    max-width: 406px;
     padding: .5rem;
     text-align: center;
     background: #fff;

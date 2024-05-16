@@ -1,4 +1,4 @@
-import { FormControl, IconButton, InputLabel, MenuItem, Modal, Select, TextField } from "@mui/material";
+import { FormControl, IconButton, InputAdornment, InputLabel, Modal, OutlinedInput, } from "@mui/material";
 import { NewUserWrapper } from "../style";
 import React, { useState } from "react";
 
@@ -8,9 +8,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 
 import { useResponse } from "../../../../hooks/useResponse";
-import { updateUser } from "../../../../services/apiManageONU/updateUser";
+
 import { useAuth } from "../../../../hooks/useAuth";
 import { updatePassword } from "../../../../services/apiManageONU/updatePassword";
+
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 export function EditPassword(props: any){
     const { user } = useAuth();
@@ -22,6 +25,11 @@ export function EditPassword(props: any){
         password: ''
     });
 
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault();};
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
         setForm({
             ...form,
@@ -32,7 +40,7 @@ export function EditPassword(props: any){
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if(user!.uid < form.accessLevel){
+        if(user!.rule <= props.selectedUser.department_id && user?.rule !== 17 && user!.rule <= form.accessLevel){
             setFetchResponseMessage('error/privilege-denied');
         } else {
             const response = await updatePassword({
@@ -59,16 +67,26 @@ export function EditPassword(props: any){
             onClose={props.handleClose}
         >
             <NewUserWrapper onSubmit={handleSubmit}>
-                <h3>EDITAR SENHA</h3>
-                <TextField
-                    required
-                    fullWidth
-                    label="Senha"
-                    name="password"
-                    value={form.password}
-                    onChange={handleFormChange}
-                    sx={{ mt: 2 }}
-                />
+                <h3>Nova Senha</h3>
+                <FormControl>
+                    <InputLabel htmlFor="outlined-adornment-password" required>Senha</InputLabel>
+                    <OutlinedInput
+                        label="Senha"
+                        name='password'
+                        type={showPassword ? 'text' : 'password'}
+                        onChange={handleFormChange}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                </FormControl>
                 <div className="flex">
                     <IconButton color="success" type="submit">
                         <DoneIcon />

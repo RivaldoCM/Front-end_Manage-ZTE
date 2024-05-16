@@ -35,12 +35,13 @@ export function EditUser(props: any){
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        console.log(user!.rule <= props.selectedUser.department_id, user?.rule !== 17, user!.rule <= form.accessLevel)
+
         if(!form.email.match(isValidEmail)){
             setFetchResponseMessage('error/invalid-format-email');
-        } else if(user!.uid <= form.accessLevel){
+        } else if(user!.rule <= props.selectedUser.department_id && user?.rule !== 17 && user!.rule <= form.accessLevel){
             setFetchResponseMessage('error/privilege-denied');
         } else {
-
             const response = await updateUser({
                 id: form.id,
                 userName: form.userName,

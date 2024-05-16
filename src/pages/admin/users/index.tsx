@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { IUsers } from '../../../interfaces/users';
+import { useResponse } from '../../../hooks/useResponse';
 import { getUsers } from '../../../services/apiManageONU/getUsers';
+import { IUsers } from '../../../interfaces/users';
+
+import { NewUser } from './modals/newUser';
+import { EditUser } from './modals/editUser';
+import { EditPassword } from './modals/editPassword';
 
 import { SearchButton } from '../../../styles/searchButton';
 import { alpha } from '@mui/material/styles';
@@ -22,11 +27,7 @@ import { IconButton, TableHead } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { NewUser } from './modals/newUser';
-import { EditUser } from './modals/editUser';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
-import { useResponse } from '../../../hooks/useResponse';
-import { EditPassword } from './modals/editPassword';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -159,7 +160,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 </React.Fragment>
             ) : (
                 <React.Fragment>
-                    <IconButton color='primary' onClick={props.onOpenNewUserModal}>
+                    <IconButton color='primary' onClick={props.onOpenNewUserModal} sx={{mr: 2}}>
                         <PersonAddAltOutlinedIcon />
                     </IconButton>
                     <Tooltip title="">
@@ -205,7 +206,6 @@ export function HandleManageUsers(){
     useEffect(() => {
         async function users(){
             const response = await getUsers();
-
             if(response){
                 if(response.success){
                     setUsers(response.responses.response);
