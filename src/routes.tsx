@@ -7,7 +7,7 @@ import { isLogged } from "./config/isLogged";
 
 import { Login } from "./pages/Login";
 import { HandleManageOlt } from "./pages/admin/manageOlt";
-import { HandleManageUsers } from "./pages/admin/users";
+import { Users } from "./pages/admin/users";
 import { OnuDelete } from "./pages/onuDelete";
 import { LogsOnu } from "./pages/logs/onu";
 import { AuthOnuController } from "./pages/Provisionamento";
@@ -75,7 +75,7 @@ export function AppRoutes() {
                 />
                 <Route
                     path="users"
-                    element={<PrivateRoute element={<HandleManageUsers />} />}
+                    element={<PrivateRoute element={<Users />} />}
                 />
                 <Route
                     path="onuDelete"

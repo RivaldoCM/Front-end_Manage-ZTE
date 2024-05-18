@@ -1,31 +1,41 @@
-import { FormControl, IconButton, InputLabel, MenuItem, Modal, Select, TextField } from "@mui/material";
-import { NewUserWrapper } from "../style";
 import React, { useState } from "react";
 
-import { SelectChangeEvent } from '@mui/material/Select';
+import { useAuth } from "../../../../hooks/useAuth";
+import { useResponse } from "../../../../hooks/useResponse";
+import { updateUser } from "../../../../services/apiManageONU/updateUser";
+import { isValidEmail } from "../../../../config/regex";
 
+import { FormControl, IconButton, InputLabel, MenuItem, Modal, Select, TextField } from "@mui/material";
+import { NewUserWrapper } from "../style";
+import { SelectChangeEvent } from '@mui/material/Select';
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 
-import { isValidEmail } from "../../../../config/regex";
+type IEditUser = {
+    open: boolean,
+    selectedUser: {
+        id: number,
+        name: string,
+        email: string,
+        department_id: number,
+        status: string
+    } | null,
+    handleClose: () => void
+}
 
-import { useResponse } from "../../../../hooks/useResponse";
-import { updateUser } from "../../../../services/apiManageONU/updateUser";
-import { useAuth } from "../../../../hooks/useAuth";
-
-export function EditUser(props: any){
+export function EditUser(props: IEditUser){
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
     const [form, setForm] = useState({
-        id: props.selectedUser.id,
-        userName: props.selectedUser.name,
-        email: props.selectedUser.email,
-        accessLevel: props.selectedUser.department_id,
-        status: props.selectedUser.status
+        id: props.selectedUser!.id,
+        userName: props.selectedUser!.name,
+        email: props.selectedUser!.email,
+        accessLevel: props.selectedUser!.department_id,
+        status: props.selectedUser!.status
     });
 
-    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string | number>) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -35,11 +45,9 @@ export function EditUser(props: any){
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log(user!.rule <= props.selectedUser.department_id, user?.rule !== 17, user!.rule <= form.accessLevel)
-
         if(!form.email.match(isValidEmail)){
             setFetchResponseMessage('error/invalid-format-email');
-        } else if(user!.rule <= props.selectedUser.department_id && user?.rule !== 17 && user!.rule <= form.accessLevel){
+        } else if(user!.rule <= props.selectedUser!.department_id && user?.rule !== 17 && user!.rule <= form.accessLevel){
             setFetchResponseMessage('error/privilege-denied');
         } else {
             const response = await updateUser({

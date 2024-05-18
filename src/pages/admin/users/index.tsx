@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
+
 import { useResponse } from '../../../hooks/useResponse';
 import { getUsers } from '../../../services/apiManageONU/getUsers';
-import { IUsers } from '../../../interfaces/users';
+import { IUsers } from '../../../interfaces/IUsers';
 
+import { EnhancedTableHead, EnhancedTableToolbar } from './table';
 import { NewUser } from './modals/newUser';
 import { EditUser } from './modals/editUser';
 import { EditPassword } from './modals/editPassword';
 
-import { SearchButton } from '../../../styles/searchButton';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -16,18 +16,10 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { IconButton, TableHead } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -37,164 +29,53 @@ function stableSort<T>(array: readonly T[]) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-interface EnhancedTableToolbarProps {
-    isOpenNewUserModal: boolean,
-    onOpenNewUserModal: any,
-    onOpenEditUserModal: any,
-    onOpenEditPasswordModal: any,
-    numSelected: number; 
-    onInputValueChange: any;
-}
-
-interface HeadCell {
-    disablePadding: boolean;
-    id: number;
-    label: string;
-    numeric: boolean;
-}
-  
-const headCells: readonly HeadCell[] = [
-    {
-        id: 1,
-        numeric: false,
-        disablePadding: true,
-        label: 'Nome',
-    },
-    {
-        id: 2,
-        numeric: true,
-        disablePadding: false,
-        label: 'Email',
-    },
-    {
-        id: 3,
-        numeric: true,
-        disablePadding: false,
-        label: 'Nivel de acesso',
-    },
-    {
-        id: 4,
-        numeric: true,
-        disablePadding: false,
-        label: 'Status',
-    },
-];
-
-function EnhancedTableHead(){
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-
-                </TableCell>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                    >
-                        {headCell.label}
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected, onInputValueChange } = props;
-
-    const [inputSearchValue, setInputSearchValue] = useState('');
-
-    useEffect(() => {
-        onInputValueChange(inputSearchValue);
-    }, [inputSearchValue]);
-
-    const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {setInputSearchValue(e.target.value)};
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        onInputValueChange(inputSearchValue);
+const renderDepartment = (args: number) => {
+    switch(args){
+        case 1:
+            return <TableCell align="right">CallCenter</TableCell>
+        case 2:
+            return <TableCell align="right">Consultoria</TableCell>
+        case 3:
+            return <TableCell align="right">Supervisor Call Center</TableCell>
+        case 4:
+            return <TableCell align="right">Faturamento</TableCell>
+        case 5:
+            return <TableCell align="right">Supervisor Faturamento</TableCell>
+        case 6:
+            return <TableCell align="right">Comercial</TableCell>
+        case 7:
+            return <TableCell align="right">Supervisor Comercial</TableCell>
+        case 8:
+            return <TableCell align="right">Loja</TableCell>
+        case 9:
+            return <TableCell align="right">Supervisor Loja</TableCell>
+        case 10:
+            return <TableCell align="right">Tecnicos</TableCell>
+        case 11:
+            return <TableCell align="right">Cobrança</TableCell>
+        case 12:
+            return <TableCell align="right">Cobrança</TableCell>
+        case 13:
+            return <TableCell align="right">Retenção</TableCell>
+        case 14:
+            return <TableCell align="right">NOC</TableCell>
+        case 15:
+            return <TableCell align="right">Cobrança</TableCell>
+        case 16:
+            return <TableCell align="right">CGR</TableCell>
+        case 17:
+            return <TableCell align="right">Administrador</TableCell>
+        default:
+            return <TableCell align="right">Outros</TableCell>
     }
-
-    return (
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                bgcolor: (theme) =>
-                    alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                }),
-            }}
-        >
-            {numSelected > 0 ? (
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    color="inherit"
-                    variant="subtitle1"
-                    component="div"
-                />
-            ) : (
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    variant="h6"
-                    id="tableTitle"
-                    component="div"
-                >
-                    Usuários
-                </Typography>
-            )}
-            {numSelected > 0 ? (
-                <React.Fragment>
-                    <div>
-                        <IconButton color='secondary' onClick={props.onOpenEditPasswordModal}>
-                            <LockResetOutlinedIcon />
-                        </IconButton>
-                    </div>
-                    <div>
-                        <IconButton color='primary' onClick={props.onOpenEditUserModal}>
-                            <EditOutlinedIcon />
-                        </IconButton>
-                    </div>
-                </React.Fragment>
-            ) : (
-                <React.Fragment>
-                    <IconButton color='primary' onClick={props.onOpenNewUserModal} sx={{mr: 2}}>
-                        <PersonAddAltOutlinedIcon />
-                    </IconButton>
-                    <Tooltip title="">
-                        <SearchButton>
-                            <div className="search-container">
-                                <form onSubmit={handleSubmit} >
-                                    <div className="search-box">
-                                        <input 
-                                            type="text" 
-                                            placeholder="Digite o nome na busca" 
-                                            className="search-input" 
-                                            onChange={handleChangeValue}
-                                            value={inputSearchValue}
-                                        />
-                                        <IconButton type="submit" className="search-button" >
-                                            <SearchIcon />
-                                        </IconButton>
-                                    </div>
-                                </form>
-                            </div>
-                        </SearchButton>
-                    </Tooltip>
-                </React.Fragment>
-            )}
-        </Toolbar>
-    );
 }
 
-export function HandleManageUsers(){
+export function Users(){
     const { setFetchResponseMessage } = useResponse();
 
     const [users, setUsers] = useState<IUsers[]>([]);
-    const [selectedUser, setSelectedUser] = useState<any>([]);
-    const [filteredUser, setFilteredUser] = useState<Array<IUsers>>([]);
+    const [selectedUser, setSelectedUser] = useState<IUsers | null>(null);
+    const [filteredUser, setFilteredUser] = useState<IUsers[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState<number[]>([]);
@@ -272,7 +153,6 @@ export function HandleManageUsers(){
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar
                     numSelected={selected.length} 
-                    isOpenNewUserModal={openNewserModal}
                     onOpenNewUserModal={handleOpenNewUserModal}
                     onOpenEditUserModal={handleOpenEditUserModal}
                     onOpenEditPasswordModal={handleOpenEditPasswordModal}
@@ -319,7 +199,7 @@ export function HandleManageUsers(){
                                         {row.name}
                                     </TableCell>
                                     <TableCell align="right">{row.email}</TableCell>
-                                    <TableCell align="right">{row.department_id}</TableCell>
+                                    {renderDepartment(row.department_id)}
                                     <TableCell align="right">{row.status}</TableCell>
                                 </TableRow>
                             );

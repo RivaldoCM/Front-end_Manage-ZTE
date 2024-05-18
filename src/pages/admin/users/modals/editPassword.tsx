@@ -1,30 +1,36 @@
-import { FormControl, IconButton, InputAdornment, InputLabel, Modal, OutlinedInput, } from "@mui/material";
-import { NewUserWrapper } from "../style";
 import React, { useState } from "react";
-
-import { SelectChangeEvent } from '@mui/material/Select';
-
-import CloseIcon from '@mui/icons-material/Close';
-import DoneIcon from '@mui/icons-material/Done';
 
 import { useResponse } from "../../../../hooks/useResponse";
 
 import { useAuth } from "../../../../hooks/useAuth";
 import { updatePassword } from "../../../../services/apiManageONU/updatePassword";
 
+import { NewUserWrapper } from "../style";
+import { FormControl, IconButton, InputAdornment, InputLabel, Modal, OutlinedInput, } from "@mui/material";
+import { SelectChangeEvent } from '@mui/material/Select';
+import CloseIcon from '@mui/icons-material/Close';
+import DoneIcon from '@mui/icons-material/Done';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export function EditPassword(props: any){
+type IEditUser = {
+    open: boolean,
+    selectedUser: {
+        id: number,
+        department_id: number,
+    } | null,
+    handleClose: () => void
+}
+
+export function EditPassword(props: IEditUser){
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
     const [form, setForm] = useState({
-        id: props.selectedUser.id,
-        accessLevel: props.selectedUser.department_id,
+        id: props.selectedUser!.id,
+        accessLevel: props.selectedUser!.department_id,
         password: ''
     });
-
     const [showPassword, setShowPassword] = useState(false);
 
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault();};
@@ -40,7 +46,7 @@ export function EditPassword(props: any){
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if(user!.rule <= props.selectedUser.department_id && user?.rule !== 17 && user!.rule <= form.accessLevel){
+        if(user!.rule <= props.selectedUser!.department_id && user?.rule !== 17 && user!.rule <= form.accessLevel){
             setFetchResponseMessage('error/privilege-denied');
         } else {
             const response = await updatePassword({
@@ -69,7 +75,7 @@ export function EditPassword(props: any){
             <NewUserWrapper onSubmit={handleSubmit}>
                 <h3>Nova Senha</h3>
                 <FormControl>
-                    <InputLabel htmlFor="outlined-adornment-password" required>Senha</InputLabel>
+                    <InputLabel required>Senha</InputLabel>
                     <OutlinedInput
                         label="Senha"
                         name='password'

@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 
+import { useAuth } from "../../../../hooks/useAuth";
 import { useResponse } from "../../../../hooks/useResponse";
 import { signUp } from "../../../../services/apiManageONU/signUp";
 import { isValidEmail } from "../../../../config/regex";
 
-import { SelectChangeEvent } from '@mui/material/Select';
+
 
 import { NewUserWrapper } from "../style";
+import { SelectChangeEvent } from '@mui/material/Select';
 import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, OutlinedInput, Select, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useAuth } from "../../../../hooks/useAuth";
 
-export function NewUser(props: any){
+export function NewUser(props: {open: boolean, handleClose: () => void}){
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
