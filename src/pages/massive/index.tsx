@@ -16,6 +16,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { EditMassive } from "./modals/editMassive";
 import { AddMassivePeople } from "./modals/addMassivePeople";
 import CloseIcon from '@mui/icons-material/Close';
+import { getClientMassive } from "../../services/apiManageONU/getClientMassive";
 
 export function Massive(){
     const { user } = useAuth();
@@ -63,12 +64,15 @@ export function Massive(){
         }
     }
 
-    const handleShowMassivePeople = (value: number) => {
+    const handleShowMassivePeople = async (value: number) => {
         if(showMassivePeople.includes(value)) {
             setShowMassivePeople(showMassivePeople.filter(cardIndex => cardIndex !== value));
         } else {
             setShowMassivePeople([value]);
         }
+
+        const response = await getClientMassive({massiveId: value, cpf: undefined});
+
     }
 
     const handleEditCard = (value: any) => {
