@@ -26,7 +26,7 @@ export function Massive(){
     const [openEditMassive, setOpenEditMassive] = useState(false);
     const [openAddPeopleMassive, setOpenAddPeopleMassive] = useState(false);
     const [massives, setMassives] = useState<any>([]);
-    const [clienteMassive, setClientMassive] = useState<any>([]);
+    const [clientMassive, setClientMassive] = useState<any>([]);
     const [editMassiveData, setEditMassiveData] = useState<any>();
     const [addPeopleData, setAddPeopleData] = useState<any>();
     const [showOffCard, setShowOffCard] = useState<number[]>([]);
@@ -64,16 +64,27 @@ export function Massive(){
         }
     }
 
-    const handleShowMassivePeople = async (value: number) => {
-        if(showMassivePeople.includes(value)) {
-            setShowMassivePeople(showMassivePeople.filter(cardIndex => cardIndex !== value));
+    const handleShowMassivePeople = async (index: number, massiveId: number) => {
+        if(showMassivePeople.includes(index)) {
+            setShowMassivePeople(showMassivePeople.filter(cardIndex => cardIndex !== index));
         } else {
-            setShowMassivePeople([value]);
+            setShowMassivePeople([index]);
+
+            const response = await getClientMassive({massiveId: massiveId, cpf: undefined});
+
+            if(response){
+                if(response.success){
+                    setClientMassive(response.responses.response);
+                } else {
+                    setFetchResponseMessage(response.messages.message);
+                }
+            } else {
+
+            }
         }
-
-        const response = await getClientMassive({massiveId: value, cpf: undefined});
-
     }
+
+    console.log(clientMassive)
 
     const handleEditCard = (value: any) => {
         handleOpenEditMassive();
@@ -112,7 +123,7 @@ export function Massive(){
                                                 className="off-card-button" 
                                                 size="small"
                                                 color="primary"
-                                                onClick={() => handleShowMassivePeople(index)}
+                                                onClick={() => handleShowMassivePeople(index, massive.id)}
                                             >
                                                 {showMassivePeople.includes(index) ? <CloseIcon /> : <Groups2RoundedIcon />}
                                             </IconButton>
@@ -120,7 +131,18 @@ export function Massive(){
                                         {
                                             showMassivePeople.includes(index) && (
                                                 <MassivePeopleStyle>
-                                                    teste
+                                                        <div>
+                                                            <h4>Clientes Afetados</h4>
+                                                        </div>
+                                                        <div className="flex clients">
+                                                            {clientMassive && clientMassive.map((client: any, index: number) => {
+                                                                return(
+                                                                    <div className="flex client" key={index}>
+                                                                        <p>{index}: {client.name ? client.name : client.cpf}</p>
+                                                                    </div>
+                                                                )
+                                                            })}
+                                                        </div>
                                                 </MassivePeopleStyle>
                                             )
                                         }

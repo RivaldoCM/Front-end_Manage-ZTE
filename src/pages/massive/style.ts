@@ -51,7 +51,6 @@ export const Card = styled.div<IOffCard>`
         height: 20%;
 
         p{
-            text-decoration: underline;
             font-weight: lighter;
             font-size: 1.2rem;
         }
@@ -102,7 +101,30 @@ export const MassivePeopleStyle = styled.div`
     top: .5rem;
     width: calc(100% - 6rem);
     height: 250px;
+    text-align: center;
+    background: white;
+    border-radius: 1rem;
     border: 1px solid black;
+
+    div:first-of-type{
+        height: 10%;
+    }
+
+    .clients{
+        flex-direction: column;
+        height: 90%;
+        overflow: auto;
+        color: black;
+
+        .client{
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            text-align: start;
+            padding: .5rem;
+
+        }
+    }
 `;
 
 //------------------------OFF-CARD------------------------//
