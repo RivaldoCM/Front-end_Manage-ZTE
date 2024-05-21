@@ -1,7 +1,6 @@
 import { AlertColor } from "@mui/material"
 
 export const handleMessage = (res: string): {responseMessage: string, severityStatus: AlertColor} => {
-    console.log(res)
     switch(res){ 
         case 'warning/has-action-in-progress':
             return{
@@ -78,6 +77,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Este email já existe na base de dados.',
                 severityStatus: 'error'
             }
+        case 'error/user-desactivated':
+            return{
+                responseMessage: 'Seu usuário não tem permissão para acessar.',
+                severityStatus: 'error'
+            }
         case 'Invalid Token':
             return{
                 responseMessage: 'Usuário não autenticado, você precisa fazer login novamente.',
@@ -88,14 +92,9 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Erro interno, verifique com o suporte.',
                 severityStatus: 'error'
             }
-        case 'Invalid Email':
+        case 'error/user-not-found':
             return{
-                responseMessage: 'Este Email não existe em nossa base de dados.',
-                severityStatus: 'error'
-            }
-        case 'Invalid Password':
-            return{
-                responseMessage: 'A senha está incorreta, verifique novamente.',
+                responseMessage: 'Usuário ou senha não conferem.',
                 severityStatus: 'error'
             }
         case 'warning/invalid-cpf-input':
@@ -178,7 +177,16 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Estes dados já existem.',
                 severityStatus: 'error'
             }
-            
+        case 'error/Invalid-format-email':
+            return{
+                responseMessage: 'Formato de E-mail inválido.',
+                severityStatus: 'warning'
+            }
+        case 'error/privilege-denied':
+            return{
+                responseMessage: 'Você não tem permissão para realizar está função.',
+                severityStatus: 'error'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',

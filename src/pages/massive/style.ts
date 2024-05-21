@@ -14,7 +14,7 @@ export const Container = styled.div`
         bottom: 16px;
         right: 1rem;
     }
-`
+`;
 
 export const Cards = styled.div`
     display: grid;
@@ -22,7 +22,7 @@ export const Cards = styled.div`
     justify-content: center;
     gap: .5rem;
     width: 100%;
-`
+`;
 
 export const CardController = styled.div`
     position: relative;
@@ -31,7 +31,7 @@ export const CardController = styled.div`
     width: inherit;
     height: 300px; 
     overflow: hidden;
-`
+`;
 
 export const Card = styled.div<IOffCard>`
     position: relative;
@@ -89,7 +89,23 @@ export const Card = styled.div<IOffCard>`
             }
         }
     }
-`
+`;
+
+export const IconMassivePeople = styled.div`
+    position: absolute;
+    top: .5rem;
+    right: 1rem;
+`;
+
+export const MassivePeopleStyle = styled.div`
+    position: absolute;
+    top: .5rem;
+    width: calc(100% - 6rem);
+    height: 250px;
+    border: 1px solid black;
+`;
+
+//------------------------OFF-CARD------------------------//
 
 export const OffCard = styled.div<IOffCard>`
     position: absolute;
@@ -127,8 +143,7 @@ export const OffCard = styled.div<IOffCard>`
         width: 100%;
         height: 20%;
     }
-
-`
+`;
 
 export const FormAddMassive = styled.form`
     flex-direction: column;
@@ -159,4 +174,4 @@ export const FormAddPeopleMassive = styled.form`
     text-align: center;
     background: #fff;
     border-radius: 8px;
-`
+`;

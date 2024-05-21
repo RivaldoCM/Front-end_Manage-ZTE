@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { getUsers } from "../../../services/apiManageONU/getUsers";
 import { getOlt } from "../../../services/apiManageONU/getOlt";
 import { getCities } from "../../../services/apiManageONU/getCities";
-import { IUsers } from "../../../interfaces/users";
+import { IUsers } from "../../../interfaces/IUsers";
 import { IOlt } from "../../../interfaces/IOlt";
 import { ICities } from "../../../interfaces/ICities";
 import { useError } from "../../../hooks/useError";

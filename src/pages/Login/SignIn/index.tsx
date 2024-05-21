@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
-import { useError } from '../../../hooks/useError';
+
+import { useAuth } from '../../../hooks/useAuth';
+import { useResponse } from '../../../hooks/useResponse';
+import { signIn } from '../../../services/apiManageONU/signIn';
+import { IDecodedJWT } from '../../../interfaces/IDecodedJWT';
 
 import Alert from '@mui/material/Alert';
 import FormControl from '@mui/material/FormControl';
@@ -15,38 +18,37 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useAuth } from '../../../hooks/useAuth';
-import { IDecodedJTW } from '../../../interfaces/IDecodedJWT';
 
 export function SignIn(){
     const navigate = useNavigate();
-    const { error, errorMessage, severityStatus, handleError } = useError();
     const { setUser } = useAuth();
+    const {response, setFetchResponseMessage, severityStatus, responseMassage } = useResponse();
 
     const [email, setEmail] = useState('');
     const [password, setPassord] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail((e.target.value));
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setPassord((e.target.value));
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault();};
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        await axios.post(`${import.meta.env.VITE_BASEURL_MANAGE_ONU}/login`, {
-            email: email,
-            password: password
-        })
-        .then(response => {
-            localStorage.setItem('Authorization', response.data.token);
-            const jwtDecoded: IDecodedJTW = jwtDecode(response.data.token);
-            setUser(jwtDecoded);
-            navigate('/');
-        })
-        .catch(err => {
-            handleError(err.response.data.error);
-        });
+
+        const response = await signIn({email, password});
+        if(response){
+            if(response.success){
+                localStorage.setItem('Authorization', response.responses.response);
+                const jwtDecoded: IDecodedJWT = jwtDecode(response.responses.response);
+                setUser(jwtDecoded);
+                navigate('/auth_onu');
+            } else {
+                setFetchResponseMessage(response.messages.message);
+            }
+        } else {
+            setFetchResponseMessage('error/no-connection-with-API');
+        }
     }
 
     return(
@@ -99,11 +101,9 @@ export function SignIn(){
                 Entrar
             </Button>
             {
-                (error ?
-                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-                :
-                    <></>
-                )
+                response ? 
+                    <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
+                : <></>
             }
         </form>
     )

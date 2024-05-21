@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { Card, Cards, OffCard, CardController, Container } from "./style";
+import { Card, Cards, OffCard, CardController, Container, IconMassivePeople, MassivePeopleStyle } from "./style";
 import { IconButton } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
-import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
+import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
 import { getMassive } from "../../services/apiManageONU/getMassive";
-import { AddMassive } from "./addMassive";
+import { AddMassive } from "./modals/addMassive";
 import { useResponse } from "../../hooks/useResponse";
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
@@ -13,8 +13,9 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import dayjs from "dayjs";
 import { useAuth } from "../../hooks/useAuth";
-import { EditMassive } from "./editMassive";
-import { AddPeopleToMassive } from "./addPeopleMassive";
+import { EditMassive } from "./modals/editMassive";
+import { AddMassivePeople } from "./modals/addMassivePeople";
+import CloseIcon from '@mui/icons-material/Close';
 
 export function Massive(){
     const { user } = useAuth();
@@ -23,11 +24,12 @@ export function Massive(){
     const [openAddMassive, setOpenAddMassive] = useState(false);
     const [openEditMassive, setOpenEditMassive] = useState(false);
     const [openAddPeopleMassive, setOpenAddPeopleMassive] = useState(false);
-
     const [massives, setMassives] = useState<any>([]);
+    const [clienteMassive, setClientMassive] = useState<any>([]);
     const [editMassiveData, setEditMassiveData] = useState<any>();
     const [addPeopleData, setAddPeopleData] = useState<any>();
     const [showOffCard, setShowOffCard] = useState<number[]>([]);
+    const [showMassivePeople, setShowMassivePeople] = useState<number[]>([])
 
     useEffect(() => {
         if(!openAddMassive){
@@ -58,6 +60,14 @@ export function Massive(){
             setShowOffCard(showOffCard.filter(cardIndex => cardIndex !== whichCard));
         } else {
             setShowOffCard([...showOffCard, whichCard]);
+        }
+    }
+
+    const handleShowMassivePeople = (value: number) => {
+        if(showMassivePeople.includes(value)) {
+            setShowMassivePeople(showMassivePeople.filter(cardIndex => cardIndex !== value));
+        } else {
+            setShowMassivePeople([value]);
         }
     }
 
@@ -93,6 +103,23 @@ export function Massive(){
                                     <div className="header flex">
                                         <h2>{massive.type}</h2>
                                         <p>{massive.Cities.name}</p>
+                                        <IconMassivePeople>
+                                            <IconButton
+                                                className="off-card-button" 
+                                                size="small"
+                                                color="primary"
+                                                onClick={() => handleShowMassivePeople(index)}
+                                            >
+                                                {showMassivePeople.includes(index) ? <CloseIcon /> : <Groups2RoundedIcon />}
+                                            </IconButton>
+                                        </IconMassivePeople>
+                                        {
+                                            showMassivePeople.includes(index) && (
+                                                <MassivePeopleStyle>
+                                                    teste
+                                                </MassivePeopleStyle>
+                                            )
+                                        }
                                     </div>
                                     <div className="content">
                                         <div className="basic-info">
@@ -132,7 +159,6 @@ export function Massive(){
                                                     <DoneIcon />
                                                 </IconButton>
                                             </React.Fragment> : 
-                                            
                                             <></>
                                         }
                                     </div>
@@ -143,8 +169,8 @@ export function Massive(){
                 }
             </Cards>
             <AddMassive
-                handleOpen={handleOpenAddMassive}
                 open={openAddMassive}
+                handleOpen={handleOpenAddMassive}
                 handleClose={handleCloseAddMassive}
             />
             {
@@ -158,7 +184,7 @@ export function Massive(){
             }
             {
                 openAddPeopleMassive && (
-                    <AddPeopleToMassive
+                    <AddMassivePeople
                         open={openAddPeopleMassive}
                         massive={addPeopleData}
                         handleClose={handleCloseAddPeopleMassive}

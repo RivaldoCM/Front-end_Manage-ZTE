@@ -1,16 +1,16 @@
 import { IconButton, Modal, TextField } from "@mui/material";
 import { useState } from "react";
-import { FormAddPeopleMassive } from "./style";
+import { FormAddPeopleMassive } from "../style";
 
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { isValidCpf } from "../../config/regex";
-import { addClientMassive } from "../../services/apiManageONU/addClientMassive";
-import { getPeopleId } from "../../services/apiVoalle/getPeopleId";
-import { useResponse } from "../../hooks/useResponse";
-import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
+import { isValidCpf } from "../../../config/regex";
+import { addClientMassive } from "../../../services/apiManageONU/addClientMassive";
+import { getPeopleId } from "../../../services/apiVoalle/getPeopleId";
+import { useResponse } from "../../../hooks/useResponse";
+import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
 
-export function AddPeopleToMassive(props: any){
+export function AddMassivePeople(props: any){
     const { setFetchResponseMessage } = useResponse();
 
     const [cpf, setCpf] = useState<string>('');
