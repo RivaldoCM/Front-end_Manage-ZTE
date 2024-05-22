@@ -103,26 +103,25 @@ export const MassivePeopleStyle = styled.div`
     height: 250px;
     text-align: center;
     background: white;
-    border-radius: 1rem;
-    border: 1px solid black;
-
-    div:first-of-type{
-        height: 10%;
-    }
+    border-radius: .5rem;
+    box-shadow: 0px 0px 15px 23px rgba(0,0,0,0.1);
+    overflow: auto;
 
     .clients{
+        position: relative;
         flex-direction: column;
-        height: 90%;
-        overflow: auto;
-        color: black;
 
         .client{
             flex-direction: column;
             align-items: flex-start;
             width: 100%;
+            height: inherit;
             text-align: start;
             padding: .5rem;
 
+            p{
+                font-size: .8rem;
+            }
         }
     }
 `;

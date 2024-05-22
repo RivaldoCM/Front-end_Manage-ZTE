@@ -122,27 +122,26 @@ export function Massive(){
                                             <IconButton
                                                 className="off-card-button" 
                                                 size="small"
-                                                color="primary"
                                                 onClick={() => handleShowMassivePeople(index, massive.id)}
                                             >
-                                                {showMassivePeople.includes(index) ? <CloseIcon /> : <Groups2RoundedIcon />}
+                                                {showMassivePeople.includes(index) ? <CloseIcon color="error"/> : <Groups2RoundedIcon color="secondary"/>}
                                             </IconButton>
                                         </IconMassivePeople>
                                         {
                                             showMassivePeople.includes(index) && (
                                                 <MassivePeopleStyle>
-                                                        <div>
-                                                            <h4>Clientes Afetados</h4>
-                                                        </div>
-                                                        <div className="flex clients">
-                                                            {clientMassive && clientMassive.map((client: any, index: number) => {
-                                                                return(
-                                                                    <div className="flex client" key={index}>
-                                                                        <p>{index}: {client.name ? client.name : client.cpf}</p>
-                                                                    </div>
-                                                                )
-                                                            })}
-                                                        </div>
+                                                    <div>
+                                                        <h4>Clientes Afetados</h4>
+                                                    </div>
+                                                    <div className="flex clients">
+                                                        {clientMassive && clientMassive.map((client: any, index: number) => {
+                                                            return(
+                                                                <div className="flex client" key={index}>
+                                                                    <p><b>{index + 1}</b>: {client.name ? client.name : client.cpf}</p>
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
                                                 </MassivePeopleStyle>
                                             )
                                         }
