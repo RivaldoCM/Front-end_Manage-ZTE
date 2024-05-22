@@ -72,7 +72,15 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         (async () => {
             const users = await getUsers();
             if (active) {
-                setUsers(users);
+                if(users){
+                    if(users.success){
+                        setUsers(users.responses.response);
+                    } else {
+                        setUsers([]);
+                    }
+                } else {
+                    setUsers([]);
+                }
             }
         })();
 

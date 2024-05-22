@@ -25,6 +25,7 @@ import { BreakTimePanel } from "./pages/breakTime/panel";
 import { BreakTimeContextProvider } from "./contexts/BreakTimeContext";
 import { BreakTimeDashboard } from "./pages/breakTime/dashboard";
 import { Massive } from "./pages/massive";
+import { LogsMassives } from "./pages/logs/massives";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -100,6 +101,12 @@ export function AppRoutes() {
                     path="massive"
                     element={
                         <PrivateRoute element={ <Massive />}/>
+                    }
+                />
+                <Route 
+                    path="logs_massive"
+                    element={
+                        <PrivateRoute element={ <LogsMassives />}/>
                     }
                 />
                 <Route path="break_time">

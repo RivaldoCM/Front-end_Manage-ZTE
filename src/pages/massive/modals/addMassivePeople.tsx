@@ -72,11 +72,11 @@ export function AddMassivePeople(props: any){
                     sx={{ mt: 2 }}
                 />
                 <div className="flex">
-                    <IconButton color="error" onClick={props.handleClose}>
-                        <CloseIcon />
-                    </IconButton>
                     <IconButton color="success" type="submit">
                         <DoneIcon />
+                    </IconButton>
+                    <IconButton color="error" onClick={props.handleClose}>
+                        <CloseIcon />
                     </IconButton>
                 </div>
             </FormAddPeopleMassive>

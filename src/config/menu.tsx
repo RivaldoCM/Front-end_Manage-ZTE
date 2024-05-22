@@ -12,6 +12,7 @@ import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
 import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
+import FindInPageOutlinedIcon from '@mui/icons-material/FindInPageOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -53,6 +54,9 @@ export const handlePages: IAllPages[] = [
         pages: [
             {
                 massive: "Massivas"
+            },
+            {
+                logs_massive: 'Históricos'
             }
         ]
     },
@@ -115,6 +119,8 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <TroubleshootOutlinedIcon />;
         case 'massive':
             return <PublicRoundedIcon />;
+        case 'logs_massive':
+            return <FindInPageOutlinedIcon />;
         case 'my_auth_onus':
             return <BallotOutlinedIcon />;
         case 'break_time/breaks':

@@ -176,6 +176,7 @@ export function AddMassive(props: any){
                             onChange={handleFormChange} 
                         >
                             <MenuItem value="Energia">Energia</MenuItem>
+                            <MenuItem value="Rompimento">Rompimento</MenuItem>
                             <MenuItem value="Parado">Parado</MenuItem>
                             <MenuItem value="Lentidão">Lentidão</MenuItem>
                             <MenuItem value="CTO Parado">CTO Parado</MenuItem>
@@ -185,7 +186,7 @@ export function AddMassive(props: any){
                     </FormControl>
                     <div className="flex">
                         <FormControl fullWidth variant="outlined" sx={{ mt: 2, mr:1 }}>
-                            <InputLabel htmlFor="outlined-adornment-password">Horario de falha</InputLabel>
+                            <InputLabel>Horario de falha</InputLabel>
                             <OutlinedInput
                                 required
                                 label="Horario de falha"
@@ -213,7 +214,7 @@ export function AddMassive(props: any){
                             }
                         </FormControl>
                         <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
-                            <InputLabel htmlFor="outlined-adornment-password">Previsão de retorno</InputLabel>
+                            <InputLabel>Previsão de retorno</InputLabel>
                             <OutlinedInput
                                 label="Previsão de retorno"
                                 type='text'
@@ -259,11 +260,11 @@ export function AddMassive(props: any){
                         sx={{ mt: 2 }}
                     />
                     <div className="flex">
-                        <IconButton color="error" onClick={props.handleClose}>
-                            <CloseIcon />
-                        </IconButton>
                         <IconButton color="success" type="submit">
                             <DoneIcon />
+                        </IconButton>
+                        <IconButton color="error" onClick={props.handleClose}>
+                            <CloseIcon />
                         </IconButton>
                     </div>
                 </FormAddMassive>
