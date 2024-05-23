@@ -1,8 +1,8 @@
-import { Filter, FormFilter } from "../onu/style";
+import { DateOptions, Filter, FormFilter } from "../onu/style";
 
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Autocomplete, CircularProgress, FormControl, MenuItem, Select, TextField } from "@mui/material";
+import { Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { ICities } from "../../../interfaces/ICities";
 import { getCities } from "../../../services/apiManageONU/getCities";
@@ -10,8 +10,9 @@ import dayjs, { Dayjs } from "dayjs";
 import LoadingButton from "@mui/lab/LoadingButton";
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import { useResponse } from "../../../hooks/useResponse";
+import { formatDateToISOFormat } from "../../../config/formatDate";
 
-export function FilterMassives(){
+export function FilterMassives({onFilterChange}: any){
     const { setFetchResponseMessage } = useResponse();
 
     const [cities, setCities] = useState<ICities[]>([]);
@@ -19,8 +20,12 @@ export function FilterMassives(){
     const [form, setForm] = useState({
         initialDate: '',
         lastDate: '',
-        problemType: 'Energia',
+        problemType: '',
         cityId: 0,
+    });
+    const [viewDate, setViewDate] = useState<any>({
+        viewInitialDate: '',
+        viewLastDate: ''
     });
     
     const loadingCities = isCitiesOpen && cities.length === 0;
@@ -44,17 +49,28 @@ export function FilterMassives(){
 
     const handleInitialDateChange = (date: Dayjs | null) => {
         const dataFormat = dayjs(date).format('DD-MM-YYYY');
+
+        setViewDate({
+            ...viewDate,
+            viewLastDate: dataFormat
+        })
+
         setForm({
             ...form,
-            initialDate: dataFormat
+            initialDate: formatDateToISOFormat(dataFormat, false)
         });
     };
 
     const handleLastDateChange = (date: Dayjs | null) => {
         const dataFormat = dayjs(date).format('DD-MM-YYYY');
+
+        setViewDate({
+            ...viewDate,
+            viewLastDate: dataFormat
+        });
         setForm({
             ...form,
-            lastDate: dataFormat
+            lastDate: formatDateToISOFormat(dataFormat, true)
         });
     };
 
@@ -84,30 +100,38 @@ export function FilterMassives(){
 
         if(form.initialDate && !form.lastDate || !form.initialDate && form.lastDate){
             setFetchResponseMessage('ta de sacanagem')
+        } else {
+            onFilterChange(form);
         }
     }
 
     return(
         <Filter className="flex" onSubmit={handleSubmit}>
             <FormFilter className="flex">
-                <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
-                    <DatePicker 
-                        label="Data Inicial" 
-                        format="DD/MM/YYYY"
-                        onChange={handleInitialDateChange}
-                    />
-                </DemoContainer>
-                -
-                <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
-                    <DatePicker 
-                    label="Data Final"
-                    format="DD/MM/YYYY"
-                    onChange={handleLastDateChange}
-                />
-                </DemoContainer>
+                <DateOptions className="flex">
+                    <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
+                        <DatePicker 
+                            label="Data Inicial" 
+                            format="DD/MM/YYYY"
+                            onChange={handleInitialDateChange}
+                            value={viewDate.viewInitialDate}
+                        />
+                    </DemoContainer>
+                    -
+                    <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
+                        <DatePicker 
+                            label="Data Final"
+                            format="DD/MM/YYYY"
+                            onChange={handleLastDateChange}
+                            value={viewDate.viewLastDate}
+                        />
+                    </DemoContainer>
+                </DateOptions>
                 <FormControl sx={{ width: 160 }}>
+                    <InputLabel>Tipo de falha</InputLabel>
                     <Select
                         name="problemType"
+                        label="Tipo de falha"
                         onChange={handleFormChange}
                         value={form.problemType}
                     >
