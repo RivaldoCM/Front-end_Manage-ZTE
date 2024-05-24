@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { FilterMassives } from "./filterOptions";
-import { formatDateToISOFormat } from "../../../config/formatDate";
 
 export function LogsMassives(){
     const [filterParams, setFilterParams] = useState<any>();
@@ -10,8 +9,6 @@ export function LogsMassives(){
     }, [filterParams]);
 
     const handleFilterChange = (filter: any | null) => {
-        
-        console.log(formatDateToISOFormat(filter.initialDate, false))
         setFilterParams(filter);
     };
 

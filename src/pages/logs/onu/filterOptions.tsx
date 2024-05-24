@@ -219,11 +219,11 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                     -
                     <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
                         <DatePicker 
-                        label="Data Final"
-                        format="DD/MM/YYYY"
-                        onChange={handleLastDateChange}
-                        value={viewDate.viewLastDate}
-                    />
+                            label="Data Final"
+                            format="DD/MM/YYYY"
+                            onChange={handleLastDateChange}
+                            value={viewDate.viewLastDate}
+                        />
                     </DemoContainer>
                 </DateOptions>
                 <Autocomplete

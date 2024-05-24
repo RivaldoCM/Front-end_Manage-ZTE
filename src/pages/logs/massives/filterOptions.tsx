@@ -17,17 +17,15 @@ export function FilterMassives({onFilterChange}: any){
 
     const [cities, setCities] = useState<ICities[]>([]);
     const [isCitiesOpen, setIsCitiesOpen] = useState(false);
-    const [form, setForm] = useState({
-        initialDate: '',
-        lastDate: '',
+    const [form, setForm] = useState<any>({
+        viewInitialDate: dayjs(),
+        viewLastDate: dayjs(),
+        initialDate: formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), false),
+        lastDate: formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), true),
         problemType: '',
         cityId: 0,
     });
-    const [viewDate, setViewDate] = useState<any>({
-        viewInitialDate: '',
-        viewLastDate: ''
-    });
-    
+
     const loadingCities = isCitiesOpen && cities.length === 0;
     useEffect(() => {
         let active = true;
@@ -49,28 +47,17 @@ export function FilterMassives({onFilterChange}: any){
 
     const handleInitialDateChange = (date: Dayjs | null) => {
         const dataFormat = dayjs(date).format('DD-MM-YYYY');
-
-        setViewDate({
-            ...viewDate,
-            viewLastDate: dataFormat
-        })
-
         setForm({
             ...form,
-            initialDate: formatDateToISOFormat(dataFormat, false)
+            initialDate: formatDateToISOFormat(dataFormat, false),
         });
     };
 
     const handleLastDateChange = (date: Dayjs | null) => {
         const dataFormat = dayjs(date).format('DD-MM-YYYY');
-
-        setViewDate({
-            ...viewDate,
-            viewLastDate: dataFormat
-        });
         setForm({
             ...form,
-            lastDate: formatDateToISOFormat(dataFormat, true)
+            lastDate: formatDateToISOFormat(dataFormat, false),
         });
     };
 
@@ -98,8 +85,8 @@ export function FilterMassives({onFilterChange}: any){
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if(form.initialDate && !form.lastDate || !form.initialDate && form.lastDate){
-            setFetchResponseMessage('ta de sacanagem')
+        if(dayjs(form.lastDate).isBefore(dayjs(form.initialDate))){
+            setFetchResponseMessage('error/lastDate-isBefore-initialDate');
         } else {
             onFilterChange(form);
         }
@@ -114,7 +101,7 @@ export function FilterMassives({onFilterChange}: any){
                             label="Data Inicial" 
                             format="DD/MM/YYYY"
                             onChange={handleInitialDateChange}
-                            value={viewDate.viewInitialDate}
+                            value={form.viewInitialDate}
                         />
                     </DemoContainer>
                     -
@@ -123,7 +110,7 @@ export function FilterMassives({onFilterChange}: any){
                             label="Data Final"
                             format="DD/MM/YYYY"
                             onChange={handleLastDateChange}
-                            value={viewDate.viewLastDate}
+                            value={form.viewLastDate}
                         />
                     </DemoContainer>
                 </DateOptions>
