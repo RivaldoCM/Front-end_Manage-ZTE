@@ -22,8 +22,8 @@ export function FilterMassives({onFilterChange}: any){
         viewLastDate: dayjs(),
         initialDate: formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), false),
         lastDate: formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), true),
-        problemType: '',
-        cityId: 0,
+        problemType: undefined,
+        cityId: undefined,
     });
 
     const loadingCities = isCitiesOpen && cities.length === 0;
