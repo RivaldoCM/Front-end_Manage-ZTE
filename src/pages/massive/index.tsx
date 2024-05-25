@@ -71,7 +71,6 @@ export function Massive(){
             setShowMassivePeople([index]);
 
             const response = await getClientMassive({massiveId: massiveId, cpf: undefined});
-
             if(response){
                 if(response.success){
                     setClientMassive(response.responses.response);
@@ -83,8 +82,6 @@ export function Massive(){
             }
         }
     }
-
-    console.log(clientMassive)
 
     const handleEditCard = (value: any) => {
         handleOpenEditMassive();
@@ -138,6 +135,7 @@ export function Massive(){
                                                             return(
                                                                 <div className="flex client" key={index}>
                                                                     <p><b>{index + 1}</b>: {client.name ? client.name : client.cpf}</p>
+                                                                    <a href={'https://www.google.com/maps?q=' + client.coordinates} target="_blank">{client.coordinates}</a>
                                                                 </div>
                                                             )
                                                         })}

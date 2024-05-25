@@ -26,11 +26,14 @@ export function AddMassivePeople(props: any){
         if(!cpf.match(isValidCpf)){
             setFetchResponseMessage('warning/invalid-cpf-input');
         } else {
-            const clientData = await getPeopleId(cpf) as {id: number, name: string};
+            const clientData = await getPeopleId(cpf) as any;
+            console.log(clientData)
             if(clientData){
                 response = await addClientMassive({
                     cpf: cpf,
                     name: clientData.name,
+                    address: `${clientData.mainAddress.streetType}  ${clientData.mainAddress.street}  N°${clientData.mainAddress.number}`,
+                    coordinates: `${clientData.mainAddress.latitude}, ${clientData.mainAddress.longitude}`, 
                     cityId: props.massive.cityId,
                     massiveId: props.massive.massiveId,
                     userId: props.massive.userId
