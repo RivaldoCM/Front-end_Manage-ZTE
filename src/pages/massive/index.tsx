@@ -135,7 +135,17 @@ export function Massive(){
                                                             return(
                                                                 <div className="flex client" key={index}>
                                                                     <p><b>{index + 1}</b>: {client.name ? client.name : client.cpf}</p>
-                                                                    <a href={'https://www.google.com/maps?q=' + client.coordinates} target="_blank">{client.coordinates}</a>
+                                                                    <p>{client.address ? client.address : ''}</p>
+                                                                    <p>
+                                                                        {
+                                                                            client.coordinates ? 
+                                                                            <p>
+                                                                                Coordenadas: 
+                                                                                <a href={'https://www.google.com/maps?q=' + client.coordinates} target="_blank"> {client.coordinates}</a> 
+                                                                            </p>
+                                                                            : ''
+                                                                        }
+                                                                    </p>
                                                                 </div>
                                                             )
                                                         })}
