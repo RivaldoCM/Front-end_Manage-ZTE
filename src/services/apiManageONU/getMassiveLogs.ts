@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function getMassiveLogs({initialDate, lastDate, problemType, cityId}: any): Promise<IResponseData | IResponseError>{
+export async function getMassiveLogs({initialDate, lastDate, problemType, cityId, cpf}: any): Promise<IResponseData | IResponseError>{
 
     console.log(initialDate, lastDate, problemType, cityId)
     const res = await axios({
@@ -14,7 +14,8 @@ export async function getMassiveLogs({initialDate, lastDate, problemType, cityId
             initialDate: initialDate,
             lastDate: lastDate,
             problemType: problemType,
-            cityId: cityId
+            cityId: cityId,
+            cpf: cpf
         }
     }).then((response) => {
         return response.data;

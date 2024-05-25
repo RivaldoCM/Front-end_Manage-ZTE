@@ -12,8 +12,10 @@ export function LogsMassives(){
                 initialDate: filterParams.initialDate,
                 lastDate: filterParams.lastDate,
                 problemType: filterParams.problemType,
-                cityId: filterParams.cityId
+                cityId: filterParams.cityId,
+                cpf: filterParams.cpf
             });
+            
             if(response){
                 if(response.success){
                     setMassives(response.responses.response);

@@ -24,6 +24,7 @@ export function FilterMassives({onFilterChange}: any){
         lastDate: formatDateToISOFormat(dayjs().format('DD-MM-YYYY'), true),
         problemType: undefined,
         cityId: undefined,
+        cpf: undefined
     });
 
     const loadingCities = isCitiesOpen && cities.length === 0;
@@ -57,7 +58,7 @@ export function FilterMassives({onFilterChange}: any){
         const dataFormat = dayjs(date).format('DD-MM-YYYY');
         setForm({
             ...form,
-            lastDate: formatDateToISOFormat(dataFormat, false),
+            lastDate: formatDateToISOFormat(dataFormat, true),
         });
     };
 
@@ -79,7 +80,7 @@ export function FilterMassives({onFilterChange}: any){
         setForm({
             ...form,
             [e.target.name]: e.target.value
-        })
+        });
     }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -165,6 +166,7 @@ export function FilterMassives({onFilterChange}: any){
                         />
                     )}
                 />
+                <TextField name="cpf" label="CPF do cliente" variant="outlined" onChange={handleFormChange}/>
             </FormFilter>
             <LoadingButton
                 type="submit"
