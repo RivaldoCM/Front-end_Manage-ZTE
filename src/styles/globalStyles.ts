@@ -8,10 +8,31 @@ interface MyStyledComponentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
 
 export const GlobalStyle = createGlobalStyle`
     :root {
-        //colors
-        --surface-color: #F8F8FF;
-        --curve: 40;
+        --primary-color-light: #f7f9fa;
+        --secondary-color-light: #d3dce6;
+        --highlight-color-light: #4a6572;
+        
+        --primary-color-dark: #2c3e50;
+        --secondary-color-dark: #4a6572;
+        --highlight-color-dark: #aab7c4;
+
+        --primary-color: var(--primary-color-light);
+        --secondary-color: var(--secondary-color-light);
+        --highlight-color: var(--highlight-color-light);
     }
+
+    body.light-theme {
+        --primary-color: var(--primary-color-light);
+        --secondary-color: var(--secondary-color-light);
+        --highlight-color: var(--highlight-color-light);
+    }
+
+    body.dark-theme {
+        --primary-color: var(--primary-color-dark);
+        --secondary-color: var(--secondary-color-dark);
+        --highlight-color: var(--highlight-color-dark);
+    }
+
     * {
         box-sizing: border-box;
         margin: 0;
@@ -21,6 +42,7 @@ export const GlobalStyle = createGlobalStyle`
         text-decoration: none;
         list-style-type: none;
     }
+
     html {
         font-size: 17px;
 
@@ -35,20 +57,33 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     body {
-        //background: #eef1f6 !important;
+        background: var(--primary-color) !important;
+        color: var(--highlight-color);
         -webkit-font-smoothing: antialiased;
     }
-    body, button, texarea{
+
+    body, button, textarea {
         font-family: 'Montserrat', sans-serif !important;
         font-weight: 400;
     }
-    p, li, input, div{
+
+    p, li, input, div {
         font-family: 'Poppins', sans-serif !important;
     }
-    h1, h2, h3, h4, h5, h6, strong, button{font-weight: 700; background: none;}
-    button {cursor: pointer;}
-    //a{color: var(--black)}
-    [disable] {opacity: 0.6%; cursor: not-allowed;}
+
+    h1, h2, h3, h4, h5, h6, strong, button {
+        font-weight: 700;
+        background: none;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    [disable] {
+        opacity: 0.6%;
+        cursor: not-allowed;
+    }
 
     ::-webkit-scrollbar {
         width: 8px; /* Largura da barra de rolagem */
@@ -70,21 +105,21 @@ export const GlobalStyle = createGlobalStyle`
         background: #555; /* Cor do fundo da alça ao passar o mouse */
     }
 
-    .flex{
+    .flex {
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
-    .MUI-CircularProgress{
+    .MUI-CircularProgress {
         width: 30px !important;
         height: 30px !important;
     }
 
-    .alert{
+    .alert {
         position: fixed; 
         top: 94%;
-        left:50%;
+        left: 50%;
         z-index: 100;
         transform: translate(-50%, -50%);
     }
@@ -102,24 +137,23 @@ export const InputContainer = styled.div<MyStyledComponentProps>`
     width: 100%;
     margin: 1rem 0;
 
-    .text{
+    .text {
         display: flex;
         align-items: ${(props) => (props.center ? 'center' : 'end')};
     }
 
-    .text, .content{
+    .text, .content {
         width: 50%;
         padding: 0 2px;
     }
 
-    .content{
-
-        > input{
-            //POR ALGUM MOIVO O INPUT TYPE NUMBER FLOODA O MODAL
+    .content {
+        > input {
+            //POR ALGUM MOTIVO O INPUT TYPE NUMBER FLOODA O MODAL
             max-width: 100%;
         }
     }
-    
+
     @media (max-width: 450px){
         width: 100%;
     }

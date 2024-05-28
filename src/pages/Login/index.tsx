@@ -50,7 +50,7 @@ export function Login() {
         <Container className='flex'>
             <form className='flex' onSubmit={handleLogin}>
                 <FormControl>
-                    <InputLabel htmlFor="outlined-adornment-email">E-mail</InputLabel>
+                    <InputLabel htmlFor="outlined-adornment-email" style={{ color: 'var(--highlight-color)' }}>E-mail</InputLabel>
                     <OutlinedInput
                         placeholder='Digite seu E-mail'
                         type='text'
@@ -61,10 +61,11 @@ export function Login() {
                             </InputAdornment>
                         }
                         label="E-mail"
+                        style={{ color: 'var(--highlight-color)' }}
                     />
                 </FormControl>
                 <FormControl>
-                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                    <InputLabel htmlFor="outlined-adornment-password" style={{ color: 'var(--highlight-color)' }}>Password</InputLabel>
                     <OutlinedInput
                         placeholder='Digite sua senha'
                         type={showPassword ? 'text' : 'password'}
@@ -87,15 +88,18 @@ export function Login() {
                             </InputAdornment>
                         }
                         label="Password"
+                        style={{ color: 'var(--highlight-color)' }}
                     />
                 </FormControl>
-                <Button variant="contained" size="large" type="submit">
+                <Button variant="contained" size="large" type="submit" style={{ backgroundColor: 'var(--highlight-color)', color: 'var(--primary-color)' }}>
                     Entrar
                 </Button>
             </form>
             {
                 response ? 
-                    <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
+                    <Alert severity={severityStatus} className="alert" style={{ backgroundColor: 'var(--secondary-color)', color: 'var(--highlight-color)' }}>
+                        {responseMassage}
+                    </Alert>
                 : <></>
             }
         </Container>
