@@ -17,6 +17,8 @@ import { EditMassive } from "./modals/editMassive";
 import { AddMassivePeople } from "./modals/addMassivePeople";
 import CloseIcon from '@mui/icons-material/Close';
 import { getClientMassive } from "../../services/apiManageONU/getClientMassive";
+import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
+import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 
 export function Massive(){
     const { user } = useAuth();
@@ -113,7 +115,7 @@ export function Massive(){
                             <CardController className="flex" key={index}>
                                 <Card className="flex" offCardOpen={showOffCard.includes(index)}>
                                     <div className="header flex">
-                                        <h2>{massive.type}</h2>
+                                        <h2>{massive.type} - {dayjs(massive.failure_date).add(3, "hour").format('HH:mm') + 'h'}</h2>
                                         <p>{massive.Cities.name}</p>
                                         <IconMassivePeople>
                                             <IconButton
@@ -121,7 +123,7 @@ export function Massive(){
                                                 size="small"
                                                 onClick={() => handleShowMassivePeople(index, massive.id)}
                                             >
-                                                {showMassivePeople.includes(index) ? <CloseIcon color="error"/> : <Groups2RoundedIcon color="secondary"/>}
+                                                {showMassivePeople.includes(index) ? <CloseIcon color="error"/> : <Groups2RoundedIcon color="primary"/>}
                                             </IconButton>
                                         </IconMassivePeople>
                                         {
@@ -155,14 +157,16 @@ export function Massive(){
                                         }
                                     </div>
                                     <div className="content">
-                                        <div className="basic-info">
-                                            <p>Locais afetados: {massive.affected_local}</p>
-                                        </div>
+                                        <div className="basic-info flex">
+                                            <LocationCityOutlinedIcon color="action" />
+                                            <p>{massive.affected_local}</p>
+                                        </div>  
                                         <div className="description flex">
+                                            <DrawOutlinedIcon color="action" />
                                             <p>{massive.description}</p>
                                         </div>
-                                        <div className="teste flex">
-                                            <p>Previsão de retorno: {dayjs(massive.forecast_return).add(3, "hour").format('DD/MM/YY - HH:mm') + 'h'}</p>
+                                        <div className=" flex">
+                                            <p>Previsão: {dayjs(massive.forecast_return).add(3, "hour").format('DD/MM [às] HH:mm') + 'h'}</p>
                                         </div>
                                     </div>
                                 </Card>
@@ -176,7 +180,8 @@ export function Massive(){
                                         {showOffCard.includes(index) ? <ExpandMoreOutlinedIcon /> : <ExpandLessOutlinedIcon />}
                                     </IconButton>
                                     <div className="off-card-information">
-                                        <p>Aberto por {massive.User_Massive_created_by.name} às {dayjs(massive.created_at).add(3, "hour").format('HH:mm-DD/MM')}</p>
+                                        <p>Aberto por {massive.User_Massive_created_by.name} dia {dayjs(massive.created_at).add(3, "hour").format('DD/MM [às] HH:mm') + 'hrs'}</p>
+                                        {massive.User_Massive_last_updated_by ? <p>Editado por {massive.User_Massive_last_updated_by.name}</p> : ''}
                                     </div>
                                     <div className="off-card-action-buttons flex">
                                         <IconButton size="small" color="primary" onClick={() => handleAddPeopleToCard(massive)}>

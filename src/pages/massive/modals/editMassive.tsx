@@ -133,6 +133,7 @@ export function EditMassive(props: any){
                             onChange={handleFormChange} 
                         >
                             <MenuItem value="Energia">Energia</MenuItem>
+                            <MenuItem value="Rompimento">Rompimento</MenuItem>
                             <MenuItem value="Parado">Parado</MenuItem>
                             <MenuItem value="Lentidão">Lentidão</MenuItem>
                             <MenuItem value="CTO Parado">CTO Parado</MenuItem>

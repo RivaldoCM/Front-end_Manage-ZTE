@@ -46,13 +46,14 @@ export const Card = styled.div<IOffCard>`
     filter: ${(props) => props.offCardOpen ? 'blur(2px)' : 'blur(0)'};
 
     .header{
+        font-family: "Itim", cursive !important;
         flex-direction: column;
         width: 100%;
         height: 20%;
 
         p{
-            font-weight: lighter;
-            font-size: 1.2rem;
+            font-family: "Itim", cursive !important;
+            font-size: 1.3rem;
         }
     }
     .content{
@@ -61,38 +62,27 @@ export const Card = styled.div<IOffCard>`
         padding-top: .5rem;
 
         .basic-info{
+            align-items: flex-start;
+            justify-content: flex-start;
             height: 35%;
             overflow: auto;
             p{
-                margin: .2rem 0;
+                font-family: "Itim", cursive !important;
             }
         }
 
         .description{
             align-items: flex-start;
+            justify-content: flex-start;
             height: 50%;
-            padding: .5rem;
             overflow: auto;
-
-            p{
-                text-align: center;
-            }
-        }
-
-        .teste{
-            width: 100%;
-            height: 15%;
-
-            p{
-                text-align: end;
-            }
         }
     }
 `;
 
 export const IconMassivePeople = styled.div`
     position: absolute;
-    top: .5rem;
+    top: .2rem;
     right: 1rem;
 `;
 
