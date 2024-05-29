@@ -17,7 +17,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Alert } from "@mui/material";
 
 export function SearchONU() {
-    const { authOnu, setAuthOnu, setViewOnlyOlt, viewOnlyOlt, setOnus  } = useAuthOnu();
+    const { authOnu, setAuthOnu, setViewOnlyOlt, viewOnlyOlt, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { error, errorMessage, severityStatus, handleError } = useError();
 
@@ -65,11 +65,14 @@ export function SearchONU() {
 
     const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
         setAuthOnu({
-        ...authOnu,
-        city: e.target.value
-    })};
+            ...authOnu,
+            city: e.target.value
+        });
+    };
     
-    const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); }
+    const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
+        setMatchSerialNumber(e.target.value); 
+    };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -85,10 +88,10 @@ export function SearchONU() {
 
         if(isLoading){
             handleError('warning/has-action-in-progress');
-        }else if(!isAlphaNumeric.test(matchSerialNumber)){
+        } else if(!isAlphaNumeric.test(matchSerialNumber)){
             handleError('info/non-expect-caracter-not-alphaNumeric');
             stopLoading();
-        }else{
+        } else {
             const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
             let ips: string[] = [];
             let modelOlt: number[] = [];
@@ -161,11 +164,27 @@ export function SearchONU() {
                     <CircularProgress className="MUI-CircularProgress" color="primary"/>
                 :
                     (matchSerialNumber.length < 4 ?
-                        <Button disabled variant="outlined" endIcon={<SearchIcon />}>
+                        <Button 
+                            disabled 
+                            variant="outlined" 
+                            endIcon={<SearchIcon />} 
+                            sx={{ 
+                                color: 'var(--text-color)', 
+                                borderColor: 'var(--text-color)' 
+                            }}
+                        >
                             Procurar ONU
                         </Button>
                     :
-                        <Button type="submit" variant="outlined" endIcon={<SearchIcon />}>
+                        <Button 
+                            type="submit" 
+                            variant="outlined" 
+                            endIcon={<SearchIcon />} 
+                            sx={{ 
+                                color: 'var(--text-color)', 
+                                borderColor: 'var(--text-color)' 
+                            }}
+                        >
                             Procurar ONU
                         </Button>
                     )

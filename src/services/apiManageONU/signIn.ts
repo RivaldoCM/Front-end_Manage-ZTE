@@ -11,7 +11,8 @@ export async function signIn({ email, password }: {email: string, password: stri
         }
     }).then((response) => {
         return response.data;
-    }).catch(() =>{
+    }).catch((err) =>{
+        console.log(err)
         return null;
     });
     return res;

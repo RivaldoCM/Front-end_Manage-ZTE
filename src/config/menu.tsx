@@ -17,24 +17,24 @@ import FindInPageOutlinedIcon from '@mui/icons-material/FindInPageOutlined';
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
     {
-        name: "Area Tecnica",
+        name: "ÁREA TÉCNICA",
         pages: [
            {
-                auth_onu: 'Provisiona ONU'
+                auth_onu: 'PROVISIONA ONU'
            },
            {
-                onuDelete: 'Desprovisiona ONU'
+                onuDelete: 'DESPROVISIONA ONU'
            },
            {
-                my_auth_onus: 'Meus Provisionamentos'
+                my_auth_onus: 'MEUS PROVISIONAMENTOS'
            }
         ]
     },
     {
-        name: "Admin",
+        name: "ADMIN",
         pages: [
             {
-                users: 'Usuários',
+                users: 'USUÁRIOS',
             },
             {
                 olts: "OLT's"
@@ -42,35 +42,35 @@ export const handlePages: IAllPages[] = [
         ]
     },
     {
-        name: 'Auditoria',
+        name: 'AUDITORIA',
         pages: [
             {
-                logs_onu: 'Log de Onu',
+                logs_onu: 'LOG DE ONU',
             }
         ]
     },
     {
-        name: 'Massiva',
+        name: 'MASSIVAS',
         pages: [
             {
-                massive: "Massivas"
+                massive: "MASSIVAS"
             },
             {
-                logs_massive: 'Históricos'
+                logs_massive: 'HISTÓRICOS'
             }
         ]
     },
     {
-        name: 'Pausas',
+        name: 'PAUSAS',
         pages: [
             {
-                'break_time/dashboard': 'Dashboard de Pausas'
+                'break_time/dashboard': 'DASHBOARD DE PAUSAS'
             },
             {
-                'break_time/breaks': 'Horários de Pausa'
+                'break_time/breaks': 'HORÁRIOS DE PAUSA'
             },
             {
-                'break_time/panel': 'Painel de Pausas'
+                'break_time/panel': 'PAINEL DE PAUSAS'
             },
         ]
     }

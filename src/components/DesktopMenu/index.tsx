@@ -59,33 +59,35 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 interface AppBarProps extends MuiAppBarProps {
-  	open?: boolean;
+	open?: boolean;
 }
 
 const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== 'open',
-	})<AppBarProps>(({ theme, open }) => ({
-		zIndex: theme.zIndex.drawer + 1,
+})<AppBarProps>(({ theme, open }) => ({
+	zIndex: theme.zIndex.drawer + 1,
+	transition: theme.transitions.create(['width', 'margin'], {
+		easing: theme.transitions.easing.sharp,
+		duration: theme.transitions.duration.leavingScreen,
+	}),
+	backgroundColor: 'var(--highlight-color)',
+	...(open && {
+		marginLeft: drawerWidth,
+		width: `calc(100% - ${drawerWidth}px)`,
 		transition: theme.transitions.create(['width', 'margin'], {
 			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
-		}),
-		...(open && {
-			marginLeft: drawerWidth,
-			width: `calc(100% - ${drawerWidth}px)`,
-			transition: theme.transitions.create(['width', 'margin'], {
-				easing: theme.transitions.easing.sharp,
-				duration: theme.transitions.duration.enteringScreen,
+			duration: theme.transitions.duration.enteringScreen,
 		}),
 	}),
 }));
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  	({ theme, open }) => ({
+	({ theme, open }) => ({
 		width: drawerWidth,
 		flexShrink: 0,
 		whiteSpace: 'nowrap',
 		boxSizing: 'border-box',
+		backgroundColor: 'var(--primary-color)',
 		...(open && {
 			...openedMixin(theme),
 			'& .MuiDrawer-paper': openedMixin(theme),
@@ -100,17 +102,17 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export function MenuDrawer() {
 	const navigate = useNavigate();
 	const { user, setUser } = useAuth();
-	const {response, severityStatus, responseMassage} = useResponse();
+	const { response, severityStatus, responseMassage } = useResponse();
 	const theme = useTheme();
 
-	const [ open, setOpen ] = useState(false);
-	const [ currentPage, setCurrentPage ] = useState('EASE ACESSE');
+	const [open, setOpen] = useState(false);
+	const [currentPage, setCurrentPage] = useState('EASE ACESSE');
 
-	const handleDrawerOpen = () => { setOpen(true);	};
+	const handleDrawerOpen = () => { setOpen(true); };
 	const handleDrawerClose = () => { setOpen(false); };
-	const redirectToRoute = (text: string) => {	navigate(`/${text.toLocaleLowerCase()}`); }
-	const handlePageChange = (route: string, page: string) => { 
-		redirectToRoute(route);	
+	const redirectToRoute = (text: string) => { navigate(`/${text.toLocaleLowerCase()}`); }
+	const handlePageChange = (route: string, page: string) => {
+		redirectToRoute(route);
 		setCurrentPage(page);
 	};
 
@@ -120,12 +122,12 @@ export function MenuDrawer() {
 		navigate('/login');
 	};
 
-	return(
+	return (
 		<Box sx={{ display: 'flex' }}>
 			<CssBaseline />
-			<AppBar 
-				className='flex' 
-				position="fixed" 
+			<AppBar
+				className='flex'
+				position="fixed"
 				open={open}
 				sx={{
 					flexDirection: 'row-reverse',
@@ -143,7 +145,7 @@ export function MenuDrawer() {
 				>
 					<LogoutIcon />
 				</IconButton>
-				<Toolbar sx={{width: '100% !important',}}>
+				<Toolbar sx={{ width: '100% !important', }}>
 					<IconButton
 						color="inherit"
 						aria-label="open drawer"
@@ -186,26 +188,27 @@ export function MenuDrawer() {
 												sx={{
 													minWidth: 0,
 													justifyContent: 'center',
+													color: 'var(--highlight-color)',
 												}}
 											>
 												{handleIconMenu(Object.keys(page)[0])}
 											</ListItemIcon>
-											<ListItemText primary={Object.values(page)[0]} sx={{ padding: '.5rem 1.5rem' }}/>
+											<ListItemText primary={Object.values(page)[0]} sx={{ padding: '.5rem 1.5rem' }} />
 										</ListItemButton>
 									</ListItem>
 								))}
 							</List>
-					</div>
+						</div>
 					))}
 				</List>
 			</Drawer>
 			<Box component="main" className='flex' sx={{ flexGrow: 1, mt: '68px' }}>
 				<Outlet />
 				{
-                response ? 
-                	<Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
-                	: <></>
-            	}
+					response ?
+						<Alert severity={severityStatus} className="alert" style={{ backgroundColor: 'var(--secondary-color)', color: 'var(--highlight-color)' }}>{responseMassage}</Alert>
+						: <></>
+				}
 			</Box>
 		</Box>
 	);
