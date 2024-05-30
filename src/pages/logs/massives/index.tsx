@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { FilterMassives } from "./filterOptions";
 import { getMassiveLogs } from "../../../services/apiManageONU/getMassiveLogs";
+import { useResponse } from "../../../hooks/useResponse";
 
 export function LogsMassives(){
-    const [massives, setMassives] = useState([])
-    const [filterParams, setFilterParams] = useState<any>();
+    const { setFetchResponseMessage } = useResponse();
+
+    const [massives, setMassives] = useState([]);
+    const [filterParams, setFilterParams] = useState<any>(undefined);
 
     useEffect(() => {
         const getData = async () => {
@@ -20,19 +23,20 @@ export function LogsMassives(){
                 if(response.success){
                     setMassives(response.responses.response);
                 } else {
-
+                    setFetchResponseMessage(response.messages.message);
                 }
             } else {
-
+                setFetchResponseMessage('error/no-connection-with-API');
             }
         }
         getData();
     }, [filterParams]);
 
     const handleFilterChange = (filter: any | null) => {
-        console.log(filter)
         setFilterParams(filter);
     };
+
+    console.log(massives)
 
     return(
         <>

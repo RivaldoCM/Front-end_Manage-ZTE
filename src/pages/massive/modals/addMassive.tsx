@@ -106,10 +106,10 @@ export function AddMassive(props: any){
         const response = await addMassive(form);
         if(response){
             if(response.success){
-                setFetchResponseMessage('success/data-massive-created');
+                setFetchResponseMessage(response.responses.status);
                 props.handleClose();
             } else {
-                setFetchResponseMessage('error/impossible-to-create-data');
+                setFetchResponseMessage(response.messages.message);
             }
         } else {
             setFetchResponseMessage('error/no-connection-with-API');
@@ -119,7 +119,7 @@ export function AddMassive(props: any){
     return(
         <React.Fragment>
             {
-                user?.rule! > 13 ? 
+                user?.rule! > 13 ?
                 <Fab className='add-massive' color="primary" size="medium" onClick={props.handleOpen}>
                     <AddIcon />
                 </Fab>

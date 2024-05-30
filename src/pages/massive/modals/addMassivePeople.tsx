@@ -27,7 +27,6 @@ export function AddMassivePeople(props: any){
             setFetchResponseMessage('warning/invalid-cpf-input');
         } else {
             const clientData = await getPeopleId(cpf) as any;
-            console.log(clientData)
             if(clientData){
                 response = await addClientMassive({
                     cpf: cpf,

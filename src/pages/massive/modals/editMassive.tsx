@@ -27,8 +27,8 @@ export function EditMassive(props: any){
     const [openForecastTime, setOpenForecastTime] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
     const [form, setForm] = useState<IAddMassive>({
-        massiveId: props.massive.id,
         user: user?.uid,
+        massiveId: props.massive.id,
         cityId: props.massive.Cities.id,
         forecastReturn: dayjs(props.massive.forecast_return).format('DD/MM/YY - HH:mm') + 'h',
         failureTime: dayjs(props.massive.failure_date).format('DD/MM/YY - HH:mm') + 'h',
@@ -93,10 +93,10 @@ export function EditMassive(props: any){
         const response = await updateMassive(form);
         if(response){
             if(response.success){
-                setFetchResponseMessage('success/data-massive-created');
+                setFetchResponseMessage(response.responses.status);
                 props.handleClose();
             } else {
-                setFetchResponseMessage('error/impossible-to-create-data');
+                setFetchResponseMessage(response.messages.message);
             }
         } else {
             setFetchResponseMessage('error/no-connection-with-API');

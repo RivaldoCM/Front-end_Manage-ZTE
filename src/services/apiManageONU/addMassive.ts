@@ -1,6 +1,7 @@
 import axios from "axios";
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function addMassive(props: any){
+export async function addMassive(props: any): Promise<IResponseData | IResponseError>{
     const response = await axios({
         method: 'POST',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/massive`,

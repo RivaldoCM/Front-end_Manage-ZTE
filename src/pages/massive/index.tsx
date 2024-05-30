@@ -71,7 +71,6 @@ export function Massive(){
             setShowMassivePeople(showMassivePeople.filter(cardIndex => cardIndex !== index));
         } else {
             setShowMassivePeople([index]);
-
             const response = await getClientMassive({massiveId: massiveId, cpf: undefined});
             if(response){
                 if(response.success){
@@ -80,7 +79,7 @@ export function Massive(){
                     setFetchResponseMessage(response.messages.message);
                 }
             } else {
-
+                setFetchResponseMessage('error/no-connection-with-API');
             }
         }
     }
@@ -165,7 +164,7 @@ export function Massive(){
                                             <DrawOutlinedIcon color="action" />
                                             <p>{massive.description}</p>
                                         </div>
-                                        <div className=" flex">
+                                        <div className="flex">
                                             <p>Previsão: {dayjs(massive.forecast_return).add(3, "hour").format('DD/MM [às] HH:mm') + 'h'}</p>
                                         </div>
                                     </div>
@@ -180,8 +179,20 @@ export function Massive(){
                                         {showOffCard.includes(index) ? <ExpandMoreOutlinedIcon /> : <ExpandLessOutlinedIcon />}
                                     </IconButton>
                                     <div className="off-card-information">
-                                        <p>Aberto por {massive.User_Massive_created_by.name} dia {dayjs(massive.created_at).add(3, "hour").format('DD/MM [às] HH:mm') + 'hrs'}</p>
-                                        {massive.User_Massive_last_updated_by ? <p>Editado por {massive.User_Massive_last_updated_by.name}</p> : ''}
+                                        <p>
+                                            Aberto por
+                                            {' ' + massive.User_Massive_created_by.name + ' '} 
+                                            dia 
+                                            {' ' + dayjs(massive.created_at).add(3, "hour").format('DD/MM [às] HH:mm') + 'hrs'}
+                                        </p>
+                                        {
+                                            massive.User_Massive_last_updated_by ? 
+                                            <p>
+                                                Última edição feita por
+                                                {' ' + massive.User_Massive_last_updated_by.name}
+                                            </p> 
+                                                : ''
+                                        }
                                     </div>
                                     <div className="off-card-action-buttons flex">
                                         <IconButton size="small" color="primary" onClick={() => handleAddPeopleToCard(massive)}>

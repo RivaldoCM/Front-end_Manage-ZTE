@@ -39,8 +39,7 @@ export const Card = styled.div<IOffCard>`
     width: inherit;
     height: inherit;
     padding: .5rem .5rem 2rem .5rem;
-    background-color: #D8DEE9;
-    border: 2px solid #B6BEC2;
+    background-color: #CCE5FF;
     border-radius: 1.5rem;
     overflow: hidden;
     filter: ${(props) => props.offCardOpen ? 'blur(2px)' : 'blur(0)'};
@@ -51,7 +50,7 @@ export const Card = styled.div<IOffCard>`
         width: 100%;
         height: 20%;
 
-        p{
+        h2,p{
             font-family: "Itim", cursive !important;
             font-size: 1.3rem;
         }
@@ -61,14 +60,15 @@ export const Card = styled.div<IOffCard>`
         height: 85%;
         padding-top: .5rem;
 
+        p{
+            font-family: "Itim", cursive !important;
+        }
+
         .basic-info{
             align-items: flex-start;
             justify-content: flex-start;
             height: 35%;
             overflow: auto;
-            p{
-                font-family: "Itim", cursive !important;
-            }
         }
 
         .description{
@@ -135,6 +135,10 @@ export const OffCard = styled.div<IOffCard>`
     transform: ${(props) => props.offCardOpen ? 'translateY(5%)' : 'translateY(96%)'};
     transition: .2s ease-in-out;
 
+    p{
+            font-family: "Itim", cursive !important;
+        }
+
     .off-card-button{
         z-index: 3;
         overflow: hidden;
@@ -147,6 +151,10 @@ export const OffCard = styled.div<IOffCard>`
 
     .off-card-information{
         height: 60%;
+
+        p{
+            padding: .5rem 0;
+        }
     }
 
     .off-card-action-buttons{
