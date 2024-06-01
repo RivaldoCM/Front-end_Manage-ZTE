@@ -4,7 +4,6 @@ import { Card, Cards, OffCard, CardController, Container, IconMassivePeople, Mas
 import { IconButton } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
 import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
-import { getMassive } from "../../services/apiManageONU/getMassive";
 import { AddMassive } from "./modals/addMassive";
 import { useResponse } from "../../hooks/useResponse";
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
@@ -19,42 +18,25 @@ import CloseIcon from '@mui/icons-material/Close';
 import { getClientMassive } from "../../services/apiManageONU/getClientMassive";
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
+import { useMassive } from "../../hooks/useMassive";
+import { FinishMassive } from "./modals/finishMassive";
+import { finishMassive } from "../../services/apiManageONU/finishMassive";
 
 export function Massive(){
     const { user } = useAuth();
+    const { massives } = useMassive();
     const { setFetchResponseMessage } = useResponse();
 
     const [openAddMassive, setOpenAddMassive] = useState(false);
     const [openEditMassive, setOpenEditMassive] = useState(false);
+    const [openFinishMassive, setOpenFinishMassive] = useState(false);
     const [openAddPeopleMassive, setOpenAddPeopleMassive] = useState(false);
-    const [massives, setMassives] = useState<any>([]);
     const [clientMassive, setClientMassive] = useState<any>([]);
     const [editMassiveData, setEditMassiveData] = useState<any>();
+    const [FinishMassiveData, setFinishMassiveData] = useState<any>();
     const [addPeopleData, setAddPeopleData] = useState<any>();
     const [showOffCard, setShowOffCard] = useState<number[]>([]);
-    const [showMassivePeople, setShowMassivePeople] = useState<number[]>([])
-
-    useEffect(() => {
-        if(!openAddMassive){
-            async function massives(){
-                const activeMassives = await getMassive();
-                if(activeMassives){
-                    if(activeMassives.success){
-                        if(activeMassives.responses.response){
-                            setMassives(activeMassives.responses.response);
-                        } else {
-                            setMassives([]);
-                        }
-                    } else {
-                        setMassives([]);
-                    }
-                } else {
-                    setFetchResponseMessage('error/no-connection-with-API');
-                }
-            }
-            massives();
-        }
-    }, [openAddMassive]);
+    const [showMassivePeople, setShowMassivePeople] = useState<number[]>([]);
 
     const handleShowOffCard = (whichCard: number) => {
         if (showOffCard.includes(whichCard)) {
@@ -90,10 +72,18 @@ export function Massive(){
     }
 
     const handleAddPeopleToCard = (value: any) => {
-        handleOpenAddPeopleMassive();
+        handleOpenAddPeopleMassive(); 
         setAddPeopleData({
             userId: user?.uid,
             cityId: value.Cities.id,
+            massiveId: value.id
+        });
+    }
+
+    const handleFinishMassive = (value: any) => {
+        handleOpenFinishMassive();
+        setFinishMassiveData({
+            userId: user?.uid,
             massiveId: value.id
         });
     }
@@ -102,8 +92,11 @@ export function Massive(){
     const handleCloseAddMassive = () => setOpenAddMassive(false);
     const handleOpenEditMassive = () => setOpenEditMassive(true);
     const handleCloseEditMassive = () => setOpenEditMassive(false);
+    const handleOpenFinishMassive = () => setOpenFinishMassive(true);
+    const handleCloseFinishMassive = () => setOpenFinishMassive(false);
     const handleOpenAddPeopleMassive = () => setOpenAddPeopleMassive(true);
     const handleCloseAddPeopleMassive = () => setOpenAddPeopleMassive(false);
+
 
     return(
         <Container>
@@ -204,7 +197,7 @@ export function Massive(){
                                                 <IconButton size="small" color="secondary" onClick={() => handleEditCard(massive)}>
                                                     <CreateOutlinedIcon />
                                                 </IconButton>
-                                                <IconButton size="small" color="success">
+                                                <IconButton size="small" color="success" onClick={() => handleFinishMassive(massive)}>
                                                     <DoneIcon />
                                                 </IconButton>
                                             </React.Fragment> : 
@@ -237,6 +230,15 @@ export function Massive(){
                         open={openAddPeopleMassive}
                         massive={addPeopleData}
                         handleClose={handleCloseAddPeopleMassive}
+                    />
+                )
+            }
+            {
+                openFinishMassive && (
+                    <FinishMassive 
+                        open={openFinishMassive}
+                        massive={FinishMassiveData}
+                        handleClose={handleCloseFinishMassive}
                     />
                 )
             }

@@ -62,7 +62,7 @@ export function AddMassivePeople(props: any){
             onClose={props.handleClose}
         >
             <FormAddPeopleMassive onSubmit={handleSubmit}>
-                <h4>ADICIONE CLIENTE A ESTE MASSIVA</h4>
+                <h4>Adicionar Cliente</h4>
                 <TextField
                     required
                     label="CPF" 
