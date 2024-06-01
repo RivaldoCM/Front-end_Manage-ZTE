@@ -25,6 +25,14 @@ export function FinishMassive(props: any){
             userId: props.massive.userId
         });
 
+        if(response){
+            if(!response.success){
+                setFetchResponseMessage(response.messages.message);
+            }
+        } else {
+            setFetchResponseMessage('error/no-connection-with-API');
+        }
+        props.handleClose();
     }
 
     return(
@@ -34,7 +42,7 @@ export function FinishMassive(props: any){
         >
             <FormAddPeopleMassive onSubmit={handleSubmit}>
                 <h4>Finalizar Massiva</h4>
-                <FormControl fullWidth>
+                <FormControl sx={{ width: 300 }}>
                     <InputLabel>Motivo</InputLabel>
                     <Select
                         value={resolution}

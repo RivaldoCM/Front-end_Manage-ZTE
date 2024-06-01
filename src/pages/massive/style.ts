@@ -188,7 +188,7 @@ export const FormAddPeopleMassive = styled.form`
     left: 50%;
     transform: translate(-50%, -50%);
     flex-direction: column;
-    width: 464px;
+    max-width: 464px;
     padding: .5rem .5rem 0 .5rem;
     text-align: center;
     background: #fff;

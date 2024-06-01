@@ -1,26 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import dayjs from "dayjs";
 
-import { Card, Cards, OffCard, CardController, Container, IconMassivePeople, MassivePeopleStyle } from "./style";
+import { useAuth } from "../../hooks/useAuth";
+import { useMassive } from "../../hooks/useMassive";
+import { useResponse } from "../../hooks/useResponse";
+import { getClientMassive } from "../../services/apiManageONU/getClientMassive";
+import { AddMassive } from "./modals/addMassive";
+import { EditMassive } from "./modals/editMassive";
+import { FinishMassive } from "./modals/finishMassive";
+import { AddMassivePeople } from "./modals/addMassivePeople";
+
+import { 
+    Card, 
+    Cards, 
+    OffCard, 
+    CardController, 
+    Container, 
+    IconMassivePeople, 
+    MassivePeopleStyle 
+} from "./style";
 import { IconButton } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
 import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
-import { AddMassive } from "./modals/addMassive";
-import { useResponse } from "../../hooks/useResponse";
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
 import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
-import dayjs from "dayjs";
-import { useAuth } from "../../hooks/useAuth";
-import { EditMassive } from "./modals/editMassive";
-import { AddMassivePeople } from "./modals/addMassivePeople";
-import CloseIcon from '@mui/icons-material/Close';
-import { getClientMassive } from "../../services/apiManageONU/getClientMassive";
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
-import { useMassive } from "../../hooks/useMassive";
-import { FinishMassive } from "./modals/finishMassive";
-import { finishMassive } from "../../services/apiManageONU/finishMassive";
 
 export function Massive(){
     const { user } = useAuth();
@@ -96,7 +104,6 @@ export function Massive(){
     const handleCloseFinishMassive = () => setOpenFinishMassive(false);
     const handleOpenAddPeopleMassive = () => setOpenAddPeopleMassive(true);
     const handleCloseAddPeopleMassive = () => setOpenAddPeopleMassive(false);
-
 
     return(
         <Container>

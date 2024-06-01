@@ -121,7 +121,7 @@ export function FilterMassives({onFilterChange}: any){
                         name="problemType"
                         label="Tipo de falha"
                         onChange={handleFormChange}
-                        value={form.problemType}
+                        value={form.problemType || ''}
                     >
                         <MenuItem value="Energia">Energia</MenuItem>
                         <MenuItem value="Rompimento">Rompimento</MenuItem>
