@@ -6,8 +6,18 @@ import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { useResponse } from "../../../hooks/useResponse";
 import { finishMassive } from "../../../services/apiManageONU/finishMassive";
+import { IUsers } from "../../../interfaces/IUsers";
 
-export function FinishMassive(props: any){
+type LocalFinishMassive = {
+    open: boolean,
+    handleClose: () => void;
+    massive: {
+        userId?: IUsers['id'];
+        massiveId: IMassive['id'];
+    }
+}
+
+export function FinishMassive(props: LocalFinishMassive){
     const { setFetchResponseMessage } = useResponse();
 
     const [resolution, setResolution] = useState<string>('');
@@ -20,9 +30,10 @@ export function FinishMassive(props: any){
         e.preventDefault();
 
         const response = await finishMassive({
+            finished_by: props.massive.userId,
             massiveId: props.massive.massiveId,
             finished_status: resolution,
-            userId: props.massive.userId
+
         });
 
         if(response){

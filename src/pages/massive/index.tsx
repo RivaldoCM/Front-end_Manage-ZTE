@@ -29,6 +29,19 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
+import { IUsers } from "../../interfaces/IUsers";
+import { IClientMassive } from "../../interfaces/IClientMassive";
+
+type LocalAddPeopleMassive = {
+    userId?: IUsers['id'];
+    cityId: IMassive['Cities']['id'];
+    massiveId: IMassive['id'];
+}
+
+type LocalFinishMassive = {
+    userId?: IUsers['id'];
+    massiveId: IMassive['id'];
+}
 
 export function Massive(){
     const { user } = useAuth();
@@ -39,10 +52,10 @@ export function Massive(){
     const [openEditMassive, setOpenEditMassive] = useState(false);
     const [openFinishMassive, setOpenFinishMassive] = useState(false);
     const [openAddPeopleMassive, setOpenAddPeopleMassive] = useState(false);
-    const [clientMassive, setClientMassive] = useState<any>([]);
-    const [editMassiveData, setEditMassiveData] = useState<any>();
-    const [FinishMassiveData, setFinishMassiveData] = useState<any>();
-    const [addPeopleData, setAddPeopleData] = useState<any>();
+    const [clientMassive, setClientMassive] = useState<IClientMassive[]>([]);
+    const [editMassiveData, setEditMassiveData] = useState<IMassive>();
+    const [FinishMassiveData, setFinishMassiveData] = useState<LocalFinishMassive>();
+    const [addPeopleData, setAddPeopleData] = useState<LocalAddPeopleMassive>();
     const [showOffCard, setShowOffCard] = useState<number[]>([]);
     const [showMassivePeople, setShowMassivePeople] = useState<number[]>([]);
 
@@ -74,12 +87,12 @@ export function Massive(){
         }
     }
 
-    const handleEditCard = (value: any) => {
+    const handleEditCard = (value: IMassive) => {
         handleOpenEditMassive();
         setEditMassiveData(value);
     }
 
-    const handleAddPeopleToCard = (value: any) => {
+    const handleAddPeopleToCard = (value: Pick<IMassive, 'Cities' | 'id'>) => {
         handleOpenAddPeopleMassive(); 
         setAddPeopleData({
             userId: user?.uid,
@@ -88,14 +101,14 @@ export function Massive(){
         });
     }
 
-    const handleFinishMassive = (value: any) => {
+    const handleFinishMassive = (value: Pick<IMassive, 'id'>) => {
         handleOpenFinishMassive();
         setFinishMassiveData({
             userId: user?.uid,
             massiveId: value.id
         });
     }
-
+    
     const handleOpenAddMassive = () => setOpenAddMassive(true);
     const handleCloseAddMassive = () => setOpenAddMassive(false);
     const handleOpenEditMassive = () => setOpenEditMassive(true);
@@ -109,7 +122,7 @@ export function Massive(){
         <Container>
             <Cards>
                 {
-                    massives.map((massive: any, index: number) => {
+                    massives.map((massive, index: number) => {
                         return(
                             <CardController className="flex" key={index}>
                                 <Card className="flex" offCardOpen={showOffCard.includes(index)}>
@@ -132,7 +145,7 @@ export function Massive(){
                                                         <h4>Clientes Afetados</h4>
                                                     </div>
                                                     <div className="flex clients">
-                                                        {clientMassive && clientMassive.map((client: any, index: number) => {
+                                                        {clientMassive && clientMassive.map((client, index: number) => {
                                                             return(
                                                                 <div className="flex client" key={index}>
                                                                     <p><b>{index + 1}</b>: {client.name ? client.name : client.cpf}</p>
@@ -226,7 +239,7 @@ export function Massive(){
                 openEditMassive && (
                     <EditMassive 
                         open={openEditMassive}
-                        massive={editMassiveData}
+                        massive={editMassiveData!}
                         handleClose={handleCloseEditMassive}
                     />
                 )
@@ -235,7 +248,7 @@ export function Massive(){
                 openAddPeopleMassive && (
                     <AddMassivePeople
                         open={openAddPeopleMassive}
-                        massive={addPeopleData}
+                        massive={addPeopleData!}
                         handleClose={handleCloseAddPeopleMassive}
                     />
                 )
@@ -244,7 +257,7 @@ export function Massive(){
                 openFinishMassive && (
                     <FinishMassive 
                         open={openFinishMassive}
-                        massive={FinishMassiveData}
+                        massive={FinishMassiveData!}
                         handleClose={handleCloseFinishMassive}
                     />
                 )

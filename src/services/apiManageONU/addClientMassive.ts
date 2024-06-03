@@ -1,7 +1,8 @@
 import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
+import { IClientMassive } from "../../interfaces/IClientMassive";
 
-export async function addClientMassive({cpf, name, address, coordinates, cityId, massiveId, userId}: IAddClientMassive): Promise<IResponseData | IResponseError>{
+export async function addClientMassive({cpf, name, address, coordinates, cityId, massiveId, userId}: IClientMassive): Promise<IResponseData | IResponseError>{
     const res = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/clientMassive`,

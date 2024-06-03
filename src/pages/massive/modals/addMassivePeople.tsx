@@ -9,8 +9,19 @@ import { addClientMassive } from "../../../services/apiManageONU/addClientMassiv
 import { getPeopleId } from "../../../services/apiVoalle/getPeopleId";
 import { useResponse } from "../../../hooks/useResponse";
 import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
+import { IUsers } from "../../../interfaces/IUsers";
 
-export function AddMassivePeople(props: any){
+type LocalAddMassivePeople = {
+    open: boolean,
+    handleClose: () => void;
+    massive: {
+        userId?: IUsers['id'];
+        cityId: IMassive['Cities']['id'];
+        massiveId: IMassive['id'];
+    }
+}
+
+export function AddMassivePeople(props: LocalAddMassivePeople){
     const { setFetchResponseMessage } = useResponse();
 
     const [cpf, setCpf] = useState<string>('');

@@ -19,7 +19,13 @@ import CloseIcon from '@mui/icons-material/Close';
 //CONFIG PARA TAMANHO DO MENU DE OPÇÕES DAS CIDADES
 const MenuProps = { PaperProps: { style: { maxHeight: 88 * 4.5 }}};
 
-export function EditMassive(props: any){
+type LocalEditMassive = {
+    open: boolean,
+    handleClose: () => void;
+    massive: IMassive
+}
+
+export function EditMassive(props: LocalEditMassive){
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 

@@ -5,14 +5,14 @@ import { useAuth } from "../hooks/useAuth";
 import { getMassive } from "../services/apiManageONU/getMassive";
 
 export const MassiveContext = createContext<{
-    massives: any,
+    massives: IMassive[],
 }| null>(null);
 
 export function MassiveContextProvider({ children }: {children: ReactNode}) {
     const { user } = useAuth();
     const { socket } = useSocket();
 
-    const [massives, setMassives] = useState<any>([]);
+    const [massives, setMassives] = useState<IMassive[]>([]);
 
     useEffect(() => {
         const getData = async () => {
