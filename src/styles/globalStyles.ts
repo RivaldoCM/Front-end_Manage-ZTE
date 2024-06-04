@@ -8,36 +8,47 @@ interface MyStyledComponentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
 
 export const GlobalStyle = createGlobalStyle`
     :root {
-        --primary-color-light: #F8FAFD;
-        --secondary-color-light: #A0AEC0; // Gray 500
-        --highlight-color-light: #029CF5; // Blue
+        --light-background: #F8FAFD;
+        --blue: #029CF5;
+        --dark-blue: #162BA9;
+        --indigo: #5D8BF4;
+        --light-blue: #5494CD;
+        --maya: #91C6EE;
+        
+        --dark: #131516;
+        --gray-700: #4A5568;
+        --gray-600: #718096;
+        --gray-500: #A0AEC0;
+        --gray-400: #CBD5E0;
+        --gray-300: #E2E8F0;
+        --gray-200: #D4DDEA;
+        --gray-100: #F5F7FA;
 
-        --primary-color-dark: #131516;
-        --secondary-color-dark: #4A5568; // Gray 700
-        --highlight-color-dark: #A0AEC0; // Gray 500
+        --warning: #FFBA2F;
+        --error: #F13636;
+        --success: #00AC4F;
 
-        --primary-color: var(--primary-color-light);
-        --secondary-color: var(--secondary-color-light);
-        --highlight-color: var(--highlight-color-light);
-        --warning-color: #FFBA2F;
-        --error-color: #F13636;
-        --success-color: #00AC4F;
+        --primary-color: var(--light-background);
+        --secondary-color: var(--gray-500);
+        --highlight-color: var(--blue);
+        --background-color: var(--light-background);
+        --text-color: var(--dark);
     }
 
     body.light-theme {
-        --primary-color: var(--primary-color-light);
-        --secondary-color: var(--secondary-color-light);
-        --highlight-color: var(--highlight-color-light);
-        --background-color: #F8FAFD;
-        --text-color: #131516; // Dark
+        --primary-color: var(--light-background);
+        --secondary-color: var(--gray-200);
+        --highlight-color: var(--blue);
+        --background-color: var(--light-background);
+        --text-color: var(--dark);
     }
 
     body.dark-theme {
-        --primary-color: var(--primary-color-dark);
-        --secondary-color: var(--secondary-color-dark);
-        --highlight-color: var(--highlight-color-dark);
-        --background-color: #131516;
-        --text-color: #F8FAFD; // Light Background
+        --primary-color: var(--dark);
+        --secondary-color: var(--gray-700);
+        --highlight-color: var(--dark-blue);
+        --background-color: var(--dark);
+        --text-color: var(--light-background);
     }
 
     * {
@@ -150,7 +161,7 @@ export const InputContainer = styled.div<MyStyledComponentProps>`
 
     .content {
         > input {
-            //POR ALGUM MOTIVO O INPUT TYPE NUMBER FLOODA O MODAL
+             //POR ALGUM MOTIVO O INPUT TYPE NUMBER FLOODA O MODAL
             max-width: 100%;
         }
     }
