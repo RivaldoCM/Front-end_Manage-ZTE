@@ -8,29 +8,36 @@ interface MyStyledComponentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
 
 export const GlobalStyle = createGlobalStyle`
     :root {
-        --primary-color-light: #f7f9fa;
-        --secondary-color-light: #d3dce6;
-        --highlight-color-light: #4a6572;
-        
-        --primary-color-dark: #2c3e50;
-        --secondary-color-dark: #4a6572;
-        --highlight-color-dark: #aab7c4;
+        --primary-color-light: #F8FAFD;
+        --secondary-color-light: #A0AEC0; // Gray 500
+        --highlight-color-light: #029CF5; // Blue
+
+        --primary-color-dark: #131516;
+        --secondary-color-dark: #4A5568; // Gray 700
+        --highlight-color-dark: #A0AEC0; // Gray 500
 
         --primary-color: var(--primary-color-light);
         --secondary-color: var(--secondary-color-light);
         --highlight-color: var(--highlight-color-light);
+        --warning-color: #FFBA2F;
+        --error-color: #F13636;
+        --success-color: #00AC4F;
     }
 
     body.light-theme {
         --primary-color: var(--primary-color-light);
         --secondary-color: var(--secondary-color-light);
         --highlight-color: var(--highlight-color-light);
+        --background-color: #F8FAFD;
+        --text-color: #131516; // Dark
     }
 
     body.dark-theme {
         --primary-color: var(--primary-color-dark);
         --secondary-color: var(--secondary-color-dark);
         --highlight-color: var(--highlight-color-dark);
+        --background-color: #131516;
+        --text-color: #F8FAFD; // Light Background
     }
 
     * {
@@ -57,8 +64,8 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     body {
-        background: var(--primary-color) !important;
-        color: var(--highlight-color);
+        background: var(--background-color) !important;
+        color: var(--text-color);
         -webkit-font-smoothing: antialiased;
     }
 
@@ -126,12 +133,6 @@ export const GlobalStyle = createGlobalStyle`
 `
 
 export const InputContainer = styled.div<MyStyledComponentProps>`
-    /*
-        ESSE ESTILO CONTROLA O TEXTO E O QUE SEJA INSERIDO PELO USUÁRIO,
-        CARACTERISTICO POR: INFORMAÇÃO EM TEXTO SOBRE O QUE DEVE SER INSERIDO
-        E O CAMPO DE INSERÇÃO PARA O USUÁRIO
-    */
-    
     display: flex;
     justify-content: flex-start;
     width: 100%;

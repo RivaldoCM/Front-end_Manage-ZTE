@@ -7,6 +7,7 @@ import { GlobalStyle } from "./styles/globalStyles";
 import { DataPickerContext } from "./contexts/DataPickerContext";
 import { HandleResponseContextProvider } from "./contexts/handleResponseContext";
 import { SocketContextProvider } from "./contexts/SocketContext";
+import { ThemesContextProvider } from "./contexts/ThemesContext";
 
 export function App() {
     return (
@@ -14,11 +15,13 @@ export function App() {
             <SocketContextProvider>
                 <DataPickerContext>
                     <HandleResponseContextProvider>
-                        <BrowserRouter>
-                            <AppRoutes />
-                            <Analytics />
-                            <GlobalStyle />
-                        </BrowserRouter>
+                        <ThemesContextProvider>
+                            <BrowserRouter>
+                                <AppRoutes />
+                                <Analytics />
+                                <GlobalStyle />
+                            </BrowserRouter>
+                        </ThemesContextProvider>
                     </HandleResponseContextProvider>
                 </DataPickerContext>
             </SocketContextProvider>

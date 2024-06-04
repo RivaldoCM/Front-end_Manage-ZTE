@@ -1,9 +1,7 @@
-import _React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-
 import { useAuth } from '../../hooks/useAuth';
 import { handleDynamicPagesByRule, handleIconMenu } from '../../config/menu';
-
 import { StyledMenu } from './style';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -25,6 +23,7 @@ import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Alert } from '@mui/material';
 import { useResponse } from '../../hooks/useResponse';
+import ThemeSwitcher from '../ThemeSwitcher';
 
 const drawerWidth = 320;
 
@@ -158,9 +157,10 @@ export function MenuDrawer() {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography variant="h6" noWrap component="div">
+					<Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
 						{currentPage}
 					</Typography>
+					<ThemeSwitcher />
 				</Toolbar>
 			</AppBar>
 			<Drawer variant="permanent" open={open}>
