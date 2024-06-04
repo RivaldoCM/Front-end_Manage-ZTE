@@ -178,7 +178,7 @@ export function LogsMassives(){
                                                 : ''
                                         }
                                         <p>
-                                            Finlizado por {' ' + massive.User_Massive_finished_by.name + ' '} 
+                                            
                                         </p>
                                     </div>
                                 </OffCard>

@@ -4,11 +4,16 @@ import dayjs from "dayjs";
 import { useAuth } from "../../hooks/useAuth";
 import { useMassive } from "../../hooks/useMassive";
 import { useResponse } from "../../hooks/useResponse";
+
 import { getClientMassive } from "../../services/apiManageONU/getClientMassive";
+
 import { AddMassive } from "./modals/addMassive";
 import { EditMassive } from "./modals/editMassive";
 import { FinishMassive } from "./modals/finishMassive";
 import { AddMassivePeople } from "./modals/addMassivePeople";
+
+import { IUsers } from "../../interfaces/IUsers";
+import { IClientMassive } from "../../interfaces/IClientMassive";
 
 import { 
     Card, 
@@ -19,8 +24,9 @@ import {
     IconMassivePeople, 
     MassivePeopleStyle 
 } from "./style";
-import { IconButton } from "@mui/material";
+import { Button, Fab, IconButton } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
+import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import Groups2RoundedIcon from '@mui/icons-material/Groups2Rounded';
 import ExpandLessOutlinedIcon from '@mui/icons-material/ExpandLessOutlined';
@@ -29,8 +35,6 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
-import { IUsers } from "../../interfaces/IUsers";
-import { IClientMassive } from "../../interfaces/IClientMassive";
 
 type LocalAddPeopleMassive = {
     userId?: IUsers['id'];
@@ -212,7 +216,7 @@ export function Massive(){
                                             <PersonAddOutlinedIcon />
                                         </IconButton>
                                         {
-                                            user?.rule! > 13 ? 
+                                            user?.rule! > 13 || user?.rule === 3 ? 
                                             <React.Fragment>
                                                 <IconButton size="small" color="secondary" onClick={() => handleEditCard(massive)}>
                                                     <CreateOutlinedIcon />
@@ -230,11 +234,29 @@ export function Massive(){
                     })
                 }
             </Cards>
-            <AddMassive
-                open={openAddMassive}
-                handleOpen={handleOpenAddMassive}
-                handleClose={handleCloseAddMassive}
-            />
+            {
+                user?.rule! > 13 || user?.rule === 3 ?
+                <Fab 
+                    size="large" 
+                    color="primary" 
+                    className="add-massive" 
+                    onClick={() => handleOpenAddMassive()}
+                >
+                    <AddIcon />
+                </Fab>
+                :
+                <></>
+            }
+
+            {
+                openAddMassive && (
+                    <AddMassive
+                        open={openAddMassive}
+                        handleClose={handleCloseAddMassive}
+                    />
+                )
+            }
+
             {
                 openEditMassive && (
                     <EditMassive 

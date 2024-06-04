@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
+import { useAuth } from "../../../hooks/useAuth";
+import { useResponse } from "../../../hooks/useResponse";
+
 import { getCities } from "../../../services/apiManageONU/getCities";
 import { addMassive } from "../../../services/apiManageONU/addMassive";
 
@@ -8,14 +11,24 @@ import { ICities } from "../../../interfaces/ICities";
 import { IAddMassive } from "../../../interfaces/IAddMassiveForm";
 
 import { FormAddMassive } from "../style";
-import { Autocomplete, CircularProgress, Fab, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { 
+    Autocomplete, 
+    CircularProgress, 
+    FormControl, 
+    IconButton, 
+    InputAdornment, 
+    InputLabel, 
+    MenuItem, 
+    Modal, 
+    OutlinedInput, 
+    Select, 
+    SelectChangeEvent, 
+    TextField 
+} from "@mui/material";
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import { StaticDateTimePicker } from "@mui/x-date-pickers";
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import AddIcon from '@mui/icons-material/Add';
-import { useAuth } from "../../../hooks/useAuth";
-import { useResponse } from "../../../hooks/useResponse";
 
 export function AddMassive(props: any){
     const { user } = useAuth();
@@ -118,13 +131,6 @@ export function AddMassive(props: any){
 
     return(
         <React.Fragment>
-            {
-                user?.rule! > 13 ?
-                <Fab className='add-massive' color="primary" size="medium" onClick={props.handleOpen}>
-                    <AddIcon />
-                </Fab>
-                : <></>
-            }
             <Modal
                 className="flex"
                 open={props.open}

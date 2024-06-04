@@ -58,8 +58,10 @@ export function AppRoutes() {
                 navigate('/break_time/breaks');
             } else if(user?.rule === 3){
                 navigate('/break_time/dashboard');
-            } else {
+            } else if(user?.rule === 10){
                 navigate('/auth_onu');
+            } else {
+                navigate('/massive');
             }
         }
         

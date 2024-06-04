@@ -9,6 +9,7 @@ export const Container = styled.div`
     min-width: 100%;
     min-height: calc(100vh - 200px);
     padding: .5rem 0;
+    
     .add-massive{
         position: fixed;
         bottom: 16px;
@@ -22,6 +23,7 @@ export const Cards = styled.div`
     justify-content: center;
     gap: .5rem;
     width: 100%;
+    padding: 1rem;
 `;
 
 export const CardController = styled.div`

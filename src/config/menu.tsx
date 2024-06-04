@@ -7,12 +7,14 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import TroubleshootOutlinedIcon from '@mui/icons-material/TroubleshootOutlined';
-import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
 import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
-import FindInPageOutlinedIcon from '@mui/icons-material/FindInPageOutlined';
+import ViewModuleRoundedIcon from '@mui/icons-material/ViewModuleRounded';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import ViewModuleOutlinedIcon from '@mui/icons-material/ViewModuleOutlined';
+
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -91,17 +93,17 @@ export const handleShowPageByRule = (rule?: number) => {
         case 2: 
             let withoutDashboardBreak = cloneDeep(handlePages);
             withoutDashboardBreak.splice(0,3);
-            withoutDashboardBreak[0].pages.splice(0,1);
+            withoutDashboardBreak[1].pages.splice(0,1);
         return handleDynamicPagesByRule = withoutDashboardBreak;
         case 3:
             let onlyBreakTime = cloneDeep(handlePages);
             onlyBreakTime.splice(0,3);
-
             return handleDynamicPagesByRule = onlyBreakTime;
         default:
-            let onlyAuthOnu = cloneDeep(handlePages);
-            onlyAuthOnu.splice(1, 3);
-        return handleDynamicPagesByRule = onlyAuthOnu;
+            let onlyMassive = cloneDeep(handlePages);
+            onlyMassive.splice(0, 3);
+            onlyMassive.splice(1, 1)
+        return handleDynamicPagesByRule = onlyMassive;
     }
 }
 
@@ -118,9 +120,9 @@ export const handleIconMenu = (text: string): React.ReactElement => {
         case 'logs_onu':
             return <TroubleshootOutlinedIcon />;
         case 'massive':
-            return <PublicRoundedIcon />;
+            return <ViewModuleOutlinedIcon />;
         case 'logs_massive':
-            return <FindInPageOutlinedIcon />;
+            return <LibraryBooksOutlinedIcon />;
         case 'my_auth_onus':
             return <BallotOutlinedIcon />;
         case 'break_time/breaks':

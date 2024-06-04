@@ -15,9 +15,9 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useResponse } from '../../hooks/useResponse';
 
 export function Login() {
+    const navigate = useNavigate();
     const { setUser } = useAuth();
     const {response, setFetchResponseMessage, severityStatus, responseMassage } = useResponse();
-    const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [password, setPassord] = useState('');
@@ -37,7 +37,7 @@ export function Login() {
                 localStorage.setItem('Authorization', response.responses.response);
                 const jwtDecoded: IDecodedJWT = jwtDecode(response.responses.response);
                 setUser(jwtDecoded);
-                navigate('/auth_onu');
+                navigate('/');
             } else {
                 setFetchResponseMessage(response.messages.message)
             }
