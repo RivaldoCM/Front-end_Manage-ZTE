@@ -24,7 +24,7 @@ import {
     IconMassivePeople, 
     MassivePeopleStyle 
 } from "./style";
-import { Button, Fab, IconButton } from "@mui/material";
+import { Fab, IconButton } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -35,6 +35,7 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import { MapModal } from "./map";
 
 type LocalAddPeopleMassive = {
@@ -114,6 +115,10 @@ export function Massive(){
             massiveId: value.id
         });
     }
+
+    const handleShowMaps = () => {
+        console.log(clientMassive)
+    }
     
     const handleOpenMaps = () => setOpenMaps(true);
     const handleCloseMaps = () => setOpenMaps(false);
@@ -149,7 +154,7 @@ export function Massive(){
                                         {
                                             showMassivePeople.includes(index) && (
                                                 <MassivePeopleStyle>
-                                                    <div>
+                                                    <div className="map">
                                                         <h4>Clientes Afetados</h4>
                                                     </div>
                                                     <div className="flex clients">
@@ -158,19 +163,22 @@ export function Massive(){
                                                                 <div className="flex client" key={index}>
                                                                     <p><b>{index + 1}</b>: {client.name ? client.name : client.cpf}</p>
                                                                     <p>{client.address ? client.address : ''}</p>
-                                                                    <p>
-                                                                        {
-                                                                            client.coordinates ? 
-                                                                            <p>
-                                                                                Coordenadas: 
-                                                                                <a href={'https://www.google.com/maps?q=' + client.coordinates} target="_blank"> {client.coordinates}</a> 
-                                                                            </p>
-                                                                            : ''
-                                                                        }
-                                                                    </p>
+                                                                    {
+                                                                        client.coordinates ? 
+                                                                        <p>
+                                                                            Coordenadas: 
+                                                                            <a href={'https://www.google.com/maps?q=' + client.coordinates} target="_blank"> {client.coordinates}</a> 
+                                                                        </p>
+                                                                        : ''
+                                                                    }
                                                                 </div>
                                                             )
                                                         })}
+                                                    </div>
+                                                    <div className="map">
+                                                        <IconButton size="small" onClick={() => handleShowMaps()}>
+                                                            <MapOutlinedIcon />
+                                                        </IconButton>
                                                     </div>
                                                 </MassivePeopleStyle>
                                             )
@@ -255,6 +263,7 @@ export function Massive(){
                 openMaps && (
                     <MapModal
                         open={openMaps}
+                        clients={clientMassive}
                         handleClose={handleCloseMaps}
                     />
                 )

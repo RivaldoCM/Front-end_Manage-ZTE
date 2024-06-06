@@ -22,13 +22,14 @@ import { getMassiveLogs } from "../../../services/apiManageONU/getMassiveLogs";
 import { FilterMassives } from "./filterOptions";
 import { getClientMassive } from "../../../services/apiManageONU/getClientMassive";
 import { LogsOnuStyle } from "./styles";
+import { IClientMassive } from "../../../interfaces/IClientMassive";
 
 export function LogsMassives(){
     const { setFetchResponseMessage } = useResponse();
 
     const [filterParams, setFilterParams] = useState<any>(undefined);
-    const [massives, setMassives] = useState([]);
-    const [clientMassive, setClientMassive] = useState<any>([]);
+    const [massives, setMassives] = useState<IMassive[]>([]);
+    const [clientMassive, setClientMassive] = useState<IClientMassive[]>([]);
     const [showOffCard, setShowOffCard] = useState<number[]>([]);
     const [showMassivePeople, setShowMassivePeople] = useState<number[]>([]);
 
@@ -93,7 +94,7 @@ export function LogsMassives(){
             <FilterMassives onFilterChange={handleFilterChange}/>
             <Cards>
                 {
-                    massives.map((massive: any, index: number) => {
+                    massives.map((massive, index: number) => {
                         return(
                             <CardController className="flex" key={index}>
                                 <Card className="flex" offCardOpen={showOffCard.includes(index)}>
@@ -116,7 +117,7 @@ export function LogsMassives(){
                                                         <h4>Clientes Afetados</h4>
                                                     </div>
                                                     <div className="flex clients">
-                                                        {clientMassive && clientMassive.map((client: any, index: number) => {
+                                                        {clientMassive && clientMassive.map((client, index: number) => {
                                                             return(
                                                                 <div className="flex client" key={index}>
                                                                     <p><b>{index + 1}</b>: {client.name ? client.name : client.cpf}</p>
@@ -135,6 +136,7 @@ export function LogsMassives(){
                                                             )
                                                         })}
                                                     </div>
+
                                                 </MassivePeopleStyle>
                                             )
                                         }

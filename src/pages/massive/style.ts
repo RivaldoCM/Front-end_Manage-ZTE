@@ -97,19 +97,24 @@ export const MassivePeopleStyle = styled.div`
     background: white;
     border-radius: .5rem;
     box-shadow: 0px 0px 15px 23px rgba(0,0,0,0.1);
-    overflow: auto;
+
+    .map{
+        height: 10%;
+    }
 
     .clients{
         position: relative;
         flex-direction: column;
+        justify-content: flex-start;
+        height: 200px;
+        overflow: auto;
 
         .client{
             flex-direction: column;
             align-items: flex-start;
             width: 100%;
-            height: inherit;
-            text-align: start;
             padding: .5rem;
+            text-align: start;
 
             p{
                 font-size: .8rem;
