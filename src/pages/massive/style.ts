@@ -138,8 +138,8 @@ export const OffCard = styled.div<IOffCard>`
     transition: .2s ease-in-out;
 
     p{
-            font-family: "Itim", cursive !important;
-        }
+        font-family: "Itim", cursive !important;
+    }
 
     .off-card-button{
         z-index: 3;
@@ -196,3 +196,8 @@ export const FormAddPeopleMassive = styled.form`
     background: #fff;
     border-radius: 8px;
 `;
+
+export const MapsContainer = styled.div`
+    width: 90%;
+    height: 90vh;
+`

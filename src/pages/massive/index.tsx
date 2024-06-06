@@ -35,6 +35,7 @@ import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
+import { MapModal } from "./map";
 
 type LocalAddPeopleMassive = {
     userId?: IUsers['id'];
@@ -52,6 +53,7 @@ export function Massive(){
     const { massives } = useMassive();
     const { setFetchResponseMessage } = useResponse();
 
+    const [openMaps, setOpenMaps] = useState(false);
     const [openAddMassive, setOpenAddMassive] = useState(false);
     const [openEditMassive, setOpenEditMassive] = useState(false);
     const [openFinishMassive, setOpenFinishMassive] = useState(false);
@@ -113,6 +115,8 @@ export function Massive(){
         });
     }
     
+    const handleOpenMaps = () => setOpenMaps(true);
+    const handleCloseMaps = () => setOpenMaps(false);
     const handleOpenAddMassive = () => setOpenAddMassive(true);
     const handleCloseAddMassive = () => setOpenAddMassive(false);
     const handleOpenEditMassive = () => setOpenEditMassive(true);
@@ -247,7 +251,17 @@ export function Massive(){
                 :
                 <></>
             }
-
+            {
+                openMaps && (
+                    <MapModal
+                        open={openMaps}
+                        handleClose={handleCloseMaps}
+                    />
+                )
+            }
+            <IconButton size="small" color="success" onClick={handleOpenMaps}>
+                <DoneIcon />
+            </IconButton>
             {
                 openAddMassive && (
                     <AddMassive
