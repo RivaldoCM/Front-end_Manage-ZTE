@@ -8,5 +8,6 @@ export type IClientMassive = {
     cpf: string;
     name?: string;
     address?: string;
-    coordinates?: string;
+    lat?: string;
+    lng?: string;
 }

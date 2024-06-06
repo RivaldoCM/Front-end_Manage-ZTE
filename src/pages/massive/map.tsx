@@ -11,23 +11,18 @@ export function MapModal(props: any){
         lng: ''
     });
 
-    console.log(props)
-
     useEffect(() => {
         props.clients.map((client: IClientMassive) => {
-            setLocations({
-                ...locations,
-                name: client.name,
-                lat: client.coordinates?.split(',')
-            })
+            if(client.lat || client.lng){
+                setLocations({
+                    ...locations,
+                    name: client.name,
+                    lat: client.lat,
+                    lng: client.lng
+                });
+            }
         });
     }, []);
-
-        //{ name: "Ponto 1", lat: -23.5505, lng: -46.6333 },
-
-
-
-
 
     const mapContainerStyle = {
     width: '100%',
@@ -35,8 +30,8 @@ export function MapModal(props: any){
     };
       
     const center = {
-    lat: -23.5505,
-    lng: -46.6333,
+        lat: -23.5505,
+        lng: -46.6333,
     };
 
     return(

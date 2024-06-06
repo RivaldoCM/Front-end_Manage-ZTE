@@ -115,10 +115,6 @@ export function Massive(){
             massiveId: value.id
         });
     }
-
-    const handleShowMaps = () => {
-        console.log(clientMassive)
-    }
     
     const handleOpenMaps = () => setOpenMaps(true);
     const handleCloseMaps = () => setOpenMaps(false);
@@ -164,10 +160,10 @@ export function Massive(){
                                                                     <p><b>{index + 1}</b>: {client.name ? client.name : client.cpf}</p>
                                                                     <p>{client.address ? client.address : ''}</p>
                                                                     {
-                                                                        client.coordinates ? 
+                                                                        client.lat ? 
                                                                         <p>
                                                                             Coordenadas: 
-                                                                            <a href={'https://www.google.com/maps?q=' + client.coordinates} target="_blank"> {client.coordinates}</a> 
+                                                                            <a href={`https://www.google.com/maps?q= ${client.lat}, ${client.lng}`} target="_blank"> {client.lat + ', '+ client.lng}</a> 
                                                                         </p>
                                                                         : ''
                                                                     }
@@ -176,7 +172,7 @@ export function Massive(){
                                                         })}
                                                     </div>
                                                     <div className="map">
-                                                        <IconButton size="small" onClick={() => handleShowMaps()}>
+                                                        <IconButton size="small" onClick={() => handleOpenMaps()}>
                                                             <MapOutlinedIcon />
                                                         </IconButton>
                                                     </div>

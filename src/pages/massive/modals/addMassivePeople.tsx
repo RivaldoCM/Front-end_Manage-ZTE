@@ -43,7 +43,8 @@ export function AddMassivePeople(props: LocalAddMassivePeople){
                     cpf: cpf,
                     name: clientData.name,
                     address: `${clientData.mainAddress.streetType}  ${clientData.mainAddress.street}  N°${clientData.mainAddress.number}`,
-                    coordinates: `${clientData.mainAddress.latitude}, ${clientData.mainAddress.longitude}`, 
+                    lat: clientData.mainAddress.latitude, 
+                    lng: clientData.mainAddress.longitude,
                     cityId: props.massive.cityId,
                     massiveId: props.massive.massiveId,
                     userId: props.massive.userId

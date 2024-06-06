@@ -2,7 +2,7 @@ import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 import { IClientMassive } from "../../interfaces/IClientMassive";
 
-export async function addClientMassive({cpf, name, address, coordinates, cityId, massiveId, userId}: IClientMassive): Promise<IResponseData | IResponseError>{
+export async function addClientMassive({cpf, name, address, lat, lng, cityId, massiveId, userId}: IClientMassive): Promise<IResponseData | IResponseError>{
     const res = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/clientMassive`,
@@ -13,7 +13,8 @@ export async function addClientMassive({cpf, name, address, coordinates, cityId,
             cpf: cpf.replace(/\D/g, ''),
             name: name || undefined,
             address: address || undefined,
-            coordinates: coordinates || undefined,
+            lat: lat || undefined,
+            lng: lng || undefined,
             cityId: cityId,
             massiveId: massiveId,
             userId: userId
