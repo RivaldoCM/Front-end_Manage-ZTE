@@ -118,8 +118,7 @@ export function Massive(){
     }
     
     const handleOpenMaps = () => {
-        const locations: any = []; 
-        
+        const locations: any = [];
         clientMassive.map((client: IClientMassive) => {
             if(client.lat && client.lng){
                 locations.push({ 
@@ -130,7 +129,7 @@ export function Massive(){
             }
         });
         setClientsLocation(locations);
-        setOpenMaps(true)
+        setOpenMaps(true);
     };
     const handleCloseMaps = () => setOpenMaps(false);
     const handleOpenAddMassive = () => setOpenAddMassive(true);
@@ -165,7 +164,7 @@ export function Massive(){
                                         {
                                             showMassivePeople.includes(index) && (
                                                 <MassivePeopleStyle>
-                                                    <div className="map">
+                                                    <div>
                                                         <h4>Clientes Afetados</h4>
                                                     </div>
                                                     <div className="flex clients">
@@ -186,11 +185,14 @@ export function Massive(){
                                                             )
                                                         })}
                                                     </div>
-                                                    <div className="map">
-                                                        <IconButton size="small" onClick={() => handleOpenMaps()}>
+                                                    {
+                                                        clientMassive.length > 0 && (
+                                                        <IconButton size="small" color="info" onClick={() => handleOpenMaps()}>
                                                             <MapOutlinedIcon />
                                                         </IconButton>
-                                                    </div>
+                                                        )
+                                                    }
+
                                                 </MassivePeopleStyle>
                                             )
                                         }
@@ -279,9 +281,6 @@ export function Massive(){
                     />
                 )
             }
-            <IconButton size="small" color="success" onClick={handleOpenMaps}>
-                <DoneIcon />
-            </IconButton>
             {
                 openAddMassive && (
                     <AddMassive

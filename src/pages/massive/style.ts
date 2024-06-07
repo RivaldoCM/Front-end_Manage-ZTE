@@ -98,15 +98,11 @@ export const MassivePeopleStyle = styled.div`
     border-radius: .5rem;
     box-shadow: 0px 0px 15px 23px rgba(0,0,0,0.1);
 
-    .map{
-        height: 10%;
-    }
-
     .clients{
         position: relative;
         flex-direction: column;
         justify-content: flex-start;
-        height: 200px;
+        height: 75%;
         overflow: auto;
 
         .client{
@@ -202,7 +198,52 @@ export const FormAddPeopleMassive = styled.form`
     border-radius: 8px;
 `;
 
-export const MapsContainer = styled.div`
-    width: 90%;
-    height: 90vh;
-`
+export const MapsModalContainer = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 562px;
+    justify-content: space-evenly;
+
+    @media (max-width: 1768px){
+        width: 60%;
+    }
+
+    @media (max-width: 1367px){
+        width: 85%;
+    }
+
+    @media (max-width: 968px){
+        flex-direction: column-reverse;
+    }
+`;
+
+export const SideMapStyle = styled.aside`
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    width: 29%;
+    height: 100%;
+    padding: .5rem;
+    border-radius: 10px;
+    background-color: azure;
+
+    .teste{
+        width: 98%;
+        height: 70%;
+        font-size: .8rem;
+
+        li{
+            margin: 1rem;
+            font-family: "Itim", cursive !important;;
+        }
+    }
+
+    @media (max-width: 968px){
+        width: 70%;
+        height: 150px;
+        background-color: transparent;
+    }
+`;
