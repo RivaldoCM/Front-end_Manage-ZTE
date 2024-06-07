@@ -60,6 +60,7 @@ export function Massive(){
     const [openFinishMassive, setOpenFinishMassive] = useState(false);
     const [openAddPeopleMassive, setOpenAddPeopleMassive] = useState(false);
     const [clientMassive, setClientMassive] = useState<IClientMassive[]>([]);
+    const [clientsLocation, setClientsLocation] = useState<any>([]);
     const [editMassiveData, setEditMassiveData] = useState<IMassive>();
     const [FinishMassiveData, setFinishMassiveData] = useState<LocalFinishMassive>();
     const [addPeopleData, setAddPeopleData] = useState<LocalAddPeopleMassive>();
@@ -116,7 +117,21 @@ export function Massive(){
         });
     }
     
-    const handleOpenMaps = () => setOpenMaps(true);
+    const handleOpenMaps = () => {
+        const locations: any = []; 
+        
+        clientMassive.map((client: IClientMassive) => {
+            if(client.lat && client.lng){
+                locations.push({ 
+                    name: client.name, 
+                    lat: parseFloat(client.lat),
+                    lng: parseFloat(client.lng)
+                });
+            }
+        });
+        setClientsLocation(locations);
+        setOpenMaps(true)
+    };
     const handleCloseMaps = () => setOpenMaps(false);
     const handleOpenAddMassive = () => setOpenAddMassive(true);
     const handleCloseAddMassive = () => setOpenAddMassive(false);
@@ -259,7 +274,7 @@ export function Massive(){
                 openMaps && (
                     <MapModal
                         open={openMaps}
-                        clients={clientMassive}
+                        locations={clientsLocation}
                         handleClose={handleCloseMaps}
                     />
                 )
