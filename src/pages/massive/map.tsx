@@ -20,7 +20,7 @@ export function MapModal(props: any){
             <MapsModalContainer className='flex'>
                 {
                     props.locations.length > 0 && (
-                        <LoadScript googleMapsApiKey='AIzaSyB0J2U5dXsOdVpoT1lV49yntCryzvz1vkk'>
+                        <LoadScript googleMapsApiKey={import.meta.env.VITE_API_GOOGLE_MAPS}>
                             <GoogleMap
                                 mapContainerStyle={mapContainerStyle}
                                 zoom={10}
