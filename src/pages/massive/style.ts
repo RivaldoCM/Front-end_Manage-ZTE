@@ -230,7 +230,7 @@ export const SideMapStyle = styled.aside`
     border-radius: 10px;
     background-color: azure;
 
-    .teste{
+    .list-clients{
         width: 98%;
         height: 70%;
         font-size: .8rem;

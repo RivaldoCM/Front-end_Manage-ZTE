@@ -23,13 +23,17 @@ import { FilterMassives } from "./filterOptions";
 import { getClientMassive } from "../../../services/apiManageONU/getClientMassive";
 import { LogsOnuStyle } from "./styles";
 import { IClientMassive } from "../../../interfaces/IClientMassive";
+import { MapModal } from "../../massive/map";
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 
 export function LogsMassives(){
     const { setFetchResponseMessage } = useResponse();
 
+    const [openMaps, setOpenMaps] = useState(false);
     const [filterParams, setFilterParams] = useState<any>(undefined);
     const [massives, setMassives] = useState<IMassive[]>([]);
     const [clientMassive, setClientMassive] = useState<IClientMassive[]>([]);
+    const [clientsLocation, setClientsLocation] = useState<any>([]);
     const [showOffCard, setShowOffCard] = useState<number[]>([]);
     const [showMassivePeople, setShowMassivePeople] = useState<number[]>([]);
 
@@ -85,6 +89,22 @@ export function LogsMassives(){
         }
     }
 
+    const handleOpenMaps = () => {
+        const locations: any = [];
+        clientMassive.map((client: IClientMassive) => {
+            if(client.lat && client.lng){
+                locations.push({ 
+                    name: client.name, 
+                    lat: parseFloat(client.lat),
+                    lng: parseFloat(client.lng)
+                });
+            }
+        });
+        setClientsLocation(locations);
+        setOpenMaps(true);
+    };
+    const handleCloseMaps = () => setOpenMaps(false);
+
     const handleFilterChange = (filter: any | null) => {
         setFilterParams(filter);
     };
@@ -122,21 +142,17 @@ export function LogsMassives(){
                                                                 <div className="flex client" key={index}>
                                                                     <p><b>{index + 1}</b>: {client.name ? client.name : client.cpf}</p>
                                                                     <p>{client.address ? client.address : ''}</p>
-                                                                    <p>
-                                                                        {
-                                                                            client.coordinates ? 
-                                                                            <p>
-                                                                                Coordenadas: 
-                                                                                <a href={'https://www.google.com/maps?q=' + client.coordinates} target="_blank"> {client.coordinates}</a> 
-                                                                            </p>
-                                                                            : ''
-                                                                        }
-                                                                    </p>
                                                                 </div>
                                                             )
                                                         })}
                                                     </div>
-
+                                                    {
+                                                        clientMassive.length > 0 && (
+                                                            <IconButton size="small" color="info" onClick={() => handleOpenMaps()}>
+                                                                <MapOutlinedIcon />
+                                                            </IconButton>
+                                                        )
+                                                    }
                                                 </MassivePeopleStyle>
                                             )
                                         }
@@ -179,9 +195,14 @@ export function LogsMassives(){
                                             </p> 
                                                 : ''
                                         }
-                                        <p>
-                                            
-                                        </p>
+                                        {
+                                            massive.User_Massive_finished_by ? 
+                                            <p>
+                                                Finalizado por
+                                                {' ' + massive.User_Massive_finished_by.name}
+                                            </p> 
+                                                : ''
+                                        }
                                     </div>
                                 </OffCard>
                             </CardController>
@@ -189,6 +210,15 @@ export function LogsMassives(){
                     })
                 }
             </Cards>
+            {
+                openMaps && (
+                    <MapModal
+                        open={openMaps}
+                        locations={clientsLocation}
+                        handleClose={handleCloseMaps}
+                    />
+                )
+            }
         </LogsOnuStyle>
     )
 }

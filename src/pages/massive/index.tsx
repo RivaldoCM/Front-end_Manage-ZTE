@@ -60,7 +60,7 @@ export function Massive(){
     const [openFinishMassive, setOpenFinishMassive] = useState(false);
     const [openAddPeopleMassive, setOpenAddPeopleMassive] = useState(false);
     const [clientMassive, setClientMassive] = useState<IClientMassive[]>([]);
-    const [clientsLocation, setClientsLocation] = useState<any>([]);
+    const [clientsLocation, setClientsLocation] = useState<{name: string, lat: number, lng: number}[]>([]);
     const [editMassiveData, setEditMassiveData] = useState<IMassive>();
     const [FinishMassiveData, setFinishMassiveData] = useState<LocalFinishMassive>();
     const [addPeopleData, setAddPeopleData] = useState<LocalAddPeopleMassive>();
@@ -192,7 +192,6 @@ export function Massive(){
                                                         </IconButton>
                                                         )
                                                     }
-
                                                 </MassivePeopleStyle>
                                             )
                                         }

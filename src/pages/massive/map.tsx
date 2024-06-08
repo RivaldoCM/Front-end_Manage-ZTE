@@ -1,7 +1,7 @@
-import { Alert, IconButton, Modal } from '@mui/material';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { MapsModalContainer, SideMapStyle } from './style';
 
+import { MapsModalContainer, SideMapStyle } from './style';
+import { Alert, IconButton, Modal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 export function MapModal(props: any){
@@ -51,7 +51,7 @@ export function MapModal(props: any){
                     <Alert severity="info">
                         Passe o mause sobre um ponto vermelho para ver a quem pertence.
                     </Alert>
-                    <ul className='teste'>
+                    <ul className='list-clients'>
                         {
                             props.locations.map((client: any, index: number) => {
                                 return(
