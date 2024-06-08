@@ -20,15 +20,14 @@ type LocalFinishMassive = {
 export function FinishMassive(props: LocalFinishMassive){
     const { setFetchResponseMessage } = useResponse();
 
-    const [resolution, setResolution] = useState<string>('');
+    const [resolution, setResolution] = useState<number>(1);
 
     const handleChange = (e: SelectChangeEvent<string>) => {
-        setResolution(e.target.value);
+        setResolution(parseInt(e.target.value));
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         const response = await finishMassive({
             finished_by: props.massive.userId,
             massiveId: props.massive.massiveId,
@@ -56,12 +55,12 @@ export function FinishMassive(props: LocalFinishMassive){
                 <FormControl sx={{ width: 300 }}>
                     <InputLabel>Motivo</InputLabel>
                     <Select
-                        value={resolution}
+                        value={resolution.toString()}
                         label="Motivo"
                         onChange={handleChange}
                     >
-                        <MenuItem value='Solved'>Resolvido</MenuItem>
-                        <MenuItem value='Error'>Aberto errado</MenuItem>
+                        <MenuItem value={1}>Resolvido</MenuItem>
+                        <MenuItem value={0}>Aberto por engano</MenuItem>
                     </Select>
                 </FormControl>
                 <div className="flex">

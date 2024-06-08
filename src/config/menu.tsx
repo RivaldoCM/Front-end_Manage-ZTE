@@ -11,10 +11,8 @@ import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
 import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
-import ViewModuleRoundedIcon from '@mui/icons-material/ViewModuleRounded';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import ViewModuleOutlinedIcon from '@mui/icons-material/ViewModuleOutlined';
-
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -89,6 +87,12 @@ export const handleShowPageByRule = (rule?: number) => {
             let withoutOlt = cloneDeep(handlePages);
             withoutOlt[1].pages.splice(1, 1);
         return handleDynamicPagesByRule = withoutOlt;
+        case 10: 
+            let onusMassive = cloneDeep(handlePages);
+            onusMassive.splice(1,2);
+            onusMassive.splice(2,1);
+            onusMassive[1].pages.splice(1,1);
+        return handleDynamicPagesByRule = onusMassive;
         case 1:
         case 2: 
             let withoutDashboardBreak = cloneDeep(handlePages);
@@ -102,7 +106,7 @@ export const handleShowPageByRule = (rule?: number) => {
         default:
             let onlyMassive = cloneDeep(handlePages);
             onlyMassive.splice(0, 3);
-            onlyMassive.splice(1, 1)
+            onlyMassive.splice(1, 1);
         return handleDynamicPagesByRule = onlyMassive;
     }
 }

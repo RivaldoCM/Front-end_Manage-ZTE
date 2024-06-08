@@ -111,7 +111,7 @@ export function EditUser(props: IEditUser){
                             <MenuItem value={16}>CGR</MenuItem>
                             <MenuItem value={17}>Administrador</MenuItem>
                             <MenuItem disabled value={2}>Consultoria</MenuItem>
-                            <MenuItem disabled value={4}>Faturamento</MenuItem>
+                            <MenuItem value={4}>Faturamento</MenuItem>
                             <MenuItem disabled value={5}>Supervisor Faturamento</MenuItem>
                             <MenuItem disabled value={6}>Comercial</MenuItem>
                             <MenuItem disabled value={7}>Supervisor Comercial</MenuItem>

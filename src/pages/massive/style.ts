@@ -156,7 +156,7 @@ export const OffCard = styled.div<IOffCard>`
         height: 60%;
 
         p{
-            padding: .5rem 0;
+            padding: .2rem 0;
         }
     }
 

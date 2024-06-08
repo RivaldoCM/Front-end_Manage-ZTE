@@ -221,6 +221,9 @@ export function Massive(){
                                     </IconButton>
                                     <div className="off-card-information">
                                         <p>
+                                            Data da falha: {dayjs(massive.failure_date).add(3, "hour").format('DD/MM [às] HH:mm') + 'h'}
+                                        </p>
+                                        <p>
                                             Aberto por
                                             {' ' + massive.User_Massive_created_by.name + ' '} 
                                             dia 

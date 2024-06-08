@@ -34,7 +34,7 @@ const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: 
 
 export function AppRoutes() {
     const { user } = useAuth(); 
-    const { socket } = useSocket();
+    const { socket, rooms } = useSocket();
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
@@ -46,12 +46,14 @@ export function AppRoutes() {
         const token = localStorage.getItem('Authorization');
         setLastRoutes(prevRoutes => [...prevRoutes, location.pathname]);
 
-        if(lastRoutes.at(-1)?.includes('/break_time') && !location.pathname.includes('/break_time')){
-            socket.emit("leave_room", {
-                uid: user?.uid,
-                room: lastRoutes.at(-1)
-            });
-        }
+        rooms.map((room: string) => {
+            if(lastRoutes.at(-1)?.includes(room) && !location.pathname.includes(room)){
+                socket.emit("leave_room", {
+                    uid: user?.uid,
+                    room: lastRoutes.at(-1)
+                });
+            }
+        });
 
         if(token && location.pathname === '/login' || token && location.pathname === '/'){
             if(user?.rule === 1 || user?.rule === 2){
