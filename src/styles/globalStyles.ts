@@ -9,6 +9,8 @@ interface MyStyledComponentProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
 export const GlobalStyle = createGlobalStyle`
     :root {
         //colors
+        --surface-color: #F8F8FF;
+        --curve: 40;
     }
     * {
         box-sizing: border-box;
@@ -117,7 +119,7 @@ export const InputContainer = styled.div<MyStyledComponentProps>`
             max-width: 100%;
         }
     }
-
+    
     @media (max-width: 450px){
         width: 100%;
     }

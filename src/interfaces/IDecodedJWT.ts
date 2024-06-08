@@ -1,4 +1,4 @@
-export interface IDecodedJTW {
+export interface IDecodedJWT {
     uid: number,
     rule: number;
 }

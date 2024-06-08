@@ -1,19 +1,21 @@
 import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function getUsers(): Promise<IResponseData | IResponseError>{
-    const users = await axios({
-        method: 'get',
-        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/users`,
+export async function getMassive(): Promise<IResponseData | IResponseError>{
+    const res = await axios({
+        method: 'GET',
+        url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/massive`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
-        data: {},
+        params:{
+            status: true
+        }
     }).then((response) => {
         return response.data;
-    }).catch(() => {
+    }).catch(() =>{
         return null;
     });
 
-    return users;
+    return res;
 }

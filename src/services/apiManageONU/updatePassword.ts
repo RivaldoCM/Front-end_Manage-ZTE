@@ -1,19 +1,21 @@
 import axios from "axios";
-import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function getUsers(): Promise<IResponseData | IResponseError>{
-    const users = await axios({
-        method: 'get',
+export async function updatePassword({id, password}: {id: number, password: string}){
+    const res = await axios({
+        method: 'put',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/users`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
-        data: {},
+        data:{
+            id: id,
+            password: password
+        }
     }).then((response) => {
         return response.data;
     }).catch(() => {
         return null;
     });
 
-    return users;
+    return res;
 }

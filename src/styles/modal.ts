@@ -1,5 +1,5 @@
 import styled from "styled-components";
- 
+
 export const DefaultStyledModal = styled.form`
     position: absolute;
 	top: 50%;
@@ -13,6 +13,7 @@ export const DefaultStyledModal = styled.form`
 `
 
 export const CloseButton = styled.div`
+	display: flex;
     width: 98%;
     height: 10%;
     justify-content: flex-end;

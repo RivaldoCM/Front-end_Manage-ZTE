@@ -13,10 +13,10 @@ export async function getPeopleId(cpf:string): Promise<any>{
         if(!response.data.response){
             return null;
         }
-        return response.data.response.id;
-    }).catch((_err) => {
+        return response.data.response;
+    }).catch(() => {
         return null;
     });
-    
+    console.log(peopleId)
     return peopleId;
 }
