@@ -51,7 +51,7 @@ export function MapModal(props: any){
                     <Alert severity="info">
                         Passe o mause sobre um ponto vermelho para ver a quem pertence.
                     </Alert>
-                    <ul className='list-clients'>
+                    <ul className='list-clients flex'>
                         {
                             props.locations.map((client: any, index: number) => {
                                 return(

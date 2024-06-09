@@ -231,13 +231,17 @@ export const SideMapStyle = styled.aside`
     background-color: azure;
 
     .list-clients{
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
         width: 98%;
         height: 70%;
+        margin-top: 1rem;
         font-size: .8rem;
+        overflow: auto;
 
         li{
-            margin: 1rem;
-            font-family: "Itim", cursive !important;;
+            margin: .5rem;
         }
     }
 

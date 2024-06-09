@@ -1,15 +1,18 @@
-import { IconButton, Modal, TextField } from "@mui/material";
 import { useState } from "react";
-import { FormAddPeopleMassive } from "../style";
 
-import DoneIcon from '@mui/icons-material/Done';
-import CloseIcon from '@mui/icons-material/Close';
 import { isValidCpf } from "../../../config/regex";
-import { addClientMassive } from "../../../services/apiManageONU/addClientMassive";
-import { getPeopleId } from "../../../services/apiVoalle/getPeopleId";
 import { useResponse } from "../../../hooks/useResponse";
+
+import { getPeopleId } from "../../../services/apiVoalle/getPeopleId";
+import { addClientMassive } from "../../../services/apiManageONU/addClientMassive";
+
 import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
 import { IUsers } from "../../../interfaces/IUsers";
+
+import { FormAddPeopleMassive } from "../style";
+import { IconButton, Modal, TextField } from "@mui/material";
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
 
 type LocalAddMassivePeople = {
     open: boolean,

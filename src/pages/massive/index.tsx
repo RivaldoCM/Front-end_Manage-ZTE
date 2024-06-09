@@ -15,6 +15,7 @@ import { AddMassivePeople } from "./modals/addMassivePeople";
 import { IUsers } from "../../interfaces/IUsers";
 import { IClientMassive } from "../../interfaces/IClientMassive";
 
+import { MapModal } from "./map";
 import { 
     Card, 
     Cards, 
@@ -36,7 +37,7 @@ import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
-import { MapModal } from "./map";
+
 
 type LocalAddPeopleMassive = {
     userId?: IUsers['id'];
@@ -123,8 +124,8 @@ export function Massive(){
             if(client.lat && client.lng){
                 locations.push({ 
                     name: client.name, 
-                    lat: parseFloat(client.lat),
-                    lng: parseFloat(client.lng)
+                    lat: parseFloat(client.lat.replace(',', '.')),
+                    lng: parseFloat(client.lng.replace(',', '.'))
                 });
             }
         });
@@ -174,10 +175,10 @@ export function Massive(){
                                                                     <p><b>{index + 1}</b>: {client.name ? client.name : client.cpf}</p>
                                                                     <p>{client.address ? client.address : ''}</p>
                                                                     {
-                                                                        client.lat ? 
+                                                                        client.lat && client.lng ? 
                                                                         <p>
                                                                             Coordenadas: 
-                                                                            <a href={`https://www.google.com/maps?q= ${client.lat}, ${client.lng}`} target="_blank"> {client.lat + ', '+ client.lng}</a> 
+                                                                            <a href={`https://www.google.com/maps?q= ${client.lat.replace(',', '.')}, ${client.lng.replace(',', '.')}`} target="_blank"> {client.lat + ', '+ client.lng}</a> 
                                                                         </p>
                                                                         : ''
                                                                     }

@@ -1,12 +1,15 @@
-import { FormControl, IconButton, InputLabel, MenuItem, Modal, Select, SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
-import { FormAddPeopleMassive } from "../style";
 
+import { useResponse } from "../../../hooks/useResponse";
+
+import { finishMassive } from "../../../services/apiManageONU/finishMassive";
+
+import { IUsers } from "../../../interfaces/IUsers";
+
+import { FormAddPeopleMassive } from "../style";
+import { FormControl, IconButton, InputLabel, MenuItem, Modal, Select, SelectChangeEvent } from "@mui/material";
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { useResponse } from "../../../hooks/useResponse";
-import { finishMassive } from "../../../services/apiManageONU/finishMassive";
-import { IUsers } from "../../../interfaces/IUsers";
 
 type LocalFinishMassive = {
     open: boolean,
