@@ -27,6 +27,7 @@ import { BreakTimeDashboard } from "./pages/breakTime/dashboard";
 import { Massive } from "./pages/massive";
 import { LogsMassives } from "./pages/logs/massives";
 import { MassiveContextProvider } from "./contexts/MassiveContext";
+import { MassivePanel } from "./pages/massive/panel";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -75,6 +76,14 @@ export function AppRoutes() {
     return (
         <Routes>
             <Route index path="login" element={<Login />} />
+            <Route 
+                    path="massive_panel"
+                    element={
+                        <MassiveContextProvider>
+                            <PrivateRoute element={ <MassivePanel /> }/>
+                        </MassiveContextProvider>
+                    }
+                />
             <Route path="" element={matches ? <MobileDrawerMenu /> : <MenuDrawer />}>
                 <Route
                     path="olts"

@@ -57,6 +57,9 @@ export const handlePages: IAllPages[] = [
             },
             {
                 logs_massive: 'Históricos'
+            },
+            {
+                massive_panel: 'Painel de Massivas'
             }
         ]
     },

@@ -251,3 +251,56 @@ export const SideMapStyle = styled.aside`
         background-color: transparent;
     }
 `;
+
+//------------------------CARD-PAINEL------------------------//
+
+export const CardPanel = styled.div`
+    position: relative;
+    flex-direction: column;
+    width: inherit;
+    height: 280px;
+    padding: 0 .5rem;
+    background-color: #CCE5FF;
+    border-radius: 1.5rem;
+    overflow: hidden;
+
+    .header{
+        font-family: "Itim", cursive !important;
+        flex-direction: column;
+        width: 100%;
+        height: 20%;
+
+        h2,p{
+            font-family: "Itim", cursive !important;
+            font-size: 1.6rem;
+        }
+    }
+    .content{
+        width: 100%;
+        height: 100%;
+        padding-top: .5rem;
+
+        p{
+            font-family: "Itim", cursive !important;
+            font-size: 1.2rem;
+        }
+
+        .basic-info{
+            align-items: flex-start;
+            justify-content: flex-start;
+            height: 35%;
+            overflow: auto;
+        }
+
+        .description{
+            align-items: flex-start;
+            justify-content: flex-start;
+            height: 40%;
+            overflow: auto;
+        }
+
+        .acknowledge{
+            flex-direction: column;
+        }
+    }
+`;
