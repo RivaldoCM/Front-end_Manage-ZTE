@@ -1,15 +1,18 @@
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 import { MapsModalContainer, SideMapStyle } from './style';
-import { Alert, IconButton, Modal } from '@mui/material';
+import { Alert, IconButton, Modal, useMediaQuery, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-export function MapModal(props: any){
-    const mapContainerStyle = {
-        width: '70%',
-        height: '100%',
-        borderRadius: '2%'
-    };
+type LocalMapsTypes = {
+    open: boolean;
+    locations: {name: string, lat: number, lng: number}[];
+    handleClose: () => void;
+}
+
+export function MapModal(props: LocalMapsTypes){
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down('md'));
 
     return(
         <Modal
@@ -22,7 +25,7 @@ export function MapModal(props: any){
                     props.locations.length > 0 && (
                         <LoadScript googleMapsApiKey={import.meta.env.VITE_API_GOOGLE_MAPS}>
                             <GoogleMap
-                                mapContainerStyle={mapContainerStyle}
+                                mapContainerClassName='map'
                                 zoom={10}
                                 center={{
                                     lat: props.locations[0].lat,
@@ -30,7 +33,7 @@ export function MapModal(props: any){
                                 }}
                             >
                                 {
-                                    props.locations.map((location: any, index: number) => {
+                                    props.locations.map((location, index: number) => {
                                         return(
                                             <Marker
                                                 key={index} 
@@ -48,18 +51,20 @@ export function MapModal(props: any){
                     <IconButton size="small" color="error" onClick={() => props.handleClose()}>
                         <CloseIcon />
                     </IconButton>
-                    <Alert severity="info">
-                        Passe o mause sobre um ponto vermelho para ver a quem pertence.
-                    </Alert>
+                    {
+                        matches ? <></> :
+                        <Alert severity="info">
+                            Passe o mause sobre um ponto vermelho para ver a quem pertence.
+                        </Alert>
+                    }
                     <ul className='list-clients flex'>
                         {
-                            props.locations.map((client: any, index: number) => {
+                            props.locations.map((client, index: number) => {
                                 return(
                                     <li className="flex client" key={index}>
                                         <p><b>{index + 1}</b>: {client.name} </p>
                                     </li>
                                 )
-
                             })
                         }
                     </ul>

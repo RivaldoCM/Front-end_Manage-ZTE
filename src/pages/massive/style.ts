@@ -8,12 +8,17 @@ interface IOffCard extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTM
 export const Container = styled.div`
     min-width: 100%;
     min-height: calc(100vh - 200px);
-    padding: .5rem 0;
+    padding: .5rem;
+    line-height: 30px;
     
     .add-massive{
         position: fixed;
         bottom: 16px;
         right: 1rem;
+    }
+
+    @media (max-width: 899px){
+        line-height: 28px;
     }
 `;
 
@@ -23,7 +28,18 @@ export const Cards = styled.div`
     justify-content: center;
     gap: .5rem;
     width: 100%;
-    padding: 1rem;
+
+    @media (max-width: 822px){
+        grid-template-columns: repeat(auto-fit, 300px);
+    }
+
+    @media (max-width: 620px){
+        grid-template-columns: repeat(auto-fit, 400px);
+    }
+
+    @media (max-width: 499px){
+        grid-template-columns: repeat(auto-fit, 90vw);
+    }
 `;
 
 export const CardController = styled.div`
@@ -31,8 +47,16 @@ export const CardController = styled.div`
     flex-direction: column;
     align-items: center;
     width: inherit;
-    height: 300px; 
+    height: 300px;
     overflow: hidden;
+
+    @media (max-width: 899px){
+        line-height: 28px;
+    }
+
+    @media (max-width: 499px){
+        width: 100%;
+    }
 `;
 
 export const Card = styled.div<IOffCard>`
@@ -47,16 +71,17 @@ export const Card = styled.div<IOffCard>`
     filter: ${(props) => props.offCardOpen ? 'blur(2px)' : 'blur(0)'};
 
     .header{
-        font-family: "Itim", cursive !important;
         flex-direction: column;
         width: 100%;
         height: 20%;
+        font-family: "Itim", cursive !important;
 
         h2,p{
             font-family: "Itim", cursive !important;
             font-size: 1.3rem;
         }
     }
+    
     .content{
         width: 100%;
         height: 85%;
@@ -207,6 +232,12 @@ export const MapsModalContainer = styled.div`
     height: 562px;
     justify-content: space-evenly;
 
+    .map{
+        width: 70%;
+        height: 100%;
+        border-radius: 2%;
+    }
+
     @media (max-width: 1768px){
         width: 60%;
     }
@@ -215,8 +246,15 @@ export const MapsModalContainer = styled.div`
         width: 85%;
     }
 
-    @media (max-width: 968px){
+    @media (max-width: 899px){
         flex-direction: column-reverse;
+        width: 90%;
+    }
+
+    @media (max-width: 650px){
+        .map{
+            width: 95%;
+        }
     }
 `;
 
@@ -245,9 +283,73 @@ export const SideMapStyle = styled.aside`
         }
     }
 
-    @media (max-width: 968px){
+    @media (max-width: 899px){
         width: 70%;
-        height: 150px;
-        background-color: transparent;
+        height: 180px;
+
+        .list-clients{
+            align-items: center;
+            margin-top: 0;
+        }
+    }
+
+    @media (max-width: 650px){
+        width: 95%;
+    }
+`;
+
+//------------------------CARD-PAINEL------------------------//
+
+export const CardPanel = styled.div`
+    position: relative;
+    flex-direction: column;
+    width: inherit;
+    height: 280px;
+    padding: 0 .5rem;
+    background-color: #CCE5FF;
+    border-radius: 1.5rem;
+    overflow: hidden;
+
+    .header{
+        font-family: "Itim", cursive !important;
+        flex-direction: column;
+        width: 100%;
+        height: 20%;
+
+        h2,p{
+            font-family: "Itim", cursive !important;
+            font-size: 1.6rem;
+        }
+    }
+    .content{
+        width: 100%;
+        height: 100%;
+        padding-top: .5rem;
+
+        p{
+            font-family: "Itim", cursive !important;
+            font-size: .9rem;
+        }
+
+        .basic-info{
+            align-items: flex-start;
+            justify-content: flex-start;
+            height: 30%;
+            overflow: auto;
+        }
+
+        .description{
+            align-items: flex-start;
+            justify-content: flex-start;
+            height: 40%;
+            overflow: auto;
+        }
+
+        .acknowledge{
+            flex-direction: column;
+            p{
+                font-size: 1.2rem;
+            }
+        }
     }
 `;

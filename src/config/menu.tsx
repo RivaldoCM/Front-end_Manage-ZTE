@@ -13,6 +13,7 @@ import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlin
 import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import ViewModuleOutlinedIcon from '@mui/icons-material/ViewModuleOutlined';
+import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -57,6 +58,9 @@ export const handlePages: IAllPages[] = [
             },
             {
                 logs_massive: 'Históricos'
+            },
+            {
+                massive_panel: 'Painel de Massivas'
             }
         ]
     },
@@ -91,7 +95,7 @@ export const handleShowPageByRule = (rule?: number) => {
             let onusMassive = cloneDeep(handlePages);
             onusMassive.splice(1,2);
             onusMassive.splice(2,1);
-            onusMassive[1].pages.splice(1,1);
+            onusMassive[1].pages.splice(1,2);
         return handleDynamicPagesByRule = onusMassive;
         case 1:
         case 2: 
@@ -127,6 +131,8 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <ViewModuleOutlinedIcon />;
         case 'logs_massive':
             return <LibraryBooksOutlinedIcon />;
+        case 'massive_panel':
+            return <DesktopWindowsOutlinedIcon />;
         case 'my_auth_onus':
             return <BallotOutlinedIcon />;
         case 'break_time/breaks':
