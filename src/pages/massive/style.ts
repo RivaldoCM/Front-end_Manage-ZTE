@@ -8,7 +8,7 @@ interface IOffCard extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTM
 export const Container = styled.div`
     min-width: 100%;
     min-height: calc(100vh - 200px);
-    padding: .5rem;
+    padding: .2rem;
     line-height: 30px;
     
     .add-massive{
@@ -304,7 +304,7 @@ export const CardPanel = styled.div`
     position: relative;
     flex-direction: column;
     width: inherit;
-    height: 280px;
+    height: inherit;
     padding: 0 .5rem;
     background-color: #CCE5FF;
     border-radius: 1.5rem;
@@ -341,14 +341,15 @@ export const CardPanel = styled.div`
         .description{
             align-items: flex-start;
             justify-content: flex-start;
-            height: 40%;
+            height: 45%;
             overflow: auto;
         }
 
         .acknowledge{
+            height: 25%;
             flex-direction: column;
             p{
-                font-size: 1.2rem;
+                font-size: 1.3rem;
             }
         }
     }
