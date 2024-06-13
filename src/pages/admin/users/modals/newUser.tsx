@@ -5,8 +5,6 @@ import { useResponse } from "../../../../hooks/useResponse";
 import { signUp } from "../../../../services/apiManageONU/signUp";
 import { isValidEmail } from "../../../../config/regex";
 
-
-
 import { NewUserWrapper } from "../style";
 import { SelectChangeEvent } from '@mui/material/Select';
 import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Modal, OutlinedInput, Select, TextField } from "@mui/material";
@@ -100,6 +98,16 @@ export function NewUser(props: {open: boolean, handleClose: () => void}){
                         <MenuItem value={10}>Tecnicos</MenuItem>
                         <MenuItem value={14}>NOC</MenuItem>
                         <MenuItem value={16}>CGR</MenuItem>
+                        <MenuItem value={2}>Consultoria</MenuItem>
+                        <MenuItem value={4}>Faturamento</MenuItem>
+                        <MenuItem value={5}>Supervisor Faturamento</MenuItem>
+                        <MenuItem value={6}>Comercial</MenuItem>
+                        <MenuItem value={7}>Supervisor Comercial</MenuItem>
+                        <MenuItem value={8}>Loja</MenuItem>
+                        <MenuItem value={9}>Supervisor Loja</MenuItem>
+                        <MenuItem value={11}>Cobrança</MenuItem>
+                        <MenuItem value={12}>Supervisor Cobrança</MenuItem>
+                        <MenuItem value={13}>Retenção</MenuItem>
                     </Select>
                 </FormControl>
                 <FormControl fullWidth>

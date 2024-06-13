@@ -9,16 +9,11 @@ export const Container = styled.div`
     min-width: 100%;
     min-height: calc(100vh - 200px);
     padding: .2rem;
-    line-height: 30px;
-    
+
     .add-massive{
         position: fixed;
         bottom: 16px;
         right: 1rem;
-    }
-
-    @media (max-width: 899px){
-        line-height: 28px;
     }
 `;
 
@@ -28,6 +23,7 @@ export const Cards = styled.div`
     justify-content: center;
     gap: .5rem;
     width: 100%;
+    line-height: 30px;
 
     @media (max-width: 822px){
         grid-template-columns: repeat(auto-fit, 300px);

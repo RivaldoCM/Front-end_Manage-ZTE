@@ -147,7 +147,7 @@ export function LogsMassives(){
                                                         })}
                                                     </div>
                                                     {
-                                                        clientMassive.length > 0 && (
+                                                        clientMassive.length > 1 && (
                                                             <IconButton size="small" color="info" onClick={() => handleOpenMaps()}>
                                                                 <MapOutlinedIcon />
                                                             </IconButton>

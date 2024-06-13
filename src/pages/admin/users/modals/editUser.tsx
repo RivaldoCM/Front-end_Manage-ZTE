@@ -110,16 +110,16 @@ export function EditUser(props: IEditUser){
                             <MenuItem value={14}>NOC</MenuItem>
                             <MenuItem value={16}>CGR</MenuItem>
                             <MenuItem value={17}>Administrador</MenuItem>
-                            <MenuItem disabled value={2}>Consultoria</MenuItem>
+                            <MenuItem value={2}>Consultoria</MenuItem>
                             <MenuItem value={4}>Faturamento</MenuItem>
-                            <MenuItem disabled value={5}>Supervisor Faturamento</MenuItem>
-                            <MenuItem disabled value={6}>Comercial</MenuItem>
-                            <MenuItem disabled value={7}>Supervisor Comercial</MenuItem>
-                            <MenuItem disabled value={8}>Loja</MenuItem>
-                            <MenuItem disabled value={9}>Supervisor Loja</MenuItem>
-                            <MenuItem disabled value={11}>Cobrança</MenuItem>
-                            <MenuItem disabled value={12}>Supervisor Cobrança</MenuItem>
-                            <MenuItem disabled value={13}>Retenção</MenuItem>
+                            <MenuItem value={5}>Supervisor Faturamento</MenuItem>
+                            <MenuItem value={6}>Comercial</MenuItem>
+                            <MenuItem value={7}>Supervisor Comercial</MenuItem>
+                            <MenuItem value={8}>Loja</MenuItem>
+                            <MenuItem value={9}>Supervisor Loja</MenuItem>
+                            <MenuItem value={11}>Cobrança</MenuItem>
+                            <MenuItem value={12}>Supervisor Cobrança</MenuItem>
+                            <MenuItem value={13}>Retenção</MenuItem>
                         </Select>
                     </FormControl>
                 <FormControl fullWidth sx={{ mt: 2 }}>
