@@ -1,9 +1,6 @@
 import axios from "axios";
-import { IVerifyIfOnuExistisProps } from "../../interfaces/IVerifyIfOnuExistisProps";
 
-export const verifyIfOnuExists = async (props: IVerifyIfOnuExistisProps) => {
-    const { ip, modelOlt, matchSerialNumber } = props;
-
+export const verifyIfOnuExists = async ({matchSerialNumber, cityId}: {matchSerialNumber: string, cityId: number}) => {
     const res = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/findOnu`,
@@ -11,16 +8,14 @@ export const verifyIfOnuExists = async (props: IVerifyIfOnuExistisProps) => {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
         },
         data: {
-            ips: ip,
             serialNumber: matchSerialNumber,
-            modelOlt: modelOlt 
+            cityId: cityId
         }
     }).then(response => {
         return response.data;
-    })
-    .catch(() => {
-        //SÓ ENTRA AQUI SE NÃO TIVER CONEXÃO COM A API
-        return undefined;
+    }).catch(() => {
+        return null;
     });
+
     return res;
 }

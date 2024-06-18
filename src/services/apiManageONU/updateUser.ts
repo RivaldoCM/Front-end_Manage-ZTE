@@ -19,6 +19,6 @@ export async function updateUser({id, userName, email, accessLevel, status}: any
     }).catch(() => {
         return null;
     });
-    console.log(res)
+
     return res;
 }

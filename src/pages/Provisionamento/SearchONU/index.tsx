@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { useAuthOnu } from "../../../hooks/useAuthOnu";
-import { useError } from "../../../hooks/useError";
 import { useLoading } from "../../../hooks/useLoading";
-import { getOlt } from "../../../services/apiManageONU/getOlt";
+
 import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
+
 import { isAlphaNumeric } from "../../../config/regex";
-import { handleOltByCity } from "../../../config/renderOltByCity";
 
 import { Form } from './style';
 import { InputContainer } from "../../../styles/globalStyles";
@@ -14,33 +13,52 @@ import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Alert } from "@mui/material";
+import { getCities } from "../../../services/apiManageONU/getCities";
+import { useResponse } from "../../../hooks/useResponse";
+import { Autocomplete } from "@mui/material";
+import { ICities } from "../../../interfaces/ICities";
 
 export function SearchONU() {
-    const { authOnu, setAuthOnu, setViewOnlyOlt, viewOnlyOlt, setOnus  } = useAuthOnu();
+    const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
-    const { error, errorMessage, severityStatus, handleError } = useError();
+    const { setFetchResponseMessage } = useResponse();
 
-    const [matchSerialNumber, setMatchSerialNumber] = useState('');
+    const [open, setOpen] = useState(false);
+    const [cities, setCities] = useState<ICities[]>([]);
+    const [form, setForm] = useState<{matchSerialNumber: string, cityId: number | null}>({
+        matchSerialNumber: '',
+        cityId: null
+    });
 
+    const loadingCities = open && cities.length === 0;
     useEffect(() => {
-        async function oltZte(){
-            const oltData = await getOlt('all');
-            if(oltData){
-                if(oltData.success){
-                    setViewOnlyOlt(oltData.responses.response);
-                    setAuthOnu({
-                        ...authOnu,
-                        city: oltData.responses.response[0].name
-                    });
-                }
-            } else {
-                setViewOnlyOlt([]);
-                handleError('error/no-connection-with-API');
-            }
+        let active = true;
+        if (!loadingCities) {
+            return undefined;
         }
-        oltZte();
-    }, []);
+
+        (async () => {
+            const response = await getCities();
+            if (active) {
+                if(response){
+                    if(response.success){
+                        setCities(response.responses.response);
+                        setAuthOnu({
+                            ...authOnu,
+                            city: response.responses.response[0].name
+                        });
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+            }
+        })();
+
+        return () => {
+            active = false;
+        };
+    }, [loadingCities]);
+
 
     useEffect(() => {
         //LIMPANDO OS DADOS CASO TROQUE DE CIDADE
@@ -62,15 +80,28 @@ export function SearchONU() {
         });
         stopLoading();
     }, [authOnu.city]);
-
-    const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
-        setAuthOnu({
-        ...authOnu,
-        city: e.target.value
-    })};
     
-    const handleMatchSerialNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => { setMatchSerialNumber(e.target.value); }
+    const handleCityChange = (_e: unknown, value: ICities | null) => {
+        if(value){
+            setForm({
+                ...form,
+                cityId: value.id
+            });
+        }else{
+            setForm({
+                ...form,
+                cityId: value
+            });
+        }
+    };
 
+    const handleChange = (e: any) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        })
+    }
+    
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setAuthOnu({
@@ -84,46 +115,34 @@ export function SearchONU() {
         startLoading();
 
         if(isLoading){
-            handleError('warning/has-action-in-progress');
-        }else if(!isAlphaNumeric.test(matchSerialNumber)){
-            handleError('info/non-expect-caracter-not-alphaNumeric');
+            setFetchResponseMessage('warning/has-action-in-progress');
+        }else if(!isAlphaNumeric.test(form.matchSerialNumber)){
+            setFetchResponseMessage('info/non-expect-caracter-not-alphaNumeric');
             stopLoading();
-        }else{
-            const olt = viewOnlyOlt!.filter((olt) => olt.name.includes(authOnu.city));
-            let ips: string[] = [];
-            let modelOlt: number[] = [];
-
-            olt.map((data) => {
-                ips.push(data.host);
-                modelOlt.push(data.type);
-                setAuthOnu((prevState) => ({
-                    ...prevState,
-                    ip: [...prevState.ip, data.host],
-                    voalleAccessPointId: [...prevState.voalleAccessPointId, data.voalleAccessPointId],
-                    oltId: [...prevState.oltId, data.id],
-                    cityId: data.city_id,
-                    isPizzaBox: [...prevState.isPizzaBox, data.isPizzaBox],
-                }));
-            });
-
+        }else if(!form.cityId){
+            setFetchResponseMessage('info/required-input');
+            stopLoading();
+        } else {
             const response = await verifyIfOnuExists({
-                ip: ips, 
-                modelOlt: modelOlt, 
-                matchSerialNumber: matchSerialNumber
+                matchSerialNumber: form.matchSerialNumber,
+                cityId: form.cityId
             });
             stopLoading();
 
             if(response){
+                console.log(response)
                 if(!response.success){
-                    handleError(response.messages.message);
+                    setFetchResponseMessage(response.messages.message);
                     return;
                 }
                 setOnus(response.responses.response);
             } else {
-                handleError('error/no-connection-with-API');
+                setFetchResponseMessage('error/no-connection-with-API');
             }
         }
     }
+
+    console.log(form)
 
     return (
         <Form onSubmit={handleSubmit} className="flex">
@@ -132,15 +151,41 @@ export function SearchONU() {
                     <p>Selecione a cidade: </p>
                 </div>
                 <div className="content">
-                    <TextField
-                        id='select-city'
-                        select
-                        label="Cidades"
-                        value={authOnu.city}
+                    <Autocomplete
+                        open={open}
+                        sx={{width: '200px'}}
+                        onOpen={() => setOpen(true)}
+                        onClose={() => setOpen(false)}
                         onChange={handleCityChange}
-                    >
-                        {handleOltByCity(viewOnlyOlt)}
-                    </TextField>
+                        options={cities}
+                        isOptionEqualToValue={(option, value) => option.name === value.name}
+                        getOptionLabel={(city) => city.name}
+                        loading={loadingCities}
+                        renderOption={(props, option) => {
+                            return (
+                                <li {...props} key={option.id}>
+                                    {option.name}
+                                </li>
+                            );
+                        }}
+                        renderInput={(params) => {
+                            return(
+                                <TextField
+                                    {...params}
+                                    label="Cidades"
+                                    name="cnlCode"
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        endAdornment: (
+                                        <React.Fragment>
+                                            {loadingCities ? <CircularProgress color="inherit" size={20} /> : null}
+                                            {params.InputProps.endAdornment}
+                                        </React.Fragment>
+                                    ),
+                                }}
+                            />
+                        )}}
+                    />
                 </div>
             </InputContainer>
             <InputContainer>
@@ -148,11 +193,11 @@ export function SearchONU() {
                     <p>Digite o serial da ONU: </p>
                 </div>
                 <div className="content">
-                    <TextField 
-                        id="standard-basic" 
-                        variant="standard" 
+                    <TextField
                         type="text"
-                        onChange={handleMatchSerialNumberChange}
+                        name="matchSerialNumber"
+                        variant="standard"
+                        onChange={handleChange}
                     />
                 </div>
             </InputContainer>
@@ -160,7 +205,7 @@ export function SearchONU() {
                 (isLoading ? 
                     <CircularProgress className="MUI-CircularProgress" color="primary"/>
                 :
-                    (matchSerialNumber.length < 4 ?
+                    (form.matchSerialNumber.length < 4 ?
                         <Button disabled variant="outlined" endIcon={<SearchIcon />}>
                             Procurar ONU
                         </Button>
@@ -169,13 +214,6 @@ export function SearchONU() {
                             Procurar ONU
                         </Button>
                     )
-                )
-            }
-            {
-                (error ?
-                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-                :
-                    <></>
                 )
             }
         </Form>
