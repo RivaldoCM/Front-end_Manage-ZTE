@@ -28,6 +28,7 @@ import { Massive } from "./pages/massive";
 import { LogsMassives } from "./pages/logs/massives";
 import { MassiveContextProvider } from "./contexts/MassiveContext";
 import { MassivePanel } from "./pages/massive/panel";
+import { EditOlt } from "./pages/admin/manageOlt/editOlt";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -88,6 +89,10 @@ export function AppRoutes() {
                 <Route
                     path="olts"
                     element={<PrivateRoute element={<HandleManageOlt />} />}
+                />
+                <Route
+                    path="olts/:id"
+                    element={<PrivateRoute element={<EditOlt />} />}
                 />
                 <Route
                     path="users"

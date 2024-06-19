@@ -130,7 +130,6 @@ export function SearchONU() {
             stopLoading();
 
             if(response){
-                console.log(response)
                 if(!response.success){
                     setFetchResponseMessage(response.messages.message);
                     return;

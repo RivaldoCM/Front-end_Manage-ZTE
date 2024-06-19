@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 
 import { getOlt } from '../../../services/apiManageONU/getOlt';
 import { IOlt } from '../../../interfaces/IOlt';
-import { AddOltModal } from './modals/addOlt';
 
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -18,11 +17,12 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { TableHead } from '@mui/material';
+import { IconButton, TableHead } from '@mui/material';
 import { useError } from '../../../hooks/useError';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import Alert from '@mui/material/Alert';
-import { EditOltModal } from './modals/editOlt';
-import { KeepMountedDeleteOltModal } from './modals/deleteOlt';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { useNavigate } from 'react-router-dom';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -97,19 +97,8 @@ function EnhancedTableHead(){
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+    const navigate = useNavigate();
     const { numSelected, oltDataSelected } = props;
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
-    const [openDeleteOlt, setOpenDeleteOlt] = useState(false);
-    const handleOpenDeleteOlt = () => setOpenDeleteOlt(true);
-    const handleCloseDeleteOlt = () => setOpenDeleteOlt(false);
-
-    const [openAddOlt, setOpenAddOlt] = useState(false);
-    const handleOpenAddOlt = () => setOpenAddOlt(true);
-    const handleCloseAddOlt = () => setOpenAddOlt(false);
 
     return (
         <Toolbar
@@ -143,25 +132,14 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         )}
         {numSelected > 0 ? (
             <div className='flex'>
-                <EditOltModal
-                    handleOpen={handleOpen}
-                    open={open}
-                    handleClose={handleClose}
-                    oltDataSelected={oltDataSelected}
-                />
-                <KeepMountedDeleteOltModal
-                    handleOpen={handleOpenDeleteOlt}
-                    open={openDeleteOlt}
-                    handleClose={handleCloseDeleteOlt}
-                    oltDataSelected={oltDataSelected}
-                />
+                <IconButton color='secondary' onClick={() => navigate(`${oltDataSelected.id}`)}>
+                    <EditOutlinedIcon />
+                </IconButton>
             </div>
         ) : (
-            <AddOltModal
-                handleOpen={handleOpenAddOlt}
-                open={openAddOlt}
-                handleClose={handleCloseAddOlt}
-            />
+            <IconButton color='primary'>
+                <AddOutlinedIcon />
+            </IconButton>
         )}
         </Toolbar>
     );
@@ -179,7 +157,7 @@ export function HandleManageOlt(){
 
     useEffect(() => {
         async function olts(){
-            const oltData = await getOlt('all');
+            const oltData = await getOlt();
 
             if(oltData.success){
                 setOlt(oltData.responses.response);
