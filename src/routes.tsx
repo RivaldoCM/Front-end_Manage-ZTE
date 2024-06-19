@@ -24,6 +24,10 @@ import { useAuth } from "./hooks/useAuth";
 import { BreakTimePanel } from "./pages/breakTime/panel";
 import { BreakTimeContextProvider } from "./contexts/BreakTimeContext";
 import { BreakTimeDashboard } from "./pages/breakTime/dashboard";
+import { Massive } from "./pages/massive";
+import { LogsMassives } from "./pages/logs/massives";
+import { MassiveContextProvider } from "./contexts/MassiveContext";
+import { MassivePanel } from "./pages/massive/panel";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -31,7 +35,7 @@ const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: 
 
 export function AppRoutes() {
     const { user } = useAuth(); 
-    const { socket } = useSocket();
+    const { socket, rooms } = useSocket();
     const navigate = useNavigate();
     const location = useLocation();
     const theme = useTheme();
@@ -43,20 +47,24 @@ export function AppRoutes() {
         const token = localStorage.getItem('Authorization');
         setLastRoutes(prevRoutes => [...prevRoutes, location.pathname]);
 
-        if(lastRoutes.at(-1)?.includes('/break_time') && !location.pathname.includes('/break_time')){
-            socket.emit("leave_room", {
-                uid: user?.uid,
-                room: lastRoutes.at(-1)
-            });
-        }
+        rooms.map((room: string) => {
+            if(lastRoutes.at(-1)?.includes(room) && !location.pathname.includes(room)){
+                socket.emit("leave_room", {
+                    uid: user?.uid,
+                    room: lastRoutes.at(-1)
+                });
+            }
+        });
 
         if(token && location.pathname === '/login' || token && location.pathname === '/'){
             if(user?.rule === 1 || user?.rule === 2){
                 navigate('/break_time/breaks');
             } else if(user?.rule === 3){
                 navigate('/break_time/dashboard');
-            } else {
+            } else if(user?.rule === 10){
                 navigate('/auth_onu');
+            } else {
+                navigate('/massive');
             }
         }
         
@@ -68,6 +76,14 @@ export function AppRoutes() {
     return (
         <Routes>
             <Route index path="login" element={<Login />} />
+            <Route 
+                    path="massive_panel"
+                    element={
+                        <MassiveContextProvider>
+                            <PrivateRoute element={ <MassivePanel /> }/>
+                        </MassiveContextProvider>
+                    }
+                />
             <Route path="" element={matches ? <MobileDrawerMenu /> : <MenuDrawer />}>
                 <Route
                     path="olts"
@@ -93,6 +109,20 @@ export function AppRoutes() {
                                 element={<AuthOnuController />}
                             />
                         </AuthOnuContextProvider>
+                    }
+                />
+                <Route 
+                    path="massive"
+                    element={
+                        <MassiveContextProvider>
+                            <PrivateRoute element={ <Massive />}/>
+                        </MassiveContextProvider>
+                    }
+                />
+                <Route 
+                    path="logs_massive"
+                    element={
+                        <PrivateRoute element={ <LogsMassives />}/>
                     }
                 />
                 <Route path="break_time">

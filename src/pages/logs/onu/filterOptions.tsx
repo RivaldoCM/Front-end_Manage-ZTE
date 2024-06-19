@@ -72,7 +72,15 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         (async () => {
             const users = await getUsers();
             if (active) {
-                setUsers(users);
+                if(users){
+                    if(users.success){
+                        setUsers(users.responses.response);
+                    } else {
+                        setUsers([]);
+                    }
+                } else {
+                    setUsers([]);
+                }
             }
         })();
 
@@ -211,11 +219,11 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                     -
                     <DemoContainer components={['DatePicker']} sx={{width: '200px'}}>
                         <DatePicker 
-                        label="Data Final"
-                        format="DD/MM/YYYY"
-                        onChange={handleLastDateChange}
-                        value={viewDate.viewLastDate}
-                    />
+                            label="Data Final"
+                            format="DD/MM/YYYY"
+                            onChange={handleLastDateChange}
+                            value={viewDate.viewLastDate}
+                        />
                     </DemoContainer>
                 </DateOptions>
                 <Autocomplete

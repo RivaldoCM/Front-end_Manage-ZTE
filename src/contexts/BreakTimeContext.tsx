@@ -32,7 +32,7 @@ export function BreakTimeContextProvider({ children }: { children: ReactNode }){
             uid: user?.uid,
             room: '/break_time'
         });
-    
+
         socket.on('update', data => {
             setBreakTimes(data.responses.response);
         });

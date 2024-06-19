@@ -55,7 +55,7 @@ export function FHForm({onu}: IOnu){
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
             
             if (peopleId){
-                const response = await getConnectionId(authOnu.cpf, peopleId, authOnu.pppoeUser);
+                const response = await getConnectionId(authOnu.cpf, peopleId.id, authOnu.pppoeUser);
                 if(response){
                     if(response.success){
                         connectionData.connectionId = response.responses.response.connectionId;

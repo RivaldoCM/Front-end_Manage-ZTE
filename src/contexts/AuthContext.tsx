@@ -2,7 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import { createContext, useState } from "react";
 import { handleShowPageByRule } from "../config/menu";
 import { IAuthContextProps, IAuthContextProviderProps } from "../interfaces/IAuthContextProps";
-import { IDecodedJTW } from "../interfaces/IDecodedJWT";
+import { IDecodedJWT } from "../interfaces/IDecodedJWT";
 
 export const AuthContext = createContext<IAuthContextProps | undefined>(undefined);
 
@@ -12,7 +12,7 @@ export function AuthContextProvider(props: IAuthContextProviderProps){
         if (storedToken) {
 
             try{
-                const decodedToken: IDecodedJTW = jwtDecode(storedToken);
+                const decodedToken: IDecodedJWT = jwtDecode(storedToken);
                 return decodedToken;
             } catch(err){
                 return;

@@ -26,5 +26,5 @@ export const Controller = styled.div`
     justify-content: flex-start;
     align-items: center;
     width: 100%;
-    min-height: calc(100vh - 62px);
+    height: calc(100vh - 68px);
 `
