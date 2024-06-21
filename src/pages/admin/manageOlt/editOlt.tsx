@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import { getOlt } from "../../../services/apiManageONU/getOlt";
 import { useResponse } from "../../../hooks/useResponse";
 import { AccessConfig, BasicConfig, OltStyledContainer, VlanConfig } from "./style";
-import { FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { getCities } from "../../../services/apiManageONU/getCities";
 import { ICities } from "../../../interfaces/ICities";
 
@@ -12,6 +12,7 @@ export function EditOlt(){
     const { setFetchResponseMessage } = useResponse();
 
     const [cities, setCities] = useState<ICities[]>([]);
+    const [vlans, setVlans] = useState([]);
     const [form, setForm] = useState({
         ip: '',
         cityId: 0,
@@ -25,7 +26,9 @@ export function EditOlt(){
         geponPassword: '',
         isActive: '',
         voalleAccessPointId: '',
-        isPizzaBox: true
+        isPizzaBox: true,
+        formatVlanConfig: 1,
+        vlan: 1
     });
 
     useEffect(() => {
@@ -38,6 +41,7 @@ export function EditOlt(){
             if(olts){
                 if(olts.success){
                     setForm({
+                        ...form,
                         ip: olts.responses.response.host,
                         cityId: olts.responses.response.city_id,
                         name: olts.responses.response.name,
@@ -46,8 +50,8 @@ export function EditOlt(){
                         pons: olts.responses.response.pons,
                         sshUser: olts.responses.response.ssh_user,
                         sshPassword: olts.responses.response.ssh_password,
-                        geponUser: olts.responses.response.gepon_user,
-                        geponPassword: olts.responses.response.gepon_password,
+                        geponUser: olts.responses.response.gepon_user ?? '',
+                        geponPassword: olts.responses.response.gepon_password ?? '',
                         isActive: olts.responses.response.isActive,
                         voalleAccessPointId: olts.responses.response.voalleAccessPointId,
                         isPizzaBox: olts.responses.response.isPizzaBox
@@ -71,12 +75,41 @@ export function EditOlt(){
         });
     }
 
-    console.log(form)
+    const handleGenerateConfig = (e: any) => {
+        e.preventDefault();
+        let vlans: any = []
+
+        if(form.formatVlanConfig === 1){
+
+        } else if(form.formatVlanConfig === 2){
+            for(let slot = 1; slot <= form.slots; slot++){
+                for(let pon = 1; pon <= form.pons; pon++){
+                    vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan)});
+                }
+    
+            }
+        } else if(form.formatVlanConfig === 3){
+            for(let slot = 1; slot <= form.slots; slot++){
+                for(let pon = 1; pon <= form.pons; pon++){
+                    vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan) + pon});
+                }
+            }
+        } else {
+            for(let slot = 1; slot <= form.slots; slot++){
+                for(let pon = 1; pon <= form.pons; pon++){
+                    vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan) + slot});
+                }
+            }
+        }
+        setVlans(vlans)
+    }
+
+    console.log(vlans)
 
     return(
         <OltStyledContainer className="flex">
             <BasicConfig className="flex">
-            <div className="title"><p>Configurações básicas</p></div>
+                <div className="title"><p>Configurações básicas</p></div>
                 <TextField 
                     name="name"
                     label="Nome da OLT" 
@@ -137,9 +170,9 @@ export function EditOlt(){
                         onChange={handleFormChange}
                     >
                         {
-                            cities.map((city) => {
+                            cities.map((city, index) => {
                                 return(
-                                    <MenuItem value={city.id}>{city.name}</MenuItem>
+                                    <MenuItem value={city.id} key={index}>{city.name}</MenuItem>
                                 )
                             })
                         }
@@ -189,8 +222,49 @@ export function EditOlt(){
                 </div>
             </AccessConfig>
             <VlanConfig className="flex">
-            <div className="title"><p>Configurações de VLAN</p></div>
-
+                <div className="title"><p>Configurações de VLAN</p></div>
+                <form className="intries" onSubmit={handleGenerateConfig}>
+                    <TextField
+                        required
+                        type="number"
+                        name="vlan"
+                        label="VLAN"
+                        value={form.vlan}
+                        onChange={handleFormChange}
+                    />
+                    <FormControl sx={{ width: '180px' }}>
+                        <InputLabel>Configuração de VLAN</InputLabel>
+                        <Select
+                            required
+                            name='formatVlanConfig'
+                            label="Configuração de VLAN"
+                            value={form.formatVlanConfig}
+                            onChange={handleFormChange}
+                        >
+                            <MenuItem value={1}>Manual</MenuItem>
+                            <MenuItem value={2}>vlan única</MenuItem>
+                            <MenuItem value={3}>vlan {form.vlan} + pon</MenuItem>
+                            <MenuItem value={4}>vlan {form.vlan} + placa</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <TextField
+                        type="number"
+                        name="slots"
+                        label="Placas"
+                        value={form.slots}
+                        onChange={handleFormChange}
+                    />
+                    <TextField
+                        type="number"
+                        name="pons"
+                        label="Pons"
+                        value={form.pons}
+                        onChange={handleFormChange}
+                    />
+                    <Button variant="contained" color="success" type="submit">
+                        Gerar configuração
+                    </Button>
+                </form>
             </VlanConfig>
         </OltStyledContainer>
     )

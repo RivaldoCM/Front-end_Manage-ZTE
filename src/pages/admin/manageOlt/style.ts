@@ -42,8 +42,13 @@ export const AccessConfig = styled.div`
 
 export const VlanConfig = styled.div`
     flex-direction: column;
+    justify-content: flex-start;
     position: relative;
     width: 100%;
     height: 60%;
-
+    padding-top: 3rem;
+    .entries{
+        width: 100%;
+        height: 20%;
+    }
 `;
