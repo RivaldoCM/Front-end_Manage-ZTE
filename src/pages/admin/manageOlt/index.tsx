@@ -137,7 +137,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 </IconButton>
             </div>
         ) : (
-            <IconButton color='primary'>
+            <IconButton color='primary' onClick={() => navigate('new_olt')}>
                 <AddOutlinedIcon />
             </IconButton>
         )}

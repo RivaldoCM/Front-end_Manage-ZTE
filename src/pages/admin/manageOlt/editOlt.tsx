@@ -81,20 +81,20 @@ export function EditOlt(){
 
         if(form.formatVlanConfig === 1){
 
-        } else if(form.formatVlanConfig === 2){
+        }else if(form.formatVlanConfig === 2){
             for(let slot = 1; slot <= form.slots; slot++){
                 for(let pon = 1; pon <= form.pons; pon++){
                     vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan)});
                 }
     
             }
-        } else if(form.formatVlanConfig === 3){
+        }else if(form.formatVlanConfig === 3){
             for(let slot = 1; slot <= form.slots; slot++){
                 for(let pon = 1; pon <= form.pons; pon++){
                     vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan) + pon});
                 }
             }
-        } else {
+        }else {
             for(let slot = 1; slot <= form.slots; slot++){
                 for(let pon = 1; pon <= form.pons; pon++){
                     vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan) + slot});
@@ -265,6 +265,26 @@ export function EditOlt(){
                         Gerar configuração
                     </Button>
                 </form>
+                <div className="table">
+                    <table>
+                        <tr>
+                            <th>Placa</th>
+                            <th>Pon</th>
+                            <th>Vlan</th>
+                        </tr>
+                        {
+                            vlans.map((vlan) => {
+                                return(
+                                    <tr>
+                                        <td>{vlan.slot}</td>
+                                        <td>{vlan.pon}</td>
+                                        <td>{vlan.vlan}</td>
+                                    </tr>
+                                )   
+                            })
+                        }
+                    </table>
+                </div>
             </VlanConfig>
         </OltStyledContainer>
     )
