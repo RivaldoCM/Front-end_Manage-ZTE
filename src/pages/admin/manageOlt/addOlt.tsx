@@ -8,12 +8,16 @@ import { ICities } from "../../../interfaces/ICities";
 
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { getOltManufacturer } from "../../../services/apiManageONU/getOltManufacturer";
+import { getOltModel } from "../../../services/apiManageONU/getOltModel";
 
 export function AddOlt(){
     const { setFetchResponseMessage } = useResponse();
 
     const [showPassword, setShowPassword] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
+    const [models, setModels] = useState<IOltModels[]>([]);
+    const [manufacturers, setManufacturers] = useState<IOltManufacturer[]>([]);
     const [vlans, setVlans] = useState<IVlans[]>([]);
     const [action, setAction] = useState({
         deleteSlot: 1,
@@ -27,9 +31,8 @@ export function AddOlt(){
         ip: '',
         cityId: 1,
         name: '',
-        type: 10,
-        slots: 0,
-        pons: 0,
+        type: 1,
+        model: null,
         sshUser: '',
         sshPassword: '',
         geponUser: '',
@@ -38,14 +41,19 @@ export function AddOlt(){
         voalleAccessPointId: '',
         isPizzaBox: false,
         formatVlanConfig: 1,
-        vlan: 1
+        vlan: ''
     });
 
     useEffect(() => {
         async function getData(){
             const getCity = getCities();
-            const [cities] = await Promise.all([getCity]);
+            const getModel = getOltModel();
+            const getManufacturer = getOltManufacturer();
+
+            const [cities, models, manufacturers] = await Promise.all([getCity, getModel, getManufacturer]);
             cities && cities.success ? setCities(cities.responses.response) : setCities([]);
+            models && models.success ? setModels(models.responses.response) : setModels([]);
+            manufacturers && manufacturers.success ? setManufacturers(manufacturers.responses.response) : setManufacturers([]);
         }
         getData();
     }, []);
@@ -71,34 +79,47 @@ export function AddOlt(){
 
     const handleGenerateConfig = (e: any) => {
         e.preventDefault();
-        let vlans: any = [];
+        let modelSlot = 0, modelPon = 0, vlans: IVlans[] = [];
 
-        if(form.formatVlanConfig === 1){
-            for(let slot = 1; slot <= form.slots; slot++){
-                for(let pon = 1; pon <= form.pons; pon++){
-                    vlans.push({slot: slot, pon: pon, vlan: ''});
+        if(form.model){
+            models.map((model) => {
+                if(model.id === form.model){
+                    modelSlot = model.slots,
+                    modelPon = model.pons
+                }
+            });
+
+            if(form.formatVlanConfig === 1){
+                for(let slots = 1; slots <= modelSlot; slots++){
+                    for(let pons = 1; pons <= modelPon; pons++){
+                        vlans.push({slot: slots, pon: pons, vlan: null});
+                    }
+                }
+            }else if(form.formatVlanConfig === 2){
+                for(let slots = 1; slots <= modelSlot; slots++){
+                    for(let pons = 1; pons <= modelPon; pons++){
+                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan)});
+                    }
+                }
+            }else if(form.formatVlanConfig === 3){
+                for(let slots = 1; slots <= modelSlot; slots++){
+                    for(let pons = 1; pons <= modelPon; pons++){
+                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + pons});
+                    }
+                }
+            }else{
+                for(let slots = 1; slots <= modelSlot; slots++){
+                    for(let pons = 1; pons <= modelPon; pons++){
+                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + slots});
+                    }
                 }
             }
-        }else if(form.formatVlanConfig === 2){
-            for(let slot = 1; slot <= form.slots; slot++){
-                for(let pon = 1; pon <= form.pons; pon++){
-                    vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan)});
-                }
-            }
-        }else if(form.formatVlanConfig === 3){
-            for(let slot = 1; slot <= form.slots; slot++){
-                for(let pon = 1; pon <= form.pons; pon++){
-                    vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan) + pon});
-                }
-            }
-        }else{
-            for(let slot = 1; slot <= form.slots; slot++){
-                for(let pon = 1; pon <= form.pons; pon++){
-                    vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan) + slot});
-                }
-            }
+            setVlans(vlans);
+        } else {
+            console.log('NAO')
         }
-        setVlans(vlans);
+
+        
     }
 
     const handleChangeVlan = (index: number) => (event: any) => {
@@ -122,47 +143,13 @@ export function AddOlt(){
     const generateSlotOptions = () => {
         let items = [];
 
-        for(let slot = 1; slot <= form.slots; slot++) {
+        for(let slot = 1; slot <slot; slot++) {
             items.push(<MenuItem key={slot} value={slot}>{slot}</MenuItem>);
         }
       
         return(
             [items]
         );
-    }
-
-    const generatePonOptions = () => {
-        let items = [];
-
-        items.push(<MenuItem key={0} value={0}>TODAS</MenuItem>);
-        for(let pon = 1; pon <= form.pons; pon++) {
-            items.push(<MenuItem key={pon} value={pon}>{pon}</MenuItem>);
-        }
-      
-        return(
-            [items]
-        );
-    }
-
-    const handleDeleteVlan = (e: any) => {
-        e.preventDefault();
-        if(action.deletePon === 0){
-            const newCofig = vlans.filter(value => value.slot !== action.deleteSlot);
-            setVlans(newCofig);
-        } else {
-            const newCofig = vlans.filter(value => !(value.slot === action.deleteSlot && value.pon === action.deletePon));
-            setVlans(newCofig);
-        }
-    }
-
-    const handleAddVlan = (e: any) => {
-        e.preventDefault();
-
-        vlans.map((value, index) => {
-            if(action.createSlot == value.slot){
-
-            }
-        })
     }
 
     const handleModifyVlan = (e: any) => {
@@ -208,8 +195,6 @@ export function AddOlt(){
                                     }
                                 </Select>
                             </FormControl>
-                        </div>
-                        <div>
                             <FormControl>
                                 <InputLabel>Status</InputLabel>
                                 <Select
@@ -223,31 +208,47 @@ export function AddOlt(){
                                     <MenuItem value={false}>Desativado</MenuItem>
                                 </Select>
                             </FormControl>
+                        </div>
+                        <div>
+                            
                             <FormControl>
-                                <InputLabel>Tipo</InputLabel>
+                                <InputLabel>Fabricante</InputLabel>
                                 <Select
                                     required
                                     name="type"
-                                    label="Tipo"
+                                    label="Fabricante"
                                     value={form.type}
                                     onChange={handleFormChange}
+                                    sx={{ width: '148px' }}
                                 >
-                                    <MenuItem value={10}>ZTE</MenuItem>
-                                    <MenuItem value={20}>Parks</MenuItem>
-                                    <MenuItem value={30}>Fiberhome</MenuItem>
+                                    {
+                                        manufacturers.map((item, index) => {
+                                            return(
+                                                <MenuItem value={item.id} key={index}>{item.name}</MenuItem>
+                                            )
+                                        })
+                                    }
                                 </Select>
                             </FormControl>
                             <FormControl>
-                                <InputLabel>PizzaBox</InputLabel>
+                                <InputLabel>Modelo</InputLabel>
                                 <Select
                                     required
-                                    name="isPizzaBox"
-                                    label="PizzaBox"
-                                    value={form.isPizzaBox}
+                                    name="model"
+                                    label="Modelo"
+                                    value={form.model}
                                     onChange={handleFormChange}
+                                    sx={{ width: '148px' }}
                                 >
-                                    <MenuItem value={true}>Sim</MenuItem>
-                                    <MenuItem value={false}>Não</MenuItem>
+                                    {
+                                        models.map((model, index) => {
+                                            if(model.manufacturer_id === form.type){
+                                                return(
+                                                    <MenuItem value={model.id} key={index}>{model.model}</MenuItem>
+                                                )
+                                            }
+                                        })
+                                    }
                                 </Select>
                             </FormControl>
                             <TextField
@@ -256,25 +257,7 @@ export function AddOlt(){
                                 label="Ponto de acesso Voalle"
                                 value={form.voalleAccessPointId}
                                 onChange={handleFormChange}
-                                sx={{ m: 1, width: '264px' }}
-                            />
-                        </div>
-                        <div>
-                            <TextField
-                                type="number"
-                                name="slots"
-                                label="Placas"
-                                value={form.slots}
-                                onChange={handleFormChange}
-                                sx={{ width: '100px' }}
-                            />
-                            <TextField
-                                type="number"
-                                name="pons"
-                                label="Pons"
-                                value={form.pons}
-                                onChange={handleFormChange}
-                                sx={{ width: '100px' }}
+                                sx={{ m: 1, width: '224px' }}
                             />
                         </div>
                     </Inputs>
@@ -392,62 +375,6 @@ export function AddOlt(){
                             vlans.length > 0 && (
                                 <div className="actions flex">
                                     <p>AÇÕES</p>
-                                    <form onSubmit={handleDeleteVlan}>
-                                        <p>Deletar</p>
-                                        <div>
-                                            <FormControl sx={{ width: '100px' }}>
-                                                <InputLabel>Placa</InputLabel>
-                                                <Select
-                                                    required
-                                                    name="deleteSlot"
-                                                    label="Placa"
-                                                    value={action.deleteSlot}
-                                                    onChange={handleActionValuesChange}
-                                                >
-                                                    { generateSlotOptions() }
-                                                </Select>
-                                            </FormControl>
-                                            <FormControl sx={{ width: '100px' }}>
-                                                <InputLabel>Pon</InputLabel>
-                                                <Select
-                                                    required
-                                                    name="deletePon"
-                                                    label="Pon"
-                                                    value={action.deletePon}
-                                                    onChange={handleActionValuesChange}
-                                                >
-                                                    { generatePonOptions() }
-                                                </Select>
-                                            </FormControl>
-                                            <Button variant="contained" color="success" size="small" type="submit">
-                                                Aplicar
-                                            </Button>
-                                        </div>
-                                    </form>
-                                    <form onSubmit={handleAddVlan}>
-                                        <p>Adicionar</p>
-                                        <div>
-                                            <TextField
-                                                type="number"
-                                                name="createSlot"
-                                                label="Placa"
-                                                value={action.createSlot}
-                                                onChange={handleActionValuesChange}
-                                                sx={{ width: '100px' }}
-                                            />
-                                            <TextField
-                                                type="number"
-                                                name="createPon"
-                                                label="Pons"
-                                                value={action.createPon}
-                                                onChange={handleActionValuesChange}
-                                                sx={{ width: '100px' }}
-                                            />
-                                            <Button variant="contained" color="success" size="small" type="submit">
-                                                Aplicar
-                                            </Button>
-                                        </div>
-                                    </form>
                                     <form onSubmit={handleModifyVlan}>
                                         <p>Modificar VLAN em LOTE</p>
                                         <div>
