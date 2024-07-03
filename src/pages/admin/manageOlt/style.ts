@@ -10,13 +10,14 @@ export const OltStyledContainer = styled.div`
     .wrapper{
         flex-direction: row;
         width: 100%;
-        max-height: 50vh;
+        height: 50vh;
     }
 `;
 
 export const BasicConfig = styled.div`
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: center;
     width: inherit;
     height: 100%;
 `;
@@ -92,16 +93,33 @@ export const VlanConfig = styled.div`
     }
 
     .table-wrapper{
+        align-items: flex-start;
         width: 100%;
         height: 100%;
         overflow: auto;
 
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
+        th{
+            position: sticky;
+            top: 0;
+            background-color: #f1f1f1;
+            z-index: 1;
         }
-        th, td{
-            padding: 15px;
+
+        th,td{
+            width: 5rem;
+            height: 1rem;
+            border: 2px solid #ccc;
+            padding: 8px;
+            border-radius: 4px;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        td input{
+
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 4px;
+            transition: border-color 0.3s, background-color 0.3s;
         }
     }
 `;

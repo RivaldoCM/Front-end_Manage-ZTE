@@ -407,7 +407,7 @@ export function AddOlt(){
                             )
                         }
                     </aside>
-                    <div className="table-wrapper">
+                    <div className="table-wrapper flex">
                         <table>
                             <tr>
                                 <th>Placa</th>
@@ -422,7 +422,7 @@ export function AddOlt(){
                                             <td>{vlans.slot}</td>
                                             <td>{vlans.pon}</td>
                                             <td>
-                                                <TextField
+                                                <input
                                                     value={vlans.vlan || ''}
                                                     onChange={handleChangeVlan(index)}
                                                 />
