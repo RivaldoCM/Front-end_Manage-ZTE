@@ -1,72 +1,67 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
-import { getOlt } from "../../../services/apiManageONU/getOlt";
+
 import { useResponse } from "../../../hooks/useResponse";
-import { AccessConfig, BasicConfig, OltStyledContainer, VlanConfig } from "./style";
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Inputs, InputsWrapper, OltStyledContainer, VlanConfig } from "./style";
+import { Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
 import { getCities } from "../../../services/apiManageONU/getCities";
 import { ICities } from "../../../interfaces/ICities";
 
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { getOltManufacturer } from "../../../services/apiManageONU/getOltManufacturer";
+import { getOltModel } from "../../../services/apiManageONU/getOltModel";
+
 export function EditOlt(){
-    let { id } = useParams();
     const { setFetchResponseMessage } = useResponse();
 
+    const [showPassword, setShowPassword] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
-    const [vlans, setVlans] = useState([]);
+    const [models, setModels] = useState<IOltModels[]>([]);
+    const [manufacturers, setManufacturers] = useState<IOltManufacturer[]>([]);
+    const [vlans, setVlans] = useState<IVlans[]>([]);
+    const [action, setAction] = useState({
+        deleteSlot: 1,
+        deletePon: 0,
+        createSlot: 0,
+        createPon: 0,
+        modifySlot: 1,
+        modifyVlan: 0
+    });
     const [form, setForm] = useState({
         ip: '',
-        cityId: 0,
+        cityId: 1,
         name: '',
-        type: '',
-        slots: 0,
-        pons: 0,
+        type: 1,
+        model: null,
         sshUser: '',
         sshPassword: '',
         geponUser: '',
         geponPassword: '',
-        isActive: '',
+        isActive: true,
         voalleAccessPointId: '',
-        isPizzaBox: true,
+        isPizzaBox: false,
         formatVlanConfig: 1,
-        vlan: 1
+        vlan: ''
     });
 
     useEffect(() => {
         async function getData(){
-            const getOlts = getOlt(parseInt(id!));
             const getCity = getCities();
+            const getModel = getOltModel();
+            const getManufacturer = getOltManufacturer();
 
-            const [olts, cities] = await Promise.all([getOlts, getCity]);
-
-            if(olts){
-                if(olts.success){
-                    setForm({
-                        ...form,
-                        ip: olts.responses.response.host,
-                        cityId: olts.responses.response.city_id,
-                        name: olts.responses.response.name,
-                        type: olts.responses.response.type,
-                        slots: olts.responses.response.slots,
-                        pons: olts.responses.response.pons,
-                        sshUser: olts.responses.response.ssh_user,
-                        sshPassword: olts.responses.response.ssh_password,
-                        geponUser: olts.responses.response.gepon_user ?? '',
-                        geponPassword: olts.responses.response.gepon_password ?? '',
-                        isActive: olts.responses.response.isActive,
-                        voalleAccessPointId: olts.responses.response.voalleAccessPointId,
-                        isPizzaBox: olts.responses.response.isPizzaBox
-                    });
-                } else {
-                    setFetchResponseMessage(olts.messages.message);
-                }
-            } else {
-                setFetchResponseMessage('error/no-connection-with-API');
-            }
-
+            const [cities, models, manufacturers] = await Promise.all([getCity, getModel, getManufacturer]);
             cities && cities.success ? setCities(cities.responses.response) : setCities([]);
+            models && models.success ? setModels(models.responses.response) : setModels([]);
+            manufacturers && manufacturers.success ? setManufacturers(manufacturers.responses.response) : setManufacturers([]);
         }
         getData();
     }, []);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword = (event: any) => {
+        event.preventDefault();
+    };
 
     const handleFormChange = (e: any) => {
         setForm({
@@ -75,215 +70,368 @@ export function EditOlt(){
         });
     }
 
-    const handleGenerateConfig = (e: any) => {
-        e.preventDefault();
-        let vlans: any = []
-
-        if(form.formatVlanConfig === 1){
-
-        }else if(form.formatVlanConfig === 2){
-            for(let slot = 1; slot <= form.slots; slot++){
-                for(let pon = 1; pon <= form.pons; pon++){
-                    vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan)});
-                }
-    
-            }
-        }else if(form.formatVlanConfig === 3){
-            for(let slot = 1; slot <= form.slots; slot++){
-                for(let pon = 1; pon <= form.pons; pon++){
-                    vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan) + pon});
-                }
-            }
-        }else {
-            for(let slot = 1; slot <= form.slots; slot++){
-                for(let pon = 1; pon <= form.pons; pon++){
-                    vlans.push({slot: slot, pon: pon, vlan: parseInt(form.vlan) + slot});
-                }
-            }
-        }
-        setVlans(vlans)
+    const handleActionValuesChange = (e: any) => {
+        setAction({
+            ...action,
+            [e.target.name]: e.target.value
+        });
     }
 
-    console.log(vlans)
+    const handleGenerateConfig = (e: any) => {
+        e.preventDefault();
+        let modelSlot = 0, modelPon = 0, vlans: IVlans[] = [];
+
+        if(form.model){
+            models.map((model) => {
+                if(model.id === form.model){
+                    modelSlot = model.slots,
+                    modelPon = model.pons
+                }
+            });
+
+            if(form.formatVlanConfig === 1){
+                for(let slots = 1; slots <= modelSlot; slots++){
+                    for(let pons = 1; pons <= modelPon; pons++){
+                        vlans.push({slot: slots, pon: pons, vlan: null});
+                    }
+                }
+            }else if(form.formatVlanConfig === 2){
+                for(let slots = 1; slots <= modelSlot; slots++){
+                    for(let pons = 1; pons <= modelPon; pons++){
+                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan)});
+                    }
+                }
+            }else if(form.formatVlanConfig === 3){
+                for(let slots = 1; slots <= modelSlot; slots++){
+                    for(let pons = 1; pons <= modelPon; pons++){
+                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + pons});
+                    }
+                }
+            }else{
+                for(let slots = 1; slots <= modelSlot; slots++){
+                    for(let pons = 1; pons <= modelPon; pons++){
+                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + slots});
+                    }
+                }
+            }
+            setVlans(vlans);
+        } else {
+            console.log('NAO')
+        }
+
+        
+    }
+
+    const handleChangeVlan = (index: number) => (event: any) => {
+        if(event.target.value === ''){
+            const newVlans = [...vlans];
+            newVlans[index] = {
+                ...newVlans[index],
+                vlan: null
+            };
+            setVlans(newVlans);
+        } else {
+            const newVlans = [...vlans];
+            newVlans[index] = {
+                ...newVlans[index],
+                vlan: parseInt(event.target.value)
+            };
+            setVlans(newVlans);
+        }
+    }
+
+    const generateSlotOptions = () => {
+        let items = [];
+
+        for(let slot = 1; slot <slot; slot++) {
+            items.push(<MenuItem key={slot} value={slot}>{slot}</MenuItem>);
+        }
+      
+        return(
+            [items]
+        );
+    }
+
+    const handleModifyVlan = (e: any) => {
+        e.preventDefault();
+        const teste = vlans.map((value) => {
+            if(action.modifySlot === value.slot){
+                return { ...value, vlan: action.modifyVlan};
+            }
+            return {...value}
+        });
+    }
 
     return(
         <OltStyledContainer className="flex">
-            <BasicConfig className="flex">
-                <div className="title"><p>Configurações básicas</p></div>
-                <TextField 
-                    name="name"
-                    label="Nome da OLT" 
-                    variant="filled"
-                    value={form.name}
-                    onChange={handleFormChange}
-                />
-                <FormControl>
-                    <InputLabel>Status</InputLabel>
-                    <Select
-                        name="isActive"
-                        label="Status"
-                        value={form.isActive}
-                        onChange={handleFormChange}
-                    >
-                        <MenuItem value={true}>Ativo</MenuItem>
-                        <MenuItem value={false}>Desativado</MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl>
-                    <InputLabel>Tipo</InputLabel>
-                    <Select
-                        name='type'
-                        label="Tipo"
-                        value={form.type}
-                        onChange={handleFormChange}
-                    >
-                        <MenuItem value={10}>ZTE</MenuItem>
-                        <MenuItem value={20}>Parks</MenuItem>
-                        <MenuItem value={30}>Fiberhome</MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl>
-                    <InputLabel>PizzaBox</InputLabel>
-                    <Select
-                        name='isPizzaBox'
-                        label="PizzaBox"
-                        value={form.isPizzaBox}
-                        onChange={handleFormChange}
-                    >
-                        <MenuItem value={true}>Sim</MenuItem>
-                        <MenuItem value={false}>Não</MenuItem>
-                    </Select>
-                </FormControl>
-                <TextField
-                    type="number"
-                    name="voalleAccessPointId"
-                    label="Ponto de acesso Voalle"
-                    value={form.voalleAccessPointId}
-                    onChange={handleFormChange}
-                />
-                <FormControl>
-                    <InputLabel>Cidade</InputLabel>
-                    <Select
-                        name="cityId"
-                        label="Cidade"
-                        value={form.cityId}
-                        onChange={handleFormChange}
-                    >
-                        {
-                            cities.map((city, index) => {
-                                return(
-                                    <MenuItem value={city.id} key={index}>{city.name}</MenuItem>
-                                )
-                            })
-                        }
-                    </Select>
-                </FormControl>
-            </BasicConfig>
-            <AccessConfig className="flex">
-                <div className="title"><p>Configurações de Acesso</p></div>
-                <TextField 
-                    name="ip"
-                    label="IP da OLT" 
-                    variant="filled"
-                    value={form.ip}
-                    onChange={handleFormChange}
-                />
-                <div className="login-info flex">
-                    <TextField 
-                        name="ip"
-                        label="Usuário SSH/Telnet" 
-                        variant="filled"
-                        value={form.sshUser}
-                        onChange={handleFormChange}
-                    />
-                    <TextField 
-                        name="ip"
-                        label="Senha SSH/Telnet" 
-                        variant="filled"
-                        value={form.sshPassword}
-                        onChange={handleFormChange}
-                    />
-                </div>
-                <div className="login-info flex">
-                    <TextField 
-                        name="ip"
-                        label="Usuário GEPON" 
-                        variant="filled"
-                        value={form.geponUser}
-                        onChange={handleFormChange}
-                    />
-                    <TextField 
-                        name="ip"
-                        label="Senha GEPON" 
-                        variant="filled"
-                        value={form.geponPassword}
-                        onChange={handleFormChange}
-                    />
-                </div>
-            </AccessConfig>
+            <div className="wrapper flex">
+                <InputsWrapper className="flex">
+                    <h4>Configurações gerais</h4>
+                    <Inputs>
+                        <div>
+                            <TextField
+                                required
+                                name="name"
+                                label="Nome da OLT"
+                                value={form.name}
+                                onChange={handleFormChange}
+                                sx={{ width: '264px' }}
+                            />
+                            <FormControl>
+                                <InputLabel>Cidade</InputLabel>
+                                <Select
+                                    required
+                                    name="cityId"
+                                    label="Cidade"
+                                    value={form.cityId}
+                                    onChange={handleFormChange}
+                                >
+                                    {
+                                        cities.map((city, index) => {
+                                            return(
+                                                <MenuItem value={city.id} key={index}>{city.name}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel>Status</InputLabel>
+                                <Select
+                                    required
+                                    name="isActive"
+                                    label="Status"
+                                    value={form.isActive}
+                                    onChange={handleFormChange}
+                                >
+                                    <MenuItem value={true}>Ativo</MenuItem>
+                                    <MenuItem value={false}>Desativado</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
+                        <div>
+                            <FormControl>
+                                <InputLabel>Fabricante</InputLabel>
+                                <Select
+                                    required
+                                    name="type"
+                                    label="Fabricante"
+                                    value={form.type}
+                                    onChange={handleFormChange}
+                                    sx={{ width: '148px' }}
+                                >
+                                    {
+                                        manufacturers.map((item, index) => {
+                                            return(
+                                                <MenuItem value={item.id} key={index}>{item.name}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+                            <FormControl>
+                                <InputLabel>Modelo</InputLabel>
+                                <Select
+                                    required
+                                    name="model"
+                                    label="Modelo"
+                                    value={form.model}
+                                    onChange={handleFormChange}
+                                    sx={{ width: '148px' }}
+                                >
+                                    {
+                                        models.map((model, index) => {
+                                            if(model.manufacturer_id === form.type){
+                                                return(
+                                                    <MenuItem value={model.id} key={index}>{model.model}</MenuItem>
+                                                )
+                                            }
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+                            <TextField
+                                type="number"
+                                name="voalleAccessPointId"
+                                label="Ponto de acesso Voalle"
+                                value={form.voalleAccessPointId}
+                                onChange={handleFormChange}
+                                sx={{ m: 1, width: '224px' }}
+                            />
+                        </div>
+                    </Inputs>
+                </InputsWrapper>
+                <InputsWrapper className="flex">
+                    <h4>Configurações de Acesso</h4>
+                    <Inputs>
+                        <div>
+                            <TextField
+                                required
+                                name="ip"
+                                label="IP da OLT" 
+                                value={form.ip}
+                                onChange={handleFormChange}
+                                sx={{ width: '264px' }}
+                            />
+                        </div>
+                        <div className="login-info flex">
+                            <TextField 
+                                name="sshUser"
+                                label="Usuário SSH/Telnet"
+                                value={form.sshUser}
+                                onChange={handleFormChange}
+                                sx={{ m: 1, width: '264px' }}
+                            />
+                            <FormControl sx={{ m: 1, width: '264px' }} variant="outlined">
+                                <InputLabel>Senha SSH/Telnet</InputLabel>
+                                <OutlinedInput
+                                    name="sshPassword"
+                                    label="Senha SSH/Telnet" 
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={form.sshPassword}
+                                    onChange={handleFormChange}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                edge="end"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                            >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
+                        </div>
+                        <div className="login-info flex">
+                                <TextField 
+                                    name="geponUser"
+                                    label="Usuário GEPON"
+                                    value={form.geponUser}
+                                    onChange={handleFormChange}
+                                    sx={{ m: 1, width: '264px' }}
+                                />
+                                <FormControl sx={{ m: 1, width: '264px' }} variant="outlined">
+                                    <InputLabel>Senha GEPON</InputLabel>
+                                    <OutlinedInput
+                                        name="geponPassword"
+                                        label="Senha GEPON" 
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={form.geponPassword}
+                                        onChange={handleFormChange}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    edge="end"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                    />
+                                </FormControl>
+                        </div>
+                    </Inputs>
+                </InputsWrapper>
+            </div>
             <VlanConfig className="flex">
-                <div className="title"><p>Configurações de VLAN</p></div>
-                <form className="intries" onSubmit={handleGenerateConfig}>
-                    <TextField
-                        required
-                        type="number"
-                        name="vlan"
-                        label="VLAN"
-                        value={form.vlan}
-                        onChange={handleFormChange}
-                    />
-                    <FormControl sx={{ width: '180px' }}>
-                        <InputLabel>Configuração de VLAN</InputLabel>
-                        <Select
-                            required
-                            name='formatVlanConfig'
-                            label="Configuração de VLAN"
-                            value={form.formatVlanConfig}
-                            onChange={handleFormChange}
-                        >
-                            <MenuItem value={1}>Manual</MenuItem>
-                            <MenuItem value={2}>vlan única</MenuItem>
-                            <MenuItem value={3}>vlan {form.vlan} + pon</MenuItem>
-                            <MenuItem value={4}>vlan {form.vlan} + placa</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        type="number"
-                        name="slots"
-                        label="Placas"
-                        value={form.slots}
-                        onChange={handleFormChange}
-                    />
-                    <TextField
-                        type="number"
-                        name="pons"
-                        label="Pons"
-                        value={form.pons}
-                        onChange={handleFormChange}
-                    />
-                    <Button variant="contained" color="success" type="submit">
-                        Gerar configuração
-                    </Button>
-                </form>
-                <div className="table">
-                    <table>
-                        <tr>
-                            <th>Placa</th>
-                            <th>Pon</th>
-                            <th>Vlan</th>
-                        </tr>
+                <h4>Mapeamento de VLAN's</h4>
+                <div>
+                    <aside>
+                        <form className="form-wrapper flex" onSubmit={handleGenerateConfig}>
+                            <TextField
+                                required
+                                type="number"
+                                name="vlan"
+                                label="VLAN"
+                                value={form.vlan}
+                                onChange={handleFormChange}
+                                sx={{ width: '100px' }}
+                            />
+                            <FormControl sx={{ width: '180px' }}>
+                                <InputLabel>Configuração de VLAN</InputLabel>
+                                <Select
+                                    required
+                                    name='formatVlanConfig'
+                                    label="Configuração de VLAN"
+                                    value={form.formatVlanConfig}
+                                    onChange={handleFormChange}
+                                >
+                                    <MenuItem value={1}>Manual</MenuItem>
+                                    <MenuItem value={2}>vlan única</MenuItem>
+                                    <MenuItem value={3}>vlan {form.vlan} + pon</MenuItem>
+                                    <MenuItem value={4}>vlan {form.vlan} + placa</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <Button variant="contained" color="success" size="small" type="submit">
+                                Aplicar
+                            </Button>
+                        </form>
                         {
-                            vlans.map((vlan) => {
-                                return(
-                                    <tr>
-                                        <td>{vlan.slot}</td>
-                                        <td>{vlan.pon}</td>
-                                        <td>{vlan.vlan}</td>
-                                    </tr>
-                                )   
-                            })
+                            vlans.length > 0 && (
+                                <div className="actions flex">
+                                    <p>AÇÕES</p>
+                                    <form onSubmit={handleModifyVlan}>
+                                        <p>Modificar VLAN em LOTE</p>
+                                        <div>
+                                            <FormControl sx={{ width: '100px' }}>
+                                                <InputLabel>Placa</InputLabel>
+                                                <Select
+                                                    required
+                                                    name='modifySlot'
+                                                    label="Placa"
+                                                    value={action.modifySlot}
+                                                    onChange={handleActionValuesChange}
+                                                >
+                                                    { generateSlotOptions() }
+                                                </Select>
+                                            </FormControl>
+                                            <TextField
+                                                type="number"
+                                                name="modifyVlan"
+                                                label="Nova VLAN"
+                                                value={action.modifyVlan}
+                                                onChange={handleActionValuesChange}
+                                                sx={{ width: '100px' }}
+                                            />
+                                            <Button variant="contained" color="success" size="small" type="submit">
+                                                Aplicar
+                                            </Button>
+                                        </div>
+                                    </form>
+                                </div>
+                            )
                         }
-                    </table>
+                    </aside>
+                    <div className="table-wrapper flex">
+                        <table>
+                            <tr>
+                                <th>Placa</th>
+                                <th>Pon</th>
+                                <th>Vlan</th>
+
+                            </tr>
+                            {
+                                vlans.map((vlans, index) => {
+                                    return(
+                                        <tr>
+                                            <td>{vlans.slot}</td>
+                                            <td>{vlans.pon}</td>
+                                            <td>
+                                                <input
+                                                    value={vlans.vlan || ''}
+                                                    onChange={handleChangeVlan(index)}
+                                                />
+                                            </td>
+                                        </tr>
+                                    )   
+                                })
+                            }
+                        </table>
+                    </div>
                 </div>
             </VlanConfig>
         </OltStyledContainer>

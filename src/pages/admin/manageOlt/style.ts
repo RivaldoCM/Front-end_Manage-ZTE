@@ -14,19 +14,14 @@ export const OltStyledContainer = styled.div`
     }
 `;
 
-export const BasicConfig = styled.div`
+export const InputsWrapper = styled.div`
+
+    h4{ margin-left: .8rem; }
+
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
     width: inherit;
-    height: 100%;
-`;
-
-export const AccessConfig = styled.div`
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
     height: 100%;
 `;
 
@@ -35,7 +30,14 @@ export const VlanConfig = styled.div`
     align-items: center;
     justify-content: flex-start;
     width: 100%;
+    padding-top: 1rem;
     height: calc(100vh - var(--top-menu-size));
+
+    h3{
+        width: 24%;
+        text-align: center;
+        border-bottom: 2px solid black;
+    }
 
     > div:last-child{
         display: flex;
@@ -61,22 +63,26 @@ export const VlanConfig = styled.div`
                 flex-direction: column;
                 align-items: flex-start;
                 padding: 1rem;
+                gap: 1rem;
 
-                form{
+                .form-wrapper{
+                    flex-direction: column;
+                    justify-content: flex-start;
                     width: 100%;
+                    height: 7rem;
                     padding: .5rem;
-                    margin: 0.5rem 0;
                     border: 2px solid gray;
                     border-radius: 0.5rem;
 
-
                     > div{
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
+                        width: 100%;
+                        height: 20%;
+                    }
+                    form{
+                        height: 80%;
 
-                        >div{
-                            margin: 0 .5rem;
+                        > div{
+                            margin: .5rem .5rem 0 0;
                         }
                     }
                 }
@@ -85,18 +91,17 @@ export const VlanConfig = styled.div`
         }
     }
 
-    .form-wrapper{
-        flex-direction: column;
-        justify-content: flex-start;
-        width: 100%;
-        height: 100%;
-    }
-
     .table-wrapper{
         align-items: flex-start;
         width: 100%;
         height: 100%;
-        overflow: auto;
+        margin-top: 1rem;
+
+        .table-controller{
+            height: 80%;
+            max-height: calc(100vh - 6rem);
+            overflow: auto;
+        }
 
         th{
             position: sticky;
@@ -115,7 +120,6 @@ export const VlanConfig = styled.div`
         }
 
         td input{
-
             border: 1px solid #ccc;
             padding: 8px;
             border-radius: 4px;
@@ -123,10 +127,6 @@ export const VlanConfig = styled.div`
         }
     }
 `;
-
-export const Title = styled.div`
-    width: 100%;
-`
 
 export const Inputs = styled.div`
     display: flex;

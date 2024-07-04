@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useResponse } from "../../../hooks/useResponse";
-import { AccessConfig, BasicConfig, Inputs, OltStyledContainer, Title, VlanConfig } from "./style";
+import { Inputs, InputsWrapper, OltStyledContainer, VlanConfig } from "./style";
 import { Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
 import { getCities } from "../../../services/apiManageONU/getCities";
 import { ICities } from "../../../interfaces/ICities";
@@ -118,8 +118,6 @@ export function AddOlt(){
         } else {
             console.log('NAO')
         }
-
-        
     }
 
     const handleChangeVlan = (index: number) => (event: any) => {
@@ -141,9 +139,15 @@ export function AddOlt(){
     }
 
     const generateSlotOptions = () => {
-        let items = [];
+        let modelSlot = 0 , items = [];
 
-        for(let slot = 1; slot <slot; slot++) {
+        models.map((model) => {
+            if(model.id === form.model){
+                modelSlot = model.slots
+            }
+        });
+
+        for(let slot = 1; slot <= modelSlot; slot++) {
             items.push(<MenuItem key={slot} value={slot}>{slot}</MenuItem>);
         }
       
@@ -154,19 +158,20 @@ export function AddOlt(){
 
     const handleModifyVlan = (e: any) => {
         e.preventDefault();
-        const teste = vlans.map((value) => {
+        const newVlans = vlans.map((value) => {
             if(action.modifySlot === value.slot){
                 return { ...value, vlan: action.modifyVlan};
             }
             return {...value}
         });
+        setVlans(newVlans);
     }
 
     return(
         <OltStyledContainer className="flex">
             <div className="wrapper flex">
-                <BasicConfig className="flex">
-                    <Title className="title"><p>Configurações gerais</p></Title>
+                <InputsWrapper className="flex">
+                    <h4>Configurações gerais</h4>
                     <Inputs>
                         <div>
                             <TextField
@@ -210,7 +215,6 @@ export function AddOlt(){
                             </FormControl>
                         </div>
                         <div>
-                            
                             <FormControl>
                                 <InputLabel>Fabricante</InputLabel>
                                 <Select
@@ -261,9 +265,9 @@ export function AddOlt(){
                             />
                         </div>
                     </Inputs>
-                </BasicConfig>
-                <AccessConfig className="flex">
-                    <Title className="title"><p>Configurações de Acesso</p></Title>
+                </InputsWrapper>
+                <InputsWrapper className="flex">
+                    <h4>Configurações de Acesso</h4>
                     <Inputs>
                         <div>
                             <TextField
@@ -336,52 +340,56 @@ export function AddOlt(){
                                 </FormControl>
                         </div>
                     </Inputs>
-                </AccessConfig>
+                </InputsWrapper>
             </div>
             <VlanConfig className="flex">
-                <Title><p>Mapeamento de VLAN's</p></Title>
+                <h3>Mapeamento de VLAN's</h3>
                 <div>
                     <aside>
-                        <form className="form-wrapper flex" onSubmit={handleGenerateConfig}>
-                            <TextField
-                                required
-                                type="number"
-                                name="vlan"
-                                label="VLAN"
-                                value={form.vlan}
-                                onChange={handleFormChange}
-                                sx={{ width: '100px' }}
-                            />
-                            <FormControl sx={{ width: '180px' }}>
-                                <InputLabel>Configuração de VLAN</InputLabel>
-                                <Select
-                                    required
-                                    name='formatVlanConfig'
-                                    label="Configuração de VLAN"
-                                    value={form.formatVlanConfig}
-                                    onChange={handleFormChange}
-                                >
-                                    <MenuItem value={1}>Manual</MenuItem>
-                                    <MenuItem value={2}>vlan única</MenuItem>
-                                    <MenuItem value={3}>vlan {form.vlan} + pon</MenuItem>
-                                    <MenuItem value={4}>vlan {form.vlan} + placa</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <Button variant="contained" color="success" size="small" type="submit">
-                                Aplicar
-                            </Button>
-                        </form>
-                        {
-                            vlans.length > 0 && (
-                                <div className="actions flex">
-                                    <p>AÇÕES</p>
-                                    <form onSubmit={handleModifyVlan}>
-                                        <p>Modificar VLAN em LOTE</p>
+                        <div className="actions flex">
+                            <h4>AÇÕES</h4>
+                            <div className="form-wrapper flex">
+                                <div>
+                                    <h5>Modelo de configuração de VLAN's</h5>
+                                </div>
+                                <form className="flex" onSubmit={handleGenerateConfig}>
+                                    <TextField
+                                        type="number"
+                                        name="vlan"
+                                        label="VLAN"
+                                        value={form.vlan}
+                                        onChange={handleFormChange}
+                                        sx={{ width: '100px' }}
+                                    />
+                                    <FormControl sx={{ width: '180px' }}>
+                                        <InputLabel>Configuração de VLAN</InputLabel>
+                                        <Select
+                                            name='formatVlanConfig'
+                                            label="Configuração de VLAN"
+                                            value={form.formatVlanConfig}
+                                            onChange={handleFormChange}
+                                        >
+                                            <MenuItem value={1}>Manual</MenuItem>
+                                            <MenuItem value={2}>vlan única</MenuItem>
+                                            <MenuItem value={3}>vlan {form.vlan} + pon</MenuItem>
+                                            <MenuItem value={4}>vlan {form.vlan} + placa</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    <Button variant="contained" color="success" size="small" type="submit">
+                                        Aplicar
+                                    </Button>
+                                </form>
+                            </div>
+                            {
+                                vlans.length > 0 && (
+                                    <div className="form-wrapper flex">
                                         <div>
+                                            <h5>Modificar VLAN por PLACA</h5>
+                                        </div>
+                                        <form className="flex" onSubmit={handleModifyVlan}>
                                             <FormControl sx={{ width: '100px' }}>
                                                 <InputLabel>Placa</InputLabel>
                                                 <Select
-                                                    required
                                                     name='modifySlot'
                                                     label="Placa"
                                                     value={action.modifySlot}
@@ -391,6 +399,7 @@ export function AddOlt(){
                                                 </Select>
                                             </FormControl>
                                             <TextField
+                                                required
                                                 type="number"
                                                 name="modifyVlan"
                                                 label="Nova VLAN"
@@ -401,37 +410,43 @@ export function AddOlt(){
                                             <Button variant="contained" color="success" size="small" type="submit">
                                                 Aplicar
                                             </Button>
-                                        </div>
-                                    </form>
-                                </div>
-                            )
-                        }
+                                        </form>
+                                    </div>
+                                )
+                            }
+                        </div>
                     </aside>
                     <div className="table-wrapper flex">
-                        <table>
-                            <tr>
-                                <th>Placa</th>
-                                <th>Pon</th>
-                                <th>Vlan</th>
-
-                            </tr>
-                            {
-                                vlans.map((vlans, index) => {
-                                    return(
+                        {
+                            vlans.length > 0 && (
+                                <div className="table-controller">
+                                    <table>
                                         <tr>
-                                            <td>{vlans.slot}</td>
-                                            <td>{vlans.pon}</td>
-                                            <td>
-                                                <input
-                                                    value={vlans.vlan || ''}
-                                                    onChange={handleChangeVlan(index)}
-                                                />
-                                            </td>
+                                            <th>Placa</th>
+                                            <th>Pon</th>
+                                            <th>Vlan</th>
                                         </tr>
-                                    )   
-                                })
-                            }
-                        </table>
+                                        {
+                                            vlans.map((vlans, index) => {
+                                                return(
+                                                    <tr>
+                                                        <td>{vlans.slot}</td>
+                                                        <td>{vlans.pon}</td>
+                                                        <td>
+                                                            <input
+                                                                value={vlans.vlan || ''}
+                                                                onChange={handleChangeVlan(index)}
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                )   
+                                            })
+                                        }
+                                    </table>
+                                </div>
+                                
+                            )
+                        }
                     </div>
                 </div>
             </VlanConfig>
