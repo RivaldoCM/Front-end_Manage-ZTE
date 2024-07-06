@@ -157,7 +157,7 @@ export function HandleManageOlt(){
 
     useEffect(() => {
         async function olts(){
-            const oltData = await getOlt();
+            const oltData = await getOlt({});
 
             if(oltData.success){
                 setOlt(oltData.responses.response);

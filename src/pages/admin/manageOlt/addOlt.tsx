@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useResponse } from "../../../hooks/useResponse";
 import { Inputs, InputsWrapper, OltStyledContainer, VlanConfig } from "./style";
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
+import { Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { getCities } from "../../../services/apiManageONU/getCities";
 import { ICities } from "../../../interfaces/ICities";
 
@@ -17,23 +17,22 @@ import { isValidIp } from "../../../config/regex";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { addOlt } from "../../../services/apiManageONU/addOlt";
+import { getOlt } from "../../../services/apiManageONU/getOlt";
 
 export function AddOlt(){
     const { setFetchResponseMessage } = useResponse();
 
     const [showPassword, setShowPassword] = useState(false);
-    const [ipValid, setIpValid] = useState(false);
+    const [showGeponPassword, setShowGeponPassword] = useState(false);
+    const [showEnableGeponPassword, setShowEnableGeponPassword] = useState(false);
+    const [ipValid, setIpValid] = useState(null as Boolean | null );
     const [cities, setCities] = useState<ICities[]>([]);
     const [models, setModels] = useState<IOltModels[]>([]);
     const [manufacturers, setManufacturers] = useState<IOltManufacturer[]>([]);
     const [vlans, setVlans] = useState<IVlans[]>([]);
-    const [action, setAction] = useState({
-        modifySlot: 1,
-        modifyVlan: 0
-    });
     const [form, setForm] = useState({
         host: '',
-        cityId: 0,
+        cityId: 1,
         name: '',
         manufacturerId: 1,
         modelId: 1,
@@ -41,10 +40,13 @@ export function AddOlt(){
         telnetPassword: '',
         geponUser: '',
         geponPassword: '',
+        geponEnablePassword: '',
         isActive: true,
         voalleId: undefined as number | undefined,
         formatVlanConfig: 1,
-        vlan: ''
+        vlan: '',
+        modifySlot: 1,
+        modifyVlan: 0
     });
 
     useEffect(() => {
@@ -62,33 +64,37 @@ export function AddOlt(){
     }, []);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
-    const handleMouseDownPassword = (event: any) => {
-        event.preventDefault();
-    };
+    const handleClickShowGeponPassword = () => setShowGeponPassword((show) => !show);
+    const handleClickShowEnableGeponPassword = () => setShowEnableGeponPassword((show) => !show);
+    const handleMouseDownPassword = (event: any) => {event.preventDefault();};
 
-    const handleMouseDownFormIp = () => {
-        if(!form.host.match(isValidIp)){
+    const handleMouseDownFormIp = async () => {
+        //verifica se tem OLT's com o mesmo IP.
+        if(form.host !== '' && form.host.match(isValidIp)){
+            const response = await getOlt({host: form.host});
+            if(response){
+                if(response.success){
+                    if(response.responses.response){
+                        setFetchResponseMessage(response.responses.status);
+                    }
+                    setIpValid(!response.responses.response);
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
+            }
+        } else{
             setIpValid(false);
-        } else {
-            setIpValid(true);
         }
     }
 
-    const handleFormChange = (e: any) => {
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string | number | boolean | null>) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
         });
     }
 
-    const handleActionValuesChange = (e: any) => {
-        setAction({
-            ...action,
-            [e.target.name]: e.target.value
-        });
-    }
-
-    const handleGenerateConfig = (e: any) => {
+    const handleGenerateConfig = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         e.preventDefault();
         let modelSlot = 0, modelPon = 0, vlans: IVlans[] = [];
 
@@ -127,7 +133,7 @@ export function AddOlt(){
             }
             setVlans(vlans);
         } else {
-            console.log('NAO')
+            setFetchResponseMessage('error/missing-fields');
         }
     }
 
@@ -170,8 +176,8 @@ export function AddOlt(){
     const handleModifyVlan = (e: any) => {
         e.preventDefault();
         const newVlans = vlans.map((value) => {
-            if(action.modifySlot === value.slot){
-                return { ...value, vlan: action.modifyVlan};
+            if(form.modifySlot === value.slot){
+                return { ...value, vlan: form.modifyVlan};
             }
             return {...value}
         });
@@ -185,9 +191,9 @@ export function AddOlt(){
             if(!isValidIp){
                 setFetchResponseMessage('error/incorrect-fields');
             } else {
-                const {vlan, formatVlanConfig, ...dataForm} = form;
+                const {vlan, formatVlanConfig, modifySlot, modifyVlan, ...dataForm} = form;
 
-                const response = await addOlt(dataForm);
+                const response = await addOlt(dataForm, vlans);
             }
         }
     }
@@ -295,10 +301,10 @@ export function AddOlt(){
                             <TextField
                                 type="number"
                                 name="voalleId"
-                                label="Ponto de acesso Voalle"
+                                label="Ponto de acesso"
                                 value={form.voalleId}
                                 onChange={handleFormChange}
-                                sx={{ m: 1, width: '224px' }}
+                                sx={{ m: 1, width: '200px' }}
                             />
                         </div>
                     </Inputs>
@@ -306,7 +312,7 @@ export function AddOlt(){
                 <InputsWrapper className="flex">
                     <h4>Configurações de Acesso</h4>
                     <Inputs>
-                        <div className="host-validation">
+                        <div className="ip-validation">
                             <TextField
                                 required
                                 name="host"
@@ -318,10 +324,13 @@ export function AddOlt(){
                             />
                             {
                                 (
-                                    ipValid ? 
-                                        <CheckCircleOutlineIcon color="success"/> 
-                                    : 
-                                        <HighlightOffIcon color="error"/>
+                                    ipValid == null ? 
+                                        <></> 
+                                    :
+                                        ipValid ? 
+                                            <CheckCircleOutlineIcon color="success"/>
+                                        : 
+                                            <HighlightOffIcon color="error"/>
                                 )
                             }
                         </div>
@@ -356,34 +365,55 @@ export function AddOlt(){
                             </FormControl>
                         </div>
                         <div className="login-info flex">
-                                <TextField 
-                                    name="geponUser"
-                                    label="Usuário GEPON"
-                                    value={form.geponUser}
+                            <TextField 
+                                name="geponUser"
+                                label="Usuário GEPON"
+                                value={form.geponUser}
+                                onChange={handleFormChange}
+                                sx={{ m: 1, width: '264px' }}
+                            />
+                            <FormControl sx={{ m: 1, width: '264px' }} variant="outlined">
+                                <InputLabel>Senha GEPON</InputLabel>
+                                <OutlinedInput
+                                    name="geponPassword"
+                                    label="Senha GEPON" 
+                                    type={showGeponPassword ? 'text' : 'password'}
+                                    value={form.geponPassword}
                                     onChange={handleFormChange}
-                                    sx={{ m: 1, width: '264px' }}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                edge="end"
+                                                onClick={handleClickShowGeponPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                            >
+                                                {showGeponPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
                                 />
-                                <FormControl sx={{ m: 1, width: '264px' }} variant="outlined">
-                                    <InputLabel>Senha GEPON</InputLabel>
-                                    <OutlinedInput
-                                        name="geponPassword"
-                                        label="Senha GEPON" 
-                                        type={showPassword ? 'text' : 'password'}
-                                        value={form.geponPassword}
-                                        onChange={handleFormChange}
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    edge="end"
-                                                    onClick={handleClickShowPassword}
-                                                    onMouseDown={handleMouseDownPassword}
-                                                >
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        }
-                                    />
-                                </FormControl>
+                            </FormControl>
+                            <FormControl sx={{ m: 1, width: '264px' }} variant="outlined">
+                                <InputLabel>Senha enable GEPON</InputLabel>
+                                <OutlinedInput
+                                    name="geponEnablePassword"
+                                    label="Senha enable GEPON" 
+                                    type={showEnableGeponPassword ? 'text' : 'password'}
+                                    value={form.geponEnablePassword}
+                                    onChange={handleFormChange}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                edge="end"
+                                                onClick={handleClickShowEnableGeponPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                            >
+                                                {showEnableGeponPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
                         </div>
                     </Inputs>
                 </InputsWrapper>
@@ -438,8 +468,8 @@ export function AddOlt(){
                                                 <Select
                                                     name='modifySlot'
                                                     label="Placa"
-                                                    value={action.modifySlot}
-                                                    onChange={handleActionValuesChange}
+                                                    value={form.modifySlot}
+                                                    onChange={handleFormChange}
                                                 >
                                                     { generateSlotOptions() }
                                                 </Select>
@@ -449,8 +479,8 @@ export function AddOlt(){
                                                 type="number"
                                                 name="modifyVlan"
                                                 label="Nova VLAN"
-                                                value={action.modifyVlan}
-                                                onChange={handleActionValuesChange}
+                                                value={form.modifyVlan}
+                                                onChange={handleFormChange}
                                                 sx={{ width: '100px' }}
                                             />
                                             <Button variant="contained" color="success" size="small" type="submit">

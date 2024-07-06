@@ -197,6 +197,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Preencha corretamente os campos.',
                 severityStatus: 'warning'
             }
+        case 'info/ip-already-exists':
+            return{
+                responseMessage: 'Este IP já está em uso.',
+                severityStatus: 'warning'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',

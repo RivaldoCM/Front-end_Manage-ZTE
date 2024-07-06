@@ -15,13 +15,13 @@ export const OltStyledContainer = styled.div`
 
     .wrapper{
         flex-direction: row;
+        align-items: flex-start;
         width: 100%;
-        height: 50vh;
+        max-height: 50vh;
     }
 `;
 
 export const InputsWrapper = styled.div`
-
     h4{ margin-left: .8rem; }
 
     flex-direction: column;
@@ -37,7 +37,7 @@ export const VlanConfig = styled.div`
     justify-content: flex-start;
     width: 100%;
     padding-top: 1rem;
-    height: calc(100vh - var(--top-menu-size));
+    max-height: calc(100vh - var(--top-menu-size));
 
     h3{
         width: 24%;
@@ -146,6 +146,7 @@ export const Inputs = styled.div`
     .ip-validation{
         display: flex;
         align-items: center;
+        margin-right: 2rem;
     }
 
     > div{
