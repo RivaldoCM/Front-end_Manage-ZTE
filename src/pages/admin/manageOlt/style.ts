@@ -7,6 +7,12 @@ export const OltStyledContainer = styled.div`
     padding: .5rem;
     height: auto;
 
+    > div:first-child{
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+    }
+
     .wrapper{
         flex-direction: row;
         width: 100%;
@@ -94,13 +100,13 @@ export const VlanConfig = styled.div`
     .table-wrapper{
         align-items: flex-start;
         width: 100%;
-        height: 100%;
         margin-top: 1rem;
 
         .table-controller{
             height: 80%;
-            max-height: calc(100vh - 6rem);
+            max-height: 464px;
             overflow: auto;
+            border: 2px solid #ccc;
         }
 
         th{
@@ -136,6 +142,11 @@ export const Inputs = styled.div`
     width: 100%;
     height: 100%;
     padding: 1rem 0;
+
+    .ip-validation{
+        display: flex;
+        align-items: center;
+    }
 
     > div{
         margin: 0 .5rem;

@@ -11,35 +11,38 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { getOltManufacturer } from "../../../services/apiManageONU/getOltManufacturer";
 import { getOltModel } from "../../../services/apiManageONU/getOltModel";
 
+import CheckIcon from '@mui/icons-material/Check';
+import { isValidIp } from "../../../config/regex";
+
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { addOlt } from "../../../services/apiManageONU/addOlt";
+
 export function AddOlt(){
     const { setFetchResponseMessage } = useResponse();
 
     const [showPassword, setShowPassword] = useState(false);
+    const [ipValid, setIpValid] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
     const [models, setModels] = useState<IOltModels[]>([]);
     const [manufacturers, setManufacturers] = useState<IOltManufacturer[]>([]);
     const [vlans, setVlans] = useState<IVlans[]>([]);
     const [action, setAction] = useState({
-        deleteSlot: 1,
-        deletePon: 0,
-        createSlot: 0,
-        createPon: 0,
         modifySlot: 1,
         modifyVlan: 0
     });
     const [form, setForm] = useState({
-        ip: '',
-        cityId: 1,
+        host: '',
+        cityId: 0,
         name: '',
-        type: 1,
-        model: null,
-        sshUser: '',
-        sshPassword: '',
+        manufacturerId: 1,
+        modelId: 1,
+        telnetUser: '',
+        telnetPassword: '',
         geponUser: '',
         geponPassword: '',
         isActive: true,
-        voalleAccessPointId: '',
-        isPizzaBox: false,
+        voalleId: undefined as number | undefined,
         formatVlanConfig: 1,
         vlan: ''
     });
@@ -63,6 +66,14 @@ export function AddOlt(){
         event.preventDefault();
     };
 
+    const handleMouseDownFormIp = () => {
+        if(!form.host.match(isValidIp)){
+            setIpValid(false);
+        } else {
+            setIpValid(true);
+        }
+    }
+
     const handleFormChange = (e: any) => {
         setForm({
             ...form,
@@ -81,9 +92,9 @@ export function AddOlt(){
         e.preventDefault();
         let modelSlot = 0, modelPon = 0, vlans: IVlans[] = [];
 
-        if(form.model){
+        if(form.modelId){
             models.map((model) => {
-                if(model.id === form.model){
+                if(model.id === form.modelId){
                     modelSlot = model.slots,
                     modelPon = model.pons
                 }
@@ -142,7 +153,7 @@ export function AddOlt(){
         let modelSlot = 0 , items = [];
 
         models.map((model) => {
-            if(model.id === form.model){
+            if(model.id === form.modelId){
                 modelSlot = model.slots
             }
         });
@@ -167,8 +178,34 @@ export function AddOlt(){
         setVlans(newVlans);
     }
 
+    const handleSubmit = async () => {
+        if(!form.name || !form.modelId || !form.host || !form.telnetUser || !form.telnetPassword){
+            setFetchResponseMessage('error/missing-fields');
+        } else {
+            if(!isValidIp){
+                setFetchResponseMessage('error/incorrect-fields');
+            } else {
+                const {vlan, formatVlanConfig, ...dataForm} = form;
+
+                const response = await addOlt(dataForm);
+            }
+        }
+    }
+
     return(
         <OltStyledContainer className="flex">
+            <div>
+                <Button
+                    endIcon={<CheckIcon />} 
+                    variant="contained" 
+                    color="success"
+                    size="small"
+                    type="submit"
+                    onClick={handleSubmit}
+                >
+                    Salvar OLT
+                </Button>
+            </div>
             <div className="wrapper flex">
                 <InputsWrapper className="flex">
                     <h4>Configurações gerais</h4>
@@ -188,7 +225,7 @@ export function AddOlt(){
                                     required
                                     name="cityId"
                                     label="Cidade"
-                                    value={form.cityId}
+                                    value={form.cityId || ''}
                                     onChange={handleFormChange}
                                 >
                                     {
@@ -219,9 +256,9 @@ export function AddOlt(){
                                 <InputLabel>Fabricante</InputLabel>
                                 <Select
                                     required
-                                    name="type"
+                                    name="manufacturerId"
                                     label="Fabricante"
-                                    value={form.type}
+                                    value={form.manufacturerId || ''}
                                     onChange={handleFormChange}
                                     sx={{ width: '148px' }}
                                 >
@@ -238,15 +275,15 @@ export function AddOlt(){
                                 <InputLabel>Modelo</InputLabel>
                                 <Select
                                     required
-                                    name="model"
+                                    name="modelId"
                                     label="Modelo"
-                                    value={form.model}
+                                    value={form.modelId}
                                     onChange={handleFormChange}
                                     sx={{ width: '148px' }}
                                 >
                                     {
                                         models.map((model, index) => {
-                                            if(model.manufacturer_id === form.type){
+                                            if(model.manufacturer_id === form.manufacturerId){
                                                 return(
                                                     <MenuItem value={model.id} key={index}>{model.model}</MenuItem>
                                                 )
@@ -257,9 +294,9 @@ export function AddOlt(){
                             </FormControl>
                             <TextField
                                 type="number"
-                                name="voalleAccessPointId"
+                                name="voalleId"
                                 label="Ponto de acesso Voalle"
-                                value={form.voalleAccessPointId}
+                                value={form.voalleId}
                                 onChange={handleFormChange}
                                 sx={{ m: 1, width: '224px' }}
                             />
@@ -269,31 +306,40 @@ export function AddOlt(){
                 <InputsWrapper className="flex">
                     <h4>Configurações de Acesso</h4>
                     <Inputs>
-                        <div>
+                        <div className="host-validation">
                             <TextField
                                 required
-                                name="ip"
+                                name="host"
                                 label="IP da OLT" 
-                                value={form.ip}
+                                value={form.host}
+                                onBlur={handleMouseDownFormIp}
                                 onChange={handleFormChange}
                                 sx={{ width: '264px' }}
                             />
+                            {
+                                (
+                                    ipValid ? 
+                                        <CheckCircleOutlineIcon color="success"/> 
+                                    : 
+                                        <HighlightOffIcon color="error"/>
+                                )
+                            }
                         </div>
                         <div className="login-info flex">
                             <TextField 
-                                name="sshUser"
+                                name="telnetUser"
                                 label="Usuário SSH/Telnet"
-                                value={form.sshUser}
+                                value={form.telnetUser}
                                 onChange={handleFormChange}
                                 sx={{ m: 1, width: '264px' }}
                             />
                             <FormControl sx={{ m: 1, width: '264px' }} variant="outlined">
                                 <InputLabel>Senha SSH/Telnet</InputLabel>
                                 <OutlinedInput
-                                    name="sshPassword"
+                                    name="telnetPassword"
                                     label="Senha SSH/Telnet" 
                                     type={showPassword ? 'text' : 'password'}
-                                    value={form.sshPassword}
+                                    value={form.telnetPassword}
                                     onChange={handleFormChange}
                                     endAdornment={
                                         <InputAdornment position="end">

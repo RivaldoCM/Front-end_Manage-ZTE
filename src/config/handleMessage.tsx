@@ -187,6 +187,16 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Você não tem permissão para realizar está função.',
                 severityStatus: 'error'
             }
+        case 'error/missing-fields':
+            return{
+                responseMessage: 'Preencha todos os campos.',
+                severityStatus: 'warning'
+            }
+        case 'error/incorrect-fields':
+            return{
+                responseMessage: 'Preencha corretamente os campos.',
+                severityStatus: 'warning'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',
