@@ -1,8 +1,8 @@
 import axios from "axios";
 import { IOlt } from "../../interfaces/IOlt";
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function addOlt(form: IOlt, vlans: IVlans[]){
-    
+export async function addOlt(form: IOlt, vlans: IVlans[]): Promise< IResponseData | IResponseError>{
     const res = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt`,

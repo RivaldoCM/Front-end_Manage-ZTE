@@ -18,8 +18,10 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { addOlt } from "../../../services/apiManageONU/addOlt";
 import { getOlt } from "../../../services/apiManageONU/getOlt";
+import { useNavigate } from "react-router-dom";
 
 export function AddOlt(){
+    const navigate = useNavigate();
     const { setFetchResponseMessage } = useResponse();
 
     const [showPassword, setShowPassword] = useState(false);
@@ -185,15 +187,24 @@ export function AddOlt(){
     }
 
     const handleSubmit = async () => {
-        if(!form.name || !form.modelId || !form.host || !form.telnetUser || !form.telnetPassword){
+        if(!form.name || !form.modelId || !form.host || !form.telnetUser || !form.telnetPassword || vlans.length === 0){
             setFetchResponseMessage('error/missing-fields');
         } else {
-            if(!isValidIp){
+            if(!ipValid){
                 setFetchResponseMessage('error/incorrect-fields');
             } else {
                 const {vlan, formatVlanConfig, modifySlot, modifyVlan, ...dataForm} = form;
-
                 const response = await addOlt(dataForm, vlans);
+                if(response){
+                    if(response.success){
+                        setFetchResponseMessage(response.responses.status);
+                        navigate('/olts');
+                    } else {
+                        setFetchResponseMessage(response.messages.message);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
             }
         }
     }
