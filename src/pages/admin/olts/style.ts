@@ -22,12 +22,13 @@ export const OltStyledContainer = styled.div`
 `;
 
 export const InputsWrapper = styled.div`
-    h4{ margin-left: .8rem; }
-
+    h4{
+        margin-left: .8rem; 
+    }
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    width: inherit;
+    width: 50%;
     height: 100%;
 `;
 
@@ -43,6 +44,10 @@ export const VlanConfig = styled.div`
         width: 24%;
         text-align: center;
         border-bottom: 2px solid black;
+
+        @media (max-width: 748px){
+            width: 60%;
+        }
     }
 
     > div:last-child{
@@ -52,9 +57,21 @@ export const VlanConfig = styled.div`
         align-items: flex-start;
         padding: 1rem;
 
+        @media (max-width: 1214px){
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
         aside{
             width: 40%;
+            @media (max-width: 1214px){
+                width: 60%;
+            }
 
+            @media (max-width: 748px){
+                width: 80%;
+            }
             > form:first-child{
                 flex-direction: row;
                 justify-content: flex-start;
@@ -143,14 +160,24 @@ export const Inputs = styled.div`
     height: 100%;
     padding: 1rem 0;
 
+
+
     .ip-validation{
         display: flex;
         align-items: center;
+        width: 100%;
         margin-right: 2rem;
+
     }
 
     > div{
+        justify-content: flex-start;
+        flex-wrap: wrap;
         margin: 0 .5rem;
+
+        @media (max-width: 1214px){
+            justify-content: center;
+        }
 
         > div{
             margin: .3rem;

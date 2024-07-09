@@ -6,7 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { isLogged } from "./config/isLogged";
 
 import { Login } from "./pages/Login";
-import { HandleManageOlt } from "./pages/admin/manageOlt";
+import { Olts } from "./pages/admin/olts";
 import { Users } from "./pages/admin/users";
 import { OnuDelete } from "./pages/onuDelete";
 import { LogsOnu } from "./pages/logs/onu";
@@ -28,8 +28,8 @@ import { Massive } from "./pages/massive";
 import { LogsMassives } from "./pages/logs/massives";
 import { MassiveContextProvider } from "./contexts/MassiveContext";
 import { MassivePanel } from "./pages/massive/panel";
-import { EditOlt } from "./pages/admin/manageOlt/editOlt";
-import { AddOlt } from "./pages/admin/manageOlt/addOlt";
+import { EditOlt } from "./pages/admin/olts/editOlt";
+import { AddOlt } from "./pages/admin/olts/addOlt";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -89,7 +89,7 @@ export function AppRoutes() {
             <Route path="" element={matches ? <MobileDrawerMenu /> : <MenuDrawer />}>
                 <Route
                     path="olts"
-                    element={<PrivateRoute element={<HandleManageOlt />} />}
+                    element={<PrivateRoute element={<Olts />} />}
                 />
                 <Route
                     path="olts/:id"

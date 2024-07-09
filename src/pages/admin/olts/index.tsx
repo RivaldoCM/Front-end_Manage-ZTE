@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { getOlt } from '../../../services/apiManageONU/getOlt';
 import { IOlt } from '../../../interfaces/IOlt';
 
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,18 +10,16 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { IconButton, TableHead } from '@mui/material';
+
 import { useError } from '../../../hooks/useError';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+
 import Alert from '@mui/material/Alert';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { useNavigate } from 'react-router-dom';
+import { EnhancedTableHead, EnhancedTableToolbar } from './table';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -33,119 +30,7 @@ function stableSort<T>(array: readonly T[]) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-interface EnhancedTableToolbarProps { numSelected: number; oltDataSelected: any }
-
-interface HeadCell {
-    disablePadding: boolean;
-    id: number;
-    label: string;
-    numeric: boolean;
-}
-  
-const headCells: readonly HeadCell[] = [
-    {
-        id: 1,
-        numeric: false,
-        disablePadding: true,
-        label: 'Cidade',
-    },
-    {
-        id: 2,
-        numeric: true,
-        disablePadding: false,
-        label: 'IP',
-    },
-    {
-        id: 3,
-        numeric: true,
-        disablePadding: false,
-        label: 'Tipo de OLT',
-    },
-    {
-        id: 4,
-        numeric: true,
-        disablePadding: false,
-        label: 'PizzaBox',
-    },
-    {
-        id: 5,
-        numeric: true,
-        disablePadding: false,
-        label: 'Ponto de Acesso(Voalle)'
-    }
-];
-
-function EnhancedTableHead(){
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-
-                </TableCell>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                    >
-                        {headCell.label}
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const navigate = useNavigate();
-    const { numSelected, oltDataSelected } = props;
-
-    return (
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                bgcolor: (theme) =>
-                    alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                }),
-            }}
-        >
-        {numSelected > 0 ? (
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-            >
-                {numSelected} selecionado
-            </Typography>
-        ) : (
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                variant="h6"
-                id="tableTitle"
-                component="div"
-            >
-                OLT's
-            </Typography>
-        )}
-        {numSelected > 0 ? (
-            <div className='flex'>
-                <IconButton color='secondary' onClick={() => navigate(`${oltDataSelected.id}`)}>
-                    <EditOutlinedIcon />
-                </IconButton>
-            </div>
-        ) : (
-            <IconButton color='primary' onClick={() => navigate('new_olt')}>
-                <AddOutlinedIcon />
-            </IconButton>
-        )}
-        </Toolbar>
-    );
-}
-
-export function HandleManageOlt(){
+export function Olts(){
     const { error, errorMessage, severityStatus, handleError } = useError();
 
     const [ oltDataSelected, setOltDataSelected ] = useState();
@@ -193,7 +78,6 @@ export function HandleManageOlt(){
 
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-    // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - olt.length) : 0;
 
     const visibleRows = useMemo(() =>

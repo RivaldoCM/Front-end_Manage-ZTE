@@ -96,7 +96,7 @@ export function AddOlt(){
         });
     }
 
-    const handleGenerateConfig = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleGenerateConfig = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let modelSlot = 0, modelPon = 0, vlans: IVlans[] = [];
 
