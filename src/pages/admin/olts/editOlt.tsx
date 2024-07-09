@@ -16,9 +16,9 @@ import { isValidIp } from "../../../config/regex";
 
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { addOlt } from "../../../services/apiManageONU/addOlt";
 import { getOlt } from "../../../services/apiManageONU/getOlt";
 import { useNavigate, useParams } from "react-router-dom";
+import { updateOlt } from "../../../services/apiManageONU/updateOlt";
 
 export function EditOlt(){
     const params = useParams();
@@ -29,6 +29,8 @@ export function EditOlt(){
     const [showGeponPassword, setShowGeponPassword] = useState(false);
     const [showEnableGeponPassword, setShowEnableGeponPassword] = useState(false);
     const [ipValid, setIpValid] = useState(true);
+    const [modelControl, setModelControl] = useState<number | string>();
+    const [isModelChange, setIsModelChange] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
     const [models, setModels] = useState<IOltModels[]>([]);
     const [manufacturers, setManufacturers] = useState<IOltManufacturer[]>([]);
@@ -60,7 +62,6 @@ export function EditOlt(){
             const getManufacturer = getOltManufacturer();
 
             const [olt, cities, models, manufacturers] = await Promise.all([getOlts, getCity, getModel, getManufacturer]);
-
             cities && cities.success ? setCities(cities.responses.response) : setCities([]);
             models && models.success ? setModels(models.responses.response) : setModels([]);
             manufacturers && manufacturers.success ? setManufacturers(manufacturers.responses.response) : setManufacturers([]);
@@ -87,10 +88,19 @@ export function EditOlt(){
                     voalleId: olt.responses.response.olt.voalle_id || '',
                 });
                 setVlans(olt.responses.response.vlans);
+                setModelControl(olt.responses.response.olt.model_id);
             }
         }
         getData();
     }, []);
+
+    useEffect(() => {
+        if(form.modelId !== '' && form.modelId !== modelControl){
+            setVlans([]);
+            setModelControl(form.modelId);
+            setIsModelChange(true);
+        }
+    }, [form.modelId]);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleClickShowGeponPassword = () => setShowGeponPassword((show) => !show);
@@ -100,7 +110,7 @@ export function EditOlt(){
     const handleMouseDownFormIp = async () => {
         //verifica se tem OLT's com o mesmo IP.
         if(form.host !== '' && form.host.match(isValidIp)){
-            const response = await getOlt({host: form.host});
+            const response = await getOlt({id: parseInt(params.id!), host: form.host});
             if(response){
                 if(response.success){
                     if(response.responses.response){
@@ -221,7 +231,7 @@ export function EditOlt(){
                 setFetchResponseMessage('error/incorrect-fields');
             } else {
                 const {vlan, formatVlanConfig, modifySlot, modifyVlan, ...dataForm} = form;
-                const response = await addOlt(dataForm, vlans);
+                const response = await updateOlt(dataForm, vlans);
                 if(response){
                     if(response.success){
                         setFetchResponseMessage(response.responses.status);
@@ -462,38 +472,42 @@ export function EditOlt(){
                     <aside>
                         <div className="actions flex">
                             <h4>AÇÕES</h4>
-                            <div className="form-wrapper flex">
-                                <div>
-                                    <h5>Modelo de configuração de VLAN's</h5>
-                                </div>
-                                <form className="flex" onSubmit={handleGenerateConfig}>
-                                    <TextField
-                                        type="number"
-                                        name="vlan"
-                                        label="VLAN"
-                                        value={form.vlan}
-                                        onChange={handleFormChange}
-                                        sx={{ width: '100px' }}
-                                    />
-                                    <FormControl sx={{ width: '180px' }}>
-                                        <InputLabel>Configuração de VLAN</InputLabel>
-                                        <Select
-                                            name='formatVlanConfig'
-                                            label="Configuração de VLAN"
-                                            value={form.formatVlanConfig}
-                                            onChange={handleFormChange}
-                                        >
-                                            <MenuItem value={1}>Manual</MenuItem>
-                                            <MenuItem value={2}>vlan única</MenuItem>
-                                            <MenuItem value={3}>vlan {form.vlan} + pon</MenuItem>
-                                            <MenuItem value={4}>vlan {form.vlan} + placa</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                    <Button variant="contained" color="success" size="small" type="submit">
-                                        Aplicar
-                                    </Button>
-                                </form>
-                            </div>
+                            {
+                                isModelChange && (
+                                    <div className="form-wrapper flex">
+                                        <div>
+                                            <h5>Modelo de configuração de VLAN's</h5>
+                                        </div>
+                                        <form className="flex" onSubmit={handleGenerateConfig}>
+                                            <TextField
+                                                type="number"
+                                                name="vlan"
+                                                label="VLAN"
+                                                value={form.vlan}
+                                                onChange={handleFormChange}
+                                                sx={{ width: '100px' }}
+                                            />
+                                            <FormControl sx={{ width: '180px' }}>
+                                                <InputLabel>Configuração de VLAN</InputLabel>
+                                                <Select
+                                                    name='formatVlanConfig'
+                                                    label="Configuração de VLAN"
+                                                    value={form.formatVlanConfig}
+                                                    onChange={handleFormChange}
+                                                >
+                                                    <MenuItem value={1}>Manual</MenuItem>
+                                                    <MenuItem value={2}>vlan única</MenuItem>
+                                                    <MenuItem value={3}>vlan {form.vlan} + pon</MenuItem>
+                                                    <MenuItem value={4}>vlan {form.vlan} + placa</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                            <Button variant="contained" color="success" size="small" type="submit">
+                                                Aplicar
+                                            </Button>
+                                        </form>
+                                    </div>
+                                )
+                            }
                             {
                                 vlans.length > 0 && (
                                     <div className="form-wrapper flex">
