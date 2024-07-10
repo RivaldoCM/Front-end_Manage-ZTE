@@ -9,8 +9,8 @@ export async function updateOlt(form: IOlt, vlans: IVlans[]){
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
         data:{
-            data: form,
-            vlans: vlans
+            dataOlt: form,
+            vlansOlt: vlans
         }
     }).then((response) => {
         return response.data;

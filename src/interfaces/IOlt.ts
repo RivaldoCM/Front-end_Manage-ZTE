@@ -1,5 +1,5 @@
 export type IOlt = {
-    id?: number;
+    id?: number | '';
     name: string;
     host: string;
     manufacturerId: number | '';

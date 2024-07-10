@@ -36,6 +36,7 @@ export function EditOlt(){
     const [manufacturers, setManufacturers] = useState<IOltManufacturer[]>([]);
     const [vlans, setVlans] = useState<IVlans[]>([]);
     const [form, setForm] = useState({
+        id: '' as number | '',
         host: '',
         cityId: '' as number | '',
         name: '',
@@ -74,6 +75,7 @@ export function EditOlt(){
             if (olt.success && olt.responses.response) {
                 setForm({
                     ...form,
+                    id: olt.responses.response.olt.id,
                     host: olt.responses.response.olt.host || '',
                     cityId: olt.responses.response.olt.city_id || '',
                     name: olt.responses.response.olt.name || '',
