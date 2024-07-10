@@ -141,8 +141,6 @@ export function SearchONU() {
         }
     }
 
-    console.log(form)
-
     return (
         <Form onSubmit={handleSubmit} className="flex">
             <InputContainer center={true}>

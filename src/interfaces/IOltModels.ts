@@ -1,6 +1,6 @@
 type IOltModels = {
     id: number;
-    model: string;
+    name: string;
     slots: number;
     pons: number;
     manufacturer_id: number;

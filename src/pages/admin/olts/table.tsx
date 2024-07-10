@@ -19,29 +19,35 @@ const headCells: readonly HeadCell[] = [
         id: 1,
         numeric: false,
         disablePadding: true,
-        label: 'Cidade',
+        label: 'Nome',
     },
     {
         id: 2,
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: 'IP',
     },
     {
         id: 3,
-        numeric: true,
+        numeric: false,
         disablePadding: false,
-        label: 'Tipo de OLT',
+        label: 'Fabricante',
     },
     {
         id: 4,
-        numeric: true,
+        numeric: false,
         disablePadding: false,
-        label: 'PizzaBox',
+        label: 'Modelo',
     },
     {
         id: 5,
-        numeric: true,
+        numeric: false,
+        disablePadding: false,
+        label: 'Ativo',
+    },
+    {
+        id: 6,
+        numeric: false,
         disablePadding: false,
         label: 'Ponto de Acesso(Voalle)'
     }

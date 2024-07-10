@@ -43,7 +43,7 @@ export function Olts(){
     useEffect(() => {
         async function olts(){
             const oltData = await getOlt({});
-
+            console.log(oltData)
             if(oltData.success){
                 setOlt(oltData.responses.response);
             }else{
@@ -54,13 +54,13 @@ export function Olts(){
         olts();
     }, []);
 
-    const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: any) => {
+    const handleClick = (_event: React.MouseEvent<unknown>, id: number | undefined, row: any) => {
         setOltDataSelected(row);
         if(selected[0] === id){
             setSelected([]);
             return;
         }
-        setSelected([id]);
+        setSelected([id!]);
     };
 
     const handleChangePage = (_event: unknown, newPage: number) => {
@@ -76,10 +76,9 @@ export function Olts(){
         setDense(event.target.checked);
     };
 
-    const isSelected = (id: number) => selected.indexOf(id) !== -1;
+    const isSelected = (id: number | '' | undefined) => selected.indexOf(id as number) !== -1;
 
     const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - olt.length) : 0;
-
     const visibleRows = useMemo(() =>
         stableSort(olt).slice(
             page * rowsPerPage,
@@ -87,17 +86,6 @@ export function Olts(){
         ),
         [page, rowsPerPage, olt]
     );
-
-    const renderTypeOlt: any = (typeOlt: number) => {
-        switch(typeOlt){
-            case 10:
-                return <TableCell align="right">ZTE</TableCell>
-            case 20:
-                return <TableCell align="right">PARKS</TableCell>
-            case 30:
-                return <TableCell align="right">FIBERHOME</TableCell>
-        }
-    }
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -131,7 +119,7 @@ export function Olts(){
                                         color="primary"
                                         checked={isItemSelected}
                                         inputProps={{
-                                        'aria-labelledby': labelId,
+                                            'aria-labelledby': labelId,
                                         }}
                                     />
                                     </TableCell>
@@ -143,18 +131,12 @@ export function Olts(){
                                     >
                                         {row.name}
                                     </TableCell>
-                                    <TableCell align="right">{row.host}</TableCell>
-
-                                    {renderTypeOlt(row.type)}
-                                    {
-                                        row.isPizzaBox ? 
-                                        <TableCell align="right">Sim</TableCell>
-                                        :
-                                        <TableCell align="right">Não</TableCell>
-                                    }
-                                    <TableCell align="right">{row.voalleAccessPointId}</TableCell>
+                                    <TableCell align="left">{row.host}</TableCell>
+                                    <TableCell align="left">{row.Olt_Manufacturer.name}</TableCell>
+                                    <TableCell align="left">{row.Olt_Model.name}</TableCell>
+                                    <TableCell align="left">{row.is_active ? 'Sim' : 'Não'}</TableCell>
+                                    <TableCell align="left">{row.voalle_id}</TableCell>
                                 </TableRow>
-                                
                             );
                         })}
                         {emptyRows > 0 && (

@@ -303,7 +303,7 @@ export function EditOlt(){
                                     onChange={handleFormChange}
                                 >
                                     <MenuItem value={true}>Ativo</MenuItem>
-                                    <MenuItem value={false}>Desativado</MenuItem>
+                                    <MenuItem value={false}>Inativo</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>
@@ -341,7 +341,7 @@ export function EditOlt(){
                                         models.map((model, index) => {
                                             if(model.manufacturer_id === form.manufacturerId){
                                                 return(
-                                                    <MenuItem value={model.id} key={index}>{model.model}</MenuItem>
+                                                    <MenuItem value={model.id} key={index}>{model.name}</MenuItem>
                                                 )
                                             }
                                         })

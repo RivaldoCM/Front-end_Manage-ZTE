@@ -302,7 +302,7 @@ export function AddOlt(){
                                         models.map((model, index) => {
                                             if(model.manufacturer_id === form.manufacturerId){
                                                 return(
-                                                    <MenuItem value={model.id} key={index}>{model.model}</MenuItem>
+                                                    <MenuItem value={model.id} key={index}>{model.name}</MenuItem>
                                                 )
                                             }
                                         })
