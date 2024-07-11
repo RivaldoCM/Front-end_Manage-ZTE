@@ -73,14 +73,15 @@ export function EditOlt(){
                 OS DADOS DA OLT E AS SUAUS VLANS
             */
             if (olt.success && olt.responses.response) {
+                console.log(olt)
                 setForm({
                     ...form,
                     id: olt.responses.response.olt.id,
                     host: olt.responses.response.olt.host || '',
                     cityId: olt.responses.response.olt.city_id || '',
                     name: olt.responses.response.olt.name || '',
-                    manufacturerId: olt.responses.response.olt.manufacturer_id || '',
-                    modelId: olt.responses.response.olt.model_id || '',
+                    manufacturerId: olt.responses.response.olt.Olt_Manufacturer.id || '',
+                    modelId: olt.responses.response.olt.Olt_Model.id || '',
                     telnetUser: olt.responses.response.olt.telnet_user || '',
                     telnetPassword: olt.responses.response.olt.telnet_password || '',
                     geponUser: olt.responses.response.olt.gepon_user || '',
@@ -90,7 +91,7 @@ export function EditOlt(){
                     voalleId: olt.responses.response.olt.voalle_id || '',
                 });
                 setVlans(olt.responses.response.vlans);
-                setModelControl(olt.responses.response.olt.model_id);
+                setModelControl(olt.responses.response.olt.Olt_Model.id);
             }
         }
         getData();
@@ -99,8 +100,8 @@ export function EditOlt(){
     useEffect(() => {
         if(form.modelId !== '' && form.modelId !== modelControl){
             setVlans([]);
-            setModelControl(form.modelId);
             setIsModelChange(true);
+            setModelControl(form.modelId);
         }
     }, [form.modelId]);
 

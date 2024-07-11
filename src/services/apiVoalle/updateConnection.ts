@@ -4,7 +4,6 @@ import { getToken } from "./getToken";
 import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps.js";
 
 export async function updateConnection(props: IUpdateConnectionProps){
-    console.log(props)
     let modelOLTVoalle: number = 0;
     if(props.modelOlt === 'ZTE'){
         modelOLTVoalle = 7;
@@ -32,7 +31,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "wifiName": props.wifiSSID,
         "wifiPassword": props.wifiPass,
         "technologyType": 8,
-        "authenticationAccessPointId": props.accessPointId[0],
+        "authenticationAccessPointId": props.accessPointId,
         "updateConnectionParameter": false,
         "shouldMacUpdate": false,
         "user": props.pppoeUser,

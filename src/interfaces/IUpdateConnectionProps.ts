@@ -7,7 +7,7 @@ export interface IUpdateConnectionProps {
     pon: number;
     serialNumber: string;
     modelOlt: string;
-    accessPointId: number[];
+    accessPointId: number | string;
     wifiSSID?: string;
     wifiPass?: string;
 }

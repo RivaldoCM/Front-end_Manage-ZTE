@@ -20,7 +20,7 @@ export function AuthOnuContextProvider({ children }: { children: ReactNode }){
         typeOnu: '',
         modelOnu: 'F601',
         modelOlt: [],
-        voalleAccessPointId: []
+        voalleAccessPointId: '' as number | ''
     });
     const [onus, setOnus] = useState<IOnus[] | undefined>(undefined);
 

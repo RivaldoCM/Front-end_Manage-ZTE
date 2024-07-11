@@ -5,12 +5,11 @@ import { useAuth } from '../../../../hooks/useAuth';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
 import { useResponse } from '../../../../hooks/useResponse';
 
-import { setCorrectOltValues } from '../../../../config/verifyWhichOltIs';
 import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
 import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
 import { verifyOnuType } from '../../../../config/verifyOnuType';
 
-import { authorizationToOlt } from '../../../../services/apiManageONU/authOnu';
+import { writeONU } from '../../../../services/apiManageONU/writeOnu';
 import { getPeopleId } from '../../../../services/apiVoalle/getPeopleId';
 import { getConnectionId } from '../../../../services/apiManageONU/getConnectionId';
 import { updateConnection } from '../../../../services/apiVoalle/updateConnection';
@@ -38,12 +37,13 @@ export function ZTEForm({onu}: IOnu){
     };
 
     const handleUpdateOltData = () => {
+        console.log(onu, 'aq')
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
             oltId: onu.oltId,
             modelOnu: cleanUpModelName(onu.model),
             onuType: verifyOnuType(onu.serialNumber),
-            voalleAccessPointId: authOnu.voalleAccessPointId
+            voalleAccessPointId: onu.voalleId
         }));
     }
 
@@ -81,7 +81,7 @@ export function ZTEForm({onu}: IOnu){
                 connectionData.contractId = 0;
             }
 
-            const hasAuth = await authorizationToOlt({
+            const hasAuth = await writeONU({
                 userId: user?.uid,
                 oltId: authOnu.oltId,
                 slot: onu.slot,
@@ -103,7 +103,7 @@ export function ZTEForm({onu}: IOnu){
                     setAuthOnu({
                         ...authOnu,
                         oltId: '',
-                        voalleAccessPointId: []
+                        voalleAccessPointId: ''
                     });
                     return;
                 } else {
@@ -119,7 +119,7 @@ export function ZTEForm({onu}: IOnu){
                         wifiPassword: '',
                         typeOnu: '',
                         modelOnu: 'F601',
-                        voalleAccessPointId: []
+                        voalleAccessPointId: ''
                     });
                     setTimeout(() => {
                         navigate('/my_auth_onus');

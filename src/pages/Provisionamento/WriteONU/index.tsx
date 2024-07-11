@@ -15,8 +15,6 @@ import { FHForm } from "./Forms/fh";
 export function WriteONU(){
     const { onus } = useAuthOnu();
 
-    console.log(onus)
-
 	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 

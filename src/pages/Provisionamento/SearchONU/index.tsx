@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useAuthOnu } from "../../../hooks/useAuthOnu";
 import { useLoading } from "../../../hooks/useLoading";
 
-import { verifyIfOnuExists } from "../../../services/apiManageONU/verifyIfOnuExists";
+import { findOnu } from "../../../services/apiManageONU/findOnu";
 
 import { isAlphaNumeric } from "../../../config/regex";
 
@@ -43,10 +43,6 @@ export function SearchONU() {
                 if(response){
                     if(response.success){
                         setCities(response.responses.response);
-                        setAuthOnu({
-                            ...authOnu,
-                            city: response.responses.response[0].name
-                        });
                     }
                 } else {
                     setFetchResponseMessage('error/no-connection-with-API');
@@ -65,8 +61,7 @@ export function SearchONU() {
         setOnus([]);
         setAuthOnu({
             ...authOnu,
-            ip: [],
-            oltId: [],
+            oltId: '' as number | '',
             cpf: '',
             pppoeUser: '',
             pppoePassword: '',
@@ -75,11 +70,10 @@ export function SearchONU() {
             typeOnu: '',
             modelOnu: 'F601',
             modelOlt: [],
-            isPizzaBox: [],
-            voalleAccessPointId: []
+            voalleAccessPointId: ''
         });
         stopLoading();
-    }, [authOnu.city]);
+    }, [form.cityId]);
     
     const handleCityChange = (_e: unknown, value: ICities | null) => {
         if(value){
@@ -106,10 +100,8 @@ export function SearchONU() {
         event.preventDefault();
         setAuthOnu({
             ...authOnu,
-            ip: [],
-            oltId: [],
-            isPizzaBox: [],
-            voalleAccessPointId: []
+            oltId: '',
+            voalleAccessPointId: ''
         });
         setOnus([]);
         startLoading();
@@ -123,7 +115,7 @@ export function SearchONU() {
             setFetchResponseMessage('info/required-input');
             stopLoading();
         } else {
-            const response = await verifyIfOnuExists({
+            const response = await findOnu({
                 matchSerialNumber: form.matchSerialNumber,
                 cityId: form.cityId
             });

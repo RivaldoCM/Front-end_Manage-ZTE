@@ -8,5 +8,5 @@ type IAuthOnuContext = {
     typeOnu: string;
     modelOnu: string;
     modelOlt: string[];
-    voalleAccessPointId: number[];
+    voalleAccessPointId: string | number;
 }

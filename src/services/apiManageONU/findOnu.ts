@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const verifyIfOnuExists = async ({matchSerialNumber, cityId}: {matchSerialNumber: string, cityId: number}) => {
+export const findOnu = async ({matchSerialNumber, cityId}: {matchSerialNumber: string, cityId: number}) => {
     const res = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/findOnu`,
@@ -16,6 +16,6 @@ export const verifyIfOnuExists = async ({matchSerialNumber, cityId}: {matchSeria
     }).catch(() => {
         return null;
     });
-
+    console.log(res)
     return res;
 }

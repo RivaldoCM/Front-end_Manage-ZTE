@@ -17,6 +17,5 @@ export async function getPeopleId(cpf:string): Promise<any>{
     }).catch(() => {
         return null;
     });
-    console.log(peopleId)
     return peopleId;
 }
