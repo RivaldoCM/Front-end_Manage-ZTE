@@ -5,14 +5,10 @@ import { IResponseData, IResponseError } from '../../interfaces/IDefaultResponse
 export async function authorizationToOlt(props: IAuthOnuProps): Promise<IResponseData | IResponseError>{
     const {
         userId,
-        cityId,
         oltId,
-        ip,
         slot,
         pon,
-        isPizzaBox,
         serialNumber,
-        modelOlt,
         modelOnu,
         typeOnu,
         rxPower,
@@ -23,6 +19,9 @@ export async function authorizationToOlt(props: IAuthOnuProps): Promise<IRespons
         wifiPass,
     } = props;
 
+    console.log(props)
+
+/*
     const hasAuth = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/writeONU`,
@@ -31,14 +30,10 @@ export async function authorizationToOlt(props: IAuthOnuProps): Promise<IRespons
         },
         data: {
             userId,
-            cityId,
             oltId,
-            ip: ip,
             slot: slot,
             pon: pon,
-            isPizzaBox: isPizzaBox,
             serialNumber: serialNumber,
-            modelOlt: modelOlt,
             modelOnu: modelOnu,
             typeOnu: typeOnu,
             rxPower,
@@ -57,4 +52,5 @@ export async function authorizationToOlt(props: IAuthOnuProps): Promise<IRespons
     });
 
     return hasAuth;
+    */
 }

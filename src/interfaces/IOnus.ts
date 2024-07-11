@@ -3,7 +3,8 @@ export type IOnu = {
         slot: number;
         pon: number;
         model: string;
-        modelOlt: number;
+        oltId: number;
+        modelOlt: string;
         serialNumber: string;
         rxPower?: string;
         whichOltIndex: number;
@@ -14,7 +15,7 @@ export type IOnus = {
     slot: number;
     pon: number;
     model: string;
-    modelOlt: number;
+    modelOlt: string;
     serialNumber: string;
     rxPower?: string;
     whichOltIndex: number;

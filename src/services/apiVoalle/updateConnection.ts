@@ -6,9 +6,9 @@ import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps.
 export async function updateConnection(props: IUpdateConnectionProps){
     console.log(props)
     let modelOLTVoalle: number = 0;
-    if(props.modelOlt === 10){
+    if(props.modelOlt === 'ZTE'){
         modelOLTVoalle = 7;
-    }else if(props.modelOlt === 20){
+    }else if(props.modelOlt === 'PARKS'){
         modelOLTVoalle = 4;
     } else {
         modelOLTVoalle = 6;
@@ -38,7 +38,7 @@ export async function updateConnection(props: IUpdateConnectionProps){
         "user": props.pppoeUser,
         "complement": "",
         "isIPoE": false
-    }
+    };
 
     await axios({
         headers: {

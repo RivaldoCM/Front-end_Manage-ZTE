@@ -13,7 +13,9 @@ import { PARKSForm } from "./Forms/parks";
 import { FHForm } from "./Forms/fh";
 
 export function WriteONU(){
-    const { onus } = useAuthOnu(); 
+    const { onus } = useAuthOnu();
+
+    console.log(onus)
 
 	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
@@ -28,7 +30,7 @@ export function WriteONU(){
         if(onus){
             return onus.map((element, index) => {
                 switch(element.modelOlt){
-                    case 10:
+                    case 'ZTE':
                         return(
                             <Container key={element.serialNumber}>
                                 <div className="onu-callback flex">
@@ -63,7 +65,7 @@ export function WriteONU(){
                                 </div>
                             </Container>
                         );
-                    case 20:
+                    case 'PARKS':
                         return(
                             <Container key={element.serialNumber}>
                                 <div className="onu-callback flex">
@@ -97,7 +99,7 @@ export function WriteONU(){
                                 </div>
                             </Container>
                         );
-                    case 30:
+                    case 'FIBERHOME':
                         return(
                             <Container key={element.serialNumber}>
                                 <div className="onu-callback flex">

@@ -40,12 +40,10 @@ export function ZTEForm({onu}: IOnu){
     const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
-            ip: [setCorrectOltValues(onu, authOnu.ip)],
-            oltId: [setCorrectOltValues(onu, authOnu.oltId)],
+            oltId: onu.oltId,
             modelOnu: cleanUpModelName(onu.model),
             onuType: verifyOnuType(onu.serialNumber),
-            isPizzaBox: [setCorrectOltValues(onu, authOnu.isPizzaBox)],
-            voalleAccessPointId: [setCorrectOltValues(onu, authOnu.voalleAccessPointId)]
+            voalleAccessPointId: authOnu.voalleAccessPointId
         }));
     }
 
@@ -63,11 +61,10 @@ export function ZTEForm({onu}: IOnu){
         }else if(typePppoeZte.includes(onu.model) && authOnu.wifiPassword.length < 8){
             setFetchResponseMessage('info/wrong-type-passoword');
         }else{
-            startLoading();
             const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
             
-            if (peopleId){
+            if(peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId.id, authOnu.pppoeUser);
                 if(response){
                     if(response.success){
@@ -86,14 +83,10 @@ export function ZTEForm({onu}: IOnu){
 
             const hasAuth = await authorizationToOlt({
                 userId: user?.uid,
-                cityId: authOnu.cityId,
-                oltId: authOnu.oltId[0],
-                ip: authOnu.ip,
+                oltId: authOnu.oltId,
                 slot: onu.slot,
                 pon: onu.pon,
-                isPizzaBox: authOnu.isPizzaBox,
                 serialNumber: onu.serialNumber,
-                modelOlt: onu.modelOlt,
                 modelOnu: authOnu.modelOnu,
                 contract: connectionData.contractId,
                 pppoeUser: authOnu.pppoeUser,
@@ -109,10 +102,7 @@ export function ZTEForm({onu}: IOnu){
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
-                        ip: [],
-                        oltId: [],
-                        cityId: 0,
-                        isPizzaBox: [],
+                        oltId: '',
                         voalleAccessPointId: []
                     });
                     return;
@@ -121,8 +111,7 @@ export function ZTEForm({onu}: IOnu){
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
-                        ip: [],
-                        oltId: [],
+                        oltId: '',
                         cpf: '',
                         pppoeUser: '',
                         pppoePassword: '',
@@ -130,7 +119,6 @@ export function ZTEForm({onu}: IOnu){
                         wifiPassword: '',
                         typeOnu: '',
                         modelOnu: 'F601',
-                        isPizzaBox: [],
                         voalleAccessPointId: []
                     });
                     setTimeout(() => {

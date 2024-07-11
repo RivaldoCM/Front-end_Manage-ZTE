@@ -11,10 +11,7 @@ export const AuthOnuContext = createContext<{
 
 export function AuthOnuContextProvider({ children }: { children: ReactNode }){
     const [authOnu, setAuthOnu] = useState<IAuthOnuContext>({
-        ip: [],
-        oltId: [],
-        cityId: 0,
-        city: '',
+        oltId: '' as number | '',
         cpf: '',
         pppoeUser: '',
         pppoePassword: '',
@@ -23,7 +20,6 @@ export function AuthOnuContextProvider({ children }: { children: ReactNode }){
         typeOnu: '',
         modelOnu: 'F601',
         modelOlt: [],
-        isPizzaBox: [],
         voalleAccessPointId: []
     });
     const [onus, setOnus] = useState<IOnus[] | undefined>(undefined);
