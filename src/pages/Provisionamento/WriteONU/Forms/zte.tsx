@@ -37,7 +37,6 @@ export function ZTEForm({onu}: IOnu){
     };
 
     const handleUpdateOltData = () => {
-        console.log(onu, 'aq')
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
             oltId: onu.oltId,
@@ -61,6 +60,7 @@ export function ZTEForm({onu}: IOnu){
         }else if(typePppoeZte.includes(onu.model) && authOnu.wifiPassword.length < 8){
             setFetchResponseMessage('info/wrong-type-passoword');
         }else{
+            startLoading();
             const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
             
@@ -89,6 +89,7 @@ export function ZTEForm({onu}: IOnu){
                 serialNumber: onu.serialNumber,
                 modelOnu: authOnu.modelOnu,
                 contract: connectionData.contractId,
+                cpf: authOnu.cpf,
                 pppoeUser: authOnu.pppoeUser,
                 pppPass: authOnu.pppoePassword,
                 wifiSSID: authOnu.wifiName,

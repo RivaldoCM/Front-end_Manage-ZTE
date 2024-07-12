@@ -19,6 +19,7 @@ export async function writeONU(props: IAuthOnuProps): Promise<IResponseData | IR
             typeOnu: props.typeOnu,
             rxPower: props.rxPower,
             contract: props.contract,
+            cpf: props.cpf,
             pppoeUser: props.pppoeUser,
             pppPass: props.pppPass,
             wifiSSID: props.wifiSSID,

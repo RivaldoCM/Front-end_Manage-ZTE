@@ -1,49 +1,68 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { getOlt } from "../../services/apiManageONU/getOlt";
-import { IOlt } from "../../interfaces/IOlt";
 import { deleteOnu } from "../../services/apiManageONU/deleteOnu";
-import { useError } from "../../hooks/useError";
+
 import { useLoading } from "../../hooks/useLoading";
-import { handleOltByCity } from "../../config/renderOltByCity";
 
 import { Form } from "./style";
-import { Alert } from "@mui/material";
-import {CircularProgress} from "@mui/material";
+import {Autocomplete, CircularProgress} from "@mui/material";
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import TextField from '@mui/material/TextField';
 import { useAuth } from "../../hooks/useAuth";
-
+import { ICities } from "../../interfaces/ICities";
+import { getCities } from "../../services/apiManageONU/getCities";
+import { useResponse } from "../../hooks/useResponse";
 
 export function OnuDelete(){
-    const { error, errorMessage, severityStatus, handleError } = useError();
-    const { isLoading, startLoading, stopLoading } = useLoading();
     const { user } = useAuth();
+    const { setFetchResponseMessage } = useResponse();
+    const { isLoading, startLoading, stopLoading } = useLoading();
 
-    const [olt, setOlt] = useState<IOlt[]>([]);
+    const [open, setOpen] = useState(false);
+    const [cities, setCities] = useState<ICities[]>([]);
     const [form, setForm] = useState({
-        city: '',
+        cityId: '' as number | '' | null,
         serial: '',
-        type: ''
     });
 
+    const loadingCities = open && cities.length === 0;
     useEffect(() => {
-        async function getAllOlts(){
-            const allOlt = await getOlt('all');
-            if(allOlt.success){
-                setOlt(allOlt.responses.response);
-                setForm({
-                    ...form,
-                    city: allOlt.responses.response[0].name
-                })
-            }else{
-                setOlt([]);
-                handleError('unable-load-data');
-            }
+        let active = true;
+        if (!loadingCities) {
+            return undefined;
         }
-        getAllOlts();
-    }, []);
+
+        (async () => {
+            const response = await getCities();
+            if (active) {
+                if(response){
+                    if(response.success){
+                        setCities(response.responses.response);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+            }
+        })();
+        return () => {active = false;};
+    }, [loadingCities]);
+
+    const handleCityChange = (_e: unknown, value: ICities | null) => {
+        if(value){
+            setForm({
+                ...form,
+                cityId: value.id
+            });
+        }else{
+            setForm({
+                ...form,
+                cityId: value
+            });
+        }
+    };
+
+    console.log(form)
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({
@@ -56,46 +75,56 @@ export function OnuDelete(){
         e.preventDefault();
         startLoading();
 
-        let data: any = [];
-
-        const city = olt!.filter((olt) => olt.name.includes(form.city));
-
-        for (let i of city) {
-            let obj = {
-                userId: user?.uid,
-                oltId: i.id,
-                cityId: i.city_id,
-                ip: i.host,
-                type: i.type,
-                serial: form.serial,
-            };
-            data.push(obj);
-        }
-
-        const response = await deleteOnu(data);
+        const response = await deleteOnu({userId: user!.uid, cityId: parseInt(form.cityId as string), serialNumber: form.serial});
         stopLoading();
-        if(!response.success){
-            handleError(response.messages.message);
-            return;
+        if(response){
+            if(response.success){
+                setFetchResponseMessage(response.responses.status);
+            } else {
+                setFetchResponseMessage(response.messages.message);
+            }
+        } else {
+            setFetchResponseMessage('error/no-connection-with-API');
         }
-        
-        handleError(response.responses.status);
     };
 
-    return (
+    return(
         <Form className="flex" onSubmit={handleSubmit}>
             <div className="controller flex">
-                <TextField
-                    sx={{minWidth: 'unset'}}
-                    id='select-city'
-                    label="Cidades"
-                    name="city"
-                    value={form.city}
-                    onChange={handleFormChange}
-                    select
-                >
-                    {handleOltByCity(olt)}
-                </TextField>
+                <Autocomplete
+                    open={open}
+                    sx={{ width: '250px' }}
+                    onOpen={() => setOpen(true)}
+                    onClose={() => setOpen(false)}
+                    onChange={handleCityChange}
+                    options={cities}
+                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                    getOptionLabel={(city) => city.name}
+                    loading={loadingCities}
+                    renderOption={(props, option) => {
+                        return (
+                            <li {...props} key={option.id}>
+                                {option.name}
+                            </li>
+                        );
+                    }}
+                    renderInput={(params) => {
+                        return(
+                            <TextField
+                                {...params}
+                                label="Cidades"
+                                InputProps={{
+                                    ...params.InputProps,
+                                    endAdornment: (
+                                    <React.Fragment>
+                                        {loadingCities ? <CircularProgress color="inherit" size={20} /> : null}
+                                        {params.InputProps.endAdornment}
+                                    </React.Fragment>
+                                ),
+                            }}
+                        />
+                    )}}
+                />
                 <TextField 
                     label="Digite o serial da ONU" 
                     id="fullWidth" 
@@ -116,13 +145,6 @@ export function OnuDelete(){
                 >
                     Desprovisionar
                 </Button>
-            }
-            {
-                (error ?
-                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-                :
-                    <></>
-                )
             }
         </Form>
     )

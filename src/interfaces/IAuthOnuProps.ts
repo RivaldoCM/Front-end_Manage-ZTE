@@ -10,6 +10,7 @@ export interface IAuthOnuProps {
     modelOnu?: string,
     typeOnu?: string,
     rxPower?: string,
+    cpf: string,
     pppoeUser: string,
     pppPass?: string,
     wifiSSID?: string,
