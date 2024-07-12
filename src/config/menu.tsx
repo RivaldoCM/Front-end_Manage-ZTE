@@ -14,6 +14,8 @@ import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import ViewModuleOutlinedIcon from '@mui/icons-material/ViewModuleOutlined';
 import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
+import { IconExitLag } from '../assets/icons/IconExitLag';
+
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -76,6 +78,12 @@ export const handlePages: IAllPages[] = [
             {
                 'break_time/panel': 'Painel de Pausas'
             },
+        ]
+    },
+    {
+        name: 'ExitLag',
+        pages: [
+            {'exitlag': 'Cadastro de Cliente'}
         ]
     }
 ]
@@ -141,6 +149,8 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <SpaceDashboardOutlinedIcon />;
         case 'break_time/panel':
             return <TvOutlinedIcon />;
+        case 'exitlag':
+            return <IconExitLag />;
         default:
             return <></>;
     }

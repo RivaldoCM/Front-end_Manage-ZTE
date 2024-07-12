@@ -28,6 +28,8 @@ import { Massive } from "./pages/massive";
 import { LogsMassives } from "./pages/logs/massives";
 import { MassiveContextProvider } from "./contexts/MassiveContext";
 import { MassivePanel } from "./pages/massive/panel";
+import { Exitlag } from "./pages/exitLag";
+
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -161,6 +163,16 @@ export function AppRoutes() {
                     path="my_auth_onus"
                     element={<PrivateRoute element={matches ? <MyAuthorizedOnusMobile /> : <MyAuthorizedOnus />} />}
                 />
+                <Route 
+                    path="exitlag"
+                    element={
+                        <PrivateRoute
+                            element={<Exitlag />}
+                        />}
+                >
+                </Route>
+
+
             </Route>
         </Routes>
     );
