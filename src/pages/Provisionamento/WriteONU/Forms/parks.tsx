@@ -74,6 +74,7 @@ export function PARKSForm({onu}: IOnu){
             const hasAuth = await writeONU({
                 userId: user?.uid,
                 oltId: authOnu.oltId,
+                slot: onu.slot,
                 pon: onu.pon,
                 serialNumber: onu.serialNumber,
                 modelOlt: onu.modelOlt,

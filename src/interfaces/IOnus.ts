@@ -18,6 +18,6 @@ export type IOnus = {
     model: string;
     modelOlt: string;
     serialNumber: string;
-    rxPower?: string;
+    onuRx?: string;
     voalleId: number;
 }

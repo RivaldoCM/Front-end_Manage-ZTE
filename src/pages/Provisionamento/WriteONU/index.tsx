@@ -23,7 +23,7 @@ export function WriteONU(){
         setIsDropDownOpen(!isDropDownOpen);
         setDropDownIndex(index);
     }
-    
+
     const handleShowOnuByType = () => {
         if(onus){
             return onus.map((element, index) => {
@@ -72,7 +72,7 @@ export function WriteONU(){
                                             <ul className="flex">
                                                 <li>Pon: {element.pon}</li>
                                                 <li>Serial: {element.serialNumber}</li>
-                                                <li>Sinal: {element.rxPower}</li>
+                                                <li>Sinal: {element.onuRx}</li>
                                             </ul>
                                         </div>
                                     </div>
