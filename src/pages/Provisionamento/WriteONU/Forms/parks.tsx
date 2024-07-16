@@ -79,8 +79,8 @@ export function PARKSForm({onu}: IOnu){
                 serialNumber: onu.serialNumber,
                 modelOlt: onu.modelOlt,
                 contract: connectionData.contractId,
+                cpf: authOnu.cpf,
                 pppoeUser: authOnu.pppoeUser,
-                rxPower: onu.rxPower
             });
             stopLoading();
 

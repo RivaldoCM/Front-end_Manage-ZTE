@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useResponse } from "../../../hooks/useResponse";
-import { Inputs, InputsWrapper, OltStyledContainer, VlanConfig } from "./style";
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
-import { getCities } from "../../../services/apiManageONU/getCities";
-import { ICities } from "../../../interfaces/ICities";
 
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { getOltManufacturer } from "../../../services/apiManageONU/getOltManufacturer";
-import { getOltModel } from "../../../services/apiManageONU/getOltModel";
-
-import CheckIcon from '@mui/icons-material/Check';
 import { isValidIp } from "../../../config/regex";
 
+import { ICities } from "../../../interfaces/ICities";
+
+import { getOlt } from "../../../services/apiManageONU/getOlt";
+import { getCities } from "../../../services/apiManageONU/getCities";
+import { updateOlt } from "../../../services/apiManageONU/updateOlt";
+import { getOltModel } from "../../../services/apiManageONU/getOltModel";
+import { getOltManufacturer } from "../../../services/apiManageONU/getOltManufacturer";
+
+import { Inputs, InputsWrapper, OltStyledContainer, VlanConfig } from "./style";
+import { Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField } from "@mui/material";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import CheckIcon from '@mui/icons-material/Check';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { getOlt } from "../../../services/apiManageONU/getOlt";
-import { useNavigate, useParams } from "react-router-dom";
-import { updateOlt } from "../../../services/apiManageONU/updateOlt";
 
 export function EditOlt(){
     const params = useParams();
@@ -62,8 +63,8 @@ export function EditOlt(){
             const getOlts = getOlt({id: parseInt(params.id!)})
             const getModel = getOltModel();
             const getManufacturer = getOltManufacturer();
-
             const [olt, cities, models, manufacturers] = await Promise.all([getOlts, getCity, getModel, getManufacturer]);
+
             cities && cities.success ? setCities(cities.responses.response) : setCities([]);
             models && models.success ? setModels(models.responses.response) : setModels([]);
             manufacturers && manufacturers.success ? setManufacturers(manufacturers.responses.response) : setManufacturers([]);
@@ -73,6 +74,7 @@ export function EditOlt(){
                 ESTÁ RECEBENDO DOIS OBJETOS NO RETORNO DA API
                 OS DADOS DA OLT E AS SUAUS VLANS
             */
+
             if (olt.success && olt.responses.response) {
                 setForm({
                     ...form,
@@ -108,7 +110,7 @@ export function EditOlt(){
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleClickShowGeponPassword = () => setShowGeponPassword((show) => !show);
     const handleClickShowEnableGeponPassword = () => setShowEnableGeponPassword((show) => !show);
-    const handleMouseDownPassword = (event: any) => {event.preventDefault();};
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {event.preventDefault()};
 
     const handleMouseDownFormIp = async () => {
         //verifica se tem OLT's com o mesmo IP.
@@ -124,7 +126,7 @@ export function EditOlt(){
             } else {
                 setFetchResponseMessage('error/no-connection-with-API');
             }
-        } else{
+        } else {
             setIpValid(false);
         }
     }
@@ -179,7 +181,7 @@ export function EditOlt(){
         }
     }
 
-    const handleChangeVlan = (index: number) => (event: any) => {
+    const handleChangeVlan = (index: number) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if(event.target.value === ''){
             const newVlans = [...vlans];
             newVlans[index] = {
@@ -197,7 +199,7 @@ export function EditOlt(){
         }
     }
 
-    const handleChangeProfileVlan = (index: number) => (event: any) => {
+    const handleChangeProfileVlan = (index: number) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if(event.target.value === ''){
             const newVlans = [...vlans];
             newVlans[index] = {
@@ -233,7 +235,7 @@ export function EditOlt(){
         );
     }
 
-    const handleModifyVlan = (e: any) => {
+    const handleModifyVlan = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const newVlans = vlans.map((value) => {
             if(form.modifySlot === value.slot){
@@ -244,7 +246,7 @@ export function EditOlt(){
         setVlans(newVlans);
     }
 
-    const handleModifyProfileVlan = (e: any) => {
+    const handleModifyProfileVlan = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const newVlans = vlans.map((value) => {
             if(form.modifySlot === value.slot){
@@ -626,7 +628,8 @@ export function EditOlt(){
                                                         <td>{vlans.slot}</td>
                                                         <td>{vlans.pon}</td>
                                                         <td>
-                                                            <input
+                                                            <input 
+                                                                className="vlans"
                                                                 value={vlans.vlan || ''}
                                                                 onChange={handleChangeVlan(index)}
                                                             />

@@ -21,6 +21,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { updateLogsOnu } from '../../../../services/apiManageONU/updateLogOnu';
 
 export function ZTEForm({onu}: IOnu){
     const navigate = useNavigate();
@@ -133,7 +134,7 @@ export function ZTEForm({onu}: IOnu){
 
             const onuId: number = hasAuth.responses.response.onuId;
             if(connectionData.connectionId){
-                updateConnection({
+                const response = await updateConnection({
                     onuId: onuId,
                     connectionId: connectionData.connectionId,
                     pppoeUser: authOnu.pppoeUser,
@@ -146,6 +147,13 @@ export function ZTEForm({onu}: IOnu){
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
                 });
+                if(response){
+                    updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: true});
+                } else {
+                    updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
+                }
+            } else {
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
             }
         }
     };

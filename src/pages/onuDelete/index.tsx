@@ -62,8 +62,6 @@ export function OnuDelete(){
         }
     };
 
-    console.log(form)
-
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({
             ...form,

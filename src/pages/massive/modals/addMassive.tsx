@@ -54,8 +54,14 @@ export function AddMassive(props: any){
     useEffect(() => {
         (async () => {
             if(loadingCities){
-                const cities = await getCities();
-                setCities(cities);
+                const response = await getCities();
+                if(response){
+                    if(response.success){
+                        setCities(response.responses.response);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
             }
         })();
     }, [loadingCities]);

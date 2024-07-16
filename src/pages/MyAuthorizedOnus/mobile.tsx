@@ -79,8 +79,8 @@ export function MyAuthorizedOnusMobile(){
                                     <p>PPPoE: {onu.pppoe}</p>
                                 </div>
                                 <div className="flex">
-                                    <p>Sinal (olt rx): {onu.rx_power}</p>
-                                    <p>Sinal (onu rx): {onu.onuRx_power}</p>
+                                    <p>Sinal (olt rx): {onu.rx_olt}</p>
+                                    <p>Sinal (onu rx): {onu.rx_onu}</p>
                                 </div>
                             </div>
                             <div className="content flex">

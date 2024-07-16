@@ -80,6 +80,7 @@ export function FHForm({onu}: IOnu){
                 modelOlt: onu.modelOlt,
                 typeOnu: authOnu.typeOnu,
                 contract: connectionData.contractId,
+                cpf: authOnu.cpf,
                 pppoeUser: authOnu.pppoeUser,
             });
             stopLoading();

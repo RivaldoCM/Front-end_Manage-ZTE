@@ -1,4 +1,4 @@
-export type IOlt = {
+export type IOltProps = {
     id?: number | '';
     name: string;
     host: string;
@@ -12,4 +12,24 @@ export type IOlt = {
     geponPassword?: string | null;
     enablePassword?: string | null;
     voalleId?: number | '',
+}
+
+export type IOlt = {
+    id: number;
+    name: string;
+    host: string;
+    is_active: boolean;
+    telnet_user: string;
+    telnet_password: string;
+    gepon_password: string | null;
+    gepon_user: string | null;
+    gepon_enable_password: string | null;
+    city_id: number;
+    voalle_id: number | null,
+    Olt_Manufacturer: {
+        name: string;
+    };
+    Olt_Model: {
+        name: string;
+    };
 } 

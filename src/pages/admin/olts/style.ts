@@ -18,6 +18,13 @@ export const OltStyledContainer = styled.div`
         align-items: flex-start;
         width: 100%;
         max-height: 50vh;
+
+        @media (max-width: 720px){
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-height: unset;
+        }
     }
 `;
 
@@ -30,6 +37,10 @@ export const InputsWrapper = styled.div`
     justify-content: center;
     width: 50%;
     height: 100%;
+
+    @media (max-width: 720px){
+        width: 100%;
+    }
 `;
 
 export const VlanConfig = styled.div`
@@ -123,30 +134,37 @@ export const VlanConfig = styled.div`
             height: 80%;
             max-height: 464px;
             overflow: auto;
-            border: 2px solid #ccc;
-        }
 
-        th{
-            position: sticky;
-            top: 0;
-            background-color: #f1f1f1;
-            z-index: 1;
-        }
+            th{
+                position: sticky;
+                top: 0;
+                background-color: #f1f1f1;
+                z-index: 1;
+            }
 
-        th,td{
-            width: 5rem;
-            height: 1rem;
-            border: 2px solid #ccc;
-            padding: 8px;
-            border-radius: 4px;
-            transition: border-color 0.3s, background-color 0.3s;
-        }
+            td{
+                text-align: center;
+            }
 
-        td input{
-            border: 1px solid #ccc;
-            padding: 8px;
-            border-radius: 4px;
-            transition: border-color 0.3s, background-color 0.3s;
+            th,td{
+                width: 4rem;
+                height: 1rem;
+                border: 2px solid #ccc;
+                padding: 8px;
+                border-radius: 4px;
+                transition: border-color 0.3s, background-color 0.3s;
+            }
+
+            td input{
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                transition: border-color 0.3s, background-color 0.3s;
+            }
+
+            td .vlans{
+                width: 100px;
+            }
         }
     }
 `;

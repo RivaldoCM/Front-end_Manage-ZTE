@@ -13,43 +13,41 @@ export async function updateConnection(props: IUpdateConnectionProps){
         modelOLTVoalle = 6;
     }
 
-    const data = {
-        "id": props.connectionId,
-        "fiberMac": "",
-        "mac": "",
-        "password": props.pppoePassword, //PPPoE
-        "equipmentType": modelOLTVoalle,
-        "oltId": props.onuId,
-        "slotOlt": props.slot,
-        "portOlt": props.pon,
-        "equipmentSerialNumber": props.serialNumber,
-        "ipType": 0,
-        "equipmentUser": "",
-        "equipmentPassword": "",
-        "authenticationSplitterId": "",
-        "port": "",
-        "wifiName": props.wifiSSID,
-        "wifiPassword": props.wifiPass,
-        "technologyType": 8,
-        "authenticationAccessPointId": props.accessPointId,
-        "updateConnectionParameter": false,
-        "shouldMacUpdate": false,
-        "user": props.pppoeUser,
-        "complement": "",
-        "isIPoE": false
-    };
-
-    await axios({
+    const response = await axios({
         headers: {
             'Authorization': "Bearer " + await getToken()
         },
         method: 'put',
         url: `${import.meta.env.VITE_BASEURL_TP}:45715/external/integrations/thirdparty/updateconnection/${props.connectionId}`,
-        data: data
-    })
-    .then(() => {
-        return;
+        data:{
+            "id": props.connectionId,
+            "fiberMac": "",
+            "mac": "",
+            "password": props.pppoePassword, //PPPoE
+            "equipmentType": modelOLTVoalle,
+            "oltId": props.onuId,
+            "slotOlt": props.slot,
+            "portOlt": props.pon,
+            "equipmentSerialNumber": props.serialNumber,
+            "ipType": 0,
+            "equipmentUser": "",
+            "equipmentPassword": "",
+            "authenticationSplitterId": "",
+            "port": "",
+            "wifiName": props.wifiSSID,
+            "wifiPassword": props.wifiPass,
+            "technologyType": 8,
+            "authenticationAccessPointId": props.accessPointId,
+            "updateConnectionParameter": false,
+            "shouldMacUpdate": false,
+            "user": props.pppoeUser,
+            "complement": "",
+            "isIPoE": false
+        }
+    }).then(() => {
+        return true;
     }).catch(() => {
-        return;
+        return false;
     });
+    return response;
 }

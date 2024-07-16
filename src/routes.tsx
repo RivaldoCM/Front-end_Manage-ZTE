@@ -87,18 +87,20 @@ export function AppRoutes() {
                 }
             />
             <Route path="" element={matches ? <MobileDrawerMenu /> : <MenuDrawer />}>
-                <Route
-                    path="olts"
-                    element={<PrivateRoute element={<Olts />} />}
-                />
-                <Route
-                    path="olts/:id"
-                    element={<PrivateRoute element={<EditOlt />} />}
-                />
-                <Route
-                    path="olts/new_olt"
-                    element={<PrivateRoute element={<AddOlt />} />}
-                />
+                <Route path="olts">
+                    <Route
+                        path=""
+                        element={<PrivateRoute element={<Olts />} />}
+                    />
+                    <Route
+                        path=":id"
+                        element={<PrivateRoute element={<EditOlt />} />}
+                    />
+                    <Route
+                        path="new_olt"
+                        element={<PrivateRoute element={<AddOlt />} />}
+                    />
+                </Route>
                 <Route
                     path="users"
                     element={<PrivateRoute element={<Users />} />}

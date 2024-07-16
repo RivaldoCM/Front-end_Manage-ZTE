@@ -16,10 +16,10 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 
-import { useError } from '../../../hooks/useError';
-
-import Alert from '@mui/material/Alert';
 import { EnhancedTableHead, EnhancedTableToolbar } from './table';
+import { useResponse } from '../../../hooks/useResponse';
+import { useMediaQuery, useTheme } from '@mui/material';
+import { ResponsiveAlert } from '../../../components/SVG/responsiveAlert';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -31,7 +31,9 @@ function stableSort<T>(array: readonly T[]) {
 }
 
 export function Olts(){
-    const { error, errorMessage, severityStatus, handleError } = useError();
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down('sm'));
+    const { setFetchResponseMessage } = useResponse();
 
     const [ oltDataSelected, setOltDataSelected ] = useState();
     const [selected, setSelected] = useState<readonly number[]>([]);
@@ -43,24 +45,28 @@ export function Olts(){
     useEffect(() => {
         async function olts(){
             const oltData = await getOlt({});
-            console.log(oltData)
-            if(oltData.success){
-                setOlt(oltData.responses.response);
-            }else{
-                setOlt([]);
-                handleError('unable-load-data');
+
+            if(oltData){
+                if(oltData.success){
+                    setOlt(oltData.responses.response);
+                }else{
+                    setOlt([]);
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
             }
         }
         olts();
     }, []);
 
-    const handleClick = (_event: React.MouseEvent<unknown>, id: number | undefined, row: any) => {
+    const handleClick = (_event: React.MouseEvent<unknown>, id: number | string |undefined, row: any) => {
         setOltDataSelected(row);
         if(selected[0] === id){
             setSelected([]);
             return;
         }
-        setSelected([id!]);
+        setSelected([parseInt(id! as string)]);
     };
 
     const handleChangePage = (_event: unknown, newPage: number) => {
@@ -87,92 +93,90 @@ export function Olts(){
         [page, rowsPerPage, olt]
     );
 
-    return (
-        <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} oltDataSelected={oltDataSelected}/>
-                <TableContainer>
-                    <Table
-                        sx={{ minWidth: 750 }}
-                        aria-labelledby="tableTitle"
-                        size={dense ? 'small' : 'medium'}
-                    >
-                        <EnhancedTableHead />
-                        <TableBody>
-                        {visibleRows.map((row, index) => {
-                            const isItemSelected = isSelected(row.id);
-                            const labelId = `enhanced-table-checkbox-${index}`;
-
-                            return (
-                                <TableRow
-                                    hover
-                                    onClick={(event) => handleClick(event, row.id, row)}
-                                    role="checkbox"
-                                    aria-checked={isItemSelected}
-                                    tabIndex={-1}
-                                    key={row.id}
-                                    selected={isItemSelected}
-                                    sx={{ cursor: 'pointer' }}
-                                >
-                                    <TableCell padding="checkbox">
-                                    <Checkbox
-                                        color="primary"
-                                        checked={isItemSelected}
-                                        inputProps={{
-                                            'aria-labelledby': labelId,
-                                        }}
-                                    />
-                                    </TableCell>
-                                    <TableCell
-                                        component="th"
-                                        id={labelId}
-                                        scope="row"
-                                        padding="none"
-                                    >
-                                        {row.name}
-                                    </TableCell>
-                                    <TableCell align="left">{row.host}</TableCell>
-                                    <TableCell align="left">{row.Olt_Manufacturer.name}</TableCell>
-                                    <TableCell align="left">{row.Olt_Model.name}</TableCell>
-                                    <TableCell align="left">{row.is_active ? 'Sim' : 'Não'}</TableCell>
-                                    <TableCell align="left">{row.voalle_id}</TableCell>
-                                </TableRow>
-                            );
-                        })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: (dense ? 33 : 53) * emptyRows,
-                                }}
+    return(
+        <>
+            {matches ? <ResponsiveAlert /> : 
+                <Box sx={{ width: '100%' }}>
+                    <Paper sx={{ width: '100%', mb: 2 }}>
+                        <EnhancedTableToolbar numSelected={selected.length} oltDataSelected={oltDataSelected}/>
+                        <TableContainer>
+                            <Table
+                                sx={{ minWidth: 750 }}
+                                aria-labelledby="tableTitle"
+                                size={dense ? 'small' : 'medium'}
                             >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[10, 15, 25]}
-                    component="div"
-                    count={olt.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
-            <FormControlLabel
-                sx={{margin: '0'}}
-                control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Modo compacto"
-            />
-            {
-                (error ?
-                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-                :
-                    <></>
-                )
+                                <EnhancedTableHead />
+                                <TableBody>
+                                {visibleRows.map((row, index) => {
+                                    const isItemSelected = isSelected(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
+        
+                                    return (
+                                        <TableRow
+                                            hover
+                                            onClick={(event) => handleClick(event, row.id, row)}
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={row.id}
+                                            selected={isItemSelected}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            <TableCell padding="checkbox">
+                                            <Checkbox
+                                                color="primary"
+                                                checked={isItemSelected}
+                                                inputProps={{
+                                                    'aria-labelledby': labelId,
+                                                }}
+                                            />
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                padding="none"
+                                            >
+                                                {row.name}
+                                            </TableCell>
+                                            <TableCell align="left">{row.host}</TableCell>
+                                            <TableCell align="left">{row.Olt_Manufacturer.name}</TableCell>
+                                            <TableCell align="left">{row.Olt_Model.name}</TableCell>
+                                            <TableCell align="left">{row.is_active ? 'Sim' : 'Não'}</TableCell>
+                                            <TableCell align="left">{row.voalle_id}</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                                {emptyRows > 0 && (
+                                    <TableRow
+                                        style={{
+                                            height: (dense ? 33 : 53) * emptyRows,
+                                        }}
+                                    >
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 15, 25]}
+                            component="div"
+                            count={olt.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </Paper>
+                    <FormControlLabel
+                        sx={{margin: '0'}}
+                        control={<Switch checked={dense} onChange={handleChangeDense} />}
+                        label="Modo compacto"
+                    />
+                </Box>
             }
-        </Box>
-    );
+        </>
+    )
+
 }
