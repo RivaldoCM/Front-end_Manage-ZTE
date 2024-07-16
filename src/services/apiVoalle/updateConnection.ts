@@ -4,6 +4,7 @@ import { getToken } from "./getToken";
 import { IUpdateConnectionProps } from "../../interfaces/IUpdateConnectionProps.js";
 
 export async function updateConnection(props: IUpdateConnectionProps){
+    console.log('aq')
     let modelOLTVoalle: number = 0;
     if(props.modelOlt === 'ZTE'){
         modelOLTVoalle = 7;
@@ -44,10 +45,13 @@ export async function updateConnection(props: IUpdateConnectionProps){
             "complement": "",
             "isIPoE": false
         }
-    }).then(() => {
+    }).then((res) => {
+
         return true;
-    }).catch(() => {
+    }).catch((err) => {
+
         return false;
     });
+
     return response;
 }

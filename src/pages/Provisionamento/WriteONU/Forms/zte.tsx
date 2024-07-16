@@ -147,11 +147,8 @@ export function ZTEForm({onu}: IOnu){
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
                 });
-                if(response){
-                    updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: true});
-                } else {
-                    updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
-                }
+
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
             } else {
                 updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
             }

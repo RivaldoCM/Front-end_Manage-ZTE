@@ -35,9 +35,15 @@ export function FilterMassives({onFilterChange}: any){
         }
 
         (async () => {
-            const cities = await getCities();
-            if (active) {
-                setCities(cities);
+            if(active){
+                const response = await getCities();
+                if(response){
+                    if(response.success){
+                        setCities(response.responses.response);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
             }
         })();
 

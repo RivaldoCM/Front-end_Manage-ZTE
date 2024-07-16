@@ -3,7 +3,7 @@ import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
 export async function updateLogsOnu({id, isUpdated}: {id: number, isUpdated: boolean}): Promise<IResponseData | IResponseError>{
-    const onudata = await axios({
+    const onuData = await axios({
         method: 'patch',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/logsOnu`,
         headers: {
@@ -19,5 +19,5 @@ export async function updateLogsOnu({id, isUpdated}: {id: number, isUpdated: boo
         return null;
     });
     
-    return onudata;
+    return onuData;
 }
