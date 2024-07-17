@@ -19,6 +19,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ResponsiveTable } from './style';
 import { TablePagination } from '@mui/material';
 import { useResponse } from '../../../hooks/useResponse';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -32,6 +34,7 @@ function Row(props: IOnuLogsProps) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
 
+    console.log(row)
     return (
         <React.Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -57,6 +60,13 @@ function Row(props: IOnuLogsProps) {
                 <TableCell align="center">{row.pppoe}</TableCell>
                 <TableCell align="center">{row.rx_onu}</TableCell>
                 <TableCell align="center">{row.rx_olt}</TableCell>
+                <TableCell align="center">
+                    {row.is_updated ? 
+                        <CheckCircleOutlineIcon color='success'/> 
+                        : 
+                        <HighlightOffIcon color='error'/> 
+                    }
+                    </TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -136,11 +146,12 @@ export function LogsOnu() {
                                 <TableCell align="center">PPPoE</TableCell>
                                 <TableCell align="center">Sinal recebido pela OLT(dBM)</TableCell>
                                 <TableCell align="center">Sinal recebido pela ONU(dBM)</TableCell>
+                                <TableCell align="center">Atualizado no Voalle</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {visibleRows.map((row) => (
-                                <Row key={row.id} row={row} />
+                            {visibleRows.map((row, index) => (
+                                <Row key={index} row={row} />
                             ))}
                         </TableBody>
                     </Table>

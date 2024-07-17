@@ -56,7 +56,7 @@ export function EditOlt(){
         modifyVlan: 0,
         modifyProfileVlan: ''
     });
-
+    console.log(form)
     useEffect(() => {
         async function getData(){
             const getCity = getCities();
@@ -615,35 +615,39 @@ export function EditOlt(){
                             vlans.length > 0 && (
                                 <div className="table-controller">
                                     <table>
-                                        <tr>
-                                            <th>Placa</th>
-                                            <th>Pon</th>
-                                            <th>Vlan</th>
-                                            <th>Perfil de Vlan</th>
-                                        </tr>
-                                        {
-                                            vlans.map((vlans, index) => {
-                                                return(
-                                                    <tr>
-                                                        <td>{vlans.slot}</td>
-                                                        <td>{vlans.pon}</td>
-                                                        <td>
-                                                            <input 
-                                                                className="vlans"
-                                                                value={vlans.vlan || ''}
-                                                                onChange={handleChangeVlan(index)}
-                                                            />
-                                                        </td>
-                                                        <td>
-                                                            <input
-                                                                value={vlans.profile_vlan || ''}
-                                                                onChange={handleChangeProfileVlan(index)}
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                )   
-                                            })
-                                        }
+                                        <thead>
+                                            <tr>
+                                                <th>Placa</th>
+                                                <th>Pon</th>
+                                                <th>Vlan</th>
+                                                <th>Perfil de Vlan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                vlans.map((vlans, index) => {
+                                                    return(
+                                                        <tr key={index}>
+                                                            <td>{vlans.slot}</td>
+                                                            <td>{vlans.pon}</td>
+                                                            <td>
+                                                                <input 
+                                                                    className="vlans"
+                                                                    value={vlans.vlan || ''}
+                                                                    onChange={handleChangeVlan(index)}
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <input
+                                                                    value={vlans.profile_vlan || ''}
+                                                                    onChange={handleChangeProfileVlan(index)}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    )   
+                                                })
+                                            }
+                                        </tbody>
                                     </table>
                                 </div>
                             )
@@ -652,6 +656,5 @@ export function EditOlt(){
                 </div>
             </VlanConfig>
         </OltStyledContainer>
-
     )
 }

@@ -9,6 +9,7 @@ type IOnuLogs = {
     rx_olt: string;
     rx_onu: string;
     is_auth: boolean;
+    is_updated: boolean;
     User:{
         name: string;
     }
@@ -32,6 +33,7 @@ type IOnuLogsProps = {
         rx_olt: string;
         rx_onu: string;
         is_auth: boolean;
+        is_updated: boolean;
         User:{
             name: string;
         }

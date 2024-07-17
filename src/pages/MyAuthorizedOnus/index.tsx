@@ -124,8 +124,8 @@ export function MyAuthorizedOnus() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {visibleRows.map((row) => (
-                            <Row key={row.id} row={row} />
+                        {visibleRows.map((row, index) => (
+                            <Row key={index} row={row} />
                         ))}
                     </TableBody>
                 </Table>

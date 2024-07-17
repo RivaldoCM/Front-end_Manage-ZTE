@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useLoading } from '../../../../hooks/useLoading';
@@ -13,6 +14,7 @@ import { writeONU } from '../../../../services/apiManageONU/writeOnu';
 import { getPeopleId } from '../../../../services/apiVoalle/getPeopleId';
 import { getConnectionId } from '../../../../services/apiManageONU/getConnectionId';
 import { updateConnection } from '../../../../services/apiVoalle/updateConnection';
+import { updateLogsOnu } from '../../../../services/apiManageONU/updateLogOnu';
 
 import { IOnu } from '../../../../interfaces/IOnus';
 
@@ -21,7 +23,6 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { updateLogsOnu } from '../../../../services/apiManageONU/updateLogOnu';
 
 export function ZTEForm({onu}: IOnu){
     const navigate = useNavigate();
@@ -147,7 +148,6 @@ export function ZTEForm({onu}: IOnu){
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
                 });
-
                 updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
             } else {
                 updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
@@ -157,14 +157,13 @@ export function ZTEForm({onu}: IOnu){
 
     const handleRenderAddicionalConfig = () => {
         const onuModel = cleanUpModelName(onu.model);
-    
         switch(onuModel){
             case 'F680':
             case 'F670L':
             case 'F6600':
             case 'F6600P':
                 return(
-                    <>
+                    <React.Fragment>
                         <InputContainer>
                             <div className="text">
                                 <p>Senha PPPoE: </p>
@@ -210,7 +209,7 @@ export function ZTEForm({onu}: IOnu){
                                 </TextField>
                             </div>
                         </InputContainer>
-                    </>
+                    </React.Fragment>
                 )
             default:
             break;

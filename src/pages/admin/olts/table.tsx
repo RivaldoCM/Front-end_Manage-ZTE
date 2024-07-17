@@ -60,9 +60,9 @@ export function EnhancedTableHead(){
                 <TableCell padding="checkbox">
 
                 </TableCell>
-                {headCells.map((headCell) => (
+                {headCells.map((headCell, index) => (
                     <TableCell
-                        key={headCell.id}
+                        key={index}
                         align={headCell.numeric ? 'right' : 'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                     >

@@ -35,7 +35,6 @@ export function FinishMassive(props: LocalFinishMassive){
             finished_by: props.massive.userId,
             massiveId: props.massive.massiveId,
             finished_status: resolution,
-
         });
 
         if(response){

@@ -48,11 +48,13 @@ export function EditMassive(props: LocalEditMassive){
 
     useEffect(()  => {
         const getData = async () => {
-            const res = await getCities();
-            if(res){
-                setCities(res);
+            const response = await getCities();
+            if(response){
+                if(response.success){
+                    setCities(response.responses.response);
+                }
             } else {
-                setCities([]);
+                setFetchResponseMessage('error/no-connection-with-API');
             }
         }
         getData();
@@ -135,6 +137,7 @@ export function EditMassive(props: LocalEditMassive){
                         <MenuItem value="Lentidão">Lentidão</MenuItem>
                         <MenuItem value="CTO Parado">CTO Parado</MenuItem>
                         <MenuItem value="Manutenção">Manutenção</MenuItem>
+                        <MenuItem value="Manutenção">Troca de Poste</MenuItem>
                         <MenuItem value="Queda">Queda</MenuItem>
                     </Select>
                 </FormControl>

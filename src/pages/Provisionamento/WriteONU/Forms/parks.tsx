@@ -18,6 +18,7 @@ import { IOnu } from "../../../../interfaces/IOnus";
 import { InputContainer } from "../../../../styles/globalStyles";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, CircularProgress, TextField } from "@mui/material";
+import { updateLogsOnu } from "../../../../services/apiManageONU/updateLogOnu";
 
 export function PARKSForm({onu}: IOnu){
     const navigate = useNavigate();
@@ -118,18 +119,24 @@ export function PARKSForm({onu}: IOnu){
                 return;
             }
 
+            const onuId: number = hasAuth.responses.response.onuId;
             if(connectionData.connectionId){
-                updateConnection({
-                    onuId: 0,
+                const response = await updateConnection({
+                    onuId: onuId,
                     connectionId: connectionData.connectionId,
                     pppoeUser: authOnu.pppoeUser,
                     pppoePassword: connectionData.password,
+                    slot: onu.slot,
                     pon: onu.pon,
-                    slot: 1,
                     serialNumber: onu.serialNumber,
                     modelOlt: onu.modelOlt,
                     accessPointId: authOnu.voalleAccessPointId,
+                    wifiSSID: authOnu.wifiName,
+                    wifiPass: authOnu.wifiPassword
                 });
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
+            } else {
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
             }
         }
     }

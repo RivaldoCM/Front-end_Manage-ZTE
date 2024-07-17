@@ -135,6 +135,7 @@ export function FilterMassives({onFilterChange}: any){
                         <MenuItem value="Lentidão">Lentidão</MenuItem>
                         <MenuItem value="CTO Parado">CTO Parado</MenuItem>
                         <MenuItem value="Manutenção">Manutenção</MenuItem>
+                        <MenuItem value="Manutenção">Troca de Poste</MenuItem>
                         <MenuItem value="Queda">Queda</MenuItem>
                     </Select>
                 </FormControl>

@@ -1,25 +1,28 @@
-import { Button, CircularProgress, MenuItem, TextField } from "@mui/material";
-import { InputContainer } from "../../../../styles/globalStyles";
+import { useNavigate } from "react-router-dom";
+
 import { useAuth } from "../../../../hooks/useAuth";
 import { useAuthOnu } from "../../../../hooks/useAuthOnu";
 import { useLoading } from "../../../../hooks/useLoading";
 import { useResponse } from "../../../../hooks/useResponse";
-import { useNavigate } from "react-router-dom";
 
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { IOnu } from "../../../../interfaces/IOnus";
-import { setCorrectOltValues } from "../../../../config/verifyWhichOltIs";
 import { verifyOnuType } from "../../../../config/verifyOnuType";
+import { isValidCpf } from "../../../../config/regex";
+
+import { IOnu } from "../../../../interfaces/IOnus";
+
 import { getPeopleId } from "../../../../services/apiVoalle/getPeopleId";
 import { getConnectionId } from "../../../../services/apiManageONU/getConnectionId";
-import { isValidCpf } from "../../../../config/regex";
 import { writeONU } from "../../../../services/apiManageONU/writeOnu";
 import { updateConnection } from "../../../../services/apiVoalle/updateConnection";
+import { updateLogsOnu } from "../../../../services/apiManageONU/updateLogOnu";
+
+import { InputContainer } from "../../../../styles/globalStyles";
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Button, CircularProgress, MenuItem, TextField } from "@mui/material";
 
 export function FHForm({onu}: IOnu){
     const navigate = useNavigate();
     const { user } = useAuth();
-
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
@@ -32,7 +35,6 @@ export function FHForm({onu}: IOnu){
     };
 
     const handleUpdateOltData = () => {
-        console.log(onu.oltId)
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
             oltId: onu.oltId,
@@ -120,7 +122,7 @@ export function FHForm({onu}: IOnu){
             }
 
             if(connectionData.connectionId){
-                updateConnection({
+                const response = await updateConnection({
                     connectionId: connectionData.connectionId,
                     pppoeUser: authOnu.pppoeUser,
                     pppoePassword: connectionData.password,
@@ -132,7 +134,9 @@ export function FHForm({onu}: IOnu){
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
                 });
-                
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
+            } else {
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
             }
         }
     }
