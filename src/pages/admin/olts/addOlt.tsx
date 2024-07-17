@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { isValidIp } from "../../../config/regex";
@@ -35,21 +35,22 @@ export function AddOlt(){
     const [vlans, setVlans] = useState<IVlans[]>([]);
     const [form, setForm] = useState({
         host: '',
-        cityId: 1,
+        cityId: '' as number | string,
         name: '',
-        manufacturerId: 1,
-        modelId: 1,
+        manufacturerId: '' as number | string,
+        modelId: '' as number | string,
         telnetUser: '',
         telnetPassword: '',
         geponUser: '',
         geponPassword: '',
         geponEnablePassword: '',
         isActive: true,
-        voalleId: undefined as number | undefined,
+        voalleId: '' as number | string,
         formatVlanConfig: 1,
         vlan: '',
         modifySlot: 1,
-        modifyVlan: 0
+        modifyVlan: 0,
+        modifyProfileVlan: ''
     });
 
     useEffect(() => {
@@ -158,6 +159,24 @@ export function AddOlt(){
         }
     }
 
+    const handleChangeProfileVlan = (index: number) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if(event.target.value === ''){
+            const newProfile = [...vlans];
+            newProfile[index] = {
+                ...newProfile[index],
+                profile_vlan: null
+            };
+            setVlans(newProfile);
+        } else {
+            const newProfile = [...vlans];
+            newProfile[index] = {
+                ...newProfile[index],
+                profile_vlan: event.target.value
+            };
+            setVlans(newProfile);
+        }
+    }
+
     const generateSlotOptions = () => {
         let modelSlot = 0 , items = [];
 
@@ -185,6 +204,18 @@ export function AddOlt(){
             return {...value}
         });
         setVlans(newVlans);
+    }
+
+    const handleModifyProfileVlan = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(form.modifyProfileVlan)
+        const newProfile = vlans.map((value) => {
+            if(form.modifySlot === value.slot){
+                return { ...value, profile_vlan: form.modifyProfileVlan};
+            }
+            return {...value}
+        });
+        setVlans(newProfile);
     }
 
     const handleSubmit = async () => {
@@ -245,6 +276,7 @@ export function AddOlt(){
                                     label="Cidade"
                                     value={form.cityId || ''}
                                     onChange={handleFormChange}
+                                    sx={{ width: '148px' }}
                                 >
                                     {
                                         cities.map((city, index) => {
@@ -470,36 +502,67 @@ export function AddOlt(){
                             </div>
                             {
                                 vlans.length > 0 && (
-                                    <div className="form-wrapper flex">
-                                        <div>
-                                            <h5>Modificar VLAN por PLACA</h5>
-                                        </div>
-                                        <form className="flex" onSubmit={handleModifyVlan}>
-                                            <FormControl sx={{ width: '100px' }}>
-                                                <InputLabel>Placa</InputLabel>
-                                                <Select
-                                                    name='modifySlot'
-                                                    label="Placa"
-                                                    value={form.modifySlot}
+                                    <React.Fragment>
+                                        <div className="form-wrapper flex">
+                                            <div>
+                                                <h5>Modificar VLAN por PLACA</h5>
+                                            </div>
+                                            <form className="flex" onSubmit={handleModifyVlan}>
+                                                <FormControl sx={{ width: '100px' }}>
+                                                    <InputLabel>Placa</InputLabel>
+                                                    <Select
+                                                        name='modifySlot'
+                                                        label="Placa"
+                                                        value={form.modifySlot}
+                                                        onChange={handleFormChange}
+                                                    >
+                                                        { generateSlotOptions() }
+                                                    </Select>
+                                                </FormControl>
+                                                <TextField
+                                                    required
+                                                    type="number"
+                                                    name="modifyVlan"
+                                                    label="Nova VLAN"
+                                                    value={form.modifyVlan}
                                                     onChange={handleFormChange}
-                                                >
-                                                    { generateSlotOptions() }
-                                                </Select>
-                                            </FormControl>
-                                            <TextField
-                                                required
-                                                type="number"
-                                                name="modifyVlan"
-                                                label="Nova VLAN"
-                                                value={form.modifyVlan}
-                                                onChange={handleFormChange}
-                                                sx={{ width: '100px' }}
-                                            />
-                                            <Button variant="contained" color="success" size="small" type="submit">
-                                                Aplicar
-                                            </Button>
-                                        </form>
-                                    </div>
+                                                    sx={{ width: '100px' }}
+                                                />
+                                                <Button variant="contained" color="success" size="small" type="submit">
+                                                    Aplicar
+                                                </Button>
+                                            </form>
+                                        </div>
+                                        <div className="form-wrapper flex">
+                                            <div>
+                                                <h5>Modificar Perfil de VLAN por PLACA</h5>
+                                            </div>
+                                            <form className="flex" onSubmit={handleModifyProfileVlan}>
+                                                <FormControl sx={{ width: '100px' }}>
+                                                    <InputLabel>Placa</InputLabel>
+                                                    <Select
+                                                        name='modifySlot'
+                                                        label="Placa"
+                                                        value={form.modifySlot}
+                                                        onChange={handleFormChange}
+                                                    >
+                                                        { generateSlotOptions() }
+                                                    </Select>
+                                                </FormControl>
+                                                <TextField
+                                                    required
+                                                    name="modifyProfileVlan"
+                                                    label="Novo Perfil"
+                                                    value={form.modifyProfileVlan}
+                                                    onChange={handleFormChange}
+                                                    sx={{ width: '200px' }}
+                                                />
+                                                <Button variant="contained" color="success" size="small" type="submit">
+                                                    Aplicar
+                                                </Button>
+                                            </form>
+                                        </div>
+                                    </React.Fragment>
                                 )
                             }
                         </div>
@@ -509,30 +572,41 @@ export function AddOlt(){
                             vlans.length > 0 && (
                                 <div className="table-controller">
                                     <table>
-                                        <tr>
-                                            <th>Placa</th>
-                                            <th>Pon</th>
-                                            <th>Vlan</th>
-                                        </tr>
-                                        {
-                                            vlans.map((vlans, index) => {
-                                                return(
-                                                    <tr>
-                                                        <td>{vlans.slot}</td>
-                                                        <td>{vlans.pon}</td>
-                                                        <td>
-                                                            <input
-                                                                value={vlans.vlan || ''}
-                                                                onChange={handleChangeVlan(index)}
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                )   
-                                            })
-                                        }
+                                        <thead>
+                                            <tr>
+                                                <th>Placa</th>
+                                                <th>Pon</th>
+                                                <th>Vlan</th>
+                                                <th>Perfil de Vlan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                vlans.map((vlans, index) => {
+                                                    return(
+                                                        <tr key={index}>
+                                                            <td>{vlans.slot}</td>
+                                                            <td>{vlans.pon}</td>
+                                                            <td>
+                                                                <input
+                                                                    className="vlans"
+                                                                    value={vlans.vlan || ''}
+                                                                    onChange={handleChangeVlan(index)}
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                <input
+                                                                    value={vlans.profile_vlan || ''}
+                                                                    onChange={handleChangeProfileVlan(index)}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    )   
+                                                })
+                                            }
+                                        </tbody> 
                                     </table>
                                 </div>
-                                
                             )
                         }
                     </div>

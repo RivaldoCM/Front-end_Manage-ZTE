@@ -56,7 +56,7 @@ export function EditOlt(){
         modifyVlan: 0,
         modifyProfileVlan: ''
     });
-    console.log(form)
+
     useEffect(() => {
         async function getData(){
             const getCity = getCities();
@@ -201,19 +201,19 @@ export function EditOlt(){
 
     const handleChangeProfileVlan = (index: number) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if(event.target.value === ''){
-            const newVlans = [...vlans];
-            newVlans[index] = {
-                ...newVlans[index],
+            const newProfile = [...vlans];
+            newProfile[index] = {
+                ...newProfile[index],
                 profile_vlan: null
             };
-            setVlans(newVlans);
+            setVlans(newProfile);
         } else {
-            const newVlans = [...vlans];
-            newVlans[index] = {
-                ...newVlans[index],
+            const newProfile = [...vlans];
+            newProfile[index] = {
+                ...newProfile[index],
                 profile_vlan: event.target.value
             };
-            setVlans(newVlans);
+            setVlans(newProfile);
         }
     }
 
@@ -248,13 +248,14 @@ export function EditOlt(){
 
     const handleModifyProfileVlan = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const newVlans = vlans.map((value) => {
+        console.log(form.modifyProfileVlan)
+        const newProfile = vlans.map((value) => {
             if(form.modifySlot === value.slot){
-                return { ...value, profileVlan: form.modifyProfileVlan};
+                return { ...value, profile_vlan: form.modifyProfileVlan};
             }
             return {...value}
         });
-        setVlans(newVlans);
+        setVlans(newProfile);
     }
 
     const handleSubmit = async () => {
