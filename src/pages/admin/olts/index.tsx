@@ -41,6 +41,7 @@ export function Olts(){
     const [dense, setDense] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [olt, setOlt] = useState<IOlt[]>([]);
+    const [filteredOlt, setFilteredOlt] = useState<IOlt[]>([]);
 
     useEffect(() => {
         async function olts(){
@@ -49,6 +50,7 @@ export function Olts(){
             if(oltData){
                 if(oltData.success){
                     setOlt(oltData.responses.response);
+                    setFilteredOlt(oltData.responses.response);
                 }else{
                     setOlt([]);
                     setFetchResponseMessage('error/no-connection-with-API');
@@ -69,6 +71,16 @@ export function Olts(){
         setSelected([parseInt(id! as string)]);
     };
 
+    const handleSearchValueChange = (value: string) => {
+        const filteredOlt = olt.filter((el) => {
+            if(el.name.toLowerCase().startsWith(value.toLowerCase())){
+                setPage(0);
+                return el;
+            }
+        })
+        setFilteredOlt(filteredOlt);
+    }
+
     const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage);
     };
@@ -84,13 +96,13 @@ export function Olts(){
 
     const isSelected = (id: number | '' | undefined) => selected.indexOf(id as number) !== -1;
 
-    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - olt.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - filteredOlt.length) : 0;
     const visibleRows = useMemo(() =>
-        stableSort(olt).slice(
+        stableSort(filteredOlt).slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage,
         ),
-        [page, rowsPerPage, olt]
+        [page, rowsPerPage, filteredOlt]
     );
 
     return(
@@ -98,7 +110,11 @@ export function Olts(){
             {matches ? <ResponsiveAlert /> : 
                 <Box sx={{ width: '100%' }}>
                     <Paper sx={{ width: '100%', mb: 2 }}>
-                        <EnhancedTableToolbar numSelected={selected.length} oltDataSelected={oltDataSelected}/>
+                        <EnhancedTableToolbar 
+                            numSelected={selected.length} 
+                            oltDataSelected={oltDataSelected}
+                            onInputValueChange={handleSearchValueChange}
+                        />
                         <TableContainer>
                             <Table
                                 sx={{ minWidth: 750 }}

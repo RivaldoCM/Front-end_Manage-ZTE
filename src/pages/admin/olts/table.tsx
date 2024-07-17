@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 
-import { alpha, IconButton, TableCell, TableHead, TableRow, Toolbar, Typography } from '@mui/material';
+import { alpha, IconButton, TableCell, TableHead, TableRow, Toolbar, Tooltip, Typography } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import React, { useEffect, useState } from 'react';
+import { SearchButton } from '../../../styles/searchButton';
+import SearchIcon from '@mui/icons-material/Search';
 
-
-interface EnhancedTableToolbarProps { numSelected: number; oltDataSelected: any }
+interface EnhancedTableToolbarProps { numSelected: number; oltDataSelected: any; onInputValueChange: (args: string) => void; }
 
 interface HeadCell {
     disablePadding: boolean;
@@ -76,7 +78,20 @@ export function EnhancedTableHead(){
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const navigate = useNavigate();
-    const { numSelected, oltDataSelected } = props;
+    const { numSelected, oltDataSelected, onInputValueChange } = props;
+
+    const [inputSearchValue, setInputSearchValue] = useState('');
+
+    useEffect(() => {
+        onInputValueChange(inputSearchValue);
+    }, [inputSearchValue]);
+    
+    const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {setInputSearchValue(e.target.value)};
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        onInputValueChange(inputSearchValue);
+    }
 
     return (
         <Toolbar
@@ -115,9 +130,31 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 </IconButton>
             </div>
         ) : (
-            <IconButton color='primary' onClick={() => navigate('new_olt')}>
-                <AddOutlinedIcon />
-            </IconButton>
+            <React.Fragment>
+                <Tooltip title="">
+                    <SearchButton>
+                        <div className="search-container">
+                            <form onSubmit={handleSubmit} >
+                                <div className="search-box">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Digite o nome na busca" 
+                                        className="search-input" 
+                                        onChange={handleChangeValue}
+                                        value={inputSearchValue}
+                                    />
+                                    <IconButton type="submit" className="search-button" >
+                                        <SearchIcon />
+                                    </IconButton>
+                                </div>
+                            </form>
+                        </div>
+                    </SearchButton>
+                </Tooltip>
+                <IconButton color='primary' onClick={() => navigate('new_olt')}>
+                    <AddOutlinedIcon />
+                </IconButton>
+            </React.Fragment>
         )}
         </Toolbar>
     );
