@@ -58,8 +58,8 @@ function Row(props: IOnuLogsProps) {
                 <TableCell align="center">{row.serial_onu}</TableCell>
                 <TableCell align="center">{row.cpf}</TableCell>
                 <TableCell align="center">{row.pppoe}</TableCell>
-                <TableCell align="center">{row.rx_onu}</TableCell>
                 <TableCell align="center">{row.rx_olt}</TableCell>
+                <TableCell align="center">{row.rx_onu}</TableCell>
                 <TableCell align="center">
                     {row.is_updated ? 
                         <CheckCircleOutlineIcon color='success'/> 

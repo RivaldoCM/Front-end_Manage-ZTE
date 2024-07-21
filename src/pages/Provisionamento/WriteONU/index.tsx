@@ -51,7 +51,6 @@ export function WriteONU(){
                                                 onClick={(e) => {
                                                     handleDropDownArrow(e, index);
                                                 }}
-
                                             >
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>

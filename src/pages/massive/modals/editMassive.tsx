@@ -37,7 +37,7 @@ export function EditMassive(props: LocalEditMassive){
         user: user?.uid,
         massiveId: props.massive.id,
         cityId: props.massive.Cities.id,
-        forecastReturn: dayjs(props.massive.forecast_return).add(3, 'hour').format('DD/MM/YY - HH:mm') + 'h',
+        forecastReturn:  props.massive.forecast_return ? dayjs(props.massive.forecast_return).add(3, 'hour').format('DD/MM/YY - HH:mm') + 'h': '',
         failureTime: dayjs(props.massive.failure_date).add(3, 'hour').format('DD/MM/YY - HH:mm') + 'h',
         forecastDateToISO: null,
         failureDateToISO: null,

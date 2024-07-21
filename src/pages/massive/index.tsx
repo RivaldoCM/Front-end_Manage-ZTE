@@ -210,7 +210,12 @@ export function Massive(){
                                                         <p>{massive.description}</p>
                                                     </div>
                                                     <div className="flex">
-                                                        <p>Previsão: {dayjs(massive.forecast_return).add(3, "hour").format('DD/MM [às] HH:mm') + 'h'}</p>
+                                                        {
+                                                            massive.forecast_return ? 
+                                                            <p>Previsão: {dayjs(massive.forecast_return).add(3, "hour").format('DD/MM [às] HH:mm') + 'h'}</p>
+                                                            :
+                                                            <></>
+                                                        }
                                                     </div>
                                                 </div>
                                             </Card>

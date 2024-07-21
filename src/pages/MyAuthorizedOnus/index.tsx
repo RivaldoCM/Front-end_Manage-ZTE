@@ -20,6 +20,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ResponsiveTable } from '../logs/onu/style';
 import { TablePagination } from '@mui/material';
+import { useSocket } from '../../hooks/useSocket';
 
 
 function stableSort<T>(array: readonly T[]) {
@@ -69,6 +70,7 @@ function Row(props: IOnuLogsProps) {
 
 export function MyAuthorizedOnus() {
     const { user } = useAuth();
+    const { socket } = useSocket();
     const { setFetchResponseMessage } = useResponse();
 
     const [page, setPage] = useState(0);
@@ -93,6 +95,15 @@ export function MyAuthorizedOnus() {
         getData();
     }, []);
 
+    if(socket){
+        socket.emit('select_room', {
+            uid: user?.uid,
+            room: '/my_auth_onus'
+        });
+        socket.on('update', data => {
+            setOnu(data);
+        });
+    }
 
     const visibleRows = useMemo(() => 
         stableSort(onu).slice(

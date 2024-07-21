@@ -131,6 +131,9 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             </div>
         ) : (
             <React.Fragment>
+                <IconButton color='primary' onClick={() => navigate('new_olt')}>
+                    <AddOutlinedIcon />
+                </IconButton>
                 <Tooltip title="">
                     <SearchButton>
                         <div className="search-container">
@@ -151,9 +154,6 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                         </div>
                     </SearchButton>
                 </Tooltip>
-                <IconButton color='primary' onClick={() => navigate('new_olt')}>
-                    <AddOutlinedIcon />
-                </IconButton>
             </React.Fragment>
         )}
         </Toolbar>
