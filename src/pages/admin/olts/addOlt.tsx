@@ -33,7 +33,7 @@ export function AddOlt(){
     const [models, setModels] = useState<IOltModels[]>([]);
     const [manufacturers, setManufacturers] = useState<IOltManufacturer[]>([]);
     const [vlans, setVlans] = useState<IVlans[]>([]);
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<any>({
         host: '',
         cityId: '' as number | string,
         name: '',
