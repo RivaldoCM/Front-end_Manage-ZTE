@@ -34,7 +34,6 @@ function Row(props: IOnuLogsProps) {
     const { row } = props;
     const [open, setOpen] = React.useState(false);
 
-    console.log(row)
     return (
         <React.Fragment>
             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -52,7 +51,7 @@ function Row(props: IOnuLogsProps) {
                     {row.User.name}
                 </TableCell>
                 <TableCell align="center">{row.City.name}</TableCell>
-                <TableCell align="center">{row.Olt.name}</TableCell>
+                <TableCell align="center">{row.Olts.name}</TableCell>
                 <TableCell align="center">{row.slot}</TableCell>
                 <TableCell align="center">{row.pon}</TableCell>
                 <TableCell align="center">{row.serial_onu}</TableCell>
@@ -61,10 +60,14 @@ function Row(props: IOnuLogsProps) {
                 <TableCell align="center">{row.rx_olt}</TableCell>
                 <TableCell align="center">{row.rx_onu}</TableCell>
                 <TableCell align="center">
-                    {row.is_updated ? 
-                        <CheckCircleOutlineIcon color='success'/> 
-                        : 
-                        <HighlightOffIcon color='error'/> 
+                    {
+                        row.is_auth ?
+                            row.is_updated ? 
+                                <CheckCircleOutlineIcon color='success'/> 
+                                : 
+                                <HighlightOffIcon color='error'/>
+                            : 
+                        <></>
                     }
                     </TableCell>
             </TableRow>
