@@ -48,7 +48,7 @@ export function EditOlt(){
         geponUser: '',
         geponPassword: '',
         geponEnablePassword: '',
-        isActive: '' as boolean | '',
+        isActive: '' as number | boolean | '',
         voalleId: '' as number | '',
         formatVlanConfig: 1,
         vlan: '',
@@ -89,7 +89,7 @@ export function EditOlt(){
                     geponUser: olt.responses.response.olt.gepon_user || '',
                     geponPassword: olt.responses.response.olt.gepon_password || '',
                     geponEnablePassword: olt.responses.response.olt.gepon_enable_password || '',
-                    isActive: olt.responses.response.olt.is_active || false,
+                    isActive: olt.responses.response.olt.is_active === true ? 1 : 0,
                     voalleId: olt.responses.response.olt.voalle_id || '',
                 });
                 setVlans(olt.responses.response.vlans);
@@ -248,7 +248,6 @@ export function EditOlt(){
 
     const handleModifyProfileVlan = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(form.modifyProfileVlan)
         const newProfile = vlans.map((value) => {
             if(form.modifySlot === value.slot){
                 return { ...value, profile_vlan: form.modifyProfileVlan};
@@ -266,6 +265,7 @@ export function EditOlt(){
                 setFetchResponseMessage('error/incorrect-fields');
             } else {
                 const {vlan, formatVlanConfig, modifySlot, modifyVlan, modifyProfileVlan, ...dataForm} = form;
+                dataForm.isActive = dataForm.isActive === 1 ? true : false;
                 const response = await updateOlt(dataForm, vlans);
                 if(response){
                     if(response.success){
@@ -335,8 +335,8 @@ export function EditOlt(){
                                     value={form.isActive}
                                     onChange={handleFormChange}
                                 >
-                                    <MenuItem value={true}>Ativo</MenuItem>
-                                    <MenuItem value={false}>Inativo</MenuItem>
+                                    <MenuItem value={1}>Ativo</MenuItem>
+                                    <MenuItem value={0}>Inativo</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>

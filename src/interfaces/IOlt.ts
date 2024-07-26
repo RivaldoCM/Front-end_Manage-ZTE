@@ -5,7 +5,7 @@ export type IOltProps = {
     manufacturerId: number | string;
     modelId: number | string;
     cityId: number | string;
-    isActive: boolean | '';
+    isActive: number | boolean | '';
     telnetUser: string;
     telnetPassword: string;
     geponUser?: string | null;

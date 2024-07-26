@@ -44,7 +44,7 @@ export function AddOlt(){
         geponUser: '',
         geponPassword: '',
         geponEnablePassword: '',
-        isActive: true,
+        isActive: 1 as number | boolean,
         voalleId: '' as number | string,
         formatVlanConfig: 1,
         vlan: '',
@@ -226,6 +226,7 @@ export function AddOlt(){
                 setFetchResponseMessage('error/incorrect-fields');
             } else {
                 const {vlan, formatVlanConfig, modifySlot, modifyVlan, ...dataForm} = form;
+                dataForm.isActive = dataForm.isActive === 1 ? true : false;
                 const response = await addOlt(dataForm, vlans);
                 if(response){
                     if(response.success){
@@ -296,8 +297,8 @@ export function AddOlt(){
                                     value={form.isActive}
                                     onChange={handleFormChange}
                                 >
-                                    <MenuItem value={true}>Ativo</MenuItem>
-                                    <MenuItem value={false}>Desativado</MenuItem>
+                                    <MenuItem value={1}>Ativo</MenuItem>
+                                    <MenuItem value={0}>Desativado</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>
