@@ -45,9 +45,12 @@ export function MassivePanel(){
                                                         <p>
                                                             Data da falha: {dayjs(massive.failure_date).add(3, "hour").format('DD/MM')}
                                                         </p>
-                                                        <p>
-                                                            Previsão: {dayjs(massive.forecast_return).add(3, "hour").format('DD/MM [às] HH:mm') + 'h'}
-                                                        </p>
+                                                        {
+                                                            massive.forecast_return ? 
+                                                            <p>Previsão: {dayjs(massive.forecast_return).add(3, "hour").format('DD/MM [às] HH:mm') + 'h'}</p>
+                                                            :
+                                                            <></>
+                                                        }
                                                     </div>
                                                 </div>
                                             </CardPanel>

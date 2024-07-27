@@ -102,35 +102,10 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'CPF ou CNPJ inválidos.',
                 severityStatus: 'warning'
             }
-        case 'unable-load-data':
-            return{
-                responseMessage: 'Não foi possível carregar os dados, tente fazer login novamente.',
-                severityStatus: 'error'
-            }
         case 'success/onu-delete-completed':
             return{
                 responseMessage: 'ONU desprovisionada com sucesso.',
                 severityStatus: 'success'
-            }
-        case 'success/olt-deleted':
-            return{
-                responseMessage: 'OLT deletada com sucesso.',
-                severityStatus: 'success'
-            }
-        case 'success/new-olt-created':
-            return{
-                responseMessage: 'OLT criada com sucesso.',
-                severityStatus: 'success'
-            }
-        case 'success/olt-edited':
-            return{
-                responseMessage: 'OLT editada com sucesso.',
-                severityStatus: 'success'
-            }
-        case 'error/impossible-to-create-new-data':
-            return{
-                responseMessage: 'Não foi possivel criar uma nova OLT.',
-                severityStatus: 'error'
             }
         case 'error/no-connection-with-API':
             return{
@@ -167,6 +142,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Dados criados com sucesso.',
                 severityStatus: 'success'
             }
+        case 'success/data-updated':
+            return{
+                responseMessage: 'Dados atualizados com sucesso.',
+                severityStatus: 'success'
+            }
         case 'error/column-in-use':
             return{
                 responseMessage: 'Algum usuário está fazendo esta pausa.',
@@ -186,6 +166,21 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
             return{
                 responseMessage: 'Você não tem permissão para realizar está função.',
                 severityStatus: 'error'
+            }
+        case 'error/missing-fields':
+            return{
+                responseMessage: 'Preencha todos os campos.',
+                severityStatus: 'warning'
+            }
+        case 'error/incorrect-fields':
+            return{
+                responseMessage: 'Preencha corretamente os campos.',
+                severityStatus: 'warning'
+            }
+        case 'info/ip-already-exists':
+            return{
+                responseMessage: 'Este IP já está em uso.',
+                severityStatus: 'warning'
             }
         default:
             return{

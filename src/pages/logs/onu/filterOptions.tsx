@@ -7,18 +7,18 @@ import { getCities } from "../../../services/apiManageONU/getCities";
 import { IUsers } from "../../../interfaces/IUsers";
 import { IOlt } from "../../../interfaces/IOlt";
 import { ICities } from "../../../interfaces/ICities";
-import { useError } from "../../../hooks/useError";
 import { formatDateToEn } from "../../../config/formatDate";
+import { useResponse } from "../../../hooks/useResponse";
 
 import LoadingButton from '@mui/lab/LoadingButton';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import { Alert, Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
+import { Autocomplete, CircularProgress, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
 import { DateOptions, Filter, FilterButtons, FormFilter } from "./style";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
-    const {error, handleError, severityStatus, errorMessage } = useError();
+    const { setFetchResponseMessage } = useResponse();
 
     const [viewDate, setViewDate] = useState<any>({
         viewInitialDate: '',
@@ -96,9 +96,15 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         }
 
         (async () => {
-            const cities = await getCities();
+            const response = await getCities();
             if (active) {
-                setCities(cities);
+                if(response){
+                    if(response?.success){
+                        setCities(response.responses.response);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
             }
         })();
 
@@ -114,10 +120,14 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         }
 
         (async () => {
-            const olts = await getOlt('all');
+            const olts = await getOlt({});
             if (active) {
                 if(olts.success){
-                    setOlts(olts.responses.response);
+                    if(olts.success){
+                        setOlts(olts.responses.response);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
                 }
             }
         })();
@@ -196,9 +206,9 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         e.preventDefault();
 
         if(!dataFiltered.initialDate || !dataFiltered.lastDate){
-            handleError('error/expected-date');
+            setFetchResponseMessage('error/expected-date');
         } else if(dayjs(formatDateToEn(dataFiltered.lastDate)).isBefore(dayjs(formatDateToEn(dataFiltered.initialDate)))){
-            handleError('error/lastDate-isBefore-initialDate');
+            setFetchResponseMessage('error/lastDate-isBefore-initialDate');
         } else {
             onFilterChange(dataFiltered);
         }
@@ -371,17 +381,10 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
                     variant="outlined"
                     size="small"
                     startIcon={<FilterAltOutlinedIcon />}
-                    >
+                >
                     Filtrar
                 </LoadingButton>
             </FilterButtons>
-            {
-                (error ?
-                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-                :
-                    <></>
-                )
-            }
         </Filter>
     )
 }

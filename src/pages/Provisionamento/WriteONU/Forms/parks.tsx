@@ -6,12 +6,11 @@ import { useAuth } from "../../../../hooks/useAuth";
 import { useResponse } from "../../../../hooks/useResponse";
 
 import { isValidCpf } from "../../../../config/regex";
-import { setCorrectOltValues } from "../../../../config/verifyWhichOltIs";
 import { verifyOnuType } from "../../../../config/verifyOnuType";
 
 import { getPeopleId } from "../../../../services/apiVoalle/getPeopleId";
 import { getConnectionId } from "../../../../services/apiManageONU/getConnectionId";
-import { authorizationToOlt } from "../../../../services/apiManageONU/authOnu";
+import { writeONU } from "../../../../services/apiManageONU/writeOnu";
 import { updateConnection } from "../../../../services/apiVoalle/updateConnection";
 
 import { IOnu } from "../../../../interfaces/IOnus";
@@ -19,7 +18,7 @@ import { IOnu } from "../../../../interfaces/IOnus";
 import { InputContainer } from "../../../../styles/globalStyles";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, CircularProgress, TextField } from "@mui/material";
-
+import { updateLogsOnu } from "../../../../services/apiManageONU/updateLogOnu";
 
 export function PARKSForm({onu}: IOnu){
     const navigate = useNavigate();
@@ -38,11 +37,9 @@ export function PARKSForm({onu}: IOnu){
     const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
-            ip: [setCorrectOltValues(onu, authOnu.ip)],
-            oltId: [setCorrectOltValues(onu, authOnu.oltId)],
+            oltId: onu.oltId,
             onuType: verifyOnuType(onu.serialNumber),
-            isPizzaBox: [setCorrectOltValues(onu, authOnu.isPizzaBox)],
-            voalleAccessPointId: [setCorrectOltValues(onu, authOnu.voalleAccessPointId)]
+            voalleAccessPointId: onu.voalleId
         }));
     }
 
@@ -75,17 +72,16 @@ export function PARKSForm({onu}: IOnu){
                 connectionData.contractId = 0;
             }
 
-            const hasAuth = await authorizationToOlt({
+            const hasAuth = await writeONU({
                 userId: user?.uid,
-                cityId: authOnu.cityId,
-                oltId: authOnu.oltId[0],
-                ip: authOnu.ip,
+                oltId: authOnu.oltId,
+                slot: onu.slot,
                 pon: onu.pon,
                 serialNumber: onu.serialNumber,
                 modelOlt: onu.modelOlt,
                 contract: connectionData.contractId,
+                cpf: authOnu.cpf,
                 pppoeUser: authOnu.pppoeUser,
-                rxPower: onu.rxPower
             });
             stopLoading();
 
@@ -95,11 +91,8 @@ export function PARKSForm({onu}: IOnu){
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
-                        ip: [],
-                        oltId: [],
-                        cityId: 0,
-                        isPizzaBox: [],
-                        voalleAccessPointId: []
+                        oltId: '',
+                        voalleAccessPointId: ''
                     });
                     return;
                 } else {
@@ -107,9 +100,7 @@ export function PARKSForm({onu}: IOnu){
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
-                        ip: [],
-                        oltId: [],
-                        cityId: 0,
+                        oltId: '',
                         cpf: '',
                         pppoeUser: '',
                         pppoePassword: '',
@@ -117,8 +108,7 @@ export function PARKSForm({onu}: IOnu){
                         wifiPassword: '',
                         typeOnu: '',
                         modelOnu: '',
-                        isPizzaBox: [],
-                        voalleAccessPointId: []
+                        voalleAccessPointId: ''
                     });
                     setTimeout(() => {
                         navigate('/my_auth_onus');
@@ -129,18 +119,24 @@ export function PARKSForm({onu}: IOnu){
                 return;
             }
 
+            const onuId: number = hasAuth.responses.response.onuId;
             if(connectionData.connectionId){
-                updateConnection({
-                    onuId: 0,
+                const response = await updateConnection({
+                    onuId: onuId,
                     connectionId: connectionData.connectionId,
                     pppoeUser: authOnu.pppoeUser,
                     pppoePassword: connectionData.password,
+                    slot: onu.slot,
                     pon: onu.pon,
-                    slot: 1,
                     serialNumber: onu.serialNumber,
                     modelOlt: onu.modelOlt,
                     accessPointId: authOnu.voalleAccessPointId,
+                    wifiSSID: authOnu.wifiName,
+                    wifiPass: authOnu.wifiPassword
                 });
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
+            } else {
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
             }
         }
     }

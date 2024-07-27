@@ -1,21 +1,23 @@
 export type IOnu = {
     onu: {
+        oltId: number;
         slot: number;
         pon: number;
         model: string;
-        modelOlt: number;
+        modelOlt: string;
         serialNumber: string;
         rxPower?: string;
-        whichOltIndex: number;
+        voalleId: number;
     }
 }
 
 export type IOnus = {
+    oltId: number;
     slot: number;
     pon: number;
     model: string;
-    modelOlt: number;
+    modelOlt: string;
     serialNumber: string;
-    rxPower?: string;
-    whichOltIndex: number;
+    onuRx?: string;
+    voalleId: number;
 }

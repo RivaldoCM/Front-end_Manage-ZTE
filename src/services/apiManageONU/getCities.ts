@@ -1,17 +1,18 @@
 import axios from "axios";
-import { SetStateAction } from 'react';
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function getCities(): Promise<SetStateAction<any>>{
-    const citiesData = await axios({
+export async function getCities(): Promise<IResponseData | IResponseError | null>{
+    const response = await axios({
         method: 'get',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/cities`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
         },
     }).then((response) => {
-        return response.data.responses.response;
-    }).catch((err) => {
-        return err.response.data.messages.message;
+        return response.data;
+    }).catch(() => {
+        return null;
     });
-    return citiesData;
+
+    return response;
 }

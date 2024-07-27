@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { useError } from '../../../hooks/useError';
 import { getOnuLogs } from '../../../services/apiManageONU/getOnuLogs';
 import { FilterOptions } from './filterOptions';
 
@@ -18,7 +17,10 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ResponsiveTable } from './style';
-import { Alert, TablePagination } from '@mui/material';
+import { TablePagination } from '@mui/material';
+import { useResponse } from '../../../hooks/useResponse';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -49,14 +51,25 @@ function Row(props: IOnuLogsProps) {
                     {row.User.name}
                 </TableCell>
                 <TableCell align="center">{row.City.name}</TableCell>
-                <TableCell align="center">{row.Olt.name}</TableCell>
+                <TableCell align="center">{row.Olts.name}</TableCell>
                 <TableCell align="center">{row.slot}</TableCell>
                 <TableCell align="center">{row.pon}</TableCell>
                 <TableCell align="center">{row.serial_onu}</TableCell>
+                <TableCell align="center">{row.cpf}</TableCell>
                 <TableCell align="center">{row.pppoe}</TableCell>
-                <TableCell align="center">{row.rx_power}</TableCell>
-                <TableCell align="center">{row.onuRx_power}</TableCell>
-                <TableCell align="center">{row.is_auth ? 'Provisionada': 'Desprovisionada'}</TableCell>
+                <TableCell align="center">{row.rx_olt}</TableCell>
+                <TableCell align="center">{row.rx_onu}</TableCell>
+                <TableCell align="center">
+                    {
+                        row.is_auth ?
+                            row.is_updated ? 
+                                <CheckCircleOutlineIcon color='success'/> 
+                                : 
+                                <HighlightOffIcon color='error'/>
+                            : 
+                        <></>
+                    }
+                    </TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -74,7 +87,7 @@ function Row(props: IOnuLogsProps) {
 }
 
 export function LogsOnu() {
-    const { error, errorMessage, severityStatus, handleError } = useError();
+    const { setFetchResponseMessage } = useResponse();
 
     const [page, setPage] = useState(0);
     const [onu, setOnu] = useState<IOnuLogs[]>([]);
@@ -84,7 +97,6 @@ export function LogsOnu() {
     useEffect(() => {
         async function getData(){
             const data = await getOnuLogs(filterParams);
-
             if(data){
                 if(data.success){
                     setOnu(data.responses.response);
@@ -93,7 +105,7 @@ export function LogsOnu() {
                     setOnu([]);
                 }
             } else {
-                handleError('error/no-connection-with-API');
+                setFetchResponseMessage('error/no-connection-with-API');
                 setOnu([]);
             }
         };
@@ -113,7 +125,6 @@ export function LogsOnu() {
     };
 
     const handleChangePage = (_event: unknown, newPage: number) => { setPage(newPage); };
-
     const handleFilterChange = (filter: IFilterOnuLogs | null) => {
         setFilterParams(filter);
     };
@@ -121,49 +132,43 @@ export function LogsOnu() {
     return (
         <React.Fragment>
             <TableContainer component={Paper}>
-            <FilterOptions onFilterChange={handleFilterChange}/>
-            <ResponsiveTable>
-                <Table aria-label="collapsible table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell />
-                            <TableCell align="center">Data</TableCell>
-                            <TableCell align="center">Tecnico</TableCell>
-                            <TableCell align="center" sx={{width: 150}}>Cidade</TableCell>
-                            <TableCell align="center">OLT</TableCell>
-                            <TableCell align="center">Placa</TableCell>
-                            <TableCell align="center">Pon</TableCell>
-                            <TableCell align="center">Serial</TableCell>
-                            <TableCell align="center">PPPoE</TableCell>
-                            <TableCell align="center">Sinal recebido pela OLT(dBM)</TableCell>
-                            <TableCell align="center">Sinal recebido pela ONU(dBM)</TableCell>
-                            <TableCell align="center">Estado</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {visibleRows.map((row) => (
-                            <Row key={row.id} row={row} />
-                        ))}
-                    </TableBody>
-                </Table>
-            </ResponsiveTable>
-            <TablePagination
-                rowsPerPageOptions={[10, 15, 25]}
-                component="div"
-                count={onu.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+                <FilterOptions onFilterChange={handleFilterChange}/>
+                <ResponsiveTable>
+                    <Table aria-label="collapsible table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell />
+                                <TableCell align="center">Data</TableCell>
+                                <TableCell align="center">Tecnico</TableCell>
+                                <TableCell align="center" sx={{width: 150}}>Cidade</TableCell>
+                                <TableCell align="center">OLT</TableCell>
+                                <TableCell align="center">Placa</TableCell>
+                                <TableCell align="center">Pon</TableCell>
+                                <TableCell align="center">Serial</TableCell>
+                                <TableCell align="center">CPF</TableCell>
+                                <TableCell align="center">PPPoE</TableCell>
+                                <TableCell align="center">Sinal recebido pela OLT(dBM)</TableCell>
+                                <TableCell align="center">Sinal recebido pela ONU(dBM)</TableCell>
+                                <TableCell align="center">Atualizado no Voalle</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {visibleRows.map((row, index) => (
+                                <Row key={index} row={row} />
+                            ))}
+                        </TableBody>
+                    </Table>
+                </ResponsiveTable>
+                <TablePagination
+                    rowsPerPageOptions={[10, 15, 25]}
+                    component="div"
+                    count={onu.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
             </TableContainer>
-            {
-                (error ?
-                    <Alert severity={severityStatus} className="alert">{errorMessage}</Alert>
-                :
-                    <></>
-                )
-            }
         </React.Fragment>
     );
 }
