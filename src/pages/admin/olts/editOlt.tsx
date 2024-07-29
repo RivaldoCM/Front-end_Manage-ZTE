@@ -219,18 +219,25 @@ export function EditOlt(){
     }
 
     const generateSlotOptions = () => {
-        let modelSlot = 0 , items = [];
+        let initialSlot = 0, modelSlots = 0, items = [];
 
         models.map((model) => {
             if(model.id === form.modelId){
-                modelSlot = model.slots
+                modelSlots = model.slots
+                initialSlot = model.initial_slot
+                form.modifySlot = initialSlot;
             }
         });
 
-        for(let slot = 1; slot <= modelSlot; slot++) {
-            items.push(<MenuItem key={slot} value={slot}>{slot}</MenuItem>);
+
+        if (initialSlot > modelSlots) {
+            items.push(<MenuItem key={initialSlot} value={initialSlot}>{initialSlot}</MenuItem>);
+        } else {
+            for (let s = initialSlot; s <= modelSlots; s++) {
+                items.push(<MenuItem key={s} value={s}>{s}</MenuItem>);
+            }
         }
-      
+
         return(
             [items]
         );
@@ -556,7 +563,7 @@ export function EditOlt(){
                                 )
                             }
                             {
-                                vlans.length > 0 && (
+                                vlans.length > 0 && form.modelId &&(
                                     <React.Fragment>
                                         <div className="form-wrapper flex">
                                             <div>
@@ -571,7 +578,7 @@ export function EditOlt(){
                                                         value={form.modifySlot}
                                                         onChange={handleFormChange}
                                                     >
-                                                        { generateSlotOptions() }
+                                                        {generateSlotOptions()}
                                                     </Select>
                                                 </FormControl>
                                                 <TextField
@@ -601,7 +608,7 @@ export function EditOlt(){
                                                         value={form.modifySlot}
                                                         onChange={handleFormChange}
                                                     >
-                                                        { generateSlotOptions() }
+                                                        {generateSlotOptions()}
                                                     </Select>
                                                 </FormControl>
                                                 <TextField
@@ -631,7 +638,7 @@ export function EditOlt(){
                                                         value={form.modifySlot}
                                                         onChange={handleFormChange}
                                                     >
-                                                        { generateSlotOptions() }
+                                                        {generateSlotOptions()}
                                                     </Select>
                                                 </FormControl>
                                                 <TextField

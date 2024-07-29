@@ -50,7 +50,8 @@ export function AddOlt(){
         vlan: '',
         modifySlot: 1,
         modifyVlan: 0,
-        modifyProfileVlan: ''
+        modifyProfileVlan: '',
+        modifySlotNumber: ''
     });
 
     useEffect(() => {
@@ -175,6 +176,17 @@ export function AddOlt(){
             };
             setVlans(newProfile);
         }
+    }
+
+        const handleChangeSlotValue = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const newData = vlans.map((value) => {
+            if(form.modifySlot === value.slot){
+                return { ...value, slot: parseInt(form.modifySlotNumber)};
+            }
+            return {...value};
+        });
+        setVlans(newData);
     }
 
     const generateSlotOptions = () => {
@@ -557,6 +569,36 @@ export function AddOlt(){
                                                     value={form.modifyProfileVlan}
                                                     onChange={handleFormChange}
                                                     sx={{ width: '200px' }}
+                                                />
+                                                <Button variant="contained" color="success" size="small" type="submit">
+                                                    Aplicar
+                                                </Button>
+                                            </form>
+                                        </div>
+                                        <div className="form-wrapper flex">
+                                            <div>
+                                                <h5>Modificar N° da placa</h5>
+                                            </div>
+                                            <form className="flex" onSubmit={handleChangeSlotValue}>
+                                                <FormControl sx={{ width: '100px' }}>
+                                                    <InputLabel>Placa</InputLabel>
+                                                    <Select
+                                                        name='modifySlot'
+                                                        label="Placa"
+                                                        value={form.modifySlot}
+                                                        onChange={handleFormChange}
+                                                    >
+                                                        { generateSlotOptions() }
+                                                    </Select>
+                                                </FormControl>
+                                                <TextField
+                                                    required
+                                                    type="number"
+                                                    name="modifySlotNumber"
+                                                    label="Novo Nº"
+                                                    value={form.modifySlotNumber}
+                                                    onChange={handleFormChange}
+                                                    sx={{ width: '100px' }}
                                                 />
                                                 <Button variant="contained" color="success" size="small" type="submit">
                                                     Aplicar
