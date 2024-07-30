@@ -141,38 +141,71 @@ export function EditOlt(){
 
     const handleGenerateConfig = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        let modelSlot = 0, modelPon = 0, vlans: IVlans[] = [];
+        let initialSlot = 0, modelSlot = 0, modelPon = 0, vlans: IVlans[] = [];
 
         if(form.modelId){
             models.map((model) => {
                 if(model.id === form.modelId){
+                    initialSlot = model.initial_slot,
                     modelSlot = model.slots,
                     modelPon = model.pons
                 }
             });
 
             if(form.formatVlanConfig === 1){
-                for(let slots = 1; slots <= modelSlot; slots++){
-                    for(let pons = 1; pons <= modelPon; pons++){
-                        vlans.push({slot: slots, pon: pons, vlan: null});
+                if(initialSlot > modelSlot){
+                    for(let slots = initialSlot; slots < modelSlot + initialSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: null});
+                        }
+                    }
+                } else {
+                    for(let slots = 1; slots <= modelSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: null});
+                        }
                     }
                 }
             }else if(form.formatVlanConfig === 2){
-                for(let slots = 1; slots <= modelSlot; slots++){
-                    for(let pons = 1; pons <= modelPon; pons++){
-                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan)});
+                if(initialSlot > modelSlot){
+                    for(let slots = initialSlot; slots < modelSlot + initialSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan)});
+                        }
+                    }
+                } else {
+                    for(let slots = 1; slots <= modelSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan)});
+                        }
                     }
                 }
             }else if(form.formatVlanConfig === 3){
-                for(let slots = 1; slots <= modelSlot; slots++){
-                    for(let pons = 1; pons <= modelPon; pons++){
-                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + pons});
+                if(initialSlot > modelSlot){
+                    for(let slots = initialSlot; slots < modelSlot + initialSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + pons});
+                        }
+                    }
+                } else {
+                    for(let slots = 1; slots <= modelSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + pons});
+                        }
                     }
                 }
             }else{
-                for(let slots = 1; slots <= modelSlot; slots++){
-                    for(let pons = 1; pons <= modelPon; pons++){
-                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + slots});
+                if(initialSlot > modelSlot){
+                    for(let slots = initialSlot; slots < modelSlot + initialSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + slots});
+                        }
+                    }
+                } else {
+                    for(let slots = 1; slots <= modelSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + slots});
+                        }
                     }
                 }
             }
