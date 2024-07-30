@@ -101,38 +101,71 @@ export function AddOlt(){
 
     const handleGenerateConfig = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        let modelSlot = 0, modelPon = 0, vlans: IVlans[] = [];
+        let initialSlot = 0, modelSlot = 0, modelPon = 0, vlans: IVlans[] = [];
 
         if(form.modelId){
             models.map((model) => {
                 if(model.id === form.modelId){
+                    initialSlot = model.initial_slot,
                     modelSlot = model.slots,
                     modelPon = model.pons
                 }
             });
 
             if(form.formatVlanConfig === 1){
-                for(let slots = 1; slots <= modelSlot; slots++){
-                    for(let pons = 1; pons <= modelPon; pons++){
-                        vlans.push({slot: slots, pon: pons, vlan: null});
+                if(initialSlot > modelSlot){
+                    for(let slots = initialSlot; slots < modelSlot + initialSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: null});
+                        }
+                    }
+                } else {
+                    for(let slots = 1; slots <= modelSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: null});
+                        }
                     }
                 }
             }else if(form.formatVlanConfig === 2){
-                for(let slots = 1; slots <= modelSlot; slots++){
-                    for(let pons = 1; pons <= modelPon; pons++){
-                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan)});
+                if(initialSlot > modelSlot){
+                    for(let slots = initialSlot; slots < modelSlot + initialSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan)});
+                        }
+                    }
+                } else {
+                    for(let slots = 1; slots <= modelSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan)});
+                        }
                     }
                 }
             }else if(form.formatVlanConfig === 3){
-                for(let slots = 1; slots <= modelSlot; slots++){
-                    for(let pons = 1; pons <= modelPon; pons++){
-                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + pons});
+                if(initialSlot > modelSlot){
+                    for(let slots = initialSlot; slots < modelSlot + initialSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + pons});
+                        }
+                    }
+                } else {
+                    for(let slots = 1; slots <= modelSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + pons});
+                        }
                     }
                 }
             }else{
-                for(let slots = 1; slots <= modelSlot; slots++){
-                    for(let pons = 1; pons <= modelPon; pons++){
-                        vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + slots});
+                if(initialSlot > modelSlot){
+                    for(let slots = initialSlot; slots < modelSlot + initialSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + slots});
+                        }
+                    }
+                } else {
+                    for(let slots = 1; slots <= modelSlot; slots++){
+                        for(let pons = 1; pons <= modelPon; pons++){
+                            vlans.push({slot: slots, pon: pons, vlan: parseInt(form.vlan) + slots});
+                        }
                     }
                 }
             }
@@ -190,18 +223,24 @@ export function AddOlt(){
     }
 
     const generateSlotOptions = () => {
-        let modelSlot = 0 , items = [];
+        let initialSlot = 0, modelSlots = 0, items = [];
 
         models.map((model) => {
             if(model.id === form.modelId){
-                modelSlot = model.slots
+                modelSlots = model.slots
+                initialSlot = model.initial_slot
+                form.modifySlot = initialSlot;
             }
         });
 
-        for(let slot = 1; slot <= modelSlot; slot++) {
-            items.push(<MenuItem key={slot} value={slot}>{slot}</MenuItem>);
+        if (initialSlot > modelSlots) {
+            items.push(<MenuItem key={initialSlot} value={initialSlot}>{initialSlot}</MenuItem>);
+        } else {
+            for (let s = initialSlot; s <= modelSlots; s++) {
+                items.push(<MenuItem key={s} value={s}>{s}</MenuItem>);
+            }
         }
-      
+
         return(
             [items]
         );
@@ -529,7 +568,7 @@ export function AddOlt(){
                                                         value={form.modifySlot}
                                                         onChange={handleFormChange}
                                                     >
-                                                        { generateSlotOptions() }
+                                                        {generateSlotOptions()}
                                                     </Select>
                                                 </FormControl>
                                                 <TextField
@@ -559,7 +598,7 @@ export function AddOlt(){
                                                         value={form.modifySlot}
                                                         onChange={handleFormChange}
                                                     >
-                                                        { generateSlotOptions() }
+                                                        {generateSlotOptions()}
                                                     </Select>
                                                 </FormControl>
                                                 <TextField
@@ -588,7 +627,7 @@ export function AddOlt(){
                                                         value={form.modifySlot}
                                                         onChange={handleFormChange}
                                                     >
-                                                        { generateSlotOptions() }
+                                                        {generateSlotOptions()}
                                                     </Select>
                                                 </FormControl>
                                                 <TextField

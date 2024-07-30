@@ -229,7 +229,6 @@ export function EditOlt(){
             }
         });
 
-
         if (initialSlot > modelSlots) {
             items.push(<MenuItem key={initialSlot} value={initialSlot}>{initialSlot}</MenuItem>);
         } else {
@@ -425,15 +424,14 @@ export function EditOlt(){
                                 sx={{ width: '264px' }}
                             />
                             {
-                                (
-                                    ipValid == null ? 
-                                        <></> 
-                                    :
-                                        ipValid ? 
-                                            <CheckCircleOutlineIcon color="success"/>
-                                        : 
-                                            <HighlightOffIcon color="error"/>
-                                )
+
+                                ipValid == null ? 
+                                    <></> 
+                                :
+                                    ipValid ? 
+                                    <CheckCircleOutlineIcon color="success"/>
+                                    : 
+                                    <HighlightOffIcon color="error"/>
                             }
                         </div>
                         <div className="flex">
@@ -563,7 +561,7 @@ export function EditOlt(){
                                 )
                             }
                             {
-                                vlans.length > 0 && form.modelId &&(
+                                vlans.length > 0 && (
                                     <React.Fragment>
                                         <div className="form-wrapper flex">
                                             <div>
@@ -618,7 +616,7 @@ export function EditOlt(){
                                                     label="Novo Nº"
                                                     value={form.modifySlotNumber}
                                                     onChange={handleFormChange}
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '120px' }}
                                                 />
                                                 <Button variant="contained" color="success" size="small" type="submit">
                                                     Aplicar
