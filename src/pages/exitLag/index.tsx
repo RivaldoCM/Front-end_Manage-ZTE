@@ -1,10 +1,27 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ModalOverlay, ModalContent, CloseButton, Button, Form, FormGroup, Label, Input, Title } from './style';
 import HighlightOffRoundedIcon from '@mui/icons-material/HighlightOffRounded';
+import { getTokenExitLag } from '../../services/apiManageONU/getTokenExitlag';
+import { getExitLagUsers } from '../../services/apiExitLag/createUser';
+
 
 function CadastroModal({ show, handleClose }:any) {
     if (!show) {
         return null;
+    }
+
+    const handleSubmit = async (e: React.FormEvent) =>{
+        e.preventDefault()
+        const token = await getTokenExitLag()
+        if (token) {
+            if(token.success) {
+                await getExitLagUsers(token.responses.response)
+            }else{
+                
+            }
+        }else{
+
+        }
     }
 
     return (
@@ -12,7 +29,7 @@ function CadastroModal({ show, handleClose }:any) {
             <ModalContent>
                 <CloseButton onClick={handleClose}> <HighlightOffRoundedIcon fontSize='small' /> </CloseButton>
                 <Title>Cadastro</Title>
-                <Form>
+                <Form onSubmit={handleSubmit}>
                     <FormGroup>
                         <Label htmlFor="nome">Nome:</Label>
                         <Input type="text" id="nome" name="nome" required />
