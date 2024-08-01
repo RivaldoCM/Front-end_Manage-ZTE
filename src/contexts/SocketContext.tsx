@@ -9,11 +9,17 @@ export const SocketContext = createContext<{
 export function SocketContextProvider({ children }: {children: ReactNode}) {
     const [socket, setSocket] = useState<any>(null);
 
-    const rooms = ['/break_time', '/massive'];
+    const rooms = ['/break_time', '/massive', '/users'];
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_BASEURL_MANAGE_ONU);
-        setSocket(newSocket);
+        newSocket.on('connect', () => {
+            setSocket(newSocket);
+        });
+
+        newSocket.on('disconnect', () => {
+            setSocket(null);
+        });
     }, []);
 
     return (
