@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function getToken(){
+export async function getToken():Promise<string | null>{
     const res = await axios({
         method: 'post',
         url: `https://stg-providers-api.exitlag.net/auth/login`,
