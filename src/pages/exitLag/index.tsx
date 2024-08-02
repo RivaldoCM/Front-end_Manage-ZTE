@@ -1,136 +1,193 @@
-import React, { useState } from 'react';
-import { ModalOverlay, ModalContent, CloseButton, Button, Form, FormGroup, Label, Input, Title } from './style';
-import HighlightOffRoundedIcon from '@mui/icons-material/HighlightOffRounded';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getTokenExitLag } from '../../services/apiManageONU/getTokenExitlag';
 import { getExitLagUsers } from '../../services/apiExitLag/getUser';
 import { sendToken } from '../../services/apiManageONU/sendTokenExitLag';
 import { getToken } from '../../services/apiExitLag/getToken';
 import { useResponse } from '../../hooks/useResponse';
-import { createUser } from '../../services/apiExitLag/createUsers';
+import { Box, Checkbox, FormControlLabel, Paper, Switch, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { EnhancedTableHead, EnhancedTableToolbar } from './table';
 
-
-function CadastroModal({ show, handleClose }:any) {
-    const { setFetchResponseMessage } = useResponse();
-    if (!show) {
-        return null;
-    }
-
-    const [form, setForm] = useState({
-        name: '',
-        email: '',
-        confirmEmail: ''
+function stableSort<T>(array: readonly T[]) {
+    const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
+    stabilizedThis.sort((a, b) => {
+        return a[1] - b[1];
     });
-
-    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
-    }
-
-    const handlePaste = (e: any) => {
-        e.preventDefault();
-        return false;
-    }
-
-    const handleSubmit = async (e: React.FormEvent) =>{
-        e.preventDefault();
-
-        console.log(form)
-
-        if(form.email !== form.confirmEmail){
-            console.log('diferente')
-            return;
-        } else {
-
-            const token = await getTokenExitLag();
-            if(token.success){
-                const response = await createUser({token: token.responses.response, email: form.email, name: form.name});
-                console.log(response)
-                if(response.data.error === 'Unauthorized'){
-                    const token = await getToken();
-                    if(token){
-                        sendToken(token);
-                        await createUser({token: token, email: form.email, name: form.name})
-                    } else {
-                        setFetchResponseMessage('error/no-connection-with-API'); 
-                    }
-                } else {
-                    console.log(response)
-                }
-            }
-        }
-
-        /*
-        const token = await getTokenExitLag();
-        if (token) {
-            if(token.success) {
-                const response = await getExitLagUsers(token.responses.response);
-
-                if(response.error){
-                    if(response.error.response.data.error==='Unauthorized'){
-                        const token = await getToken();
-                        if(token){
-                            sendToken(token);
-                            getExitLagUsers(token);
-                        } else {
-                            setFetchResponseMessage('error/no-connection-with-API'); 
-                        }
-                    } else {
-                        setFetchResponseMessage('error/no-connection-with-API');
-                    }
-                } else {
-
-                }
-            } else {
-                
-            }
-        } else {
-
-        }
-        */
-    }
-
-    return (
-        <ModalOverlay>
-            <ModalContent>
-                <CloseButton onClick={handleClose}> <HighlightOffRoundedIcon fontSize='small' /> </CloseButton>
-                <Title>Cadastro</Title>
-                <Form onSubmit={handleSubmit}>
-                    <FormGroup>
-                        <Label htmlFor="nome">Nome:</Label>
-                        <Input type="text" id="nome" name="name" required onChange={handleFormChange}/>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label htmlFor="email">Email:</Label>
-                        <Input type="email" id="email" name="email" required  onChange={handleFormChange}/>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label htmlFor="confirmEmail">Confirme seu Email:</Label>
-                        <Input type="email" id="confirmEmail" name="confirmEmail" required onChange={handleFormChange} onPaste={handlePaste}/>
-                    </FormGroup>
-                    <Button type="submit">Cadastrar</Button>
-                </Form>
-            </ModalContent>
-        </ModalOverlay>
-    );
+    return stabilizedThis.map((el) => el[0]);
 }
 
 export function Exitlag() {
-    const [showModal, setShowModal] = useState(false);
+    const { setFetchResponseMessage } = useResponse();
 
-    const openModal = () => {
-        setShowModal(true);
+    const [users, setUsers] = useState<any[]>([]);
+    const [selectedUser, setSelectedUser] = useState<any | null>(null);
+    const [filteredUser, setFilteredUser] = useState<any[]>([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [selected, setSelected] = useState<number[]>([]);
+    const [dense, setDense] = useState(false);
+    const [openAddserModal, setOpenAddUserModal] = useState(false);
+    const [openEditUserModal, setOpenEditUserModal] = useState(false);
+
+    useEffect(() => {
+        async function users(){
+            const token = await getTokenExitLag();
+            if (token) {
+                if(token.success) {
+                    const response = await getExitLagUsers(token.responses.response);
+                    if(response.error){
+                        if(response.error.response.data.error==='Unauthorized'){
+                            const token = await getToken();
+                            if(token){
+                                sendToken(token);
+                                const response = await getExitLagUsers(token);
+                                setUsers(response.data);
+                            } else {
+                                setFetchResponseMessage('error/no-connection-with-API'); 
+                            }
+                        } else {
+                            setFetchResponseMessage('error/no-connection-with-API');
+                        }
+                    } else {
+                        setUsers(response.data);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+            } else {
+                const exitLagToken = await getExitLagUsers(token);
+                const response = await getExitLagUsers(exitLagToken);
+                setUsers(response.data);
+            }
+        }
+        users();
+    }, []);
+
+    const handleSearchValueChange = (value: string) => {
+        const filteredUser = users.filter((el) => {
+            if(el.name.toLowerCase().startsWith(value.toLowerCase())){
+                setPage(0);
+                return el;
+            }
+        })
+        setFilteredUser(filteredUser);
+    }
+
+    const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: any) => {
+        setSelectedUser(row);
+    
+        if(selected[0] === id){
+            //Aqui eu desmarco a checkbox caso clique no usuário que já esta marcado
+            setSelected([]);
+            return;
+        }
+        setSelected([id]);
     };
 
-    const closeModal = () => {
-        setShowModal(false);
+    const handleChangePage = (_event: unknown, newPage: number) => { setPage(newPage); };
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
     };
+
+    const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => { setDense(event.target.checked); };
+    const isSelected = (id: number) => selected.indexOf(id) !== -1;
+
+    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - filteredUser.length) : 0;
+    const visibleRows = useMemo(() => 
+        stableSort(filteredUser).slice(
+            page * rowsPerPage,
+            page * rowsPerPage + rowsPerPage,
+        ),
+        [page, rowsPerPage, filteredUser]
+    );
+
+    const handleOpenAddUserModal = () => setOpenAddUserModal(true);
+    const handleCloseAddUserModal = () => setOpenAddUserModal(false);
+    const handleOpenEditUserModal = () => setOpenEditUserModal(true);
+    const handleCloseEditUserModal = () => setOpenEditUserModal(false);
 
     return (
-        <>
-            <Button onClick={openModal}>Nova venda</Button>
-            <CadastroModal show={showModal} handleClose={closeModal} />
-        </>
+        <Box sx={{ width: '100%' }}>
+            <Paper sx={{ width: '100%', mb: 2 }}>
+                <EnhancedTableToolbar
+                    numSelected={selected.length} 
+                    onOpenAddUserModal={handleOpenAddUserModal}
+                    onOpenEditUserModal={handleOpenEditUserModal}
+                    onInputValueChange={handleSearchValueChange}
+                />
+                <TableContainer>
+                    <Table
+                        sx={{ minWidth: 750 }}
+                        aria-labelledby="tableTitle"
+                        size={dense ? 'small' : 'medium'}
+                    >
+                        <EnhancedTableHead />
+                        <TableBody>
+                        {typeof visibleRows !== 'string' && visibleRows.map((row, index) => {
+                            const isItemSelected = isSelected(row.id);
+                            const labelId = `enhanced-table-checkbox-${index}`;
+
+                            return (
+                                <TableRow
+                                    hover
+                                    onClick={(event) => handleClick(event, row.id, row)}
+                                    role="checkbox"
+                                    aria-checked={isItemSelected}
+                                    tabIndex={-1}
+                                    key={row.id}
+                                    selected={isItemSelected}
+                                    sx={{ cursor: 'pointer' }}
+                                >
+                                    <TableCell padding="checkbox">
+                                    <Checkbox
+                                        color="primary"
+                                        checked={isItemSelected}
+                                        inputProps={{
+                                            'aria-labelledby': labelId,
+                                        }}
+                                    />
+                                    </TableCell>
+                                    <TableCell
+                                        component="th"
+                                        id={labelId}
+                                        scope="row"
+                                        padding="none"
+                                    >
+                                        {row.name}
+                                    </TableCell>
+                                    <TableCell align="right">{row.email}</TableCell>
+                                    <TableCell align="right">{row.status}</TableCell>
+                                </TableRow>
+                            );
+                        })}
+                        {emptyRows > 0 && (
+                            <TableRow
+                                style={{
+                                    height: (dense ? 33 : 53) * emptyRows,
+                                }}
+                            >
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                        )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[10, 15, 25]}
+                    component="div"
+                    count={filteredUser.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+            <FormControlLabel
+                sx={{margin: '0'}}
+                control={<Switch checked={dense} onChange={handleChangeDense} />}
+                label="Modo compacto"
+            />
+        </Box>
     );
 }
