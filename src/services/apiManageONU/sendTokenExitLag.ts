@@ -10,7 +10,6 @@ export async function sendToken(token:string){
             token:token
         }
     }).then((response) => {
-        console.log(response);
         return response.data.token;
     }).catch(() =>{
         return null;

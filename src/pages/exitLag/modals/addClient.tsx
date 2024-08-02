@@ -1,4 +1,4 @@
-import { FormControl, IconButton, Modal } from "@mui/material";
+import { FormControl, IconButton, Modal, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 import { useState } from "react";
@@ -7,21 +7,25 @@ import { createUser } from "../../../services/apiExitLag/createUser";
 import { getToken } from "../../../services/apiExitLag/getToken";
 import { sendToken } from "../../../services/apiManageONU/sendTokenExitLag";
 import { useResponse } from "../../../hooks/useResponse";
+import { ModalContent } from "../style";
+import { NewUserWrapper } from "../../admin/users/style";
+import { isValidCpf } from "../../../config/regex";
 
 type ILocalAddUserProps = {
     open: boolean,
-    selectedUser: {
+    selectedUser?: {
         id: number,
         department_id: number,
     } | null,
     handleClose: () => void
 }
 
-export function addUserExitLagModal(props: ILocalAddUserProps){
+export function AddUserExitLagModal(props: ILocalAddUserProps){
     const { setFetchResponseMessage } = useResponse();
 
     const [form, setForm] = useState({
         name: '',
+        cpf: '',
         email: '',
         confirmEmail: ''
     });
@@ -40,15 +44,15 @@ export function addUserExitLagModal(props: ILocalAddUserProps){
 
     const handleSubmit = async (e: React.FormEvent) =>{
         e.preventDefault();
-
-        if(form.email !== form.confirmEmail){
-            console.log('diferente')
+        if(!form.cpf.match(isValidCpf) ){
+            setFetchResponseMessage('warning/invalid-cpf-input');
             return;
-        } else {
+        }else if(form.email !== form.confirmEmail){
+
+        }else {
             const token = await getTokenExitLag();
             if(token.success){
                 const response = await createUser({token: token.responses.response, email: form.email, name: form.name});
-                console.log(response)
                 if(response.data.error === 'Unauthorized'){
                     const token = await getToken();
                     if(token){
@@ -69,10 +73,38 @@ export function addUserExitLagModal(props: ILocalAddUserProps){
             open={props.open}
             onClose={props.handleClose}
         >
-            <div onSubmit={handleSubmit}>
-                <h3>Nova Senha</h3>
+            <NewUserWrapper onSubmit={handleSubmit}>
+                <h3>Novo Cliente</h3>
                 <FormControl>
-
+                    <TextField
+                        required
+                        label="Nome"
+                        name="name"
+                        onChange={handleFormChange}
+                        sx={{ mt: 2 }}
+                    />
+                    <TextField
+                        required
+                        label="CPF"
+                        name="cpf"
+                        onChange={handleFormChange}
+                        sx={{ mt: 2 }}
+                    />
+                    <TextField
+                        required
+                        label="E-mail"
+                        name="email"
+                        onChange={handleFormChange}
+                        sx={{ mt: 2 }}
+                    />
+                    <TextField
+                        required
+                        label="Confirme seu E-mail"
+                        name="confirmEmail"
+                        onChange={handleFormChange}
+                        onPaste={handlePaste}
+                        sx={{ mt: 2 }}
+                    />
                 </FormControl>
                 <div className="flex">
                     <IconButton color="success" type="submit">
@@ -82,7 +114,7 @@ export function addUserExitLagModal(props: ILocalAddUserProps){
                         <CloseIcon />
                     </IconButton>
                 </div>
-            </div>
+            </NewUserWrapper>
         </Modal>
     )
 }

@@ -8,10 +8,8 @@ export async function getExitLagUsers(token:string){
             'Authorization': `Bearer ${token}`
         },
     }).then((response) => {
-        console.log(response.data)
         return response.data;
     }).catch(async (error) =>{
-        console.log(error)
         return error;
     });
     return res;

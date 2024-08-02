@@ -7,6 +7,7 @@ import { useResponse } from '../../hooks/useResponse';
 import { Box, Checkbox, FormControlLabel, Paper, Switch, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { EnhancedTableHead, EnhancedTableToolbar } from './table';
+import { AddUserExitLagModal } from './modals/addClient';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -26,37 +27,33 @@ export function Exitlag() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState<number[]>([]);
     const [dense, setDense] = useState(false);
-    const [openAddserModal, setOpenAddUserModal] = useState(false);
+    const [openAddUserModal, setOpenAddUserModal] = useState(false);
     const [openEditUserModal, setOpenEditUserModal] = useState(false);
 
     useEffect(() => {
         async function users(){
             const token = await getTokenExitLag();
-            if (token) {
-                if(token.success) {
-                    const response = await getExitLagUsers(token.responses.response);
-                    if(response.error){
-                        if(response.error.response.data.error==='Unauthorized'){
-                            const token = await getToken();
-                            if(token){
-                                sendToken(token);
-                                const response = await getExitLagUsers(token);
-                                setUsers(response.data);
-                            } else {
-                                setFetchResponseMessage('error/no-connection-with-API'); 
-                            }
+            if(token && token.success){
+                const response = await getExitLagUsers(token.responses.response);
+                if(response.response){
+                    if(response.response.data.error==='Unauthorized'){
+                        const token = await getToken();
+                        if(token){
+                            sendToken(token);
+                            const response = await getExitLagUsers(token);
+                            setUsers(response.data);
                         } else {
-                            setFetchResponseMessage('error/no-connection-with-API');
+                            setFetchResponseMessage('error/no-connection-with-API'); 
                         }
                     } else {
-                        setUsers(response.data);
+                        setFetchResponseMessage('error/no-connection-with-API');
                     }
                 } else {
-                    setFetchResponseMessage('error/no-connection-with-API');
+                    setUsers(response.data);
                 }
             } else {
-                const exitLagToken = await getExitLagUsers(token);
-                const response = await getExitLagUsers(exitLagToken);
+                const exitLagToken = await getToken();
+                const response = await getExitLagUsers(exitLagToken!);
                 setUsers(response.data);
             }
         }
@@ -188,6 +185,15 @@ export function Exitlag() {
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
                 label="Modo compacto"
             />
+            
+            {
+                openAddUserModal && (
+                    <AddUserExitLagModal
+                        open={openAddUserModal}
+                        handleClose={handleCloseAddUserModal}
+                    />
+                )
+            }
         </Box>
     );
 }
