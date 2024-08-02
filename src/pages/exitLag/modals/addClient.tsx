@@ -1,15 +1,16 @@
+import { useState } from "react";
+
 import { FormControl, IconButton, Modal, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
-import { useState } from "react";
 import { getTokenExitLag } from "../../../services/apiManageONU/getTokenExitlag";
-import { createUser } from "../../../services/apiExitLag/createClient";
-import { getToken } from "../../../services/apiExitLag/getToken";
-import { sendToken } from "../../../services/apiManageONU/sendTokenExitLag";
-import { useResponse } from "../../../hooks/useResponse";
-import { ModalContent } from "../style";
+
+import { getToken } from "../../../services/apiExitLag/getToken.js";
+import { sendToken } from "../../../services/apiManageONU/sendTokenExitLag.js";
+import { useResponse } from "../../../hooks/useResponse.js";
 import { NewUserWrapper } from "../../admin/users/style";
 import { isValidCpf } from "../../../config/regex";
+import { addClient } from "../../../services/apiExitLag/addClient.js";
 
 type ILocalAddUserProps = {
     open: boolean,
@@ -52,12 +53,12 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
         }else {
             const token = await getTokenExitLag();
             if(token.success){
-                const response = await createUser({token: token.responses.response, email: form.email, name: form.name});
+                const response = await addClient({token: token.responses.response, email: form.email, name: form.name});
                 if(response.data.error === 'Unauthorized'){
                     const token = await getToken();
                     if(token){
                         sendToken(token);
-                        await createUser({token: token, email: form.email, name: form.name})
+                        await addClient({token: token, email: form.email, name: form.name});
                     } else {
                         setFetchResponseMessage('error/no-connection-with-API'); 
                     }

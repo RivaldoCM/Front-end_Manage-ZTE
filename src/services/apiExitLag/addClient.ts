@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getContracts } from "./getContracts";
 
-export async function createClient({token, name, email}: {token: string, name: string, email: string}){
+export async function addClient({token, name, email}: {token: string, name: string, email: string}){
     
     const teste = await getContracts(token)
     console.log(teste)

@@ -5,9 +5,9 @@ import { sendToken } from '../../services/apiManageONU/sendTokenExitLag';
 import { getToken } from '../../services/apiExitLag/getToken';
 import { useResponse } from '../../hooks/useResponse';
 import { Box, Checkbox, FormControlLabel, Paper, Switch, Table, TableBody, TableCell, TableContainer, TablePagination, TableRow } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { EnhancedTableHead, EnhancedTableToolbar } from './table';
 import { AddUserExitLagModal } from './modals/addClient';
+import { EditClientExitLagModal } from './modals/editClient';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -20,9 +20,9 @@ function stableSort<T>(array: readonly T[]) {
 export function Exitlag() {
     const { setFetchResponseMessage } = useResponse();
 
-    const [users, setUsers] = useState<any[]>([]);
-    const [selectedUser, setSelectedUser] = useState<any | null>(null);
-    const [filteredUser, setFilteredUser] = useState<any[]>([]);
+    const [clients, setClients] = useState<any[]>([]);
+    const [selectedClient, setSelectedClient] = useState<any | null>(null);
+    const [filteredClient, setFilteredClient] = useState<any[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState<number[]>([]);
@@ -41,8 +41,8 @@ export function Exitlag() {
                         if(token){
                             sendToken(token);
                             const response = await getClients(token);
-                            setUsers(response.data);
-                            setFilteredUser(response.data);
+                            setClients(response.data);
+                            setFilteredClient(response.data);
                         } else {
                             setFetchResponseMessage('error/no-connection-with-API'); 
                         }
@@ -50,31 +50,31 @@ export function Exitlag() {
                         setFetchResponseMessage('error/no-connection-with-API');
                     }
                 } else {
-                    setUsers(response.data);
-                    setFilteredUser(response.data);
+                    setClients(response.data);
+                    setFilteredClient(response.data);
                 }
             } else {
                 const exitLagToken = await getToken();
                 const response = await getClients(exitLagToken!);
-                setUsers(response.data);
-                setFilteredUser(response.data);
+                setClients(response.data);
+                setFilteredClient(response.data);
             }
         }
         users();
     }, []);
 
     const handleSearchValueChange = (value: string) => {
-        const filteredUser = users.filter((el) => {
+        const filteredClient = clients.filter((el) => {
             if(el.name.toLowerCase().startsWith(value.toLowerCase())){
                 setPage(0);
                 return el;
             }
         })
-        setFilteredUser(filteredUser);
+        setFilteredClient(filteredClient);
     }
 
     const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: any) => {
-        setSelectedUser(row);
+        setSelectedClient(row);
     
         if(selected[0] === id){
             //Aqui eu desmarco a checkbox caso clique no usuário que já esta marcado
@@ -93,13 +93,13 @@ export function Exitlag() {
     const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => { setDense(event.target.checked); };
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - filteredUser.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (page) * rowsPerPage - filteredClient.length) : 0;
     const visibleRows = useMemo(() => 
-        stableSort(filteredUser).slice(
+        stableSort(filteredClient).slice(
             page * rowsPerPage,
             page * rowsPerPage + rowsPerPage,
         ),
-        [page, rowsPerPage, filteredUser]
+        [page, rowsPerPage, filteredClient]
     );
 
     const handleOpenAddUserModal = () => setOpenAddUserModal(true);
@@ -159,7 +159,8 @@ export function Exitlag() {
                                     <TableCell align="right">{row.client.email}</TableCell>
                                     <TableCell align="right">{row.client.email}</TableCell>
                                     <TableCell align="right">{row.active === 1 ? 'Ativo' : 'Inativo'}</TableCell>
-                                    <TableCell align="right">{row.client.lastLogin}</TableCell>                                </TableRow>
+                                    <TableCell align="right">{row.client.lastLogin}</TableCell>
+                                </TableRow>
                             );
                         })}
                         {emptyRows > 0 && (
@@ -177,7 +178,7 @@ export function Exitlag() {
                 <TablePagination
                     rowsPerPageOptions={[10, 15, 25]}
                     component="div"
-                    count={filteredUser.length}
+                    count={filteredClient.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -194,6 +195,15 @@ export function Exitlag() {
                     <AddUserExitLagModal
                         open={openAddUserModal}
                         handleClose={handleCloseAddUserModal}
+                    />
+                )
+            }
+            {
+                openEditUserModal && (
+                    <EditClientExitLagModal 
+                        open={openEditUserModal}
+                        selectedClient={selectedClient}
+                        handleClose={handleCloseEditUserModal}
                     />
                 )
             }

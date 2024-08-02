@@ -14,18 +14,21 @@ import { editClient } from "../../../services/apiExitLag/editClient";
 
 type ILocalAddUserProps = {
     open: boolean,
-    selectedUser: {
-        email: string,
-        status: string,
+    selectedClient: {
+        client: {
+            email: string,
+            status: string,
+        },
+        active: number
     },
     handleClose: () => void
 }
 
-export function AddUserExitLagModal(props: ILocalAddUserProps){
+export function EditClientExitLagModal(props: ILocalAddUserProps){
     const { setFetchResponseMessage } = useResponse();
 
     const [form, setForm] = useState({
-        status: '',
+        status: props.selectedClient.active === 1 ? 'Active' : 'Inactive',
     });
 
     const handleFormChange = (e: SelectChangeEvent<string>) => {
@@ -37,15 +40,14 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
 
     const handleSubmit = async (e: React.FormEvent) =>{
         e.preventDefault();
-
         const token = await getTokenExitLag();
         if(token.success){
-            const response = await editClient({token: token.responses.response, email: props.selectedUser.email, status: ''});
+            const response = await editClient({token: token.responses.response, email: props.selectedClient.client.email, status: form.status});
             if(response.data.error === 'Unauthorized'){
                 const token = await getToken();
                 if(token){
                     sendToken(token);
-                    await editClient({token: token, email: props.selectedUser.email, status: ''})
+                    await editClient({token: token, email: props.selectedClient.client.email, status: form.status})
                 } else {
                     setFetchResponseMessage('error/no-connection-with-API'); 
                 }
@@ -62,16 +64,16 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
         >
             <NewUserWrapper onSubmit={handleSubmit}>
                 <h3>Editar Cliente</h3>
-                <FormControl fullWidth sx={{ mt: 2 }}>
-                    <InputLabel>Nível de Acesso</InputLabel>
+                <FormControl fullWidth sx={{ mt: 3, mb: 2, width: '200px' }}>
+                    <InputLabel>Status</InputLabel>
                         <Select
                             label="Status"
                             name="status"
                             value={form.status}
                             onChange={handleFormChange}
                         >
-                            <MenuItem value='Active'>Ativo</MenuItem>
-                            <MenuItem value='Inactive'>Inativo</MenuItem>
+                            <MenuItem value="Active">Ativo</MenuItem>
+                            <MenuItem value="Inactive">Inativo</MenuItem>
                         </Select>
                     </FormControl>
                 <div className="flex">
