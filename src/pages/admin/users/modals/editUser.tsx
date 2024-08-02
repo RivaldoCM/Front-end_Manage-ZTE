@@ -98,30 +98,30 @@ export function EditUser(props: IEditUser){
                 />
                 <FormControl fullWidth sx={{ mt: 2 }}>
                     <InputLabel>Nível de Acesso</InputLabel>
-                        <Select
-                            label="Nível de Acesso"
-                            name="accessLevel"
-                            value={form.accessLevel}
-                            onChange={handleFormChange}
-                        >
-                            <MenuItem value={1}>Call Center</MenuItem>
-                            <MenuItem value={3}>Supervisor Call Center</MenuItem>
-                            <MenuItem value={10}>Tecnicos</MenuItem>
-                            <MenuItem value={14}>NOC</MenuItem>
-                            <MenuItem value={16}>CGR</MenuItem>
-                            <MenuItem value={17}>Administrador</MenuItem>
-                            <MenuItem value={2}>Consultoria</MenuItem>
-                            <MenuItem value={4}>Faturamento</MenuItem>
-                            <MenuItem value={5}>Supervisor Faturamento</MenuItem>
-                            <MenuItem value={6}>Comercial</MenuItem>
-                            <MenuItem value={7}>Supervisor Comercial</MenuItem>
-                            <MenuItem value={8}>Loja</MenuItem>
-                            <MenuItem value={9}>Supervisor Loja</MenuItem>
-                            <MenuItem value={11}>Cobrança</MenuItem>
-                            <MenuItem value={12}>Supervisor Cobrança</MenuItem>
-                            <MenuItem value={13}>Retenção</MenuItem>
-                        </Select>
-                    </FormControl>
+                    <Select
+                        label="Nível de Acesso"
+                        name="accessLevel"
+                        value={form.accessLevel}
+                        onChange={handleFormChange}
+                    >
+                        <MenuItem value={1}>Call Center</MenuItem>
+                        <MenuItem value={3}>Supervisor Call Center</MenuItem>
+                        <MenuItem value={10}>Tecnicos</MenuItem>
+                        <MenuItem value={14}>NOC</MenuItem>
+                        <MenuItem value={16}>CGR</MenuItem>
+                        <MenuItem value={17}>Administrador</MenuItem>
+                        <MenuItem value={2}>Consultoria</MenuItem>
+                        <MenuItem value={4}>Faturamento</MenuItem>
+                        <MenuItem value={5}>Supervisor Faturamento</MenuItem>
+                        <MenuItem value={6}>Comercial</MenuItem>
+                        <MenuItem value={7}>Supervisor Comercial</MenuItem>
+                        <MenuItem value={8}>Loja</MenuItem>
+                        <MenuItem value={9}>Supervisor Loja</MenuItem>
+                        <MenuItem value={11}>Cobrança</MenuItem>
+                        <MenuItem value={12}>Supervisor Cobrança</MenuItem>
+                        <MenuItem value={13}>Retenção</MenuItem>
+                    </Select>
+                </FormControl>
                 <FormControl fullWidth sx={{ mt: 2 }}>
                     <InputLabel>Status</InputLabel>
                     <Select

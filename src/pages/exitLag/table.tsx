@@ -51,6 +51,12 @@ const headCells: readonly HeadCell[] = [
         disablePadding: false,
         label: 'Status',
     },
+    {
+        id: 5,
+        numeric: true,
+        disablePadding: false,
+        label: 'Último Login',
+    },
 ];
 
 export function EnhancedTableHead(){
@@ -113,7 +119,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     variant="h6"
                     component="div"
                 >
-                    Usuários
+                    Clientes ExitLag
                 </Typography>
             )}
             {numSelected > 0 ? (

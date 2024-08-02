@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { getTokenExitLag } from '../../services/apiManageONU/getTokenExitlag';
-import { getExitLagUsers } from '../../services/apiExitLag/getUser';
+import { getClients } from '../../services/apiExitLag/getClients';
 import { sendToken } from '../../services/apiManageONU/sendTokenExitLag';
 import { getToken } from '../../services/apiExitLag/getToken';
 import { useResponse } from '../../hooks/useResponse';
@@ -34,14 +34,15 @@ export function Exitlag() {
         async function users(){
             const token = await getTokenExitLag();
             if(token && token.success){
-                const response = await getExitLagUsers(token.responses.response);
+                const response = await getClients(token.responses.response);
                 if(response.response){
                     if(response.response.data.error==='Unauthorized'){
                         const token = await getToken();
                         if(token){
                             sendToken(token);
-                            const response = await getExitLagUsers(token);
+                            const response = await getClients(token);
                             setUsers(response.data);
+                            setFilteredUser(response.data);
                         } else {
                             setFetchResponseMessage('error/no-connection-with-API'); 
                         }
@@ -50,11 +51,13 @@ export function Exitlag() {
                     }
                 } else {
                     setUsers(response.data);
+                    setFilteredUser(response.data);
                 }
             } else {
                 const exitLagToken = await getToken();
-                const response = await getExitLagUsers(exitLagToken!);
+                const response = await getClients(exitLagToken!);
                 setUsers(response.data);
+                setFilteredUser(response.data);
             }
         }
         users();
@@ -108,7 +111,7 @@ export function Exitlag() {
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar
-                    numSelected={selected.length} 
+                    numSelected={selected.length}
                     onOpenAddUserModal={handleOpenAddUserModal}
                     onOpenEditUserModal={handleOpenEditUserModal}
                     onInputValueChange={handleSearchValueChange}
@@ -151,11 +154,12 @@ export function Exitlag() {
                                         scope="row"
                                         padding="none"
                                     >
-                                        {row.name}
+                                        {row.client.firstName}
                                     </TableCell>
-                                    <TableCell align="right">{row.email}</TableCell>
-                                    <TableCell align="right">{row.status}</TableCell>
-                                </TableRow>
+                                    <TableCell align="right">{row.client.email}</TableCell>
+                                    <TableCell align="right">{row.client.email}</TableCell>
+                                    <TableCell align="right">{row.active === 1 ? 'Ativo' : 'Inativo'}</TableCell>
+                                    <TableCell align="right">{row.client.lastLogin}</TableCell>                                </TableRow>
                             );
                         })}
                         {emptyRows > 0 && (
@@ -185,7 +189,6 @@ export function Exitlag() {
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
                 label="Modo compacto"
             />
-            
             {
                 openAddUserModal && (
                     <AddUserExitLagModal

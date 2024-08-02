@@ -3,7 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 import { useState } from "react";
 import { getTokenExitLag } from "../../../services/apiManageONU/getTokenExitlag";
-import { createUser } from "../../../services/apiExitLag/createUser";
+import { createUser } from "../../../services/apiExitLag/createClient";
 import { getToken } from "../../../services/apiExitLag/getToken";
 import { sendToken } from "../../../services/apiManageONU/sendTokenExitLag";
 import { useResponse } from "../../../hooks/useResponse";
@@ -78,13 +78,15 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                 <FormControl>
                     <TextField
                         required
+                        fullWidth
                         label="Nome"
                         name="name"
                         onChange={handleFormChange}
-                        sx={{ mt: 2 }}
+                        sx={{ mt: 2, width:'300px' }}
                     />
                     <TextField
                         required
+                        fullWidth
                         label="CPF"
                         name="cpf"
                         onChange={handleFormChange}
@@ -92,6 +94,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                     />
                     <TextField
                         required
+                        fullWidth
                         label="E-mail"
                         name="email"
                         onChange={handleFormChange}
@@ -99,6 +102,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                     />
                     <TextField
                         required
+                        fullWidth
                         label="Confirme seu E-mail"
                         name="confirmEmail"
                         onChange={handleFormChange}
