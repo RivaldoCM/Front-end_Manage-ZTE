@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function getTokenExitLag():Promise<IResponseData|IResponseError>{
+export async function getStoredExitLagToken():Promise<IResponseData|IResponseError>{
     const res = await axios({
         method: 'get',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/exitLag`,
@@ -10,7 +10,7 @@ export async function getTokenExitLag():Promise<IResponseData|IResponseError>{
         },
     }).then((response) => {
         return response.data;
-    }).catch(() =>{
+    }).catch(() => {
         return null;
     });
     return res;

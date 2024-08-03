@@ -8,10 +8,15 @@ export async function getClients(token:string){
             'Authorization': `Bearer ${token}`
         },
     }).then((response) => {
-        console.log(response.data)
-        return response.data;
-    }).catch(async (error) =>{
-        return error;
+        return {
+            success: true,
+            data: response.data
+        }
+    }).catch((error) => {
+        if(error.response && error.response.data.error==='Unauthorized'){
+            return {success: false, data: null}
+        }
+        return null;
     });
     return res;
 }

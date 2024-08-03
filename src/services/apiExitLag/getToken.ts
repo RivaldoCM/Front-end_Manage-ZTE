@@ -10,7 +10,7 @@ export async function getToken():Promise<string | null>{
         }
     }).then((response) => {
         return response.data.token;
-    }).catch(() =>{
+    }).catch(() => {
         return null;
     });
     return res;

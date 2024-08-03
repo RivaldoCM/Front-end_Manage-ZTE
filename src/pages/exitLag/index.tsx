@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { getTokenExitLag } from '../../services/apiManageONU/getTokenExitlag';
 import { getClients } from '../../services/apiExitLag/getClients';
 import { sendToken } from '../../services/apiManageONU/sendTokenExitLag';
 import { getToken } from '../../services/apiExitLag/getToken';
@@ -8,6 +7,7 @@ import { Box, Checkbox, FormControlLabel, Paper, Switch, Table, TableBody, Table
 import { EnhancedTableHead, EnhancedTableToolbar } from './table';
 import { AddUserExitLagModal } from './modals/addClient';
 import { EditClientExitLagModal } from './modals/editClient';
+import { getStoredExitLagToken } from '../../services/apiManageONU/getTokenExitlag';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -32,32 +32,40 @@ export function Exitlag() {
 
     useEffect(() => {
         async function users(){
-            const token = await getTokenExitLag();
+            const token = await getStoredExitLagToken();
             if(token && token.success){
                 const response = await getClients(token.responses.response);
-                if(response.response){
-                    if(response.response.data.error==='Unauthorized'){
+                if(response){
+                    if(response.success){
+                        setClients(response.data.data);
+                        setFilteredClient(response.data.data);
+                    } else {
                         const token = await getToken();
                         if(token){
                             sendToken(token);
                             const response = await getClients(token);
-                            setClients(response.data);
-                            setFilteredClient(response.data);
-                        } else {
-                            setFetchResponseMessage('error/no-connection-with-API'); 
+                            if(response?.success){
+                                setClients(response.data.data);
+                                setFilteredClient(response.data.data);
+                                return;
+                            }
                         }
-                    } else {
                         setFetchResponseMessage('error/no-connection-with-API');
                     }
                 } else {
-                    setClients(response.data);
-                    setFilteredClient(response.data);
+                    setFetchResponseMessage('error/no-connection-with-API');
                 }
             } else {
                 const exitLagToken = await getToken();
-                const response = await getClients(exitLagToken!);
-                setClients(response.data);
-                setFilteredClient(response.data);
+                if(exitLagToken){
+                    const response = await getClients(exitLagToken);
+                    if(response && response.success){
+                        setClients(response.data.data);
+                        setFilteredClient(response.data.data);
+                        return;
+                    }
+                }
+                setFetchResponseMessage('error/no-connection-with-API');
             }
         }
         users();

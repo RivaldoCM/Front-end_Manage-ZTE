@@ -3,7 +3,7 @@ import { useState } from "react";
 import { FormControl, IconButton, Modal, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
-import { getTokenExitLag } from "../../../services/apiManageONU/getTokenExitlag";
+import { getStoredExitLagToken } from "../../../services/apiManageONU/getTokenExitlag";
 
 import { getToken } from "../../../services/apiExitLag/getToken.js";
 import { sendToken } from "../../../services/apiManageONU/sendTokenExitLag.js";
@@ -51,7 +51,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
         }else if(form.email !== form.confirmEmail){
 
         }else {
-            const token = await getTokenExitLag();
+            const token = await getStoredExitLagToken();
             if(token.success){
                 const response = await addClient({token: token.responses.response, email: form.email, name: form.name});
                 if(response.data.error === 'Unauthorized'){

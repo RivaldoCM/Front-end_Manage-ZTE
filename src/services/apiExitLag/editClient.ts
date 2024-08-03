@@ -15,10 +15,9 @@ export async function editClient({token, email, status}: {token: string, email: 
             status: status
         }]
     }).then((response) => {
-        console.log(response)
         return response;
     }).catch(async (error) => {
-        return error.response;
+        return error.response.data;
     });
     return res;
 }

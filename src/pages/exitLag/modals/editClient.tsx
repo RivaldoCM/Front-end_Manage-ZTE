@@ -4,13 +4,13 @@ import { FormControl, IconButton, InputLabel, MenuItem, Modal, Select, SelectCha
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 
-import { getTokenExitLag } from "../../../services/apiManageONU/getTokenExitlag";
 import { getToken } from "../../../services/apiExitLag/getToken";
 import { sendToken } from "../../../services/apiManageONU/sendTokenExitLag";
 import { useResponse } from "../../../hooks/useResponse";
 
 import { NewUserWrapper } from "../../admin/users/style";
 import { editClient } from "../../../services/apiExitLag/editClient";
+import { getStoredExitLagToken } from "../../../services/apiManageONU/getTokenExitlag";
 
 type ILocalAddUserProps = {
     open: boolean,
@@ -40,8 +40,8 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
 
     const handleSubmit = async (e: React.FormEvent) =>{
         e.preventDefault();
-        const token = await getTokenExitLag();
-        if(token.success){
+        const token = await getStoredExitLagToken();
+        if(token && token.success){
             const response = await editClient({token: token.responses.response, email: props.selectedClient.client.email, status: form.status});
             if(response.data.error === 'Unauthorized'){
                 const token = await getToken();
@@ -52,7 +52,15 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
                     setFetchResponseMessage('error/no-connection-with-API'); 
                 }
             } else {
-                console.log(response)
+                setFetchResponseMessage('error/no-connection-with-API'); 
+            }
+        } else {
+            const token = await getToken();
+            if(token){
+                sendToken(token);
+                await editClient({token: token, email: props.selectedClient.client.email, status: form.status})
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API'); 
             }
         }
     }
