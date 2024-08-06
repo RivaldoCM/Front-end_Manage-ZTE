@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { FormControl, IconButton, Modal, TextField } from "@mui/material";
+import { CircularProgress, FormControl, IconButton, Modal, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 import { getStoredExitLagToken } from "../../../services/apiManageONU/getTokenExitlag";
@@ -11,6 +11,7 @@ import { useResponse } from "../../../hooks/useResponse.js";
 import { NewUserWrapper } from "../../admin/users/style";
 import { isValidCpf, isValidEmail } from "../../../config/regex";
 import { addClient } from "../../../services/apiExitLag/addClient.js";
+import { useLoading } from "../../../hooks/useLoading.js";
 
 type ILocalAddUserProps = {
     open: boolean,
@@ -22,6 +23,7 @@ type ILocalAddUserProps = {
 }
 
 export function AddUserExitLagModal(props: ILocalAddUserProps){
+    const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
 
     const [form, setForm] = useState({
@@ -53,12 +55,14 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
         }else if(!form.email.match(isValidEmail)){
             setFetchResponseMessage('error/Invalid-format-email');
         } else {
+            startLoading();
             const token = await getStoredExitLagToken();
             if(token && token.success){
                 const response = await addClient({token: token.responses.response, email: form.email, name: form.name});
                 if(response && response.success){
                     setFetchResponseMessage('success/data-updated');
                     props.handleClose();
+                    stopLoading();
                     return;
                 } else {
                     const token = await getToken();
@@ -68,6 +72,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                         if(resNewToken && resNewToken.success){
                             setFetchResponseMessage('success/data-updated');
                             props.handleClose();
+                            stopLoading();
                             return;
                         }
                     } else {
@@ -82,6 +87,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                     if(response && response.success){
                         setFetchResponseMessage('success/data-updated');
                         props.handleClose();
+                        stopLoading();
                         return;
                     }
                 } else {
@@ -105,7 +111,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                         label="Nome"
                         name="name"
                         onChange={handleFormChange}
-                        sx={{ mt: 2 }}
+                        sx={{ mt: 2, minWidth: '300px' }}
                     />
                     <TextField
                         required
@@ -113,7 +119,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                         label="CPF"
                         name="cpf"
                         onChange={handleFormChange}
-                        sx={{ mt: 2 }}
+                        sx={{ mt: 2}}
                     />
                     <TextField
                         required
@@ -133,14 +139,21 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                         sx={{ mt: 2 }}
                     />
                 </FormControl>
-                <div className="flex">
-                    <IconButton color="success" type="submit">
-                        <DoneIcon />
-                    </IconButton>
-                    <IconButton color="error" onClick={props.handleClose}>
-                        <CloseIcon />
-                    </IconButton>
-                </div>
+                {
+                    isLoading ?
+                    <div className="flex">
+                        <CircularProgress size={24} sx={{mt: 1}}/>
+                    </div>
+                    :
+                    <div className="flex">
+                        <IconButton color="success" type="submit">
+                            <DoneIcon />
+                        </IconButton>
+                        <IconButton color="error" onClick={props.handleClose}>
+                            <CloseIcon />
+                        </IconButton>
+                    </div>
+                }
             </NewUserWrapper>
         </Modal>
     )

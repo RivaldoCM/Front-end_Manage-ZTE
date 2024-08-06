@@ -78,29 +78,33 @@ export function Exitlag() {
                     setFilteredClient(response.data.data);
                     return;
                 }
+            } else {
+                const exitLagToken = await getToken();
+                if(exitLagToken){
+                    const response = await getClients(exitLagToken);
+                    if(response && response.success){
+                        setClients(response.data.data);
+                        setFilteredClient(response.data.data);
+                        return;
+                    }
+                }
             }
         }
         updateClients();
     }, [openEditUserModal === false, openAddUserModal === false]);
 
     const handleSearchValueChange = (value: string) => {
-        const filteredByName = clients.filter((el) => {
+        const filtered = clients.filter((el) => {
             if(el.client.firstName.toLowerCase().startsWith(value.toLowerCase())){
-                setPage(0);
                 return el;
             }
+
+            if(el.client.email.toLowerCase().startsWith(value.toLowerCase())){
+                return el;
+            }
+            setPage(0);
         });
-        if(filteredByName.length < 1){
-            const filteredByEmail = clients.filter((el) => {
-                if(el.client.email.toLowerCase().startsWith(value.toLowerCase())){
-                    setPage(0);
-                    return el;
-                }
-            });
-            setFilteredClient(filteredByEmail);
-            return;
-        }
-        setFilteredClient(filteredByName);
+        setFilteredClient(filtered);
     }
 
     const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: any) => {

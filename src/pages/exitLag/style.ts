@@ -13,7 +13,6 @@ export const ModalContent = styled.div`
     align-items: center;
 `;
 
-
 export const Button = styled.button`
     padding: 10px 20px;
     font-size: 16px;

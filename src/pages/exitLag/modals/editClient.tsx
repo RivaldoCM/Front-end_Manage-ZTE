@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { FormControl, IconButton, InputLabel, MenuItem, Modal, Select, SelectChangeEvent } from "@mui/material";
+import { CircularProgress, FormControl, IconButton, InputLabel, MenuItem, Modal, Select, SelectChangeEvent } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 
@@ -11,6 +11,7 @@ import { useResponse } from "../../../hooks/useResponse";
 import { NewUserWrapper } from "../../admin/users/style";
 import { editClient } from "../../../services/apiExitLag/editClient";
 import { getStoredExitLagToken } from "../../../services/apiManageONU/getTokenExitlag";
+import { useLoading } from "../../../hooks/useLoading";
 
 type ILocalAddUserProps = {
     open: boolean,
@@ -26,6 +27,7 @@ type ILocalAddUserProps = {
 
 export function EditClientExitLagModal(props: ILocalAddUserProps){
     const { setFetchResponseMessage } = useResponse();
+    const { isLoading, startLoading, stopLoading } = useLoading();
 
     const [form, setForm] = useState({
         status: props.selectedClient.active === 1 ? 'Active' : 'Inactive',
@@ -40,11 +42,13 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
 
     const handleSubmit = async (e: React.FormEvent) =>{
         e.preventDefault();
+        startLoading();
         const token = await getStoredExitLagToken();
         if(token && token.success){
             const response = await editClient({token: token.responses.response, email: props.selectedClient.client.email, status: form.status});
                 if(response && response.success){
                     props.handleClose();
+                    stopLoading();
                     return;
                 } else {
                     const token = await getToken();
@@ -53,6 +57,7 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
                         const response = await editClient({token: token, email: props.selectedClient.client.email, status: form.status});
                         if(response && response.success){
                             props.handleClose();
+                            stopLoading();
                             return;
                         }
                     }
@@ -65,6 +70,7 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
                 const response = await editClient({token: token, email: props.selectedClient.client.email, status: form.status});
                 if(response && response.success){
                     props.handleClose();
+                    stopLoading();
                     return;
                 }
             }
@@ -91,14 +97,21 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
                             <MenuItem value="Inactive">Inativo</MenuItem>
                         </Select>
                     </FormControl>
-                <div className="flex">
-                    <IconButton color="success" type="submit">
-                        <DoneIcon />
-                    </IconButton>
-                    <IconButton color="error" onClick={props.handleClose}>
-                        <CloseIcon />
-                    </IconButton>
-                </div>
+                {
+                isLoading ?
+                    <div className="flex">
+                        <CircularProgress size={24} sx={{mt: 1}} />
+                    </div>
+                    :
+                    <div className="flex">
+                        <IconButton color="success" type="submit">
+                            <DoneIcon />
+                        </IconButton>
+                        <IconButton color="error" onClick={props.handleClose}>
+                            <CloseIcon />
+                        </IconButton>
+                    </div>
+                }
             </NewUserWrapper>
         </Modal>
     )
