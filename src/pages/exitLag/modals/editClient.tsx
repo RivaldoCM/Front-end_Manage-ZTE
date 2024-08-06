@@ -43,25 +43,32 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
         const token = await getStoredExitLagToken();
         if(token && token.success){
             const response = await editClient({token: token.responses.response, email: props.selectedClient.client.email, status: form.status});
-            if(response.data.error === 'Unauthorized'){
-                const token = await getToken();
-                if(token){
-                    sendToken(token);
-                    await editClient({token: token, email: props.selectedClient.client.email, status: form.status})
+                if(response && response.success){
+                    props.handleClose();
+                    return;
                 } else {
+                    const token = await getToken();
+                    if(token){
+                        sendToken(token);
+                        const response = await editClient({token: token, email: props.selectedClient.client.email, status: form.status});
+                        if(response && response.success){
+                            props.handleClose();
+                            return;
+                        }
+                    }
                     setFetchResponseMessage('error/no-connection-with-API'); 
                 }
-            } else {
                 setFetchResponseMessage('error/no-connection-with-API'); 
-            }
         } else {
             const token = await getToken();
             if(token){
-                sendToken(token);
-                await editClient({token: token, email: props.selectedClient.client.email, status: form.status})
-            } else {
-                setFetchResponseMessage('error/no-connection-with-API'); 
+                const response = await editClient({token: token, email: props.selectedClient.client.email, status: form.status});
+                if(response && response.success){
+                    props.handleClose();
+                    return;
+                }
             }
+            setFetchResponseMessage('error/no-connection-with-API'); 
         }
     }
 

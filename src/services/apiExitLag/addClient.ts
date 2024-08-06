@@ -1,12 +1,6 @@
 import axios from "axios";
-import { getContracts } from "./getContracts";
 
 export async function addClient({token, name, email}: {token: string, name: string, email: string}){
-    
-    const teste = await getContracts(token)
-    console.log(teste)
-
-    
     const res = await axios({
         method: 'POST',
         url: `https://stg-providers-api.exitlag.net/user/register`,
@@ -22,10 +16,15 @@ export async function addClient({token, name, email}: {token: string, name: stri
             externalId: '1'
         }]
     }).then((response) => {
-        console.log(response)
-        return response;
+        return {
+            success: true,
+            data: response.data
+        }
     }).catch(async (error) => {
-        return error.response;
+        if(error.response && error.response.data.error==='Unauthorized'){
+            return {success: false, data: null}
+        }
+        return null;
     });
     return res;
 }

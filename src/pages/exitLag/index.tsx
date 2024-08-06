@@ -27,34 +27,31 @@ export function Exitlag() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState<number[]>([]);
     const [dense, setDense] = useState(false);
-    const [openAddUserModal, setOpenAddUserModal] = useState(false);
-    const [openEditUserModal, setOpenEditUserModal] = useState(false);
+    const [openAddUserModal, setOpenAddUserModal] = useState<null | boolean>(null);
+    const [openEditUserModal, setOpenEditUserModal] = useState<null | boolean>(null);
 
     useEffect(() => {
         async function users(){
             const token = await getStoredExitLagToken();
             if(token && token.success){
                 const response = await getClients(token.responses.response);
-                if(response){
-                    if(response.success){
-                        setClients(response.data.data);
-                        setFilteredClient(response.data.data);
-                    } else {
-                        const token = await getToken();
-                        if(token){
-                            sendToken(token);
-                            const response = await getClients(token);
-                            if(response?.success){
-                                setClients(response.data.data);
-                                setFilteredClient(response.data.data);
-                                return;
-                            }
-                        }
-                        setFetchResponseMessage('error/no-connection-with-API');
-                    }
+                if(response && response.success){
+                    setClients(response.data.data);
+                    setFilteredClient(response.data.data);
+                    return;
                 } else {
-                    setFetchResponseMessage('error/no-connection-with-API');
+                    const token = await getToken();
+                    if(token){
+                        sendToken(token);
+                        const response = await getClients(token);
+                        if(response?.success){
+                            setClients(response.data.data);
+                            setFilteredClient(response.data.data);
+                            return;
+                        }
+                    }
                 }
+                setFetchResponseMessage('error/no-connection-with-API');
             } else {
                 const exitLagToken = await getToken();
                 if(exitLagToken){
@@ -71,21 +68,45 @@ export function Exitlag() {
         users();
     }, []);
 
+    useEffect(() => {
+        async function updateClients(){
+            const token = await getStoredExitLagToken();
+            if(token && token.success){
+                const response = await getClients(token.responses.response);
+                if(response && response.success){
+                    setClients(response.data.data);
+                    setFilteredClient(response.data.data);
+                    return;
+                }
+            }
+        }
+        updateClients();
+    }, [openEditUserModal === false, openAddUserModal === false]);
+
     const handleSearchValueChange = (value: string) => {
-        const filteredClient = clients.filter((el) => {
-            if(el.name.toLowerCase().startsWith(value.toLowerCase())){
+        const filteredByName = clients.filter((el) => {
+            if(el.client.firstName.toLowerCase().startsWith(value.toLowerCase())){
                 setPage(0);
                 return el;
             }
-        })
-        setFilteredClient(filteredClient);
+        });
+        if(filteredByName.length < 1){
+            const filteredByEmail = clients.filter((el) => {
+                if(el.client.email.toLowerCase().startsWith(value.toLowerCase())){
+                    setPage(0);
+                    return el;
+                }
+            });
+            setFilteredClient(filteredByEmail);
+            return;
+        }
+        setFilteredClient(filteredByName);
     }
 
     const handleClick = (_event: React.MouseEvent<unknown>, id: number, row: any) => {
         setSelectedClient(row);
     
         if(selected[0] === id){
-            //Aqui eu desmarco a checkbox caso clique no usuário que já esta marcado
             setSelected([]);
             return;
         }

@@ -187,6 +187,16 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Você não tem permissão para realizar está função.',
                 severityStatus: 'error'
             }
+        case 'error/email-mismatch':
+            return{
+                responseMessage: 'Os E-mails não são iguais.',
+                severityStatus: 'error'
+            }
+        case 'success/data-updated':
+            return{
+                responseMessage: 'Dados atualizados com sucesso.',
+                severityStatus: 'success'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',

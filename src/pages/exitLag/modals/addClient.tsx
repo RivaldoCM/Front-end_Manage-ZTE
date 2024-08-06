@@ -9,7 +9,7 @@ import { getToken } from "../../../services/apiExitLag/getToken.js";
 import { sendToken } from "../../../services/apiManageONU/sendTokenExitLag.js";
 import { useResponse } from "../../../hooks/useResponse.js";
 import { NewUserWrapper } from "../../admin/users/style";
-import { isValidCpf } from "../../../config/regex";
+import { isValidCpf, isValidEmail } from "../../../config/regex";
 import { addClient } from "../../../services/apiExitLag/addClient.js";
 
 type ILocalAddUserProps = {
@@ -49,21 +49,43 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
             setFetchResponseMessage('warning/invalid-cpf-input');
             return;
         }else if(form.email !== form.confirmEmail){
-
-        }else {
+            setFetchResponseMessage('error/email-mismatch');
+        }else if(!form.email.match(isValidEmail)){
+            setFetchResponseMessage('error/Invalid-format-email');
+        } else {
             const token = await getStoredExitLagToken();
-            if(token.success){
+            if(token && token.success){
                 const response = await addClient({token: token.responses.response, email: form.email, name: form.name});
-                if(response.data.error === 'Unauthorized'){
+                if(response && response.success){
+                    setFetchResponseMessage('success/data-updated');
+                    props.handleClose();
+                    return;
+                } else {
                     const token = await getToken();
                     if(token){
                         sendToken(token);
-                        await addClient({token: token, email: form.email, name: form.name});
+                        const resNewToken = await addClient({token: token, email: form.email, name: form.name});
+                        if(resNewToken && resNewToken.success){
+                            setFetchResponseMessage('success/data-updated');
+                            props.handleClose();
+                            return;
+                        }
                     } else {
                         setFetchResponseMessage('error/no-connection-with-API'); 
                     }
+                }
+            } else {
+                const token = await getToken();
+                if(token){
+                    sendToken(token);
+                    const response = await addClient({token: token, email: form.email, name: form.name});
+                    if(response && response.success){
+                        setFetchResponseMessage('success/data-updated');
+                        props.handleClose();
+                        return;
+                    }
                 } else {
-                    console.log(response)
+                    setFetchResponseMessage('error/no-connection-with-API'); 
                 }
             }
         }
@@ -83,7 +105,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                         label="Nome"
                         name="name"
                         onChange={handleFormChange}
-                        sx={{ mt: 2, width:'300px' }}
+                        sx={{ mt: 2 }}
                     />
                     <TextField
                         required
