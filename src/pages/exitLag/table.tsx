@@ -44,19 +44,19 @@ const headCells: readonly HeadCell[] = [
         id: 3,
         numeric: true,
         disablePadding: false,
-        label: 'Contrato Voalle',
+        label: 'Status',
     },
     {
         id: 4,
         numeric: true,
         disablePadding: false,
-        label: 'Status',
+        label: 'Último Login',
     },
     {
         id: 5,
         numeric: true,
         disablePadding: false,
-        label: 'Último Login',
+        label: 'Última edição',
     },
 ];
 

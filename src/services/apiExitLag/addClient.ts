@@ -13,7 +13,6 @@ export async function addClient({token, name, email}: {token: string, name: stri
             email: email,
             confirmEmail: email,
             contractId: 164,
-            externalId: '1'
         }]
     }).then((response) => {
         return {

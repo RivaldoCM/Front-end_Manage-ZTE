@@ -8,6 +8,7 @@ import { EnhancedTableHead, EnhancedTableToolbar } from './table';
 import { AddUserExitLagModal } from './modals/addClient';
 import { EditClientExitLagModal } from './modals/editClient';
 import { getStoredExitLagToken } from '../../services/apiManageONU/getTokenExitlag';
+import dayjs from 'dayjs';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -190,9 +191,13 @@ export function Exitlag() {
                                         {row.client.firstName}
                                     </TableCell>
                                     <TableCell align="right">{row.client.email}</TableCell>
-                                    <TableCell align="right">{row.client.email}</TableCell>
                                     <TableCell align="right">{row.active === 1 ? 'Ativo' : 'Inativo'}</TableCell>
-                                    <TableCell align="right">{row.client.lastLogin}</TableCell>
+                                    <TableCell align="right">
+                                        {row.client.lastLogin ? dayjs(row.client.lastLogin).format('DD/MM/YYYY - HH:mm:ss'): <></>}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {row.updatedAt ? dayjs(row.updatedAt).format('DD/MM/YYYY - HH:mm:ss'): <></>}
+                                    </TableCell>
                                 </TableRow>
                             );
                         })}

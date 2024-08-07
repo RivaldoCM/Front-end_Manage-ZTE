@@ -11,7 +11,6 @@ export async function getClients(token:string){
             size: 500
         }
     }).then((response) => {
-        console.log(response)
         return {
             success: true,
             data: response.data

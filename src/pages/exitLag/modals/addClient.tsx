@@ -12,6 +12,9 @@ import { NewUserWrapper } from "../../admin/users/style";
 import { isValidCpf, isValidEmail } from "../../../config/regex";
 import { addClient } from "../../../services/apiExitLag/addClient.js";
 import { useLoading } from "../../../hooks/useLoading.js";
+import { useAuth } from "../../../hooks/useAuth.js";
+import { addExitLagLog } from "../../../services/apiManageONU/addExitLagLog.js";
+import { getPeopleId } from "../../../services/apiVoalle/getPeopleId.js";
 
 type ILocalAddUserProps = {
     open: boolean,
@@ -23,6 +26,7 @@ type ILocalAddUserProps = {
 }
 
 export function AddUserExitLagModal(props: ILocalAddUserProps){
+    const { user } = useAuth();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
 
@@ -63,6 +67,10 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                     setFetchResponseMessage('success/data-updated');
                     props.handleClose();
                     stopLoading();
+                    const voalleClient = await getPeopleId(form.cpf);
+                    if(voalleClient){
+                        addExitLagLog({userId: user!.uid, name: voalleClient.name, email: form.email});
+                    }
                     return;
                 } else {
                     const token = await getToken();
@@ -73,6 +81,10 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                             setFetchResponseMessage('success/data-updated');
                             props.handleClose();
                             stopLoading();
+                            const voalleClient = await getPeopleId(form.cpf);
+                            if(voalleClient){
+                                addExitLagLog({userId: user!.uid, name: voalleClient.name, email: form.email});
+                            }
                             return;
                         }
                     } else {
@@ -88,6 +100,10 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                         setFetchResponseMessage('success/data-updated');
                         props.handleClose();
                         stopLoading();
+                        const voalleClient = await getPeopleId(form.cpf);
+                        if(voalleClient){
+                            addExitLagLog({userId: user!.uid, name: voalleClient.name, email: form.email});
+                        }
                         return;
                     }
                 } else {
@@ -116,7 +132,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                     <TextField
                         required
                         fullWidth
-                        label="CPF"
+                        label="CPF do titular do cadastro"
                         name="cpf"
                         onChange={handleFormChange}
                         sx={{ mt: 2}}

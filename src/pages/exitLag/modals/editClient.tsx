@@ -12,6 +12,8 @@ import { NewUserWrapper } from "../../admin/users/style";
 import { editClient } from "../../../services/apiExitLag/editClient";
 import { getStoredExitLagToken } from "../../../services/apiManageONU/getTokenExitlag";
 import { useLoading } from "../../../hooks/useLoading";
+import { updateExitLagLog } from "../../../services/apiManageONU/updateExitLagLog";
+import { useAuth } from "../../../hooks/useAuth";
 
 type ILocalAddUserProps = {
     open: boolean,
@@ -26,6 +28,7 @@ type ILocalAddUserProps = {
 }
 
 export function EditClientExitLagModal(props: ILocalAddUserProps){
+    const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
@@ -58,6 +61,7 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
                         if(response && response.success){
                             props.handleClose();
                             stopLoading();
+                            updateExitLagLog({userId: user!.uid, email: props.selectedClient.client.email});
                             return;
                         }
                     }
