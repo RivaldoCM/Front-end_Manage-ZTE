@@ -1,25 +1,28 @@
-import { Button, CircularProgress, MenuItem, TextField } from "@mui/material";
-import { InputContainer } from "../../../../styles/globalStyles";
+import { useNavigate } from "react-router-dom";
+
 import { useAuth } from "../../../../hooks/useAuth";
 import { useAuthOnu } from "../../../../hooks/useAuthOnu";
 import { useLoading } from "../../../../hooks/useLoading";
 import { useResponse } from "../../../../hooks/useResponse";
-import { useNavigate } from "react-router-dom";
 
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { IOnu } from "../../../../interfaces/IOnus";
-import { setCorrectOltValues } from "../../../../config/verifyWhichOltIs";
 import { verifyOnuType } from "../../../../config/verifyOnuType";
+import { isValidCpf } from "../../../../config/regex";
+
+import { IOnu } from "../../../../interfaces/IOnus";
+
 import { getPeopleId } from "../../../../services/apiVoalle/getPeopleId";
 import { getConnectionId } from "../../../../services/apiManageONU/getConnectionId";
-import { isValidCpf } from "../../../../config/regex";
-import { authorizationToOlt } from "../../../../services/apiManageONU/authOnu";
+import { writeONU } from "../../../../services/apiManageONU/writeOnu";
 import { updateConnection } from "../../../../services/apiVoalle/updateConnection";
+import { updateLogsOnu } from "../../../../services/apiManageONU/updateLogOnu";
+
+import { InputContainer } from "../../../../styles/globalStyles";
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import { Button, CircularProgress, MenuItem, TextField } from "@mui/material";
 
 export function FHForm({onu}: IOnu){
     const navigate = useNavigate();
     const { user } = useAuth();
-
     const { authOnu, setAuthOnu, setOnus } = useAuthOnu();
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
@@ -34,11 +37,9 @@ export function FHForm({onu}: IOnu){
     const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
-            ip: [setCorrectOltValues(onu, authOnu.ip)],
-            oltId: [setCorrectOltValues(onu, authOnu.oltId)],
+            oltId: onu.oltId,
             typeOnu: verifyOnuType(onu.serialNumber),
-            isPizzaBox: [setCorrectOltValues(onu, authOnu.isPizzaBox)],
-            voalleAccessPointId: [setCorrectOltValues(onu, authOnu.voalleAccessPointId)]
+            voalleAccessPointId: onu.voalleId
         }));
     }
 
@@ -71,11 +72,9 @@ export function FHForm({onu}: IOnu){
                 connectionData.contractId = 0;
             }
             
-            const hasAuth = await authorizationToOlt({
+            const hasAuth = await writeONU({
                 userId: user?.uid,
-                cityId: authOnu.cityId,
-                oltId: authOnu.oltId[0],
-                ip: authOnu.ip,
+                oltId: authOnu.oltId,
                 slot: onu.slot,
                 pon: onu.pon,
                 serialNumber: onu.serialNumber,
@@ -83,6 +82,7 @@ export function FHForm({onu}: IOnu){
                 modelOlt: onu.modelOlt,
                 typeOnu: authOnu.typeOnu,
                 contract: connectionData.contractId,
+                cpf: authOnu.cpf,
                 pppoeUser: authOnu.pppoeUser,
             });
             stopLoading();
@@ -93,11 +93,8 @@ export function FHForm({onu}: IOnu){
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
-                        ip: [],
-                        oltId: [],
-                        cityId: 0,
-                        isPizzaBox: [],
-                        voalleAccessPointId: []
+                        oltId: '',
+                        voalleAccessPointId: ''
                     });
                     return;
                 } else {
@@ -105,8 +102,7 @@ export function FHForm({onu}: IOnu){
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
-                        ip: [],
-                        oltId: [],
+                        oltId: '',
                         cpf: '',
                         pppoeUser: '',
                         pppoePassword: '',
@@ -114,8 +110,7 @@ export function FHForm({onu}: IOnu){
                         wifiPassword: '',
                         typeOnu: '',
                         modelOnu: 'F601',
-                        isPizzaBox: [],
-                        voalleAccessPointId: []
+                        voalleAccessPointId: ''
                     });
                     setTimeout(() => {
                         navigate('/my_auth_onus');
@@ -127,7 +122,7 @@ export function FHForm({onu}: IOnu){
             }
 
             if(connectionData.connectionId){
-                updateConnection({
+                const response = await updateConnection({
                     connectionId: connectionData.connectionId,
                     pppoeUser: authOnu.pppoeUser,
                     pppoePassword: connectionData.password,
@@ -139,7 +134,9 @@ export function FHForm({onu}: IOnu){
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
                 });
-                
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
+            } else {
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
             }
         }
     }

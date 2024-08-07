@@ -37,7 +37,7 @@ export function EditMassive(props: LocalEditMassive){
         user: user?.uid,
         massiveId: props.massive.id,
         cityId: props.massive.Cities.id,
-        forecastReturn: dayjs(props.massive.forecast_return).add(3, 'hour').format('DD/MM/YY - HH:mm') + 'h',
+        forecastReturn:  props.massive.forecast_return ? dayjs(props.massive.forecast_return).add(3, 'hour').format('DD/MM/YY - HH:mm') + 'h': '',
         failureTime: dayjs(props.massive.failure_date).add(3, 'hour').format('DD/MM/YY - HH:mm') + 'h',
         forecastDateToISO: null,
         failureDateToISO: null,
@@ -48,11 +48,13 @@ export function EditMassive(props: LocalEditMassive){
 
     useEffect(()  => {
         const getData = async () => {
-            const res = await getCities();
-            if(res){
-                setCities(res);
+            const response = await getCities();
+            if(response){
+                if(response.success){
+                    setCities(response.responses.response);
+                }
             } else {
-                setCities([]);
+                setFetchResponseMessage('error/no-connection-with-API');
             }
         }
         getData();
@@ -135,6 +137,7 @@ export function EditMassive(props: LocalEditMassive){
                         <MenuItem value="Lentidão">Lentidão</MenuItem>
                         <MenuItem value="CTO Parado">CTO Parado</MenuItem>
                         <MenuItem value="Manutenção">Manutenção</MenuItem>
+                        <MenuItem value="Manutenção">Troca de Poste</MenuItem>
                         <MenuItem value="Queda">Queda</MenuItem>
                     </Select>
                 </FormControl>

@@ -4,17 +4,19 @@ type IOnuLogs = {
     slot: number;
     pon: number;
     serial_onu: string;
+    cpf: string;
     pppoe: string;
-    rx_power: string;
-    onuRx_power: string;
+    rx_olt: string;
+    rx_onu: string;
     is_auth: boolean;
+    is_updated: boolean;
     User:{
         name: string;
     }
     City: {
         name: string
     },
-    Olt: {
+    Olts: {
         name: string;
     }
 }
@@ -26,17 +28,19 @@ type IOnuLogsProps = {
         slot: number;
         pon: number;
         serial_onu: string;
+        cpf: string;
         pppoe: string;
-        rx_power: string;
-        onuRx_power: string;
+        rx_olt: string;
+        rx_onu: string;
         is_auth: boolean;
+        is_updated: boolean;
         User:{
             name: string;
         }
         City: {
             name: string
         },
-        Olt: {
+        Olts: {
             name: string;
         }
     }

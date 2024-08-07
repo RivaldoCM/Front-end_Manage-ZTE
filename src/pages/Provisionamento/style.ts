@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     position: relative;
-    align-items: center;
     justify-content: flex-start;
     flex-direction: column;
     width: 100%;
@@ -23,8 +22,7 @@ export const Container = styled.div`
 
 export const Controller = styled.div`
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: flex-start !important;
     width: 100%;
     height: calc(100vh - 68px);
 `

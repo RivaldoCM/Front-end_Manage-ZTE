@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
+import { useAuth } from '../../../hooks/useAuth';
+import { useSocket } from '../../../hooks/useSocket';
 import { useResponse } from '../../../hooks/useResponse';
-import { getUsers } from '../../../services/apiManageONU/getUsers';
+
 import { IUsers } from '../../../interfaces/IUsers';
+
+import { getUsers } from '../../../services/apiManageONU/getUsers';
 
 import { EnhancedTableHead, EnhancedTableToolbar } from './table';
 import { NewUser } from './modals/newUser';
@@ -71,6 +75,8 @@ const renderDepartment = (args: number) => {
 }
 
 export function Users(){
+    const { user } = useAuth();
+    const { socket } = useSocket();
     const { setFetchResponseMessage } = useResponse();
 
     const [users, setUsers] = useState<IUsers[]>([]);
@@ -101,6 +107,16 @@ export function Users(){
         }
         users();
     }, []);
+
+    if(socket){
+        socket.emit('select_room', {
+            uid: user?.uid,
+            room: '/users'
+        });
+        socket.on('update-users', data => {
+            setFilteredUser(data);
+        });
+    }
 
     const handleSearchValueChange = (value: string) => {
         const filteredUser = users.filter((el) => {

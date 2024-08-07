@@ -13,7 +13,7 @@ import { PARKSForm } from "./Forms/parks";
 import { FHForm } from "./Forms/fh";
 
 export function WriteONU(){
-    const { onus } = useAuthOnu(); 
+    const { onus } = useAuthOnu();
 
 	const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 	const [dropDownIndex, setDropDownIndex] = useState(0);
@@ -23,12 +23,12 @@ export function WriteONU(){
         setIsDropDownOpen(!isDropDownOpen);
         setDropDownIndex(index);
     }
-    
+
     const handleShowOnuByType = () => {
         if(onus){
             return onus.map((element, index) => {
                 switch(element.modelOlt){
-                    case 10:
+                    case 'ZTE':
                         return(
                             <Container key={element.serialNumber}>
                                 <div className="onu-callback flex">
@@ -51,7 +51,6 @@ export function WriteONU(){
                                                 onClick={(e) => {
                                                     handleDropDownArrow(e, index);
                                                 }}
-
                                             >
                                                 <Typography>Provisione aqui</Typography>
                                             </AccordionSummary>
@@ -63,7 +62,7 @@ export function WriteONU(){
                                 </div>
                             </Container>
                         );
-                    case 20:
+                    case 'PARKS':
                         return(
                             <Container key={element.serialNumber}>
                                 <div className="onu-callback flex">
@@ -72,7 +71,7 @@ export function WriteONU(){
                                             <ul className="flex">
                                                 <li>Pon: {element.pon}</li>
                                                 <li>Serial: {element.serialNumber}</li>
-                                                <li>Sinal: {element.rxPower}</li>
+                                                <li>Sinal: {element.onuRx}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -97,7 +96,7 @@ export function WriteONU(){
                                 </div>
                             </Container>
                         );
-                    case 30:
+                    case 'FIBERHOME':
                         return(
                             <Container key={element.serialNumber}>
                                 <div className="onu-callback flex">

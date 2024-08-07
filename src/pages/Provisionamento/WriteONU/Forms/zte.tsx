@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useLoading } from '../../../../hooks/useLoading';
@@ -5,15 +6,15 @@ import { useAuth } from '../../../../hooks/useAuth';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
 import { useResponse } from '../../../../hooks/useResponse';
 
-import { setCorrectOltValues } from '../../../../config/verifyWhichOltIs';
 import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
 import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
 import { verifyOnuType } from '../../../../config/verifyOnuType';
 
-import { authorizationToOlt } from '../../../../services/apiManageONU/authOnu';
+import { writeONU } from '../../../../services/apiManageONU/writeOnu';
 import { getPeopleId } from '../../../../services/apiVoalle/getPeopleId';
 import { getConnectionId } from '../../../../services/apiManageONU/getConnectionId';
 import { updateConnection } from '../../../../services/apiVoalle/updateConnection';
+import { updateLogsOnu } from '../../../../services/apiManageONU/updateLogOnu';
 
 import { IOnu } from '../../../../interfaces/IOnus';
 
@@ -40,12 +41,10 @@ export function ZTEForm({onu}: IOnu){
     const handleUpdateOltData = () => {
         setAuthOnu((prevAuthOnu) => ({
             ...prevAuthOnu,
-            ip: [setCorrectOltValues(onu, authOnu.ip)],
-            oltId: [setCorrectOltValues(onu, authOnu.oltId)],
+            oltId: onu.oltId,
             modelOnu: cleanUpModelName(onu.model),
             onuType: verifyOnuType(onu.serialNumber),
-            isPizzaBox: [setCorrectOltValues(onu, authOnu.isPizzaBox)],
-            voalleAccessPointId: [setCorrectOltValues(onu, authOnu.voalleAccessPointId)]
+            voalleAccessPointId: onu.voalleId
         }));
     }
 
@@ -67,7 +66,7 @@ export function ZTEForm({onu}: IOnu){
             const peopleId = await getPeopleId(authOnu.cpf);
             let connectionData = {contractId: 0, connectionId: 0, password: ''}
             
-            if (peopleId){
+            if(peopleId){
                 const response = await getConnectionId(authOnu.cpf, peopleId.id, authOnu.pppoeUser);
                 if(response){
                     if(response.success){
@@ -84,18 +83,15 @@ export function ZTEForm({onu}: IOnu){
                 connectionData.contractId = 0;
             }
 
-            const hasAuth = await authorizationToOlt({
+            const hasAuth = await writeONU({
                 userId: user?.uid,
-                cityId: authOnu.cityId,
-                oltId: authOnu.oltId[0],
-                ip: authOnu.ip,
+                oltId: authOnu.oltId,
                 slot: onu.slot,
                 pon: onu.pon,
-                isPizzaBox: authOnu.isPizzaBox,
                 serialNumber: onu.serialNumber,
-                modelOlt: onu.modelOlt,
                 modelOnu: authOnu.modelOnu,
                 contract: connectionData.contractId,
+                cpf: authOnu.cpf,
                 pppoeUser: authOnu.pppoeUser,
                 pppPass: authOnu.pppoePassword,
                 wifiSSID: authOnu.wifiName,
@@ -109,11 +105,8 @@ export function ZTEForm({onu}: IOnu){
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
-                        ip: [],
-                        oltId: [],
-                        cityId: 0,
-                        isPizzaBox: [],
-                        voalleAccessPointId: []
+                        oltId: '',
+                        voalleAccessPointId: ''
                     });
                     return;
                 } else {
@@ -121,8 +114,7 @@ export function ZTEForm({onu}: IOnu){
                     setOnus([]);
                     setAuthOnu({
                         ...authOnu,
-                        ip: [],
-                        oltId: [],
+                        oltId: '',
                         cpf: '',
                         pppoeUser: '',
                         pppoePassword: '',
@@ -130,8 +122,7 @@ export function ZTEForm({onu}: IOnu){
                         wifiPassword: '',
                         typeOnu: '',
                         modelOnu: 'F601',
-                        isPizzaBox: [],
-                        voalleAccessPointId: []
+                        voalleAccessPointId: ''
                     });
                     setTimeout(() => {
                         navigate('/my_auth_onus');
@@ -144,7 +135,7 @@ export function ZTEForm({onu}: IOnu){
 
             const onuId: number = hasAuth.responses.response.onuId;
             if(connectionData.connectionId){
-                updateConnection({
+                const response = await updateConnection({
                     onuId: onuId,
                     connectionId: connectionData.connectionId,
                     pppoeUser: authOnu.pppoeUser,
@@ -157,20 +148,22 @@ export function ZTEForm({onu}: IOnu){
                     wifiSSID: authOnu.wifiName,
                     wifiPass: authOnu.wifiPassword
                 });
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
+            } else {
+                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
             }
         }
     };
 
     const handleRenderAddicionalConfig = () => {
         const onuModel = cleanUpModelName(onu.model);
-    
         switch(onuModel){
             case 'F680':
             case 'F670L':
             case 'F6600':
             case 'F6600P':
                 return(
-                    <>
+                    <React.Fragment>
                         <InputContainer>
                             <div className="text">
                                 <p>Senha PPPoE: </p>
@@ -216,7 +209,7 @@ export function ZTEForm({onu}: IOnu){
                                 </TextField>
                             </div>
                         </InputContainer>
-                    </>
+                    </React.Fragment>
                 )
             default:
             break;

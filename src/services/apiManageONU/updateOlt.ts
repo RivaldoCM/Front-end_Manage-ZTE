@@ -1,8 +1,7 @@
 import axios from "axios";
-import { IOlt } from "../../interfaces/IOlt.js";
+import { IOltProps } from "../../interfaces/IOlt.js";
 
-export async function editOlt(form: IOlt){
-    form.voalleAccessPointId = form.voalleAccessPointId * 1
+export async function updateOlt(form: IOltProps, vlans: IVlans[]){
     const res = await axios({
         method: 'put',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt`,
@@ -10,12 +9,13 @@ export async function editOlt(form: IOlt){
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
         data:{
-            dataOlt: form
+            dataOlt: form,
+            vlansOlt: vlans
         }
     }).then((response) => {
         return response.data;
-    }).catch((err) =>{
-        return err;
+    }).catch(() =>{
+        return null;
     });
 
     return res;

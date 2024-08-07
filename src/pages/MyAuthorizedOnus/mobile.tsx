@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import { useAuth } from "../../hooks/useAuth";
+import { useSocket } from "../../hooks/useSocket";
 import { useResponse } from "../../hooks/useResponse";
+
 import { getOnuLogs } from "../../services/apiManageONU/getOnuLogs";
 
 import { CardMyOnus, Container, HelpButton } from "./style";
@@ -13,6 +15,7 @@ import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
 
 export function MyAuthorizedOnusMobile(){
     const { user } = useAuth();
+    const { socket } = useSocket();
     const { setFetchResponseMessage } = useResponse();
 
     const [onu, setOnu] = useState<IOnuLogs[]>([]);
@@ -33,6 +36,16 @@ export function MyAuthorizedOnusMobile(){
         };
         getData();
     }, []);
+
+    if(socket){
+        socket.emit('select_room', {
+            uid: user?.uid,
+            room: '/my_auth_onus'
+        });
+        socket.on('update', data => {
+            setOnu(data);
+        });
+    }
 
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -62,7 +75,7 @@ export function MyAuthorizedOnusMobile(){
                     <Typography sx={{ p: 4, background: '#fffff0', color: '#000' }}>
                         Aqui aparecerá as ONU's provisionadas por você nos últimos 2 dias.<br/>
                         <Divider />
-                        Se você provisionou uma ONU agora, pode demorar até 15 segundos para que você consiga vê-la aqui.
+                        Aguarde que os sinais da ONU serão carregados automaticamente alguns segundos após o provisionamento.
                     </Typography>
                 </Popover>
                 <IconButton onClick={() => {window.location.reload()}}>
@@ -79,8 +92,8 @@ export function MyAuthorizedOnusMobile(){
                                     <p>PPPoE: {onu.pppoe}</p>
                                 </div>
                                 <div className="flex">
-                                    <p>Sinal (olt rx): {onu.rx_power}</p>
-                                    <p>Sinal (onu rx): {onu.onuRx_power}</p>
+                                    <p>Sinal (olt rx): {onu.rx_olt}</p>
+                                    <p>Sinal (onu rx): {onu.rx_onu}</p>
                                 </div>
                             </div>
                             <div className="content flex">

@@ -35,9 +35,15 @@ export function FilterMassives({onFilterChange}: any){
         }
 
         (async () => {
-            const cities = await getCities();
-            if (active) {
-                setCities(cities);
+            if(active){
+                const response = await getCities();
+                if(response){
+                    if(response.success){
+                        setCities(response.responses.response);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
             }
         })();
 
@@ -129,6 +135,7 @@ export function FilterMassives({onFilterChange}: any){
                         <MenuItem value="Lentidão">Lentidão</MenuItem>
                         <MenuItem value="CTO Parado">CTO Parado</MenuItem>
                         <MenuItem value="Manutenção">Manutenção</MenuItem>
+                        <MenuItem value="Manutenção">Troca de Poste</MenuItem>
                         <MenuItem value="Queda">Queda</MenuItem>
                     </Select>
                 </FormControl>

@@ -1,9 +1,8 @@
 import axios from "axios";
-import { IOlt } from "../../interfaces/IOlt";
+import { IOltProps } from "../../interfaces/IOlt";
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function addOlt(form: IOlt){
-    // ISSO ACONTECE PQ TODO INPUT RETORNA STRING, E NESTE CASO PRECISA DE NUMBER
-    form.voalleAccessPointId = form.voalleAccessPointId * 1; 
+export async function addOlt(form: IOltProps, vlans: IVlans[]): Promise< IResponseData | IResponseError>{
     const res = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/olt`,
@@ -11,7 +10,8 @@ export async function addOlt(form: IOlt){
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
         data:{
-            newOlt: form
+            data: form,
+            vlans: vlans
         }
     }).then((response) => {
         return response.data;

@@ -12,10 +12,6 @@ export const Form = styled.form`
         gap: .5rem;
         margin-bottom: .5rem;
         flex-wrap: wrap;
-
-        div{
-            width: 300px;
-        }
     }
 
     @media (max-width: 310px){

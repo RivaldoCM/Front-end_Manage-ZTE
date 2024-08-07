@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 
-import NoDataSvg from '../../assets/emptyView.svg?react';
+import Svg from '../../assets/responsive.svg?react';
 
-export function NoData(){
+export function ResponsiveAlert(){
     return(
         <Box 
             display="flex" 
@@ -11,9 +11,9 @@ export function NoData(){
             justifyContent="center" 
             height="100%"
         >
-            <NoDataSvg style={{ width: '50%', height: '50%' }}/>
-            <Typography variant="h5" color="textSecondary">
-                Nenhum massiva aberto. AMÉM?
+            <Svg style={{ width: '50%', height: '50%' }}/>
+            <Typography variant="h6" color="textSecondary">
+                Está tela não suporta as dimensões deste dispositivo.
             </Typography>
         </Box>
     )
