@@ -189,8 +189,8 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
             }
         case 'error/email-mismatch':
             return{
-                responseMessage: 'Os E-mails não são iguais.',
-                severityStatus: 'error'
+                responseMessage: 'Os E-mails devem ser iguais.',
+                severityStatus: 'info'
             }
         case 'success/data-updated':
             return{

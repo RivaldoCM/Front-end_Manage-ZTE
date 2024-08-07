@@ -7,7 +7,11 @@ export async function getClients(token:string){
         headers: {
             'Authorization': `Bearer ${token}`
         },
+        params: {
+            size: 500
+        }
     }).then((response) => {
+        console.log(response)
         return {
             success: true,
             data: response.data
