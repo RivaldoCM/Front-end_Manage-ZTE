@@ -11,6 +11,7 @@ import { IconButton, TableHead } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 
 interface EnhancedTableToolbarProps {
     onOpenAddUserModal: () => void,
@@ -124,6 +125,11 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             )}
             {numSelected > 0 ? (
                 <React.Fragment>
+                    <div>
+                        <IconButton color='secondary' onClick={props.onOpenEditUserModal}>
+                            <DescriptionOutlinedIcon />
+                        </IconButton>
+                    </div>
                     <div>
                         <IconButton color='primary' onClick={props.onOpenEditUserModal}>
                             <EditOutlinedIcon />
