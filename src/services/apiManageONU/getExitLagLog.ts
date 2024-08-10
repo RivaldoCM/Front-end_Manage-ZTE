@@ -8,7 +8,7 @@ export async function getExitLagLog(email: string): Promise<IResponseData | IRes
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
         },
-        data: {
+        params: {
             email: email
         }
     })

@@ -9,6 +9,7 @@ import { AddUserExitLagModal } from './modals/addClient';
 import { EditClientExitLagModal } from './modals/editClient';
 import { getStoredExitLagToken } from '../../services/apiManageONU/getTokenExitlag';
 import dayjs from 'dayjs';
+import { ViewClientLog } from './modals/viewClientLog';
 
 function stableSort<T>(array: readonly T[]) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -29,7 +30,9 @@ export function Exitlag() {
     const [selected, setSelected] = useState<number[]>([]);
     const [dense, setDense] = useState(false);
     const [openAddUserModal, setOpenAddUserModal] = useState<null | boolean>(null);
+    const [openViewLogModal, setOpenViewLogModal] = useState<boolean>(false);
     const [openEditUserModal, setOpenEditUserModal] = useState<null | boolean>(null);
+
 
     useEffect(() => {
         async function users(){
@@ -69,6 +72,8 @@ export function Exitlag() {
         users();
     }, []);
 
+    //A FUNÇÃO ABAIXO REFERE-SE A CADA MODFICAÇÃO FEITA, COLETANDO NOVAMENTE OS DADOS
+    //A FIM DE ATUALIZAR EM TEMPO REAL, VISUALMENTE MELHOR PARA O USUÁRIO.
     useEffect(() => {
         async function updateClients(){
             const token = await getStoredExitLagToken();
@@ -95,6 +100,7 @@ export function Exitlag() {
     }, [openEditUserModal === false, openAddUserModal === false]);
 
     const handleSearchValueChange = (value: string) => {
+        //FILTRO SENDO REALIZADO NA BUSCA PELO NOME OU EMAIL, SIMULTANEAMENTE.
         const filtered = clients.filter((el) => {
             if(el.client.firstName.toLowerCase().startsWith(value.toLowerCase())){
                 return el;
@@ -140,6 +146,8 @@ export function Exitlag() {
     const handleCloseAddUserModal = () => setOpenAddUserModal(false);
     const handleOpenEditUserModal = () => setOpenEditUserModal(true);
     const handleCloseEditUserModal = () => setOpenEditUserModal(false);
+    const handleOpenViewLogModal = () => setOpenViewLogModal(true);
+    const handleCloseViewLogModal = () => setOpenViewLogModal(false);
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -149,6 +157,7 @@ export function Exitlag() {
                     onOpenAddUserModal={handleOpenAddUserModal}
                     onOpenEditUserModal={handleOpenEditUserModal}
                     onInputValueChange={handleSearchValueChange}
+                    onOpenViewLogModel={handleOpenViewLogModal}
                 />
                 <TableContainer>
                     <Table
@@ -242,6 +251,15 @@ export function Exitlag() {
                         open={openEditUserModal}
                         selectedClient={selectedClient}
                         handleClose={handleCloseEditUserModal}
+                    />
+                )
+            }
+            {
+                openViewLogModal && (
+                    <ViewClientLog 
+                        open={openViewLogModal}
+                        selectedClient={selectedClient}
+                        handleClose={handleCloseViewLogModal}
                     />
                 )
             }

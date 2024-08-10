@@ -14,8 +14,9 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 
 interface EnhancedTableToolbarProps {
-    onOpenAddUserModal: () => void,
-    onOpenEditUserModal: () => void,
+    onOpenAddUserModal: () => void;
+    onOpenEditUserModal: () => void;
+    onOpenViewLogModel: () => void;
     onInputValueChange: (args: string) => void;
     numSelected: number; 
 }
@@ -125,16 +126,12 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             )}
             {numSelected > 0 ? (
                 <React.Fragment>
-                    <div>
-                        <IconButton color='secondary' onClick={props.onOpenEditUserModal}>
-                            <DescriptionOutlinedIcon />
-                        </IconButton>
-                    </div>
-                    <div>
-                        <IconButton color='primary' onClick={props.onOpenEditUserModal}>
-                            <EditOutlinedIcon />
-                        </IconButton>
-                    </div>
+                    <IconButton color='secondary' onClick={props.onOpenViewLogModel}>
+                        <DescriptionOutlinedIcon />
+                    </IconButton>
+                    <IconButton color='primary' onClick={props.onOpenEditUserModal}>
+                        <EditOutlinedIcon />
+                    </IconButton>
                 </React.Fragment>
             ) : (
                 <React.Fragment>
