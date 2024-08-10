@@ -52,6 +52,7 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
                 if(response && response.success){
                     props.handleClose();
                     stopLoading();
+                    updateExitLagLog({userId: user!.uid, email: props.selectedClient.client.email});
                     return;
                 } else {
                     const token = await getToken();
@@ -75,6 +76,7 @@ export function EditClientExitLagModal(props: ILocalAddUserProps){
                 if(response && response.success){
                     props.handleClose();
                     stopLoading();
+                    updateExitLagLog({userId: user!.uid, email: props.selectedClient.client.email});
                     return;
                 }
             }

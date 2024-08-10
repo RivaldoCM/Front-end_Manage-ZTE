@@ -9,8 +9,12 @@ type ILocalViewLogsProps = {
     open: boolean,
     selectedClient: {
         client: {
-            User_ExitLag_created_by?: string;
-            User_ExitLag_updated_by?: string;
+            User_ExitLag_created_by?: {
+                name: string;
+            };
+            User_ExitLag_updated_by?: {
+                name: string;
+            };
             name?: string;
             email: string;
             status: string;
@@ -19,16 +23,17 @@ type ILocalViewLogsProps = {
     },
     handleClose: () => void
 }
+type ClientInfo = ILocalViewLogsProps["selectedClient"]["client"];
 
 export function ViewClientLog(props: ILocalViewLogsProps){
-    const [client, setClient] = useState<Pick<ILocalViewLogsProps, "selectedClient"> | null>(null);
-    console.log(client)
+    const [client, setClient] = useState<ClientInfo | null>(null);
+
     useEffect(() => {
         async function getClient(){
             const response = await getExitLagLog(props.selectedClient.client.email);
             if(response){
                 if(response.success){
-                    response.responses.response.length > 0 ?? setClient(response.responses.response);
+                    response.responses.response.length > 0 ? setClient(response.responses.response[0]) : setClient(null);
                 } else {
 
                 }
@@ -39,6 +44,7 @@ export function ViewClientLog(props: ILocalViewLogsProps){
 
     return(
         <Modal
+            className="flex"
             open={props.open}
             onClose={props.handleClose}
         >
@@ -46,7 +52,16 @@ export function ViewClientLog(props: ILocalViewLogsProps){
                 {
                     client && (
                         <div>
-                            {client.selectedClient.client}
+                            {client.User_ExitLag_created_by ? 
+                            
+                                <p>Criado por: {client.User_ExitLag_created_by.name}</p> : 
+                                <p>Não foi criado por este sistema.</p>
+                            }
+                            {
+                                client.User_ExitLag_updated_by ? 
+                                <p>Editado por: {client.User_ExitLag_updated_by.name}</p> :
+                                <p></p>
+                            }
                         </div>
                     )
                 }
