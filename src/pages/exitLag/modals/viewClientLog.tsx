@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 
-import { Modal } from "@mui/material";
+import { IconButton, Modal } from "@mui/material";
 
 import { ViewLogsClient } from "../style";
 import { getExitLagLog } from "../../../services/apiManageONU/getExitLagLog";
+import CloseIcon from '@mui/icons-material/Close';
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import SupervisedUserCircleOutlinedIcon from '@mui/icons-material/SupervisedUserCircleOutlined';
 
 type ILocalViewLogsProps = {
     open: boolean,
@@ -49,22 +53,35 @@ export function ViewClientLog(props: ILocalViewLogsProps){
             onClose={props.handleClose}
         >
             <ViewLogsClient>
-                {
-                    client && (
-                        <div>
-                            {client.User_ExitLag_created_by ? 
-                            
-                                <p>Criado por: {client.User_ExitLag_created_by.name}</p> : 
-                                <p>Não foi criado por este sistema.</p>
-                            }
-                            {
-                                client.User_ExitLag_updated_by ? 
-                                <p>Editado por: {client.User_ExitLag_updated_by.name}</p> :
-                                <p></p>
-                            }
+                <div className="flex">
+                    {
+                        client ?
+                        <div className="flex">
+                            <BadgeOutlinedIcon color="primary"/>
+                            <p>Nome: {client.name}</p>
                         </div>
-                    )
-                }
+                        : <></>
+                    }
+                    <div className="flex">
+                        <SupervisedUserCircleOutlinedIcon color="primary"/>
+                        {
+                           client ? <p>Criado por: {client.User_ExitLag_created_by?.name}</p> 
+                           : <p>Não foi criado através deste sistema.</p>
+                        }
+                    </div>
+                    <div className="flex">
+                        <EditOutlinedIcon color="primary"/>
+                        {
+                           client ? <p>Atualizado por: {client.User_ExitLag_updated_by?.name}</p> 
+                           : <p>Nenhuma atualização desde sua criação.</p>
+                        }
+                    </div>
+                </div>
+                <div className="flex">
+                    <IconButton color="error" onClick={props.handleClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </div>
             </ViewLogsClient>
         </Modal>
     )
