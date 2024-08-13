@@ -145,7 +145,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                                     <div className="search-box">
                                         <input 
                                             type="text" 
-                                            placeholder="Digite o nome ou email na busca" 
+                                            placeholder="Busca de usuários" 
                                             className="search-input" 
                                             onChange={handleChangeValue}
                                             value={inputSearchValue}

@@ -55,7 +55,7 @@ export function ViewClientLog(props: ILocalViewLogsProps){
             <ViewLogsClient>
                 <div className="flex">
                     {
-                        client ?
+                        client && client.name ?
                         <div className="flex">
                             <BadgeOutlinedIcon color="primary"/>
                             <p>Nome: {client.name}</p>
@@ -65,15 +65,19 @@ export function ViewClientLog(props: ILocalViewLogsProps){
                     <div className="flex">
                         <SupervisedUserCircleOutlinedIcon color="primary"/>
                         {
-                           client ? <p>Criado por: {client.User_ExitLag_created_by?.name}</p> 
-                           : <p>Não foi criado através deste sistema.</p>
+                            client && client.User_ExitLag_created_by?.name ? 
+                            <p>Criado por: {client.User_ExitLag_created_by?.name}</p> 
+                            : 
+                            <p>Não foi criado através deste sistema.</p>
                         }
                     </div>
                     <div className="flex">
                         <EditOutlinedIcon color="primary"/>
                         {
-                           client ? <p>Atualizado por: {client.User_ExitLag_updated_by?.name}</p> 
-                           : <p>Nenhuma atualização desde sua criação.</p>
+                            client && client.User_ExitLag_updated_by?.name ? 
+                            <p>Atualizado por: {client.User_ExitLag_updated_by?.name}</p> 
+                            : 
+                            <p>Nenhuma atualização desde sua criação.</p>
                         }
                     </div>
                 </div>

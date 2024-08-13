@@ -6,7 +6,7 @@ export const SearchButton = styled.div`
 
 	.search-box {
 		display: flex;
-		max-width: 300px;
+		max-width: 250px;
 		margin: 0 auto;
 		background-color: #f0f0f0; /* Fundo da barra de pesquisa */
 		border-radius: 25px;
