@@ -22,7 +22,8 @@ type ILocalAddUserProps = {
         id: number,
         department_id: number,
     } | null,
-    handleClose: () => void
+    handleClose: () => void,
+    allClients: IExitLagUsers[]
 }
 
 export function AddUserExitLagModal(props: ILocalAddUserProps){
@@ -49,15 +50,27 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
         return false;
     }
 
-    const handleSubmit = async (e: React.FormEvent) =>{
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if(!form.cpf.match(isValidCpf) ){
+        let emailAlreadyExist = false;
+
+        props.allClients.map((value: any) => {
+            if(value.client.email === form.email.toLocaleLowerCase()){
+                emailAlreadyExist = true;
+            }
+        });
+
+        if(!form.cpf.match(isValidCpf)){
             setFetchResponseMessage('warning/invalid-cpf-input');
             return;
         }else if(form.email !== form.confirmEmail){
             setFetchResponseMessage('error/email-mismatch');
+            return;
         }else if(!form.email.match(isValidEmail)){
             setFetchResponseMessage('error/Invalid-format-email');
+            return;
+        } else if(emailAlreadyExist){
+            setFetchResponseMessage('error/already-exists-email');
         } else {
             startLoading();
             const token = await getStoredExitLagToken();

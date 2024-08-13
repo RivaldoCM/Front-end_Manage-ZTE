@@ -17,13 +17,7 @@ import { useAuth } from "../../../hooks/useAuth";
 
 type ILocalAddUserProps = {
     open: boolean,
-    selectedClient: {
-        client: {
-            email: string,
-            status: string,
-        },
-        active: number
-    },
+    selectedClient: IExitLagUsers,
     handleClose: () => void
 }
 

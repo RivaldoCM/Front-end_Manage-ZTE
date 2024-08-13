@@ -11,36 +11,19 @@ import SupervisedUserCircleOutlinedIcon from '@mui/icons-material/SupervisedUser
 
 type ILocalViewLogsProps = {
     open: boolean,
-    selectedClient: {
-        client: {
-            User_ExitLag_created_by?: {
-                name: string;
-            };
-            User_ExitLag_updated_by?: {
-                name: string;
-            };
-            name?: string;
-            email: string;
-            status: string;
-        },
-        active: number;
-    },
+    selectedClient: IExitLagUsers,
     handleClose: () => void
 }
-type ClientInfo = ILocalViewLogsProps["selectedClient"]["client"];
 
 export function ViewClientLog(props: ILocalViewLogsProps){
-    const [client, setClient] = useState<ClientInfo | null>(null);
+    const [client, setClient] = useState<IExitLagLogs | null>(null);
 
     useEffect(() => {
         async function getClient(){
             const response = await getExitLagLog(props.selectedClient.client.email);
-            if(response){
-                if(response.success){
-                    response.responses.response.length > 0 ? setClient(response.responses.response[0]) : setClient(null);
-                } else {
-
-                }
+            if(response && response.success){
+                response.responses.response.length > 0 ? 
+                setClient(response.responses.response[0]) : setClient(null);
             }
         }
         getClient();
@@ -66,7 +49,7 @@ export function ViewClientLog(props: ILocalViewLogsProps){
                         <SupervisedUserCircleOutlinedIcon color="primary"/>
                         {
                             client && client.User_ExitLag_created_by?.name ? 
-                            <p>Criado por: {client.User_ExitLag_created_by?.name}</p> 
+                            <p>Criado por: {client.User_ExitLag_created_by.name}</p> 
                             : 
                             <p>Não foi criado através deste sistema.</p>
                         }
@@ -75,7 +58,7 @@ export function ViewClientLog(props: ILocalViewLogsProps){
                         <EditOutlinedIcon color="primary"/>
                         {
                             client && client.User_ExitLag_updated_by?.name ? 
-                            <p>Atualizado por: {client.User_ExitLag_updated_by?.name}</p> 
+                            <p>Atualizado por: {client.User_ExitLag_updated_by.name}</p> 
                             : 
                             <p>Nenhuma atualização desde sua criação.</p>
                         }

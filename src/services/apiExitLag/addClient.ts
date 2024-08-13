@@ -10,8 +10,8 @@ export async function addClient({token, name, email}: {token: string, name: stri
         },
         data: [{
             firstName: name,
-            email: email,
-            confirmEmail: email,
+            email: email.toLocaleLowerCase(),
+            confirmEmail: email.toLocaleLowerCase(),
             contractId: 164,
         }]
     }).then((response) => {

@@ -22,9 +22,9 @@ function stableSort<T>(array: readonly T[]) {
 export function Exitlag() {
     const { setFetchResponseMessage } = useResponse();
 
-    const [clients, setClients] = useState<any[]>([]);
-    const [selectedClient, setSelectedClient] = useState<any | null>(null);
-    const [filteredClient, setFilteredClient] = useState<any[]>([]);
+    const [clients, setClients] = useState<IExitLagUsers[]>([]);
+    const [selectedClient, setSelectedClient] = useState<IExitLagUsers | null>(null);
+    const [filteredClient, setFilteredClient] = useState<IExitLagUsers[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState<number[]>([]);
@@ -240,13 +240,14 @@ export function Exitlag() {
             {
                 openAddUserModal && (
                     <AddUserExitLagModal
+                        allClients={clients}
                         open={openAddUserModal}
                         handleClose={handleCloseAddUserModal}
                     />
                 )
             }
             {
-                openEditUserModal && (
+                openEditUserModal && selectedClient && (
                     <EditClientExitLagModal 
                         open={openEditUserModal}
                         selectedClient={selectedClient}
@@ -255,7 +256,7 @@ export function Exitlag() {
                 )
             }
             {
-                openViewLogModal && (
+                openViewLogModal && selectedClient && (
                     <ViewClientLog 
                         open={openViewLogModal}
                         selectedClient={selectedClient}
