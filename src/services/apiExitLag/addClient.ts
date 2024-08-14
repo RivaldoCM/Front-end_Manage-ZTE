@@ -3,7 +3,7 @@ import axios from "axios";
 export async function addClient({token, name, email}: {token: string, name: string, email: string}){
     const res = await axios({
         method: 'POST',
-        url: `https://stg-providers-api.exitlag.net/user/register`,
+        url: `${import.meta.env.VITE_EXITLAG_URL}/user/register`,
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

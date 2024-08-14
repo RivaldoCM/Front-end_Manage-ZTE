@@ -3,7 +3,7 @@ import axios from "axios";
 export async function getClients(token:string){
     const res = await axios({
         method: 'get',
-        url: `https://stg-providers-api.exitlag.net/business/user`,
+        url: `${import.meta.env.VITE_EXITLAG_URL}/business/user`,
         headers: {
             'Authorization': `Bearer ${token}`
         },

@@ -3,10 +3,10 @@ import axios from "axios";
 export async function getToken():Promise<string | null>{
     const res = await axios({
         method: 'post',
-        url: `https://stg-providers-api.exitlag.net/auth/login`,
+        url: `${import.meta.env.VITE_EXITLAG_URL}/auth/login`,
         data:{
-            username: 'acessenet_api@acesse.net',
-            password: 'p^=X[@z!#G|q',
+            username: `${import.meta.env.VITE_EXITLAG_USER}`,
+            password: `${import.meta.env.VITE_EXITLAG_PASSWORD}`,
         }
     }).then((response) => {
         return response.data.token;

@@ -3,14 +3,14 @@ import axios from "axios";
 export async function editClient({token, email, status}: {token: string, email: string, status: string}){
     const res = await axios({
         method: 'POST',
-        url: `https://stg-providers-api.exitlag.net/business/user/update`,
+        url: `${import.meta.env.VITE_EXITLAG_URL}/business/user/update`,
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
         data: [{
             email: email,
-            contractId: 164,
+            contractId: 179,
             status: status
         }]
     }).then((response) => {
