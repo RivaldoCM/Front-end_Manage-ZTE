@@ -28,3 +28,22 @@ export const ViewLogsClient = styled.div`
     }
 
 `;
+
+export const AddClient = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    max-width: 406px;
+    padding: .5rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 8px;
+
+    .exitlag-alert{
+        margin: 1rem 1.4rem;
+
+        p{ text-align: left; }
+    }
+`

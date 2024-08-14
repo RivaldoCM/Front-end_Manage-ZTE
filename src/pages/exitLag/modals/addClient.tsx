@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-import { CircularProgress, FormControl, IconButton, Modal, TextField } from "@mui/material";
+import { Alert, AlertTitle, CircularProgress, FormControl, IconButton, Modal, TextField } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 import { getStoredExitLagToken } from "../../../services/apiManageONU/getTokenExitlag";
@@ -8,13 +8,13 @@ import { getStoredExitLagToken } from "../../../services/apiManageONU/getTokenEx
 import { getToken } from "../../../services/apiExitLag/getToken.js";
 import { sendToken } from "../../../services/apiManageONU/sendTokenExitLag.js";
 import { useResponse } from "../../../hooks/useResponse.js";
-import { NewUserWrapper } from "../../admin/users/style";
 import { isValidCpf, isValidEmail } from "../../../config/regex";
 import { addClient } from "../../../services/apiExitLag/addClient.js";
 import { useLoading } from "../../../hooks/useLoading.js";
 import { useAuth } from "../../../hooks/useAuth.js";
 import { addExitLagLog } from "../../../services/apiManageONU/addExitLagLog.js";
 import { getPeopleId } from "../../../services/apiVoalle/getPeopleId.js";
+import { AddClient } from "../style.js";
 
 type ILocalAddUserProps = {
     open: boolean,
@@ -127,63 +127,72 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
     }
 
     return(
-        <Modal
-            open={props.open}
-            onClose={props.handleClose}
-        >
-            <NewUserWrapper onSubmit={handleSubmit}>
-                <h3>Novo Cliente</h3>
-                <FormControl>
-                    <TextField
-                        required
-                        fullWidth
-                        label="Nome"
-                        name="name"
-                        onChange={handleFormChange}
-                        sx={{ mt: 2, minWidth: '300px' }}
-                    />
-                    <TextField
-                        required
-                        fullWidth
-                        label="CPF do titular do cadastro"
-                        name="cpf"
-                        onChange={handleFormChange}
-                        sx={{ mt: 2}}
-                    />
-                    <TextField
-                        required
-                        fullWidth
-                        label="E-mail"
-                        name="email"
-                        onChange={handleFormChange}
-                        sx={{ mt: 2 }}
-                    />
-                    <TextField
-                        required
-                        fullWidth
-                        label="Confirme seu E-mail"
-                        name="confirmEmail"
-                        onChange={handleFormChange}
-                        onPaste={handlePaste}
-                        sx={{ mt: 2 }}
-                    />
-                </FormControl>
-                {
-                    isLoading ?
-                    <div className="flex">
-                        <CircularProgress size={24} sx={{mt: 1}}/>
+        <React.Fragment>
+            <Modal
+                open={props.open}
+                onClose={props.handleClose}
+            >
+                <AddClient onSubmit={handleSubmit}>
+                    <h3>Novo Cliente</h3>
+                    <FormControl>
+                        <TextField
+                            required
+                            fullWidth
+                            label="Nome"
+                            name="name"
+                            onChange={handleFormChange}
+                            sx={{ mt: 2, minWidth: '300px' }}
+                        />
+                        <TextField
+                            required
+                            fullWidth
+                            label="CPF do titular do cadastro"
+                            name="cpf"
+                            onChange={handleFormChange}
+                            sx={{ mt: 2}}
+                        />
+                        <TextField
+                            required
+                            fullWidth
+                            label="E-mail"
+                            name="email"
+                            onChange={handleFormChange}
+                            sx={{ mt: 2 }}
+                        />
+                        <TextField
+                            required
+                            fullWidth
+                            label="Confirme seu E-mail"
+                            name="confirmEmail"
+                            onChange={handleFormChange}
+                            onPaste={handlePaste}
+                            sx={{ mt: 2 }}
+                        />
+                    </FormControl>
+                    <div className="exitlag-alert">
+                        <Alert severity="warning">
+                        <AlertTitle>Atenção</AlertTitle>
+                            <p>Estes dados nao poderão ser atualizados posteriormente.</p>
+                            <p>Certifique-se de que TODOS os dados estejam corretos.</p>
+                        </Alert>
                     </div>
-                    :
-                    <div className="flex">
-                        <IconButton color="success" type="submit">
-                            <DoneIcon />
-                        </IconButton>
-                        <IconButton color="error" onClick={props.handleClose}>
-                            <CloseIcon />
-                        </IconButton>
-                    </div>
-                }
-            </NewUserWrapper>
-        </Modal>
+                    {
+                        isLoading ?
+                        <div className="flex">
+                            <CircularProgress size={24} sx={{mt: 1}}/>
+                        </div>
+                        :
+                        <div className="flex">
+                            <IconButton color="success" type="submit">
+                                <DoneIcon />
+                            </IconButton>
+                            <IconButton color="error" onClick={props.handleClose}>
+                                <CloseIcon />
+                            </IconButton>
+                        </div>
+                    }
+                </AddClient>
+            </Modal>
+        </React.Fragment>
     )
 }

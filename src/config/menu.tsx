@@ -14,7 +14,7 @@ import TvOutlinedIcon from '@mui/icons-material/TvOutlined';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import ViewModuleOutlinedIcon from '@mui/icons-material/ViewModuleOutlined';
 import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
-import { IconExitLag } from '../assets/icons/IconExitLag';
+import { IconExitLag } from '../assets/icons/iconExitLag';
 
 
 export var handleDynamicPagesByRule: IAllPages[];
@@ -83,7 +83,7 @@ export const handlePages: IAllPages[] = [
     {
         name: 'ExitLag',
         pages: [
-            {'exitlag': 'Cadastro de Cliente'}
+            {'exitlag': 'Dashboard Clientes'}
         ]
     }
 ]
@@ -99,7 +99,7 @@ export const handleShowPageByRule = (rule?: number) => {
         case 10: 
             let onusMassive = cloneDeep(handlePages);
             onusMassive.splice(1,2);
-            onusMassive.splice(2,1);
+            onusMassive.splice(2,2);
             onusMassive[1].pages.splice(1,2);
         return handleDynamicPagesByRule = onusMassive;
         case 1:
@@ -108,14 +108,19 @@ export const handleShowPageByRule = (rule?: number) => {
             withoutDashboardBreak.splice(0,3);
             withoutDashboardBreak[1].pages.splice(0,1);
         return handleDynamicPagesByRule = withoutDashboardBreak;
+        case 6:
+            let massiveAndExitLag = cloneDeep(handlePages);
+            massiveAndExitLag.splice(0,3);
+            massiveAndExitLag.splice(1,1);
+            return handleDynamicPagesByRule = massiveAndExitLag;
         case 3:
             let onlyBreakTime = cloneDeep(handlePages);
             onlyBreakTime.splice(0,3);
             return handleDynamicPagesByRule = onlyBreakTime;
         default:
             let onlyMassive = cloneDeep(handlePages);
-            onlyMassive.splice(0, 3);
-            onlyMassive.splice(1, 1);
+            onlyMassive.splice(0,3);
+            onlyMassive.splice(1,2);
         return handleDynamicPagesByRule = onlyMassive;
     }
 }
