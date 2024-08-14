@@ -17,7 +17,6 @@ export const OltStyledContainer = styled.div`
         flex-direction: row;
         align-items: flex-start;
         width: 100%;
-        max-height: 50vh;
 
         @media (max-width: 720px){
             flex-direction: column;
@@ -52,7 +51,7 @@ export const VlanConfig = styled.div`
     max-height: calc(100vh - var(--top-menu-size));
 
     h3{
-        width: 24%;
+        width: 32%;
         text-align: center;
         border-bottom: 2px solid black;
 
@@ -82,6 +81,10 @@ export const VlanConfig = styled.div`
 
             @media (max-width: 748px){
                 width: 80%;
+            }
+
+            @media (max-width: 552px){
+                width:100%;
             }
             > form:first-child{
                 flex-direction: row;
@@ -170,6 +173,7 @@ export const VlanConfig = styled.div`
 `;
 
 export const Inputs = styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -179,12 +183,14 @@ export const Inputs = styled.div`
     padding: 1rem 0;
 
 
-
     .ip-validation{
         display: flex;
+        justify-content: flex-start;
         align-items: center;
-        width: 100%;
-        margin-right: 2rem;
+        @media (max-width: 550px){
+            justify-content: center;
+            margin-left: 18.5px
+        }
 
     }
 
@@ -194,6 +200,10 @@ export const Inputs = styled.div`
         margin: 0 .5rem;
 
         @media (max-width: 1214px){
+            width: 100%;
+        }
+
+        @media (max-width: 550px){
             justify-content: center;
         }
 
