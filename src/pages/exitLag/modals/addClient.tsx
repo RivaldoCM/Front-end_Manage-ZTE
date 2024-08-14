@@ -171,7 +171,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                     </FormControl>
                     <div className="exitlag-alert">
                         <Alert severity="warning">
-                            <p>Estes dados nao poderão ser atualizados posteriormente.</p>
+                            <p>Estes dados não poderão ser atualizados posteriormente.</p>
                             <p>Certifique-se de que TODOS os dados estejam corretos.</p>
                         </Alert>
                     </div>
