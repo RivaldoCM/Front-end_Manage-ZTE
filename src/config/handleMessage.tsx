@@ -167,6 +167,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Você não tem permissão para realizar está função.',
                 severityStatus: 'error'
             }
+        case 'error/email-mismatch':
+            return{
+                responseMessage: 'Os E-mails devem ser iguais.',
+                severityStatus: 'info'
+            }
         case 'error/missing-fields':
             return{
                 responseMessage: 'Preencha todos os campos.',

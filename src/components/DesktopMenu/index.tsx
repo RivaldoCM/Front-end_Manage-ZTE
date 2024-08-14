@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { handleDynamicPagesByRule, handleIconMenu } from '../../config/menu';
 
-import { StyledMenu } from './style';
+import { StyledMenu, TopStyled } from './style';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -25,6 +25,7 @@ import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Alert } from '@mui/material';
 import { useResponse } from '../../hooks/useResponse';
+import { IconAcesse } from '../SVG/acesseLogo';
 
 const drawerWidth = 320;
 
@@ -50,10 +51,12 @@ const closedMixin = (theme: Theme): CSSObject => ({
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
-	display: 'flex',
-	alignItems: 'center',
-	justifyContent: 'flex-end',
-	padding: theme.spacing(0, 1),
+	display: 'block',
+	padding: theme.spacing(0, 1, 0, 0),
+	zIndex: 999,
+	top: 0,
+	position: 'sticky',
+	backgroundColor: '#fff',
 	// necessary for content to be below app bar
 	...theme.mixins.toolbar,
 }));
@@ -163,11 +166,16 @@ export function MenuDrawer() {
 			</AppBar>
 			<Drawer variant="permanent" open={open}>
 				<DrawerHeader>
-					<IconButton onClick={handleDrawerClose}>
-						{theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-					</IconButton>
+					<TopStyled>
+						<div>
+							<IconAcesse />
+						</div>
+						<IconButton onClick={handleDrawerClose}>
+							{theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+						</IconButton>
+					</TopStyled>
+					<Divider sx={{width:'100%'}}/>
 				</DrawerHeader>
-				<Divider />
 				<List>
 					{user && handleDynamicPagesByRule.map((area, index) => (
 						<div key={index}>

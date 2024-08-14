@@ -162,7 +162,7 @@ export function Users(){
     const handleOpenEditUserModal = () => setOpenEditUserModal(true);
     const handleCloseEditUserModal = () => setOpenEditUserModal(false);
     const handleOpenEditPasswordModal = () => setOpenEditPasswordModal(true);
-    const handleCloseEditPasswordModal = () => setOpenEditPasswordModal(false)
+    const handleCloseEditPasswordModal = () => setOpenEditPasswordModal(false);
 
     return (
         <Box sx={{ width: '100%' }}>
