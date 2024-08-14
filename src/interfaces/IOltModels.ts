@@ -3,5 +3,6 @@ type IOltModels = {
     name: string;
     slots: number;
     pons: number;
+    initial_slot: number;
     manufacturer_id: number;
 }
