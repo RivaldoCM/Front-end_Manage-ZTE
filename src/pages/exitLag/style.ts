@@ -29,7 +29,7 @@ export const ViewLogsClient = styled.div`
 
 `;
 
-export const AddClient = styled.div`
+export const AddClient = styled.form`
     position: absolute;
     top: 50%;
     left: 50%;

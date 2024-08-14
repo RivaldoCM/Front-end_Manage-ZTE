@@ -162,7 +162,7 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                         <TextField
                             required
                             fullWidth
-                            label="Confirme seu E-mail"
+                            label="Confirme o E-mail"
                             name="confirmEmail"
                             onChange={handleFormChange}
                             onPaste={handlePaste}
@@ -171,7 +171,6 @@ export function AddUserExitLagModal(props: ILocalAddUserProps){
                     </FormControl>
                     <div className="exitlag-alert">
                         <Alert severity="warning">
-                        <AlertTitle>Atenção</AlertTitle>
                             <p>Estes dados nao poderão ser atualizados posteriormente.</p>
                             <p>Certifique-se de que TODOS os dados estejam corretos.</p>
                         </Alert>
