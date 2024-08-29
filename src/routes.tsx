@@ -31,7 +31,7 @@ import { MassivePanel } from "./pages/massive/panel";
 import { Exitlag } from "./pages/exitLag";
 import { EditOlt } from "./pages/admin/olts/editOlt";
 import { AddOlt } from "./pages/admin/olts/addOlt";
-import { OnuData } from "./pages/OnuData/index.";
+import { OnuInfo } from "./pages/OnuInfo/index.";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -187,7 +187,7 @@ export function AppRoutes() {
                     path="onu_info"
                     element={
                         <PrivateRoute 
-                            element={<OnuData />}
+                            element={<OnuInfo />}
                         />}
                     >
                 </Route>
