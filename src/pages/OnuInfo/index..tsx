@@ -8,12 +8,14 @@ import { useLoading } from "../../hooks/useLoading";
 import SendIcon from '@mui/icons-material/Send';
 import { getOnuInfo } from "../../services/apiManageONU/getOnuInfo";
 import { useAuth } from "../../hooks/useAuth";
+import { DataField } from "./style";
+import { getVendors } from "../../services/macVendors/getVendors";
 
 export function OnuInfo(){
-    const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
+    const [onu, setOnu] = useState([]);
     const [open, setOpen] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
     const [form, setForm] = useState({
@@ -72,9 +74,10 @@ export function OnuInfo(){
         const response = await getOnuInfo({cityId: parseInt(form.cityId as string), serialNumber: form.serial});
         stopLoading();
         if(response){
-            console.log(response)
             if(response.success){
-                setFetchResponseMessage(response.responses.status);
+                console.log(response.responses.response[0].macs[0])
+                await getVendors(response.responses.response[0].macs[0].mac)
+                setOnu(response.responses.response);
             } else {
                 setFetchResponseMessage(response.messages.message);
             }
@@ -84,63 +87,99 @@ export function OnuInfo(){
     }
 
     return(
-        <Form className="flex" onSubmit={handleSubmit}>
-            <div className="controller flex">
-                <Autocomplete
-                    open={open}
-                    sx={{ width: '250px' }}
-                    onOpen={() => setOpen(true)}
-                    onClose={() => setOpen(false)}
-                    onChange={handleCityChange}
-                    options={cities}
-                    isOptionEqualToValue={(option, value) => option.name === value.name}
-                    getOptionLabel={(city) => city.name}
-                    loading={loadingCities}
-                    renderOption={(props, option) => {
-                        return (
-                            <li {...props} key={option.id}>
-                                {option.name}
-                            </li>
-                        );
-                    }}
-                    renderInput={(params) => {
+        <>
+            <Form className="flex" onSubmit={handleSubmit}>
+                <div className="controller flex">
+                    <Autocomplete
+                        open={open}
+                        sx={{ width: '250px' }}
+                        onOpen={() => setOpen(true)}
+                        onClose={() => setOpen(false)}
+                        onChange={handleCityChange}
+                        options={cities}
+                        isOptionEqualToValue={(option, value) => option.name === value.name}
+                        getOptionLabel={(city) => city.name}
+                        loading={loadingCities}
+                        renderOption={(props, option) => {
+                            return (
+                                <li {...props} key={option.id}>
+                                    {option.name}
+                                </li>
+                            );
+                        }}
+                        renderInput={(params) => {
+                            return(
+                                <TextField
+                                    {...params}
+                                    label="Cidades"
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        endAdornment: (
+                                        <React.Fragment>
+                                            {loadingCities ? <CircularProgress color="inherit" size={20} /> : null}
+                                            {params.InputProps.endAdornment}
+                                        </React.Fragment>
+                                    ),
+                                }}
+                            />
+                        )}}
+                    />
+                    <TextField 
+                        label="Digite o serial da ONU" 
+                        sx={{width: '250px'}}
+                        value={form.serial}
+                        name="serial"
+                        onChange={handleFormChange}
+                        required
+                    />
+                </div>
+                {isLoading ?
+                    <CircularProgress className="MUI-CircularProgress" color="primary"/>
+                    :
+                    <Button
+                        size="medium"
+                        variant="contained" 
+                        endIcon={<SendIcon />}
+                        type="submit"
+                    >
+                        Coletar dados da ONU
+                    </Button>
+                }
+            </Form>
+            {
+                onu && (
+                    onu.map(onu => {
                         return(
-                            <TextField
-                                {...params}
-                                label="Cidades"
-                                InputProps={{
-                                    ...params.InputProps,
-                                    endAdornment: (
-                                    <React.Fragment>
-                                        {loadingCities ? <CircularProgress color="inherit" size={20} /> : null}
-                                        {params.InputProps.endAdornment}
-                                    </React.Fragment>
-                                ),
-                            }}
-                        />
-                    )}}
-                />
-                <TextField 
-                    label="Digite o serial da ONU" 
-                    id="fullWidth" 
-                    value={form.serial}
-                    name="serial"
-                    onChange={handleFormChange}
-                    required
-                />
-            </div>
-            {isLoading ?
-                <CircularProgress className="MUI-CircularProgress" color="primary"/>
-                :
-                <Button
-                    size="medium"
-                    variant="contained" 
-                    endIcon={<SendIcon />}
-                    type="submit"
-                >
-                    Coletar dados da ONU
-                </Button>
+                            <DataField className="flex">
+                                <div className="basic-info flex">
+                                    <p>Id: {onu.id}</p>
+                                    <p>placa: {onu.slot}</p>
+                                    <p>pon: {onu.pon}</p>
+                                    <p></p>
+                                </div>
+                                <div className="details">
+                                    <p>OLT rx: {onu.olt_rx}</p>
+                                    <p>ONU rx: {onu.onu_rx}</p>
+                                    <p>Temperatura: {onu.temperature + '°C'} </p>
+                                    <p>uptime: {onu.uptime}</p>
+                                    <p>voltagem: {onu.voltage + 'v'}</p>
+                                    {
+                                        onu.macs.map(async (mac) => {
+                                            return(
+                                                <div>
+                                                    <p>equipamento: {mac.mac}, vlan: {mac.vlan}</p>
+                                                </div>
+                                            )
+
+                                        })
+                                    }
+                                </div>
+                            </DataField>
+                        )
+                    })
+                )
             }
-        </Form>
+        </>
+        
     )
 }
