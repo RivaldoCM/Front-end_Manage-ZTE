@@ -1,15 +1,15 @@
+import React, { useEffect, useState } from "react";
+
 import { Autocomplete, Button, CircularProgress, TextField } from "@mui/material";
 import { Form } from "../onuDelete/style";
-import React, { useEffect, useState } from "react";
+
 import { getCities } from "../../services/apiManageONU/getCities";
 import { ICities } from "../../interfaces/ICities";
 import { useResponse } from "../../hooks/useResponse";
 import { useLoading } from "../../hooks/useLoading";
 import SendIcon from '@mui/icons-material/Send';
 import { getOnuInfo } from "../../services/apiManageONU/getOnuInfo";
-import { useAuth } from "../../hooks/useAuth";
-import { DataField } from "./style";
-import { getVendors } from "../../services/macVendors/getVendors";
+import { Container, DataField, InfoStyle, Macs, Wireless } from "./style";
 
 export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
@@ -76,7 +76,7 @@ export function OnuInfo(){
         if(response){
             if(response.success){
                 console.log(response.responses.response[0].macs[0])
-                await getVendors(response.responses.response[0].macs[0].mac)
+                //await getVendors(response.responses.response[0].macs[0].mac)
                 setOnu(response.responses.response);
             } else {
                 setFetchResponseMessage(response.messages.message);
@@ -87,7 +87,7 @@ export function OnuInfo(){
     }
 
     return(
-        <>
+        <Container>
             <Form className="flex" onSubmit={handleSubmit}>
                 <div className="controller flex">
                     <Autocomplete
@@ -153,33 +153,94 @@ export function OnuInfo(){
                             <DataField className="flex">
                                 <div className="basic-info flex">
                                     <p>Id: {onu.id}</p>
-                                    <p>placa: {onu.slot}</p>
-                                    <p>pon: {onu.pon}</p>
+                                    <p>Placa: {onu.slot}</p>
+                                    <p>Pon: {onu.pon}</p>
                                     <p></p>
                                 </div>
                                 <div className="details">
-                                    <p>OLT rx: {onu.olt_rx}</p>
-                                    <p>ONU rx: {onu.onu_rx}</p>
-                                    <p>Temperatura: {onu.temperature + '°C'} </p>
-                                    <p>uptime: {onu.uptime}</p>
-                                    <p>voltagem: {onu.voltage + 'v'}</p>
-                                    {
-                                        onu.macs.map(async (mac) => {
-                                            return(
-                                                <div>
-                                                    <p>equipamento: {mac.mac}, vlan: {mac.vlan}</p>
-                                                </div>
-                                            )
-
-                                        })
-                                    }
+                                    <div className="infos">
+                                        <InfoStyle className="flex">
+                                            <p>OLT Rx: {onu.oltRx}</p>
+                                            <p>ONU Rx: {onu.onuRx}</p>
+                                        </InfoStyle>
+                                        <InfoStyle className="flex">
+                                            <p>OLT Tx: {onu.oltTx}</p>
+                                            <p>ONU Tx: {onu.oltRx}</p>
+                                        </InfoStyle>
+                                        <InfoStyle className="flex">
+                                            <p>Temp(c°): {onu.temperature} </p>
+                                            <p>Voltagem: {onu.voltage}</p>
+                                        </InfoStyle>
+                                        <InfoStyle className="flex">
+                                            <p>Distancia: {onu.distance} </p>
+                                            <p>Uptime: {onu.uptime}</p>
+                                        </InfoStyle>
+                                        <InfoStyle className="flex">
+                                            <p>Firmware: </p>
+                                            <p>modelo: {onu.model}</p>
+                                        </InfoStyle>
+                                    </div>
+                                    <Macs className="flex">
+                                        <div><h4>MAC na ONU</h4></div>
+                                        {
+                                            onu.macs.map(mac => {
+                                                return(
+                                                    <div className="underlined">
+                                                        <p>Mac: {mac.mac} - vlan: {mac.vlan}</p>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </Macs>
+                                    <Wireless className="flex">
+                                        <div><h3>Wireless</h3></div>
+                                        {
+                                            onu.wireless.map(wface =>{
+                                                return(
+                                                    <div className="interface flex">
+                                                        <div><h4>{'calma'}</h4></div>
+                                                        <div>
+                                                            <p>SSID: {wface.name}</p>
+                                                            <p>SENHA: {wface.password}</p>
+                                                            <p>Autenticação: {wface.authType}</p>
+                                                            <p>Encriptação: {wface.encryption}</p>
+                                                            <p>Isolamento: {wface.isolation}</p>
+                                                            <p>Usuários online: {wface.currentUsers}</p>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                        <div className="interface flex">
+                                            <div><h4>wifi_0/2</h4></div>
+                                            <div>
+                                                <p>SSID: Nome do wifi</p>
+                                                <p>SENHA: ta aqui tb</p>
+                                                <p>Autenticação: ta aqui tb</p>
+                                                <p>Encriptação: ta aqui tb</p>
+                                                <p>Isolamento: ta aqui tb</p>
+                                                <p>Usuários online: ta aqui tb</p>
+                                            </div>
+                                        </div>
+                                        <div className="interface flex">
+                                            <div><h4>wifi_0/2</h4></div>
+                                            <div>
+                                                <p>SSID: Nome do wifi</p>
+                                                <p>SENHA: ta aqui tb</p>
+                                                <p>Autenticação: ta aqui tb</p>
+                                                <p>Encriptação: ta aqui tb</p>
+                                                <p>Isolamento: ta aqui tb</p>
+                                                <p>Usuários online: ta aqui tb</p>
+                                            </div>
+                                        </div>
+                                    </Wireless>
                                 </div>
                             </DataField>
                         )
                     })
                 )
             }
-        </>
+        </Container>
         
     )
 }

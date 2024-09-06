@@ -2,7 +2,7 @@ import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
 export async function getOnuInfo({cityId, serialNumber}: {cityId: number, serialNumber: string}): Promise<IResponseData | IResponseError>{
-    const users = await axios({
+    const response = await axios({
         method: 'get',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/onuInfo`,
         headers: {
@@ -18,5 +18,5 @@ export async function getOnuInfo({cityId, serialNumber}: {cityId: number, serial
         return null;
     });
 
-    return users;
+    return response;
 }
