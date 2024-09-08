@@ -15,7 +15,7 @@ export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
-    const [onu, setOnu] = useState([]);
+    const [onu, setOnu] = useState<IGetOnu[]>([]);
     const [open, setOpen] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
     const [form, setForm] = useState({
@@ -68,6 +68,7 @@ export function OnuInfo(){
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        setOnu([]);
         e.preventDefault();
         startLoading();
 
@@ -155,85 +156,86 @@ export function OnuInfo(){
                                     <p>Id: {onu.id}</p>
                                     <p>Placa: {onu.slot}</p>
                                     <p>Pon: {onu.pon}</p>
-                                    <p></p>
+                                    { onu.status ? <p>Status: {onu.status}</p> : <></> }
                                 </div>
                                 <div className="details">
                                     <div className="infos">
                                         <InfoStyle className="flex">
-                                            <p>OLT Rx: {onu.oltRx}</p>
-                                            <p>ONU Rx: {onu.onuRx}</p>
+                                            { onu.oltRx && <p>OLT Rx: {onu.oltRx}</p> }
+                                            { onu.onuRx && <p>OLT Rx: {onu.onuRx}</p> }
                                         </InfoStyle>
-                                        <InfoStyle className="flex">
-                                            <p>OLT Tx: {onu.oltTx}</p>
-                                            <p>ONU Tx: {onu.oltRx}</p>
-                                        </InfoStyle>
-                                        <InfoStyle className="flex">
-                                            <p>Temp(c°): {onu.temperature} </p>
-                                            <p>Voltagem: {onu.voltage}</p>
-                                        </InfoStyle>
-                                        <InfoStyle className="flex">
-                                            <p>Distancia: {onu.distance} </p>
-                                            <p>Uptime: {onu.uptime}</p>
-                                        </InfoStyle>
-                                        <InfoStyle className="flex">
-                                            <p>Firmware: </p>
-                                            <p>modelo: {onu.model}</p>
-                                        </InfoStyle>
+                                        {
+                                            onu.oltTx || onu.onuTx ?
+                                            <InfoStyle className="flex">
+                                                { onu.oltTx && <p>OLT Rx: {onu.oltTx}</p> }
+                                                { onu.onuTx && <p>OLT Rx: {onu.onuTx}</p> }
+                                            </InfoStyle>
+                                            :
+                                            <></>
+                                        }
+                                        {
+                                            onu.temperature || onu.voltage ?
+                                            <InfoStyle className="flex">
+                                                {onu.temperature && <p>Temperatura: {onu.temperature + '°C'} </p> }
+                                                {onu.voltage && <p>Voltagem: {onu.voltage + 'v'} </p> }
+                                            </InfoStyle>
+                                            :
+                                            <></>
+                                        }
+                                        {
+                                            onu.distance || onu.uptime ?
+                                            <InfoStyle className="flex">
+                                                {onu.distance && <p>Distancia: {onu.distance} </p> }
+                                                {onu.uptime && <p>Uptime: {onu.uptime} </p> }
+                                            </InfoStyle>
+                                            :
+                                            <></>
+                                        }
+                                        {
+                                            onu.firmware || onu.model ?
+                                            <InfoStyle className="flex">
+                                                {onu.firmware && <p>Firmware: {onu.firmware}</p>}
+                                                {onu.model && <p>Modelo: {onu.model}</p>}
+                                            </InfoStyle>
+                                            :
+                                            <></>
+                                        }
                                     </div>
                                     <Macs className="flex">
-                                        <div><h4>MAC na ONU</h4></div>
+                                        <div><h4>MAC's na ONU</h4></div>
                                         {
-                                            onu.macs.map(mac => {
+                                            onu.macs && onu.macs.map(mac => {
                                                 return(
                                                     <div className="underlined">
-                                                        <p>Mac: {mac.mac} - vlan: {mac.vlan}</p>
+                                                        <p><b>MAC:</b> {mac.mac} - <b>VLAN:</b> {mac.vlan}</p>
                                                     </div>
                                                 )
                                             })
                                         }
                                     </Macs>
-                                    <Wireless className="flex">
-                                        <div><h3>Wireless</h3></div>
-                                        {
-                                            onu.wireless.map(wface =>{
-                                                return(
-                                                    <div className="interface flex">
-                                                        <div><h4>{'calma'}</h4></div>
-                                                        <div>
-                                                            <p>SSID: {wface.name}</p>
-                                                            <p>SENHA: {wface.password}</p>
-                                                            <p>Autenticação: {wface.authType}</p>
-                                                            <p>Encriptação: {wface.encryption}</p>
-                                                            <p>Isolamento: {wface.isolation}</p>
-                                                            <p>Usuários online: {wface.currentUsers}</p>
+                                    {
+                                        onu.wireless &&
+                                        <Wireless className="flex">
+                                            <div><h3>Wireless</h3></div>
+                                            {
+                                                Object.entries(onu.wireless).map(([key, value]) => {
+                                                    return(
+                                                        <div className="interface flex">
+                                                            <div><h4>{key}</h4></div>
+                                                            <div>
+                                                                <p><b>SSID:</b> {value.name}</p>
+                                                                <p><b>Senha:</b> {value.password}</p>
+                                                                <p><b>Segurança:</b> {value.authType}</p>
+                                                                <p><b>Encriptação:</b> {value.encryption}</p>
+                                                                <p><b>Isolamento:</b> {value.isolation}</p>
+                                                                <p><b>Usuários online:</b> {value.currentUsers}</p>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                        <div className="interface flex">
-                                            <div><h4>wifi_0/2</h4></div>
-                                            <div>
-                                                <p>SSID: Nome do wifi</p>
-                                                <p>SENHA: ta aqui tb</p>
-                                                <p>Autenticação: ta aqui tb</p>
-                                                <p>Encriptação: ta aqui tb</p>
-                                                <p>Isolamento: ta aqui tb</p>
-                                                <p>Usuários online: ta aqui tb</p>
-                                            </div>
-                                        </div>
-                                        <div className="interface flex">
-                                            <div><h4>wifi_0/2</h4></div>
-                                            <div>
-                                                <p>SSID: Nome do wifi</p>
-                                                <p>SENHA: ta aqui tb</p>
-                                                <p>Autenticação: ta aqui tb</p>
-                                                <p>Encriptação: ta aqui tb</p>
-                                                <p>Isolamento: ta aqui tb</p>
-                                                <p>Usuários online: ta aqui tb</p>
-                                            </div>
-                                        </div>
-                                    </Wireless>
+                                                    )
+                                                })
+                                            }
+                                        </Wireless>
+                                    }
                                 </div>
                             </DataField>
                         )

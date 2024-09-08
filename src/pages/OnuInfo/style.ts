@@ -104,7 +104,6 @@ export const Wireless = styled.div`
 
         //TITULO
         div:first-of-type{
-
             width: 100%;
             margin-bottom: .5rem;
             text-align: start;
