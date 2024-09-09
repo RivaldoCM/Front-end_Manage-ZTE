@@ -4,6 +4,7 @@ export const DataField = styled.div`
     width: 95%;
     min-height: 350px;
     flex-direction: column;
+    
     .basic-info{
         width: 80%;
         height: 40px;
@@ -59,11 +60,6 @@ export const InfoStyle = styled.div`
 export const Macs = styled.div`
     flex-direction: column;
     justify-content: space-around;
-    width: 100%;
-    margin: .5rem 0;
-    padding: 0.4rem;
-    border-radius: .8rem;
-    background-color: #f3f3f3;
 
     div:first-of-type{
         width: 100%;
@@ -75,6 +71,39 @@ export const Macs = styled.div`
         margin-bottom: .5rem;
         border-bottom: 2px solid #d6d6d6;
     }
+
+    .table-wrapper{
+        align-items: flex-start;
+        width: 100%;
+
+        .table-controller{
+            width: 100%;
+            height: 100%;
+            max-height: 464px;
+            overflow: auto;
+
+            table{
+                width: 100%;
+                    th{
+                    position: sticky;
+                    top: 0;
+                    background-color: #f1f1f1;
+                    z-index: 1;
+                }
+
+                td{ text-align: center; background-color: #fff }
+
+                th,td{
+                    width: 4rem;
+                    height: 1rem;
+                    border: 2px solid #ccc;
+                    padding: 8px;
+                    border-radius: 4px;
+                    transition: border-color 0.3s, background-color 0.3s;
+                }
+            }
+        }
+        }
 `
 
 export const Wireless = styled.div`
@@ -84,10 +113,8 @@ export const Wireless = styled.div`
     width: 100%;
     margin: .5rem 0;
     padding: 0.4rem;
-
     border-radius: .8rem;
     background-color: #f3f3f3;
-
 
     div:first-of-type{
         width: 100%;
@@ -112,6 +139,44 @@ export const Wireless = styled.div`
         //CONTEUDO
         div:last-of-type{
             width: 90%;
+        }
+    }
+`
+
+export const Alarms = styled.div`
+    flex-direction: column;
+
+    .table-wrapper{
+        align-items: flex-start;
+        width: 100%;
+
+        .table-controller{
+            width: 100%;
+            height: 100%;
+            max-height: 464px;
+            overflow: auto;
+
+            table{
+                width: 100%;
+
+                th{
+                    position: sticky;
+                    top: 0;
+                    background-color: #f1f1f1;
+                    z-index: 1;
+                }
+
+                td{
+                    text-align: center;
+                }
+
+                th,td{
+                    border: 2px solid #ccc;
+                    padding: 8px;
+                    border-radius: 4px;
+                    transition: border-color 0.3s, background-color 0.3s;
+                }
+            }
         }
     }
 `

@@ -9,7 +9,8 @@ import { useResponse } from "../../hooks/useResponse";
 import { useLoading } from "../../hooks/useLoading";
 import SendIcon from '@mui/icons-material/Send';
 import { getOnuInfo } from "../../services/apiManageONU/getOnuInfo";
-import { Container, DataField, InfoStyle, Macs, Wireless } from "./style";
+import { Alarms, Container, DataField, InfoStyle, Macs, Wireless } from "./style";
+//import { getVendors } from "../../services/macVendors/getVendors";
 
 export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
@@ -45,6 +46,15 @@ export function OnuInfo(){
         return () => {active = false;};
     }, [loadingCities]);
 
+    /*
+    useEffect(() => {
+        if(onu && onu.length > 0){
+            onu[0].macs!.map(async(value) =>
+                await getVendors(value.mac)
+            )
+        }
+    },[onu]);
+    */
 
     const handleCityChange = (_e: unknown, value: ICities | null) => {
         if(value){
@@ -67,6 +77,13 @@ export function OnuInfo(){
         });
     };
 
+    /*
+    const getVendorsByMac = async (mac: string): Promise<any> => {
+        const response = await getVendors(mac);
+        console.log(response)
+    }
+    */
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setOnu([]);
         e.preventDefault();
@@ -74,10 +91,9 @@ export function OnuInfo(){
 
         const response = await getOnuInfo({cityId: parseInt(form.cityId as string), serialNumber: form.serial});
         stopLoading();
+        console.log(response)
         if(response){
             if(response.success){
-                console.log(response.responses.response[0].macs[0])
-                //await getVendors(response.responses.response[0].macs[0].mac)
                 setOnu(response.responses.response);
             } else {
                 setFetchResponseMessage(response.messages.message);
@@ -162,13 +178,13 @@ export function OnuInfo(){
                                     <div className="infos">
                                         <InfoStyle className="flex">
                                             { onu.oltRx && <p>OLT Rx: {onu.oltRx}</p> }
-                                            { onu.onuRx && <p>OLT Rx: {onu.onuRx}</p> }
+                                            { onu.onuRx && <p>ONU Rx: {onu.onuRx}</p> }
                                         </InfoStyle>
                                         {
                                             onu.oltTx || onu.onuTx ?
                                             <InfoStyle className="flex">
-                                                { onu.oltTx && <p>OLT Rx: {onu.oltTx}</p> }
-                                                { onu.onuTx && <p>OLT Rx: {onu.onuTx}</p> }
+                                                { onu.oltTx && <p>OLT Tx: {onu.oltTx}</p> }
+                                                { onu.onuTx && <p>ONU Tx: {onu.onuTx}</p> }
                                             </InfoStyle>
                                             :
                                             <></>
@@ -204,15 +220,67 @@ export function OnuInfo(){
                                     <Macs className="flex">
                                         <div><h4>MAC's na ONU</h4></div>
                                         {
-                                            onu.macs && onu.macs.map(mac => {
-                                                return(
-                                                    <div className="underlined">
-                                                        <p><b>MAC:</b> {mac.mac} - <b>VLAN:</b> {mac.vlan}</p>
+                                            onu.macs &&  (
+                                                <div className="table-wrapper flex">
+                                                    <div className="table-controller">
+                                                        <table>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>MAC</th>
+                                                                    <th>VLAN</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {
+                                                                    onu.macs.map((value, index) => {
+                                                                        return(
+                                                                            <tr key={index}>
+                                                                                <td>{value.mac}</td>
+                                                                                <td>{value.vlan}</td>
+                                                                            </tr>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </tbody>
+                                                        </table>
                                                     </div>
-                                                )
-                                            })
+                                                </div>
+                                            )
                                         }
                                     </Macs>
+                                    <Alarms className="flex">
+                                        <div><h3>Alarmes</h3></div>
+                                        {
+                                            onu.alarms &&  (
+                                                <div className="table-wrapper flex">
+                                                    <div className="table-controller">
+                                                        <table>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Inicio</th>
+                                                                    <th>Fim</th>
+                                                                    <th>Causa</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {
+                                                                    onu.alarms.map((value, index) => {
+                                                                        return(
+                                                                            <tr key={index}>
+                                                                                <td>{value.createdAt}</td>
+                                                                                <td>{value.finishAt}</td>
+                                                                                <td>{value.cause}</td>
+                                                                            </tr>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+                                    </Alarms>
                                     {
                                         onu.wireless &&
                                         <Wireless className="flex">

@@ -14,7 +14,8 @@ export async function getOnuInfo({cityId, serialNumber}: {cityId: number, serial
         },
     }).then((response) => {
         return response.data;
-    }).catch(() => {
+    }).catch((err) => {
+        console.log(err)
         return null;
     });
 

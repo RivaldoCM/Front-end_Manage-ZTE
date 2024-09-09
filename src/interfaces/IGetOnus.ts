@@ -28,4 +28,9 @@ type IGetOnu = {
             currentUsers: number
         }
     }
+    alarms?: [{
+        createdAt: string,
+        finishAt: string,
+        cause: string
+    }]
 }
