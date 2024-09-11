@@ -4,7 +4,8 @@ export const DataField = styled.div`
     width: 95%;
     min-height: 350px;
     flex-direction: column;
-    
+    padding-bottom: 1rem;
+
     .basic-info{
         width: 80%;
         height: 40px;
@@ -20,9 +21,8 @@ export const DataField = styled.div`
     .details{
         width: 100%;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
-        border-radius: 1rem ;
+        border-radius: 1rem;
         min-height: 310px;
-
         padding: 1rem;
 
         .infos{
@@ -103,7 +103,7 @@ export const Macs = styled.div`
                 }
             }
         }
-        }
+    }
 `
 
 export const Wireless = styled.div`
@@ -113,6 +113,7 @@ export const Wireless = styled.div`
     width: 100%;
     margin: .5rem 0;
     padding: 0.4rem;
+    font-family: "Itim" !important;
     border-radius: .8rem;
     background-color: #f3f3f3;
 

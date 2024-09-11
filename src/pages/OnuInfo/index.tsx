@@ -91,7 +91,7 @@ export function OnuInfo(){
 
         const response = await getOnuInfo({cityId: parseInt(form.cityId as string), serialNumber: form.serial});
         stopLoading();
-        console.log(response)
+
         if(response){
             if(response.success){
                 setOnu(response.responses.response);
@@ -164,63 +164,68 @@ export function OnuInfo(){
                 }
             </Form>
             {
-                onu && (
-                    onu.map(onu => {
-                        return(
-                            <DataField className="flex">
-                                <div className="basic-info flex">
-                                    <p>Id: {onu.id}</p>
-                                    <p>Placa: {onu.slot}</p>
-                                    <p>Pon: {onu.pon}</p>
-                                    { onu.status ? <p>Status: {onu.status}</p> : <></> }
-                                </div>
-                                <div className="details">
-                                    <div className="infos">
+                onu && onu.map(onu => {
+                    return(
+                        <DataField className="flex">
+                            <div className="basic-info flex">
+                                <p>Id: {onu.id}</p>
+                                <p>Placa: {onu.slot}</p>
+                                <p>Pon: {onu.pon}</p>
+                                { onu.status ? <p>Status: {onu.status}</p> : <></> }
+                            </div>
+                            <div className="details">
+                                <div className="infos">
+                                    {
+                                        onu.oltRx || onu.onuRx ?
                                         <InfoStyle className="flex">
                                             { onu.oltRx && <p>OLT Rx: {onu.oltRx}</p> }
                                             { onu.onuRx && <p>ONU Rx: {onu.onuRx}</p> }
                                         </InfoStyle>
-                                        {
-                                            onu.oltTx || onu.onuTx ?
-                                            <InfoStyle className="flex">
-                                                { onu.oltTx && <p>OLT Tx: {onu.oltTx}</p> }
-                                                { onu.onuTx && <p>ONU Tx: {onu.onuTx}</p> }
-                                            </InfoStyle>
-                                            :
-                                            <></>
-                                        }
-                                        {
-                                            onu.temperature || onu.voltage ?
-                                            <InfoStyle className="flex">
-                                                {onu.temperature && <p>Temperatura: {onu.temperature + '°C'} </p> }
-                                                {onu.voltage && <p>Voltagem: {onu.voltage + 'v'} </p> }
-                                            </InfoStyle>
-                                            :
-                                            <></>
-                                        }
-                                        {
-                                            onu.distance || onu.uptime ?
-                                            <InfoStyle className="flex">
-                                                {onu.distance && <p>Distancia: {onu.distance} </p> }
-                                                {onu.uptime && <p>Uptime: {onu.uptime} </p> }
-                                            </InfoStyle>
-                                            :
-                                            <></>
-                                        }
-                                        {
-                                            onu.firmware || onu.model ?
-                                            <InfoStyle className="flex">
-                                                {onu.firmware && <p>Firmware: {onu.firmware}</p>}
-                                                {onu.model && <p>Modelo: {onu.model}</p>}
-                                            </InfoStyle>
-                                            :
-                                            <></>
-                                        }
-                                    </div>
-                                    <Macs className="flex">
-                                        <div><h4>MAC's na ONU</h4></div>
-                                        {
-                                            onu.macs &&  (
+                                        :
+                                        <></>
+                                    }
+                                    {
+                                        onu.oltTx || onu.onuTx ?
+                                        <InfoStyle className="flex">
+                                            { onu.oltTx && <p>OLT Tx: {onu.oltTx}</p> }
+                                            { onu.onuTx && <p>ONU Tx: {onu.onuTx}</p> }
+                                        </InfoStyle>
+                                        :
+                                        <></>
+                                    }
+                                    {
+                                        onu.temperature || onu.voltage ?
+                                        <InfoStyle className="flex">
+                                            {onu.temperature && <p>Temperatura: {onu.temperature + '°C'} </p> }
+                                            {onu.voltage && <p>Voltagem: {onu.voltage + 'v'} </p> }
+                                        </InfoStyle>
+                                        :
+                                        <></>
+                                    }
+                                    {
+                                        onu.distance || onu.uptime ?
+                                        <InfoStyle className="flex">
+                                            {onu.distance && <p>Distancia: {onu.distance} </p> }
+                                            {onu.uptime && <p>Uptime: {onu.uptime} </p> }
+                                        </InfoStyle>
+                                        :
+                                        <></>
+                                    }
+                                    {
+                                        onu.firmware || onu.model ?
+                                        <InfoStyle className="flex">
+                                            {onu.firmware && <p>Firmware: {onu.firmware}</p>}
+                                            {onu.model && <p>Modelo: {onu.model}</p>}
+                                        </InfoStyle>
+                                        :
+                                        <></>
+                                    }
+                                </div>
+                                <Macs className="flex">
+                                    {
+                                        onu.macs && onu.macs.length > 0 && (
+                                            <React.Fragment>
+                                                <div><h4>MAC's na ONU</h4></div>
                                                 <div className="table-wrapper flex">
                                                     <div className="table-controller">
                                                         <table>
@@ -245,13 +250,15 @@ export function OnuInfo(){
                                                         </table>
                                                     </div>
                                                 </div>
-                                            )
-                                        }
-                                    </Macs>
-                                    <Alarms className="flex">
-                                        <div><h3>Alarmes</h3></div>
-                                        {
-                                            onu.alarms &&  (
+                                            </React.Fragment>
+                                        )
+                                    }
+                                </Macs>
+                                <Alarms className="flex">
+                                    {
+                                        onu.alarms && onu.alarms.length > 0 && (
+                                            <React.Fragment>
+                                                <div><h3>Alarmes</h3></div>
                                                 <div className="table-wrapper flex">
                                                     <div className="table-controller">
                                                         <table>
@@ -278,37 +285,34 @@ export function OnuInfo(){
                                                         </table>
                                                     </div>
                                                 </div>
-                                            )
-                                        }
-                                    </Alarms>
-                                    {
-                                        onu.wireless &&
-                                        <Wireless className="flex">
-                                            <div><h3>Wireless</h3></div>
-                                            {
-                                                Object.entries(onu.wireless).map(([key, value]) => {
-                                                    return(
-                                                        <div className="interface flex">
-                                                            <div><h4>{key}</h4></div>
-                                                            <div>
-                                                                <p><b>SSID:</b> {value.name}</p>
-                                                                <p><b>Senha:</b> {value.password}</p>
-                                                                <p><b>Segurança:</b> {value.authType}</p>
-                                                                <p><b>Encriptação:</b> {value.encryption}</p>
-                                                                <p><b>Isolamento:</b> {value.isolation}</p>
-                                                                <p><b>Usuários online:</b> {value.currentUsers}</p>
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </Wireless>
+                                            </React.Fragment>
+                                        )
                                     }
-                                </div>
-                            </DataField>
-                        )
-                    })
-                )
+                                </Alarms>
+                                {
+                                    onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
+                                        return(
+                                            <Wireless className="flex">
+                                                <div><h3>Wireless</h3></div>
+                                                <div className="interface flex">
+                                                    <div><h4>{key}</h4></div>
+                                                    <div>
+                                                        <p><b>SSID:</b> {value.name}</p>
+                                                        <p><b>Senha:</b> {value.password}</p>
+                                                        <p><b>Segurança:</b> {value.authType}</p>
+                                                        <p><b>Encriptação:</b> {value.encryption}</p>
+                                                        <p><b>Isolamento:</b> {value.isolation}</p>
+                                                        <p><b>Usuários online:</b> {value.currentUsers}</p>
+                                                    </div>
+                                                </div>
+                                            </Wireless>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </DataField>
+                    )
+                })
             }
         </Container>
         
