@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const DataField = styled.div`
     width: 95%;
-    min-height: 350px;
     flex-direction: column;
     padding-bottom: 1rem;
 
@@ -22,7 +21,7 @@ export const DataField = styled.div`
         width: 100%;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
         border-radius: 1rem;
-        min-height: 310px;
+        height: auto;
         padding: 1rem;
 
         .infos{

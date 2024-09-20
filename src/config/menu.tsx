@@ -32,7 +32,7 @@ export const handlePages: IAllPages[] = [
                 my_auth_onus: 'Meus Provisionamentos'
            },
            {
-                onu_info: 'Ver Perda de ONU'
+                onu_info: 'Consultar ONU'
            }
         ]
     },
