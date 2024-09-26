@@ -108,7 +108,6 @@ export const Macs = styled.div`
 export const Wireless = styled.div`
     flex-direction: column;
     justify-content: space-around;
-    gap: 1rem;
     width: 100%;
     margin: .5rem 0;
     padding: 0.4rem;

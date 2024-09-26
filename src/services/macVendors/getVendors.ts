@@ -9,7 +9,7 @@ export async function getVendors(mac:string): Promise<any>{
         },
     }).then(response =>{ 
         return response.data;
-    }).catch((err) => {
+    }).catch(() => {
         return null;
     });
     return response;
