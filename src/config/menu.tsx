@@ -15,7 +15,7 @@ import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import ViewModuleOutlinedIcon from '@mui/icons-material/ViewModuleOutlined';
 import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
 import { IconExitLag } from '../assets/icons/iconExitLag';
-
+import WifiChannelOutlinedIcon from '@mui/icons-material/WifiChannelOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -30,6 +30,9 @@ export const handlePages: IAllPages[] = [
            },
            {
                 my_auth_onus: 'Meus Provisionamentos'
+           },
+           {
+                onu_info: 'Consultar ONU'
            }
         ]
     },
@@ -153,6 +156,8 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <TvOutlinedIcon />;
         case 'exitlag':
             return <IconExitLag />;
+        case 'onu_info':
+            return <WifiChannelOutlinedIcon />;
         default:
             return <></>;
     }
