@@ -4,6 +4,8 @@ import dayjs from "dayjs";
 import { useAuth } from "../../../hooks/useAuth";
 import { useResponse } from "../../../hooks/useResponse";
 
+import { formatInput } from "../../../config/regex";
+
 import { getCities } from "../../../services/apiManageONU/getCities";
 import { updateMassive } from "../../../services/apiManageONU/updateMassive";
 
@@ -89,16 +91,21 @@ export function EditMassive(props: LocalEditMassive){
     const handleOpenForecastPicker = () => { setOpenForecastTime(true); };
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await updateMassive(form);
-        if(response){
-            if(response.success){
-                setFetchResponseMessage(response.responses.status);
-                props.handleClose();
-            } else {
-                setFetchResponseMessage(response.messages.message);
-            }
+
+        if(!form.affectedLocals.match(formatInput)){
+            setFetchResponseMessage('info/massive-invalid-input');
         } else {
-            setFetchResponseMessage('error/no-connection-with-API');
+            const response = await updateMassive(form);
+            if(response){
+                if(response.success){
+                    setFetchResponseMessage(response.responses.status);
+                    props.handleClose();
+                } else {
+                    setFetchResponseMessage(response.messages.message);
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
+            }
         }
     };
       
