@@ -187,6 +187,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Este IP já está em uso.',
                 severityStatus: 'warning'
             }
+        case 'info/massive-invalid-input':
+            return{
+                responseMessage: 'Preencha de forma correta os campos.',
+                severityStatus: 'warning'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',

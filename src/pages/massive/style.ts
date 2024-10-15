@@ -99,6 +99,11 @@ export const Card = styled.div<IOffCard>`
             justify-content: flex-start;
             height: 50%;
             overflow: auto;
+
+            p{
+                //PERMITE AMOSTRAGEM DA QUEBRA DE LINHA FEITA NO TEXTAREA
+                white-space: pre;
+            }
         }
     }
 `;

@@ -4,6 +4,8 @@ import dayjs from "dayjs";
 import { useAuth } from "../../../hooks/useAuth";
 import { useResponse } from "../../../hooks/useResponse";
 
+import { formatInput } from "../../../config/regex";
+
 import { getCities } from "../../../services/apiManageONU/getCities";
 import { addMassive } from "../../../services/apiManageONU/addMassive";
 
@@ -122,17 +124,23 @@ export function AddMassive(props: any){
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await addMassive(form);
-        if(response){
-            if(response.success){
-                setFetchResponseMessage(response.responses.status);
-                props.handleClose();
-            } else {
-                setFetchResponseMessage(response.messages.message);
-            }
+        if(!form.affectedLocals.match(formatInput)){
+            setFetchResponseMessage('info/massive-invalid-input');
         } else {
-            setFetchResponseMessage('error/no-connection-with-API');
+            const response = await addMassive(form);
+            if(response){
+                if(response.success){
+                    setFetchResponseMessage(response.responses.status);
+                    props.handleClose();
+                } else {
+                    setFetchResponseMessage(response.messages.message);
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
+            }
         }
+
+        
     };
 
     return(
@@ -256,7 +264,7 @@ export function AddMassive(props: any){
                     </div>
                     <TextField
                         required
-                        label="Locais afetados. Ex: Bairros, Ruas" 
+                        label="Locais afetados Ex: Bairros, Ruas, Placa/Pon" 
                         variant="outlined"
                         name="affectedLocals"
                         fullWidth
