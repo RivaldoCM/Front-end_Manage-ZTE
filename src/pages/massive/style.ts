@@ -102,7 +102,7 @@ export const Card = styled.div<IOffCard>`
 
             p{
                 //PERMITE AMOSTRAGEM DA QUEBRA DE LINHA FEITA NO TEXTAREA
-                white-space: pre;
+                white-space: break-spaces;
             }
         }
     }
