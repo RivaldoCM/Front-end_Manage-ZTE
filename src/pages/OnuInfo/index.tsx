@@ -16,7 +16,7 @@ export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
     const { isLoading, startLoading, stopLoading } = useLoading();
 
-    const [onu, setOnu] = useState<IGetOnu[]>([]);
+    const [onu, setOnu] = useState<IGetOnu | null>();
     const [open, setOpen] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
     const [form, setForm] = useState({
@@ -85,7 +85,7 @@ export function OnuInfo(){
     */
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        setOnu([]);
+        setOnu(null);
         e.preventDefault();
         startLoading();
 
@@ -164,155 +164,153 @@ export function OnuInfo(){
                 }
             </Form>
             {
-                onu && onu.map(onu => {
-                    return(
-                        <DataField className="flex">
-                            <div className="basic-info flex">
-                                <p>Id: {onu.id}</p>
-                                <p>Placa: {onu.slot}</p>
-                                <p>Pon: {onu.pon}</p>
-                                { onu.status ? <p>Status: {onu.status}</p> : <></> }
-                            </div>
-                            <div className="details">
-                                <div className="infos">
-                                    {
-                                        onu.oltRx || onu.onuRx ?
-                                        <InfoStyle className="flex">
-                                            { onu.oltRx && <p>OLT Rx: {onu.oltRx}</p> }
-                                            { onu.onuRx && <p>ONU Rx: {onu.onuRx}</p> }
-                                        </InfoStyle>
-                                        :
-                                        <></>
-                                    }
-                                    {
-                                        onu.oltTx || onu.onuTx ?
-                                        <InfoStyle className="flex">
-                                            { onu.oltTx && <p>OLT Tx: {onu.oltTx}</p> }
-                                            { onu.onuTx && <p>ONU Tx: {onu.onuTx}</p> }
-                                        </InfoStyle>
-                                        :
-                                        <></>
-                                    }
-                                    {
-                                        onu.temperature || onu.voltage ?
-                                        <InfoStyle className="flex">
-                                            {onu.temperature && <p>Temperatura: {onu.temperature + '°C'} </p> }
-                                            {onu.voltage && <p>Voltagem: {onu.voltage + 'v'} </p> }
-                                        </InfoStyle>
-                                        :
-                                        <></>
-                                    }
-                                    {
-                                        onu.distance || onu.uptime ?
-                                        <InfoStyle className="flex">
-                                            {onu.distance && <p>Distancia: {onu.distance} </p> }
-                                            {onu.uptime && <p>Uptime: {onu.uptime} </p> }
-                                        </InfoStyle>
-                                        :
-                                        <></>
-                                    }
-                                    {
-                                        onu.firmware || onu.model ?
-                                        <InfoStyle className="flex">
-                                            {onu.firmware && <p>Firmware: {onu.firmware}</p>}
-                                            {onu.model && <p>Modelo: {onu.model}</p>}
-                                        </InfoStyle>
-                                        :
-                                        <></>
-                                    }
-                                </div>
-                                <Macs className="flex">
-                                    {
-                                        onu.macs && onu.macs.length > 0 && (
-                                            <React.Fragment>
-                                                <div><h4>MAC's na ONU</h4></div>
-                                                <div className="table-wrapper flex">
-                                                    <div className="table-controller">
-                                                        <table>
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>MAC</th>
-                                                                    <th>VLAN</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {
-                                                                    onu.macs.map((value, index) => {
-                                                                        return(
-                                                                            <tr key={index}>
-                                                                                <td>{value.mac}</td>
-                                                                                <td>{value.vlan}</td>
-                                                                            </tr>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </React.Fragment>
-                                        )
-                                    }
-                                </Macs>
-                                <Alarms className="flex">
-                                    {
-                                        onu.alarms && onu.alarms.length > 0 && (
-                                            <React.Fragment>
-                                                <div><h3>Alarmes</h3></div>
-                                                <div className="table-wrapper flex">
-                                                    <div className="table-controller">
-                                                        <table>
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Inicio</th>
-                                                                    <th>Fim</th>
-                                                                    <th>Causa</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {
-                                                                    onu.alarms.map((value, index) => {
-                                                                        return(
-                                                                            <tr key={index}>
-                                                                                <td>{value.createdAt}</td>
-                                                                                <td>{value.finishAt}</td>
-                                                                                <td>{value.cause}</td>
-                                                                            </tr>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </React.Fragment>
-                                        )
-                                    }
-                                </Alarms>
+                onu && (
+                    <DataField className="flex">
+                        <div className="basic-info flex">
+                            <p>Id: {onu.id}</p>
+                            <p>Placa: {onu.slot}</p>
+                            <p>Pon: {onu.pon}</p>
+                            { onu.status ? <p>Status: {onu.status}</p> : <></> }
+                        </div>
+                        <div className="details">
+                            <div className="infos">
                                 {
-                                    onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
-                                        return(
-                                            <Wireless className="flex">
-                                                <div><h3>Wireless</h3></div>
-                                                <div className="interface flex">
-                                                    <div><h4>{key}</h4></div>
-                                                    <div>
-                                                        <p><b>SSID:</b> {value.name}</p>
-                                                        <p><b>Senha:</b> {value.password}</p>
-                                                        <p><b>Segurança:</b> {value.authType}</p>
-                                                        <p><b>Encriptação:</b> {value.encryption}</p>
-                                                        <p><b>Isolamento:</b> {value.isolation}</p>
-                                                        <p><b>Usuários online:</b> {value.currentUsers}</p>
-                                                    </div>
-                                                </div>
-                                            </Wireless>
-                                        )
-                                    })
+                                    onu.oltRx || onu.onuRx ?
+                                    <InfoStyle className="flex">
+                                        { onu.oltRx && <p>OLT Rx: {onu.oltRx}</p> }
+                                        { onu.onuRx && <p>ONU Rx: {onu.onuRx}</p> }
+                                    </InfoStyle>
+                                    :
+                                    <></>
+                                }
+                                {
+                                    onu.oltTx || onu.onuTx ?
+                                    <InfoStyle className="flex">
+                                        { onu.oltTx && <p>OLT Tx: {onu.oltTx}</p> }
+                                        { onu.onuTx && <p>ONU Tx: {onu.onuTx}</p> }
+                                    </InfoStyle>
+                                    :
+                                    <></>
+                                }
+                                {
+                                    onu.temperature || onu.voltage ?
+                                    <InfoStyle className="flex">
+                                        {onu.temperature && <p>Temperatura: {onu.temperature + '°C'} </p> }
+                                        {onu.voltage && <p>Voltagem: {onu.voltage + 'v'} </p> }
+                                    </InfoStyle>
+                                    :
+                                    <></>
+                                }
+                                {
+                                    onu.distance || onu.uptime ?
+                                    <InfoStyle className="flex">
+                                        {onu.distance && <p>Distancia: {onu.distance} </p> }
+                                        {onu.uptime && <p>Uptime: {onu.uptime} </p> }
+                                    </InfoStyle>
+                                    :
+                                    <></>
+                                }
+                                {
+                                    onu.firmware || onu.model ?
+                                    <InfoStyle className="flex">
+                                        {onu.firmware && <p>Firmware: {onu.firmware}</p>}
+                                        {onu.model && <p>Modelo: {onu.model}</p>}
+                                    </InfoStyle>
+                                    :
+                                    <></>
                                 }
                             </div>
-                        </DataField>
-                    )
-                })
+                            <Macs className="flex">
+                                {
+                                    onu.macs && onu.macs.length > 0 && (
+                                        <React.Fragment>
+                                            <div><h4>MAC's na ONU</h4></div>
+                                            <div className="table-wrapper flex">
+                                                <div className="table-controller">
+                                                    <table>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>MAC</th>
+                                                                <th>VLAN</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                onu.macs.map((value, index) => {
+                                                                    return(
+                                                                        <tr key={index}>
+                                                                            <td>{value.mac}</td>
+                                                                            <td>{value.vlan}</td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </React.Fragment>
+                                    )
+                                }
+                            </Macs>
+                            <Alarms className="flex">
+                                {
+                                    onu.alarms && onu.alarms.length > 0 && (
+                                        <React.Fragment>
+                                            <div><h3>Alarmes</h3></div>
+                                            <div className="table-wrapper flex">
+                                                <div className="table-controller">
+                                                    <table>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Inicio</th>
+                                                                <th>Fim</th>
+                                                                <th>Causa</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                onu.alarms.map((value, index) => {
+                                                                    return(
+                                                                        <tr key={index}>
+                                                                            <td>{value.createdAt}</td>
+                                                                            <td>{value.finishAt}</td>
+                                                                            <td>{value.cause}</td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </React.Fragment>
+                                    )
+                                }
+                            </Alarms>
+                            {
+                                onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
+                                    return(
+                                        <Wireless className="flex">
+                                            <div><h3>Wireless</h3></div>
+                                            <div className="interface flex">
+                                                <div><h4>{key}</h4></div>
+                                                <div>
+                                                    <p><b>SSID:</b> {value.name}</p>
+                                                    <p><b>Senha:</b> {value.password}</p>
+                                                    <p><b>Segurança:</b> {value.authType}</p>
+                                                    <p><b>Encriptação:</b> {value.encryption}</p>
+                                                    <p><b>Isolamento:</b> {value.isolation}</p>
+                                                    <p><b>Usuários online:</b> {value.currentUsers}</p>
+                                                </div>
+                                            </div>
+                                        </Wireless>
+                                    )
+                                })
+                            }
+                        </div>
+                    </DataField>
+                )
             }
         </Container>
         
