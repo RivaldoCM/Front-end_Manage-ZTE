@@ -7,8 +7,9 @@ import { getCities } from "../../services/apiManageONU/getCities";
 import { ICities } from "../../interfaces/ICities";
 import { useResponse } from "../../hooks/useResponse";
 import { useLoading } from "../../hooks/useLoading";
-import SendIcon from '@mui/icons-material/Send';
 import { getOnuInfo } from "../../services/apiManageONU/getOnuInfo";
+
+import SendIcon from '@mui/icons-material/Send';
 import { Alarms, Container, DataField, InfoStyle, Macs, Wireless } from "./style";
 //import { getVendors } from "../../services/macVendors/getVendors";
 
