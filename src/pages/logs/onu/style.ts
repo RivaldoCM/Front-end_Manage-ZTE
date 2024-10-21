@@ -30,3 +30,30 @@ export const FilterButtons = styled.div`
         margin: .3rem;
     }
 `
+
+export const CollapseData = styled.div`
+    width: 90%;
+    height: 264px;
+    padding: 1rem;
+
+    aside{
+        width: 20%;
+        height: 100%;
+
+        .card{
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: flex-start;
+            width: 200px;
+            height: 100%;
+            padding: .5rem;
+            border: 1px solid black;
+            border-radius: 10px;
+
+            div{
+                display: flex;
+            }
+        }
+    }
+
+`
