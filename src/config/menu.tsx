@@ -84,6 +84,12 @@ export const handlePages: IAllPages[] = [
         ]
     },
     {
+        name: "Telecom",
+        pages: [
+            {'fiber_network': 'Mapa de rede Fibra'}
+        ]
+    },
+    {
         name: 'ExitLag',
         pages: [
             {'exitlag': 'Dashboard Clientes'}

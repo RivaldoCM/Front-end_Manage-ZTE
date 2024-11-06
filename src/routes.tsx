@@ -32,6 +32,7 @@ import { Exitlag } from "./pages/exitLag";
 import { EditOlt } from "./pages/admin/olts/editOlt";
 import { AddOlt } from "./pages/admin/olts/addOlt";
 import { OnuInfo } from "./pages/OnuInfo";
+import { FiberNetwork } from "./pages/telecom/FiberNetwork";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -186,10 +187,16 @@ export function AppRoutes() {
                 <Route 
                     path="onu_info"
                     element={
-                        <PrivateRoute 
-                            element={<OnuInfo />}
-                        />}
-                    >
+                        <PrivateRoute element={<OnuInfo />}/>
+                    }
+                >
+                </Route>
+                <Route
+                    path="/fiber_network"
+                    element={
+                        <PrivateRoute element={<FiberNetwork/>} />
+                    }
+                >
                 </Route>
             </Route>
         </Routes>
