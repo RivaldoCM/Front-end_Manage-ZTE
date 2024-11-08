@@ -218,7 +218,6 @@ export function ZTEForm({onu}: IOnu){
                                 </TextField>
                             </div>
                         </InputContainer>
-                        
                         <SIP>
                             <div className="sip-header flex">
                                 <DialerSipOutlinedIcon color="primary"/>
@@ -231,7 +230,38 @@ export function ZTEForm({onu}: IOnu){
                             </div>
                             {
                                 checkedSIP && (
-                                    <div>oi</div>
+                                    <React.Fragment>
+                                        <InputContainer>
+                                            <div className="text">
+                                                <p>Usuário SIP: </p>
+                                            </div>
+                                            <div className="content">
+                                                <TextField
+                                                    required
+                                                    variant="standard"
+                                                    name='sipUser'
+                                                    value={authOnu.sipUser}
+                                                    onChange={(e) => handleChange(e)}
+                                                >
+                                                </TextField>
+                                            </div>
+                                        </InputContainer>
+                                        <InputContainer>
+                                            <div className="text">
+                                                <p>Senha SIP: </p>
+                                            </div>
+                                            <div className="content">
+                                                <TextField
+                                                    required
+                                                    variant="standard" 
+                                                    name='sipPass'
+                                                    value={authOnu.sipPass}
+                                                    onChange={(e) => handleChange(e)}
+                                                >
+                                                </TextField>
+                                            </div>
+                                        </InputContainer>
+                                    </React.Fragment>
                                 )
                             }
                         </SIP>

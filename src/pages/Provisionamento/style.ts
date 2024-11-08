@@ -30,11 +30,12 @@ export const Controller = styled.div`
 export const SIP = styled.div`
     width: 98%;
     padding: 0 1rem;
-    border-radius: 12px;
-    background-color: #f1f1f1;
 
     .sip-header{
         justify-content: space-between;
-        width: 100%
+        width: 100%;
+        padding: 0 .5rem;
+        border-radius: 12px;
+        background-color: #f1f1f1;
     }
 `
