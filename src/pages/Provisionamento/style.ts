@@ -29,13 +29,15 @@ export const Controller = styled.div`
 
 export const SIP = styled.div`
     width: 98%;
-    padding: 0 1rem;
+    margin: 0.5rem 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
 
     .sip-header{
-        justify-content: space-between;
+        justify-content: space-around;
         width: 100%;
-        padding: 0 .5rem;
         border-radius: 12px;
         background-color: #f1f1f1;
     }
+    .input-sip{ padding: 0 1rem; }
 `

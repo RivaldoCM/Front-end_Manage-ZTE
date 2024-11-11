@@ -104,7 +104,9 @@ export function ZTEForm({onu}: IOnu){
                 pppoeUser: authOnu.pppoeUser,
                 pppPass: authOnu.pppoePassword,
                 wifiSSID: authOnu.wifiName,
-                wifiPass: authOnu.wifiPassword
+                wifiPass: authOnu.wifiPassword,
+                sipUser: authOnu.sipUser,
+                sipPass: authOnu.sipPass
             });
             stopLoading();
 
@@ -230,7 +232,7 @@ export function ZTEForm({onu}: IOnu){
                             </div>
                             {
                                 checkedSIP && (
-                                    <React.Fragment>
+                                    <div className='input-sip'>
                                         <InputContainer>
                                             <div className="text">
                                                 <p>Usuário SIP: </p>
@@ -261,7 +263,7 @@ export function ZTEForm({onu}: IOnu){
                                                 </TextField>
                                             </div>
                                         </InputContainer>
-                                    </React.Fragment>
+                                    </div>
                                 )
                             }
                         </SIP>
