@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useLoading } from '../../../../hooks/useLoading';
@@ -35,6 +35,14 @@ export function ZTEForm({onu}: IOnu){
     const { setFetchResponseMessage } = useResponse();
 
     const [checkedSIP, setCheckedSIP] = useState(false);
+
+    useEffect(() => {
+        setAuthOnu({
+            ...authOnu,
+            sipUser: '',
+            sipPass: ''
+        });
+    }, [checkedSIP === false])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
