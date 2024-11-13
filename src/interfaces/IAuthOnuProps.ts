@@ -15,4 +15,6 @@ export interface IAuthOnuProps {
     pppPass?: string,
     wifiSSID?: string,
     wifiPass?: string,
+    sipUser?: string,
+    sipPass?: string
 }

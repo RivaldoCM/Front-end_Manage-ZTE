@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useLoading } from '../../../../hooks/useLoading';
@@ -19,10 +19,13 @@ import { updateLogsOnu } from '../../../../services/apiManageONU/updateLogOnu';
 import { IOnu } from '../../../../interfaces/IOnus';
 
 import { InputContainer } from '../../../../styles/globalStyles';
+import { SIP } from '../../style';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import DialerSipOutlinedIcon from '@mui/icons-material/DialerSipOutlined';
 
 export function ZTEForm({onu}: IOnu){
     const navigate = useNavigate();
@@ -31,11 +34,25 @@ export function ZTEForm({onu}: IOnu){
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
 
+    const [checkedSIP, setCheckedSIP] = useState(false);
+
+    useEffect(() => {
+        setAuthOnu({
+            ...authOnu,
+            sipUser: '',
+            sipPass: ''
+        });
+    }, [checkedSIP === false])
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
             ...authOnu,
             [e.target.name]: e.target.value
         });
+    };
+
+    const handleChangeSIP = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckedSIP(event.target.checked);
     };
 
     const handleUpdateOltData = () => {
@@ -95,7 +112,9 @@ export function ZTEForm({onu}: IOnu){
                 pppoeUser: authOnu.pppoeUser,
                 pppPass: authOnu.pppoePassword,
                 wifiSSID: authOnu.wifiName,
-                wifiPass: authOnu.wifiPassword
+                wifiPass: authOnu.wifiPassword,
+                sipUser: authOnu.sipUser,
+                sipPass: authOnu.sipPass
             });
             stopLoading();
 
@@ -209,6 +228,53 @@ export function ZTEForm({onu}: IOnu){
                                 </TextField>
                             </div>
                         </InputContainer>
+                        <SIP>
+                            <div className="sip-header flex">
+                                <DialerSipOutlinedIcon color="primary"/>
+                                <p>Possui telefone?</p>
+                                <Checkbox
+                                    checked={checkedSIP}
+                                    onChange={handleChangeSIP}
+                                    inputProps={{ 'aria-label': 'controlled' }}
+                                />
+                            </div>
+                            {
+                                checkedSIP && (
+                                    <div className='input-sip'>
+                                        <InputContainer>
+                                            <div className="text">
+                                                <p>Usuário SIP: </p>
+                                            </div>
+                                            <div className="content">
+                                                <TextField
+                                                    required
+                                                    variant="standard"
+                                                    name='sipUser'
+                                                    value={authOnu.sipUser}
+                                                    onChange={(e) => handleChange(e)}
+                                                >
+                                                </TextField>
+                                            </div>
+                                        </InputContainer>
+                                        <InputContainer>
+                                            <div className="text">
+                                                <p>Senha SIP: </p>
+                                            </div>
+                                            <div className="content">
+                                                <TextField
+                                                    required
+                                                    variant="standard" 
+                                                    name='sipPass'
+                                                    value={authOnu.sipPass}
+                                                    onChange={(e) => handleChange(e)}
+                                                >
+                                                </TextField>
+                                            </div>
+                                        </InputContainer>
+                                    </div>
+                                )
+                            }
+                        </SIP>
                     </React.Fragment>
                 )
             default:

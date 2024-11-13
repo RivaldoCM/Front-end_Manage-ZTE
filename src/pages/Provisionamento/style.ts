@@ -26,3 +26,18 @@ export const Controller = styled.div`
     width: 100%;
     height: calc(100vh - 68px);
 `
+
+export const SIP = styled.div`
+    width: 98%;
+    margin: 0.5rem 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+
+    .sip-header{
+        justify-content: space-around;
+        width: 100%;
+        border-radius: 12px;
+        background-color: #f1f1f1;
+    }
+    .input-sip{ padding: 0 1rem; }
+`

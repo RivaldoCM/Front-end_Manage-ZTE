@@ -9,4 +9,6 @@ type IAuthOnuContext = {
     modelOnu: string;
     modelOlt: string[];
     voalleAccessPointId: string | number;
+    sipUser?: string;
+    sipPass?: string;
 }
