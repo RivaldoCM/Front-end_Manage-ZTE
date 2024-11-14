@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Box from '@mui/joy/Box';
 import Typography from '@mui/joy/Typography';
 import Link from '@mui/joy/Link';
@@ -8,6 +10,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { visuallyHidden } from '@mui/utils';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { SearchInput } from '../../../components/SeachInput';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 
 export interface Data {
     name: string,
@@ -86,59 +91,69 @@ interface HeadCell {
     id: keyof Data;
     label: string;
     numeric: boolean;
+    sort: boolean;
 }
   
 const headCells: readonly HeadCell[] = [
     {
         id: 'name',
+        sort: false,
         numeric: false,
         disablePadding: true,
         label: 'Nome',
     },
     {
         id: 'numeration',
+        sort: false,
         numeric: true,
         disablePadding: false,
         label: 'N°',
     },
     {
         id: 'localization',
+        sort: false,
         numeric: false,
         disablePadding: false,
         label: 'Localização',
     },
     {
         id: 'type',
+        sort: true,
         numeric: false,
         disablePadding: false,
         label: 'Tipo',
     },
     {
         id: 'city',
+        sort: true,
         numeric: false,
         disablePadding: false,
         label: 'Cidade',
     },
     {
         id: 'olt',
+        sort: true,
         numeric: false,
         disablePadding: false,
         label: 'OLT',
     },
     {
         id: 'incidents',
+        sort: true,
         numeric: false,
         disablePadding: false,
         label: 'Nº de incidentes',
     },
     {
         id: 'slot',
+        sort: false,
         numeric: true,
         disablePadding: false,
         label: 'Placa',
     },
     {
         id: 'pon',
+        sort: false,
         numeric: true,
         disablePadding: false,
         label: 'Pon',
@@ -155,12 +170,12 @@ interface EnhancedTableProps {
 }
   
 export function EnhancedTableHead(props: EnhancedTableProps) {
-const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-    onRequestSort(event, property);
-};
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const createSortHandler = (property: keyof Data, isSortable: boolean) => (event: React.MouseEvent<unknown>) => {
+        isSortable ? onRequestSort(event, property) : null;
+    };
 
-return (
+    return (
         <thead>
         <tr>
             <th>
@@ -169,9 +184,9 @@ return (
                     checked={rowCount > 0 && numSelected === rowCount}
                     onChange={onSelectAllClick}
                     slotProps={{
-                    input: {
-                        'aria-label': 'select all desserts',
-                    },
+                        input: {
+                            'aria-label': 'select all desserts',
+                        },
                     }}
                     sx={{ verticalAlign: 'sub' }}
                 />
@@ -187,22 +202,21 @@ return (
                             : undefined
                         }
                     >
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                         <Link
                             underline="none"
                             color="neutral"
                             textColor={active ? 'primary.plainColor' : undefined}
                             component="button"
-                            onClick={createSortHandler(headCell.id)}
+                            onClick={createSortHandler(headCell.id, headCell.sort)}
                             startDecorator={
-                                headCell.numeric ? (
+                                headCell.numeric && headCell.sort ? (
                                     <ArrowDownwardIcon
                                         sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                                     />
                                 ) : null
                             }
                             endDecorator={
-                                !headCell.numeric ? (
+                                !headCell.numeric && headCell.sort ? (
                                     <ArrowDownwardIcon
                                     sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                                     />
@@ -260,7 +274,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       >
         {numSelected > 0 ? (
             <Typography sx={{ flex: '1 1 100%' }} component="div">
-                {numSelected} selected
+                {numSelected} selecionado(s)
             </Typography>
         ) : (
             <Typography
@@ -273,17 +287,34 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             </Typography>
         )}
         {numSelected > 0 ? (
-            <Tooltip title="Delete">
-                <IconButton size="sm" color="danger" variant="solid">
-                    <DeleteIcon />
-                </IconButton>
-            </Tooltip>
+            <React.Fragment>
+                <Tooltip title="Editar">
+                    <IconButton size="sm" color="primary" variant="solid">
+                        <EditOutlinedIcon />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title="Deletar">
+                    <IconButton size="sm" color="danger" variant="solid">
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+            </React.Fragment>
         ) : (
-            <Tooltip title="Filter list">
-                <IconButton size="sm" variant="outlined" color="neutral">
-                    <FilterListIcon />
-                </IconButton>
-            </Tooltip>
+            <React.Fragment>
+                <Tooltip title="Adicionar item">
+                    <IconButton size="sm" variant="outlined" color="primary">
+                        <AddBoxOutlinedIcon />
+                    </IconButton>
+                </Tooltip>
+                <SearchInput 
+                    placeholder='Pesquise aqui'
+                />
+                <Tooltip title="Lista de Filtros">
+                    <IconButton size="sm" variant="outlined" color="neutral">
+                        <FilterListIcon />
+                    </IconButton>
+                </Tooltip>
+            </React.Fragment>
         )}
       </Box>
     );
