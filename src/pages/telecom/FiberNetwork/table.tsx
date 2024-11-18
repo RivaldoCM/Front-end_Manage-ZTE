@@ -256,66 +256,76 @@ interface EnhancedTableToolbarProps {
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { numSelected } = props;
     return (
-      <Box
-        sx={[
-            {
-                display: 'flex',
-                alignItems: 'center',
-                py: 1,
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                borderTopLeftRadius: 'var(--unstable_actionRadius)',
-                borderTopRightRadius: 'var(--unstable_actionRadius)',
-            },
-            numSelected > 0 && {
-                bgcolor: 'background.level1',
-            },
-        ]}
-      >
-        {numSelected > 0 ? (
-            <Typography sx={{ flex: '1 1 100%' }} component="div">
-                {numSelected} selecionado(s)
-            </Typography>
-        ) : (
-            <Typography
-                level="body-lg"
-                sx={{ flex: '1 1 100%' }}
-                id="tableTitle"
-                component="div"
-            >
-                Passivos de Rede
-            </Typography>
-        )}
-        {numSelected > 0 ? (
-            <React.Fragment>
-                <Tooltip title="Editar">
-                    <IconButton size="sm" color="primary" variant="solid">
-                        <EditOutlinedIcon />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Deletar">
-                    <IconButton size="sm" color="danger" variant="solid">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            </React.Fragment>
-        ) : (
-            <React.Fragment>
-                <Tooltip title="Adicionar item">
-                    <IconButton size="sm" variant="outlined" color="primary">
-                        <AddBoxOutlinedIcon />
-                    </IconButton>
-                </Tooltip>
-                <SearchInput 
-                    placeholder='Pesquise aqui'
-                />
-                <Tooltip title="Lista de Filtros">
-                    <IconButton size="sm" variant="outlined" color="neutral">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            </React.Fragment>
-        )}
-      </Box>
+        <Box
+            sx={[
+                {
+                    display: 'flex',
+                    alignItems: 'center',
+                    py: 1,
+                    pl: { sm: 2 },
+                    pr: { xs: 1, sm: 1 },
+                    borderTopLeftRadius: 'var(--unstable_actionRadius)',
+                    borderTopRightRadius: 'var(--unstable_actionRadius)',
+                },
+                numSelected > 0 && {
+                    bgcolor: 'background.level1',
+                },
+            ]}
+        >
+            {numSelected > 0 ? (
+                <Typography sx={{ flex: '1 1 100%' }} component="div">
+                    {numSelected} selecionado(s)
+                </Typography>
+            ) : (
+                <Typography
+                    level="body-lg"
+                    sx={{ flex: '1 1 100%' }}
+                    id="tableTitle"
+                    component="div"
+                >
+                    Passivos de Rede
+                </Typography>
+            )}
+            {numSelected > 0 ? (
+                <React.Fragment>
+                    <Tooltip title="Editar">
+                        <IconButton size="sm" color="primary" variant="outlined">
+                            <EditOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Deletar">
+                        <IconButton 
+                            size="sm" 
+                            color="danger" 
+                            variant="outlined" 
+                            onClick={props.onOpenDeleteItemModal}
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                </React.Fragment>
+            ) : (
+                <React.Fragment>
+                    <Tooltip title="Adicionar item">
+                        <IconButton 
+                            size="sm" 
+                            variant="outlined" 
+                            color="primary" 
+                            onClick={props.onOpenAddItemModal}
+                        >
+                            <AddBoxOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <SearchInput
+                        placeholder='Pesquise aqui'
+                    />
+                    <Tooltip title="Lista de Filtros">
+                        <IconButton size="sm" variant="outlined" color="neutral">
+                            <FilterListIcon />
+                        </IconButton>
+                    </Tooltip>
+                </React.Fragment>
+            )}
+        </Box>
     );
 }
