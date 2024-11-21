@@ -14,11 +14,36 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { createData, Data, EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from './table';
 import AddItemModal from './modals/addItem';
 import DeleteItemModal from './modals/DeleteItem';
+import { TableController } from './style';
 
 type Order = 'asc' | 'desc';
 
 const rows = [
   createData('CTO 346', 100, 'doidera', 'CTO', 'Espera Feliz', 'EEF_1', 0, 1 , 5),
+  createData('Donut', 452, 25.0, 51, 4.9),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+  createData('Honeycomb', 408, 3.2, 87, 6.5),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Jelly Bean', 375, 0.0, 94, 0.0),
+  createData('KitKat', 518, 26.0, 65, 7.0),
+  createData('Lollipop', 392, 0.2, 98, 0.0),
+  createData('Marshmallow', 318, 0, 81, 2.0),
+  createData('Nougat', 360, 19.0, 9, 37.0),
+  createData('Oreo', 437, 18.0, 63, 4.0),
+  createData('Donut', 452, 25.0, 51, 4.9),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+  createData('Honeycomb', 408, 3.2, 87, 6.5),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Jelly Bean', 375, 0.0, 94, 0.0),
+  createData('KitKat', 518, 26.0, 65, 7.0),
+  createData('Lollipop', 392, 0.2, 98, 0.0),
+  createData('Marshmallow', 318, 0, 81, 2.0),
+  createData('Nougat', 360, 19.0, 9, 37.0),
+  createData('Oreo', 437, 18.0, 63, 4.0),
   createData('Donut', 452, 25.0, 51, 4.9),
   createData('Eclair', 262, 16.0, 24, 6.0),
   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
@@ -109,7 +134,7 @@ export function FiberNetwork(){
     const handleCloseDeleteItem = () => setOpenDeleteItemModal(false);
 
     return (
-        <React.Fragment>
+        <TableController className='teste'>
             <Sheet
                 variant="outlined"
                 sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
@@ -120,7 +145,7 @@ export function FiberNetwork(){
                     onOpenDeleteItemModal={handleOpenDeleteItem}
                 />
                 <Table
-                    aria-labelledby="tableTitle"
+                    stickyFooter
                     hoverRow
                     sx={{
                         '--TableCell-headBackground': 'transparent',
@@ -133,6 +158,12 @@ export function FiberNetwork(){
                             width: '10%',
                         },
                         '& tr > *:nth-child(n+3)': { textAlign: 'right' },
+                        '> thead' : {
+                            position: 'sticky',
+                            top: 110,
+                            background: '#fdfdfd',
+                            zIndex: '100'
+                        }
                     }}
                 >
                     <EnhancedTableHead
@@ -285,6 +316,6 @@ export function FiberNetwork(){
                 :
                     <></>
             }
-        </React.Fragment>
+        </TableController>
     );
 }

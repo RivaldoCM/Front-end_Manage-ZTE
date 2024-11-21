@@ -259,6 +259,10 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         <Box
             sx={[
                 {
+                    position: 'sticky',
+                    top: '65px',
+                                                background: '#fdfdfd',
+                            zIndex: '100',
                     display: 'flex',
                     alignItems: 'center',
                     py: 1,
