@@ -137,7 +137,7 @@ export function FiberNetwork(){
         <TableController className='teste'>
             <Sheet
                 variant="outlined"
-                sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
+                sx={{ width: '100%', boxShadow: 'sm', border: 'none' }}
             >
                 <EnhancedTableToolbar 
                     numSelected={selected.length}
@@ -160,7 +160,7 @@ export function FiberNetwork(){
                         '& tr > *:nth-child(n+3)': { textAlign: 'right' },
                         '> thead' : {
                             position: 'sticky',
-                            top: 110,
+                            top: 122,
                             background: '#fdfdfd',
                             zIndex: '100'
                         }
@@ -250,16 +250,16 @@ export function FiberNetwork(){
                                         justifyContent: 'flex-end',
                                     }}
                                 >
-                                    <FormControl orientation="horizontal" size="sm">
+                                    <FormControl orientation="horizontal" size="sm" sx={{ fontWeight: '100' }}>
                                         <FormLabel>Linhas por página:</FormLabel>
-                                        <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
+                                        <Select onChange={handleChangeRowsPerPage} value={rowsPerPage} >
                                             <Option value={25}>25</Option>
                                             <Option value={50}>50</Option>
                                             <Option value={100}>100</Option>
                                             <Option value={200}>200</Option>
                                         </Select>
                                     </FormControl>
-                                    <Typography sx={{ textAlign: 'center', minWidth: 80 }}>
+                                    <Typography sx={{ textAlign: 'center', minWidth: 80, fontWeight: '100' }}>
                                         {labelDisplayedRows({
                                             from: rows.length === 0 ? 0 : page * rowsPerPage + 1,
                                             to: getLabelDisplayedRowsTo(),

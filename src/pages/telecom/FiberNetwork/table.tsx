@@ -260,9 +260,9 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             sx={[
                 {
                     position: 'sticky',
-                    top: '65px',
-                                                background: '#fdfdfd',
-                            zIndex: '100',
+                    top: '64px',
+                    background: '#fdfdfd',
+                    zIndex: '100',
                     display: 'flex',
                     alignItems: 'center',
                     py: 1,
@@ -293,15 +293,20 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             {numSelected > 0 ? (
                 <React.Fragment>
                     <Tooltip title="Editar">
-                        <IconButton size="sm" color="primary" variant="outlined">
+                        <IconButton 
+                            size="sm"
+                            color="primary"
+                            variant="soft"
+                            sx={{ margin: '0 .5rem' }}
+                        >
                             <EditOutlinedIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Deletar">
                         <IconButton 
                             size="sm" 
-                            color="danger" 
-                            variant="outlined" 
+                            color="danger"
+                            variant="soft" 
                             onClick={props.onOpenDeleteItemModal}
                         >
                             <DeleteIcon />
@@ -313,7 +318,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     <Tooltip title="Adicionar item">
                         <IconButton 
                             size="sm" 
-                            variant="outlined" 
+                            variant="soft" 
                             color="primary" 
                             onClick={props.onOpenAddItemModal}
                         >
@@ -324,7 +329,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                         placeholder='Pesquise aqui'
                     />
                     <Tooltip title="Lista de Filtros">
-                        <IconButton size="sm" variant="outlined" color="neutral">
+                        <IconButton size="sm" variant="soft" sx={{ color: '#9c27b0'}}>
                             <FilterListIcon />
                         </IconButton>
                     </Tooltip>

@@ -47,7 +47,7 @@ export const GlobalStyle = createGlobalStyle`
     p, li, input, div{
         font-family: 'Poppins', sans-serif !important;
     }
-    h1, h2, h3, h4, h5, h6, strong, button{font-weight: 700; background: none;}
+    h1, h2, h3, h4, h5, h6, strong{font-weight: 700; background: none;}
     button {cursor: pointer;}
     //a{color: var(--black)}
     [disable] {opacity: 0.6%; cursor: not-allowed;}
