@@ -26,30 +26,6 @@ export interface Data {
     pon: number,
 }
 
-export function createData(
-    name: string,
-    numeration: number,
-    localization: string,
-    type: string,
-    city: string,
-    olt: string,
-    incidents: string,
-    slot: number,
-    pon: number,
-  ): Data {
-    return {
-      name,
-      numeration,
-      localization,
-      type,
-      city,
-      olt,
-      incidents,
-      slot,
-      pon
-    };
-  }
-
 export function labelDisplayedRows({
     from,
     to,
@@ -103,18 +79,11 @@ const headCells: readonly HeadCell[] = [
         label: 'Nome',
     },
     {
-        id: 'numeration',
+        id: 'number',
         sort: false,
         numeric: true,
         disablePadding: false,
         label: 'N°',
-    },
-    {
-        id: 'localization',
-        sort: false,
-        numeric: false,
-        disablePadding: false,
-        label: 'Localização',
     },
     {
         id: 'type',
@@ -138,11 +107,11 @@ const headCells: readonly HeadCell[] = [
         label: 'OLT',
     },
     {
-        id: 'incidents',
-        sort: true,
-        numeric: false,
+        id: 'slots',
+        sort: false,
+        numeric: true,
         disablePadding: false,
-        label: 'Nº de incidentes',
+        label: 'Total de Slots',
     },
     {
         id: 'slot',
@@ -157,6 +126,27 @@ const headCells: readonly HeadCell[] = [
         numeric: true,
         disablePadding: false,
         label: 'Pon',
+    },
+    {
+        id: 'incidents',
+        sort: true,
+        numeric: false,
+        disablePadding: false,
+        label: 'Nº de incidentes',
+    },
+    {
+        id: 'status',
+        sort: true,
+        numeric: false,
+        disablePadding: false,
+        label: 'Status',
+    },
+    {
+        id: 'localization',
+        sort: false,
+        numeric: false,
+        disablePadding: false,
+        label: 'Localização',
     },
 ];
   

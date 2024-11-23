@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/joy/Box';
 import Table from '@mui/joy/Table';
 import Typography from '@mui/joy/Typography';
@@ -15,50 +15,15 @@ import { createData, Data, EnhancedTableHead, EnhancedTableToolbar, getComparato
 import AddItemModal from './modals/addItem';
 import DeleteItemModal from './modals/DeleteItem';
 import { TableController } from './style';
+import { getNetworkTopology } from '../../../services/apiManageONU/getNetworkTopology';
+import { useResponse } from '../../../hooks/useResponse';
 
 type Order = 'asc' | 'desc';
 
-const rows = [
-  createData('CTO 346', 100, 'doidera', 'CTO', 'Espera Feliz', 'EEF_1', 0, 1 , 5),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-];
-
 export function FiberNetwork(){
+    const { setFetchResponseMessage } = useResponse();
+
+    const [networkData, setNetworkData] = useState([]);
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof Data>('calories');
     const [selected, setSelected] = useState<readonly string[]>([]);
@@ -70,6 +35,26 @@ export function FiberNetwork(){
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteItemModal, setOpenDeleteItemModal] = useState(false);
 
+    useEffect(() => {
+        async function getData(){
+            const data = await getNetworkTopology();
+            console.log(data)
+            if(data){
+                if(data.success){
+                    setNetworkData(data.responses.response);
+                }else{
+                    setNetworkData([]);
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
+            }
+        }
+        getData();
+    }, []);
+
+    console.log(networkData)
+
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
         property: keyof Data,
@@ -80,7 +65,7 @@ export function FiberNetwork(){
     };
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.name);
+            const newSelected = networkData.map((n) => n.name);
             setSelected(newSelected);
             return;
         }
@@ -113,16 +98,16 @@ export function FiberNetwork(){
     };
 
     const getLabelDisplayedRowsTo = () => {
-        if (rows.length === -1) {
+        if (networkData.length === -1) {
             return (page + 1) * rowsPerPage;
         }
         return rowsPerPage === -1
-        ? rows.length
-        : Math.min(rows.length, (page + 1) * rowsPerPage);
+        ? networkData.length
+        : Math.min(networkData.length, (page + 1) * rowsPerPage);
     };
 
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    // Avoid a layout jump when reaching the last page with empty networkData.
+    const emptyRows =page > 0 ? Math.max(0, (1 + page) * rowsPerPage - networkData.length) : 0;
 
     const handleOpenAddItem = () => setOpenAddItemModal(true);
     const handleCloseAddItem = () => setOpenAddItemModal(false);
@@ -155,9 +140,12 @@ export function FiberNetwork(){
                             width: '40px',
                         },
                         '& thead th:nth-child(2)': {
-                            width: '10%',
+                            width: '15%',
                         },
-                        '& tr > *:nth-child(n+3)': { textAlign: 'right' },
+                        '& thead th:nth-child(3)': {
+                            width: '5%',
+                        },
+                        '& tr > *:nth-child(n+3)': { textAlign: 'center' },
                         '> thead' : {
                             position: 'sticky',
                             top: 122,
@@ -172,10 +160,10 @@ export function FiberNetwork(){
                         orderBy={orderBy}
                         onSelectAllClick={handleSelectAllClick}
                         onRequestSort={handleRequestSort}
-                        rowCount={rows.length}
+                        rowCount={networkData.length}
                     />
                     <tbody>
-                        {[...rows]
+                        {[...networkData]
                             .sort(getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
@@ -215,14 +203,16 @@ export function FiberNetwork(){
                                     <th id={labelId} scope="row">
                                         {row.name}
                                     </th>
-                                    <td>{row.numeration}</td>
-                                    <td>{row.localization}</td>
-                                    <td>{row.type}</td>
-                                    <td>{row.city}</td>
-                                    <td>{row.olt}</td>
-                                    <td>{row.incidents}</td>
+                                    <td>{row.number}</td>
+                                    <td>{row.Type.name}</td>
+                                    <td>{row.City.name}</td>
+                                    <td>{row.Olts.name}</td>
+                                    <td>{row.slots}</td>
                                     <td>{row.slot}</td>
                                     <td>{row.pon}</td>
+                                    <td>{row.incident_count}</td>
+                                    <td>{row.status}</td>
+                                    <td>{row.lat}</td>
                                 </tr>
                             );
                         })}
@@ -241,7 +231,7 @@ export function FiberNetwork(){
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan={10}>
+                            <td colSpan={12}>
                                 <Box
                                     sx={{
                                         display: 'flex',
@@ -261,9 +251,9 @@ export function FiberNetwork(){
                                     </FormControl>
                                     <Typography sx={{ textAlign: 'center', minWidth: 80, fontWeight: '100' }}>
                                         {labelDisplayedRows({
-                                            from: rows.length === 0 ? 0 : page * rowsPerPage + 1,
+                                            from: networkData.length === 0 ? 0 : page * rowsPerPage + 1,
                                             to: getLabelDisplayedRowsTo(),
-                                            count: rows.length === -1 ? -1 : rows.length,
+                                            count: networkData.length === -1 ? -1 : networkData.length,
                                         })}
                                     </Typography>
                                     <Box sx={{ display: 'flex', gap: 1 }}>
@@ -282,8 +272,8 @@ export function FiberNetwork(){
                                             color="neutral"
                                             variant="outlined"
                                             disabled={
-                                            rows.length !== -1
-                                                ? page >= Math.ceil(rows.length / rowsPerPage) - 1
+                                            networkData.length !== -1
+                                                ? page >= Math.ceil(networkData.length / rowsPerPage) - 1
                                                 : false
                                             }
                                             onClick={() => handleChangePage(page + 1)}
