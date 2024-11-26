@@ -11,9 +11,9 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { createData, Data, EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from './table';
+import { Data, EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from './table';
 import AddItemModal from './modals/addItem';
-import DeleteItemModal from './modals/DeleteItem';
+
 import { TableController } from './style';
 import { getNetworkTopology } from '../../../services/apiManageONU/getNetworkTopology';
 import { useResponse } from '../../../hooks/useResponse';
@@ -25,11 +25,11 @@ export function FiberNetwork(){
 
     const [networkData, setNetworkData] = useState([]);
     const [order, setOrder] = useState<Order>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Data>('calories');
+    const [orderBy, setOrderBy] = useState<keyof Data>('type');
+    const [isNested, setIsNested] = useState<Boolean>(false);
     const [selected, setSelected] = useState<readonly string[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
-
     const [openAddItemModal, setOpenAddItemModal] = useState(false);
     const [openFilterModal, setOpenFilterModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
@@ -38,7 +38,6 @@ export function FiberNetwork(){
     useEffect(() => {
         async function getData(){
             const data = await getNetworkTopology();
-            console.log(data)
             if(data){
                 if(data.success){
                     setNetworkData(data.responses.response);
@@ -53,19 +52,20 @@ export function FiberNetwork(){
         getData();
     }, []);
 
-    console.log(networkData)
-
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
         property: keyof Data,
+        isNested: boolean
     ) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+        setIsNested(isNested);
     };
+
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = networkData.map((n) => n.name);
+            const newSelected = networkData.map((n) => n);
             setSelected(newSelected);
             return;
         }
@@ -75,6 +75,7 @@ export function FiberNetwork(){
     const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
         const selectedIndex = selected.indexOf(name);
         let newSelected: readonly string[] = [];
+        
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, name);
         } else if (selectedIndex === 0) {
@@ -106,8 +107,10 @@ export function FiberNetwork(){
         : Math.min(networkData.length, (page + 1) * rowsPerPage);
     };
 
+    
+
     // Avoid a layout jump when reaching the last page with empty networkData.
-    const emptyRows =page > 0 ? Math.max(0, (1 + page) * rowsPerPage - networkData.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - networkData.length) : 0;
 
     const handleOpenAddItem = () => setOpenAddItemModal(true);
     const handleCloseAddItem = () => setOpenAddItemModal(false);
@@ -164,15 +167,15 @@ export function FiberNetwork(){
                     />
                     <tbody>
                         {[...networkData]
-                            .sort(getComparator(order, orderBy))
+                            .sort(getComparator(order, orderBy, isNested))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                            const isItemSelected = selected.includes(row.name);
+                            const isItemSelected = selected.includes(row);
                             const labelId = `enhanced-table-checkbox-${index}`;
 
                             return(
                                 <tr
-                                    onClick={(event) => handleClick(event, row.name)}
+                                    onClick={(event) => handleClick(event, row)}
                                     role="checkbox"
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}
@@ -194,7 +197,7 @@ export function FiberNetwork(){
                                             checked={isItemSelected}
                                             slotProps={{
                                                 input: {
-                                                'aria-labelledby': labelId,
+                                                    'aria-labelledby': labelId,
                                                 },
                                             }}
                                             sx={{ verticalAlign: 'top' }}

@@ -16,7 +16,7 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 
 export interface Data {
     name: string,
-    numeration: number,
+    number: number,
     localization: string,
     type: string,
     city: string,
@@ -38,28 +38,42 @@ export function labelDisplayedRows({
         return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
 }
   
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
+function descendingComparator<T>(a: any, b: any, orderBy: keyof T, isNested: boolean) {
+    if(isNested){
+        const nested = orderBy.toString().split('.')
+        console.log(nested)
+        if (b[nested[0]][nested[1]] < a[nested[0]][nested[1]]) {
+            return -1;
+        }
+        if (b[nested[0]][nested[1]] > a[nested[0]][nested[1]]) {
+            return 1;
+        }
+        return 0;
+    } else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
     }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
+
 }
   
 type Order = 'asc' | 'desc';
-  
+
 export function getComparator<Key extends keyof any>(
     order: Order,
     orderBy: Key,
+    isNested: any
     ): (
     a: { [key in Key]: number | string },
     b: { [key in Key]: number | string },
     ) => number {
     return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
+        ? (a, b) => descendingComparator(a, b, orderBy, isNested)
+        : (a, b) => -descendingComparator(a, b, orderBy, isNested);
 }
   
 interface HeadCell {
@@ -74,34 +88,39 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'name',
         sort: false,
+        nested: false,
         numeric: false,
         disablePadding: true,
         label: 'Nome',
     },
     {
         id: 'number',
-        sort: false,
+        sort: true,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'N°',
     },
     {
-        id: 'type',
+        id: 'Type.name',
         sort: true,
+        nested: true,
         numeric: false,
         disablePadding: false,
         label: 'Tipo',
     },
     {
-        id: 'city',
+        id: 'City.name',
         sort: true,
+        nested: true,
         numeric: false,
         disablePadding: false,
         label: 'Cidade',
     },
     {
-        id: 'olt',
+        id: 'Olts.name',
         sort: true,
+        nested: true,
         numeric: false,
         disablePadding: false,
         label: 'OLT',
@@ -109,6 +128,7 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'slots',
         sort: false,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'Total de Slots',
@@ -116,6 +136,7 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'slot',
         sort: false,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'Placa',
@@ -123,6 +144,7 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'pon',
         sort: false,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'Pon',
@@ -130,6 +152,7 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'incidents',
         sort: true,
+        nested: false,
         numeric: false,
         disablePadding: false,
         label: 'Nº de incidentes',
@@ -138,12 +161,14 @@ const headCells: readonly HeadCell[] = [
         id: 'status',
         sort: true,
         numeric: false,
+        nested: false,
         disablePadding: false,
         label: 'Status',
     },
     {
         id: 'localization',
         sort: false,
+        nested: false,
         numeric: false,
         disablePadding: false,
         label: 'Localização',
@@ -152,7 +177,7 @@ const headCells: readonly HeadCell[] = [
   
 interface EnhancedTableProps {
     numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data, isNested: boolean) => void;
     onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
     order: Order;
     orderBy: string;
@@ -161,8 +186,8 @@ interface EnhancedTableProps {
   
 export function EnhancedTableHead(props: EnhancedTableProps) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property: keyof Data, isSortable: boolean) => (event: React.MouseEvent<unknown>) => {
-        isSortable ? onRequestSort(event, property) : null;
+    const createSortHandler = (property: keyof Data, isSortable: boolean, isNested: boolean) => (event: React.MouseEvent<unknown>) => {
+        isSortable ? onRequestSort(event, property, isNested) : null;
     };
 
     return (
@@ -197,7 +222,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
                             color="neutral"
                             textColor={active ? 'primary.plainColor' : undefined}
                             component="button"
-                            onClick={createSortHandler(headCell.id, headCell.sort)}
+                            onClick={createSortHandler(headCell.id, headCell.sort, headCell.nested)}
                             startDecorator={
                                 headCell.numeric && headCell.sort ? (
                                     <ArrowDownwardIcon
