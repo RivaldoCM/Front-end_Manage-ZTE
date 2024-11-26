@@ -17,17 +17,18 @@ import AddItemModal from './modals/addItem';
 import { TableController } from './style';
 import { getNetworkTopology } from '../../../services/apiManageONU/getNetworkTopology';
 import { useResponse } from '../../../hooks/useResponse';
+import DeleteItemModal from './modals/deleteItem';
 
 type Order = 'asc' | 'desc';
 
 export function FiberNetwork(){
     const { setFetchResponseMessage } = useResponse();
 
-    const [networkData, setNetworkData] = useState([]);
+    const [networkData, setNetworkData] = useState<IFiberNetwork[]>([]);
     const [order, setOrder] = useState<Order>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Data>('type');
+    const [orderBy, setOrderBy] = useState<keyof Data>('name');
     const [isNested, setIsNested] = useState<Boolean>(false);
-    const [selected, setSelected] = useState<readonly string[]>([]);
+    const [selected, setSelected] = useState<IFiberNetwork[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
     const [openAddItemModal, setOpenAddItemModal] = useState(false);
@@ -53,7 +54,7 @@ export function FiberNetwork(){
     }, []);
 
     const handleRequestSort = (
-        event: React.MouseEvent<unknown>,
+        _event: React.MouseEvent<unknown>,
         property: keyof Data,
         isNested: boolean
     ) => {
@@ -72,12 +73,12 @@ export function FiberNetwork(){
         setSelected([]);
     };
 
-    const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected: readonly string[] = [];
-        
+    const handleClick = (_event: React.MouseEvent<unknown>, item: IFiberNetwork) => {
+        const selectedIndex = selected.indexOf(item);
+        let newSelected: IFiberNetwork[] = [];
+
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, item);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -93,7 +94,7 @@ export function FiberNetwork(){
 
     const handleChangePage = (newPage: number) => { setPage(newPage); };
 
-    const handleChangeRowsPerPage = (event: any, newValue: number | null) => {
+    const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
         setRowsPerPage(parseInt(newValue!.toString(), 10));
         setPage(0);
     };
@@ -302,7 +303,7 @@ export function FiberNetwork(){
             }
                         {
                 openDeleteItemModal ?
-                    <DeleteItemModal 
+                    <DeleteItemModal
                         open={openDeleteItemModal}
                         handleClose={handleCloseDeleteItem}
                     />

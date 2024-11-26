@@ -18,12 +18,14 @@ export interface Data {
     name: string,
     number: number,
     localization: string,
-    type: string,
-    city: string,
-    olt: string,
+    'Type.name': string,
+    'City.name': string,
+    'Olts.name': string,
     incidents: string,
+    slots: number;
     slot: number,
     pon: number,
+    status: string
 }
 
 export function labelDisplayedRows({
@@ -38,10 +40,9 @@ export function labelDisplayedRows({
         return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
 }
   
-function descendingComparator<T>(a: any, b: any, orderBy: keyof T, isNested: boolean) {
+function descendingComparator<T>(a: any, b: any, orderBy: keyof T, isNested: Boolean) {
     if(isNested){
-        const nested = orderBy.toString().split('.')
-        console.log(nested)
+        const nested = orderBy.toString().split('.');
         if (b[nested[0]][nested[1]] < a[nested[0]][nested[1]]) {
             return -1;
         }
@@ -63,13 +64,13 @@ function descendingComparator<T>(a: any, b: any, orderBy: keyof T, isNested: boo
   
 type Order = 'asc' | 'desc';
 
-export function getComparator<Key extends keyof any>(
+export function getComparator<Key extends keyof Data>(
     order: Order,
     orderBy: Key,
-    isNested: any
+    isNested: Boolean
     ): (
-    a: { [key in Key]: number | string },
-    b: { [key in Key]: number | string },
+    a: IFiberNetwork,
+    b: IFiberNetwork,
     ) => number {
     return order === 'desc'
         ? (a, b) => descendingComparator(a, b, orderBy, isNested)
@@ -82,6 +83,7 @@ interface HeadCell {
     label: string;
     numeric: boolean;
     sort: boolean;
+    nested: boolean;
 }
   
 const headCells: readonly HeadCell[] = [
@@ -266,6 +268,8 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
     numSelected: number;
+    onOpenAddItemModal: () => void;
+    onOpenDeleteItemModal: () => void;
 }
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
