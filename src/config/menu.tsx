@@ -16,6 +16,8 @@ import ViewModuleOutlinedIcon from '@mui/icons-material/ViewModuleOutlined';
 import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
 import { IconExitLag } from '../assets/icons/iconExitLag';
 import WifiChannelOutlinedIcon from '@mui/icons-material/WifiChannelOutlined';
+import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -86,13 +88,24 @@ export const handlePages: IAllPages[] = [
     {
         name: "Telecom",
         pages: [
-            {'fiber_network': 'Mapa de rede Fibra'}
+            {fiber_network: 'Mapa de rede Fibra'},
+        ]
+    },
+    {
+        name: "HelpDesk",
+        pages: [
+            {
+                'helpdesk/dashboard': 'Dashboard'
+            },
+            {
+                'helpdesk/tickets': 'Tickets'
+            }
         ]
     },
     {
         name: 'ExitLag',
         pages: [
-            {'exitlag': 'Dashboard Clientes'}
+            {exitlag: 'Dashboard Clientes'}
         ]
     }
 ]
@@ -164,6 +177,10 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <IconExitLag />;
         case 'onu_info':
             return <WifiChannelOutlinedIcon />;
+        case 'helpdesk/tickets':
+            return <ConfirmationNumberOutlinedIcon />;
+        case 'helpdesk/dashboard':
+            return <DashboardOutlinedIcon />;
         default:
             return <></>;
     }
