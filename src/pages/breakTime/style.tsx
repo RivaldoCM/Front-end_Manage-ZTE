@@ -181,7 +181,7 @@ export const AddBreakType = styled.form`
     height: auto;
     padding: .5rem;
     border-radius: 0.5rem;
-    background: #ffffffdd;
+    background: #fff;
     p{
         margin-bottom: 2rem;
     }

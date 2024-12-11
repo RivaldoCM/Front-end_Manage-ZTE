@@ -14,8 +14,10 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { useAuth } from "../../hooks/useAuth";
 
 export function BreakTimeDashboard(){
+    const { user } = useAuth();
     const { breakTimes, breakTypes } = useBreakTime();
     const { setFetchResponseMessage } = useResponse();
 
@@ -50,7 +52,7 @@ export function BreakTimeDashboard(){
     };
 
     const handleDeleteType = async (id: number) => {
-        const response = await deleteBreakTimeTypes(id);
+        const response = await deleteBreakTimeTypes({id: id, rule: user!.rule});
 
         if(response){
             if(!response.success){
@@ -67,7 +69,7 @@ export function BreakTimeDashboard(){
         if(!form.duration.match(isNumeric)){
             setFetchResponseMessage('error/invalid-input');
         } else {
-            const response = await addBreakTimeTypes({name: form.name, duration: parseInt(form.duration)});
+            const response = await addBreakTimeTypes({name: form.name, duration: parseInt(form.duration), rule: user!.rule});
             if(response){
                 if(response.success){
                     handleClose();
