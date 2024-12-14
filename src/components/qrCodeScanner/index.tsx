@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 
 interface QRCodeScannerProps {
   onScanSuccess: (decodedText: string) => void;
@@ -8,20 +8,18 @@ interface QRCodeScannerProps {
 
 export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScanSuccess, onScanError }) => {
     useEffect(() => {
-        const scanner = new Html5QrcodeScanner(
-        "reader",
-        { fps: 10, qrbox: 250 },
-        true
+
+
+        const scanner = new Html5Qrcode(
+            "reader",
         );
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-        // Inicia o scanner com as funções de sucesso e erro passadas como props
-        scanner.render(onScanSuccess, onScanError);
-
-        // Limpa o scanner quando o componente for desmontado
+        scanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
         return () => {
             scanner.clear();
         };
     }, [onScanSuccess, onScanError]);
 
-  return <div id="reader" style={{ width: "100%", height: "400px" }} />;
+    return <div id="reader" style={{ width: "100%", height: "300px" }} />;
 };
