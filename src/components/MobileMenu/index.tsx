@@ -63,7 +63,11 @@ export function MobileDrawerMenu() {
 	};
 
     const handleOpenQrCode = () => {
-        setIsQrCodeOpen(!isQrCodeOpen);
+        setIsQrCodeOpen(true);
+    }
+
+    const handleClose = () => {
+        setIsQrCodeOpen(false);
     }
 
 
@@ -149,7 +153,7 @@ export function MobileDrawerMenu() {
             <Outlet/>
             {
                 isQrCodeOpen && (
-                    <ModalQRCodeViwer />
+                    <ModalQRCodeViwer handleClose={handleClose} />
                 )
             }
             {
