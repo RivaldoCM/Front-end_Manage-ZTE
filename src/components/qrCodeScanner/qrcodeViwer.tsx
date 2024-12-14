@@ -15,6 +15,7 @@ export function ModalQRCodeViwer({handleClose}: any){
     };
 
       const handleScanError = (error: any) => {
+        setQRCode(error)
         console.error("Erro ao ler QR Code:", error);
     };
 

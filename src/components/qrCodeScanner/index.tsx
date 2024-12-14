@@ -8,17 +8,24 @@ interface QRCodeScannerProps {
 
 export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScanSuccess, onScanError }) => {
     useEffect(() => {
-
-
         const scanner = new Html5Qrcode(
             "reader",
         );
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
         scanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
+
+        scanner.stop().then(() => {
+            scanner.clear()
+        }).catch(() => {
+            // Stop failed, handle it.
+        });
+
         return () => {
             scanner.clear();
         };
+
+
     }, [onScanSuccess, onScanError]);
 
     return <div id="reader" style={{ width: "100%", height: "300px" }} />;
