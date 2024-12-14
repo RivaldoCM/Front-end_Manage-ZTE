@@ -20,8 +20,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { Alert } from '@mui/material';
 
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { QRCodeScanner } from '../qrCodeScanner';
-
+import { ModalQRCodeViwer } from '../qrCodeScanner/qrcodeViwer';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
@@ -30,6 +29,8 @@ export function MobileDrawerMenu() {
     const {response, severityStatus, responseMassage} = useResponse();
     const { setUser } = useAuth();
 
+
+    const [isQrCodeOpen, setIsQrCodeOpen] = useState(false);
     const [state, setState] = useState({
         top: false,
         left: false,
@@ -61,21 +62,10 @@ export function MobileDrawerMenu() {
 		navigate('/login');
 	};
 
-    const [qrCode, setQRCode] = useState<string | null>(null);
-    const [showScanner, setShowScanner] = useState<boolean>(false);
+    const handleOpenQrCode = () => {
+        setIsQrCodeOpen(!isQrCodeOpen);
+    }
 
-    const handleScanSuccess = (decodedText: string) => {
-        setQRCode(decodedText);  // Atualiza o estado com o valor do QR Code lido
-        console.log("QR Code lido:", decodedText);
-    };
-
-      const handleScanError = (error: any) => {
-        console.error("Erro ao ler QR Code:", error);
-    };
-
-    const startScanner = () => {
-        setShowScanner(true);  // Exibe o scanner quando o botão for clicado
-    };
 
     const list = (anchor: Anchor) => (
         <Box
@@ -142,7 +132,7 @@ export function MobileDrawerMenu() {
                 <div className="flex">
                     <Button
                         className='logout' 
-                        onClick={startScanner}
+                        onClick={handleOpenQrCode}
                     >
                         <QrCodeScannerIcon />
                     </Button>
@@ -158,14 +148,10 @@ export function MobileDrawerMenu() {
             </header>
             <Outlet/>
             {
-                showScanner && (
-                    <QRCodeScanner
-                        onScanSuccess={handleScanSuccess} 
-                        onScanError={handleScanError} 
-                    />
+                isQrCodeOpen && (
+                    <ModalQRCodeViwer />
                 )
             }
-            {qrCode && <p>QR Code lido: {qrCode}</p>}
             {
                 response ? 
                     <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
