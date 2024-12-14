@@ -20,7 +20,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { Alert } from '@mui/material';
 
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { QRCodeReader, QRCodeScanner } from '../qrCodeScanner';
+import { QRCodeScanner } from '../qrCodeScanner';
 
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
