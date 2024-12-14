@@ -19,6 +19,10 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Alert } from '@mui/material';
 
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
+import { QRCodeReader, QRCodeScanner } from '../qrCodeScanner';
+
+
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 export function MobileDrawerMenu() {
@@ -57,6 +61,21 @@ export function MobileDrawerMenu() {
 		navigate('/login');
 	};
 
+    const [qrCode, setQRCode] = useState<string | null>(null);
+    const [showScanner, setShowScanner] = useState<boolean>(false);
+
+    const handleScanSuccess = (decodedText: string) => {
+        setQRCode(decodedText);  // Atualiza o estado com o valor do QR Code lido
+        console.log("QR Code lido:", decodedText);
+    };
+
+      const handleScanError = (error: any) => {
+        console.error("Erro ao ler QR Code:", error);
+    };
+
+    const startScanner = () => {
+        setShowScanner(true);  // Exibe o scanner quando o botão for clicado
+    };
 
     const list = (anchor: Anchor) => (
         <Box
@@ -123,6 +142,14 @@ export function MobileDrawerMenu() {
                 <div className="flex">
                     <Button
                         className='logout' 
+                        onClick={startScanner}
+                    >
+                        <QrCodeScannerIcon />
+                    </Button>
+                </div>
+                <div className="flex">
+                    <Button
+                        className='logout' 
                         onClick={handleLogout}
                     >
                         <LogoutIcon />
@@ -131,10 +158,19 @@ export function MobileDrawerMenu() {
             </header>
             <Outlet/>
             {
+                showScanner && (
+                    <QRCodeScanner
+                        onScanSuccess={handleScanSuccess} 
+                        onScanError={handleScanError} 
+                    />
+                )
+            }
+            {qrCode && <p>QR Code lido: {qrCode}</p>}
+            {
                 response ? 
                     <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
                     : <></>
-            	}
+            }
         </Container>
     );
 }
