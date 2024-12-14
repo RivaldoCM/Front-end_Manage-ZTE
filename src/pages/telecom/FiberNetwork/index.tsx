@@ -93,7 +93,6 @@ export function FiberNetwork(){
     };
 
     const handleChangePage = (newPage: number) => { setPage(newPage); };
-
     const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
         setRowsPerPage(parseInt(newValue!.toString(), 10));
         setPage(0);
@@ -126,7 +125,7 @@ export function FiberNetwork(){
         <TableController className='teste'>
             <Sheet
                 variant="outlined"
-                sx={{ width: '100%', boxShadow: 'sm', border: 'none' }}
+                sx={{ width: '100%', boxShadow: 'sm', border: 'none', overflow: 'auto', }}
             >
                 <EnhancedTableToolbar 
                     numSelected={selected.length}
@@ -135,6 +134,7 @@ export function FiberNetwork(){
                 />
                 <Table
                     stickyFooter
+                    
                     hoverRow
                     sx={{
                         '--TableCell-headBackground': 'transparent',

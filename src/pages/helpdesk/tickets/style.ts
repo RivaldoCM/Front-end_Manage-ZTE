@@ -1,19 +1,29 @@
 import styled from "styled-components";
 
 export const Controller = styled.div`
-    display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     width: 100%;
+    height: calc(100vh - var(--top-menu-size));
+    padding: 0 2rem;
 
     header{
         display: flex;
         justify-content: flex-end;
         width: inherit;
-        padding: .5rem;
+        height: 9%;
+        padding: .5rem 0;
     }
-    section{
-        justify-content: space-around;
+    section:first-of-type{
+        justify-content: space-between;
         width: inherit;
+        height: 25%;
+        padding: .5rem 0;
+    }
+    section:last-of-type{
+        height: 66%;
+        margin-bottom: .5rem;
+        overflow: auto;
     }
 `
 
