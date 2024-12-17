@@ -32,6 +32,7 @@ export function ModalQRCodeViwer(props: any){
                     {
                         isScanning && (
                             <QRCodeScanner
+                                handleClose={props.handleClose}
                                 onScanSuccess={handleScanSuccess} 
                                 onScanError={handleScanError} 
                             />

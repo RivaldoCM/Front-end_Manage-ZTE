@@ -1,13 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { QRCodeContainer } from './style';
+import { IconButton } from '@mui/material';
+import NoPhotographyIcon from '@mui/icons-material/NoPhotographyOutlined';
 
 interface QRCodeScannerProps {
   onScanSuccess: (decodedText: string) => void;
   onScanError: (error: any) => void;
+  handleClose: () => void
 }
 
-export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScanSuccess, onScanError }) => {
+export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScanSuccess, onScanError, handleClose }) => {
     const qrCodeRegionId = "reader";
     const html5QrCode = useRef<Html5Qrcode | null>(null); //UseRef PARA PERSISTIR O ESTADO MESMO RE-RENDERIZANDO
   
@@ -33,7 +36,22 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScanSuccess, onS
         );
     }, []);
   
+    const handleCloseScanning = () => {
+        //USANDO handleClose DIRETAMENTE NO BOTÃO, NÃO FECHA A CÂMERA, POR ISSO ESSA FUNÇÃO
+        html5QrCode.current!.stop();
+        handleClose();
+    }
+
     return (
-        <QRCodeContainer id={qrCodeRegionId}></QRCodeContainer>
+        <div>
+            <IconButton 
+                sx={{color: '#fff'}} 
+                size='large' 
+                onClick={handleCloseScanning}
+            >
+                <NoPhotographyIcon />
+            </IconButton>
+            <QRCodeContainer id={qrCodeRegionId}></QRCodeContainer>
+        </div>
     );
 };
