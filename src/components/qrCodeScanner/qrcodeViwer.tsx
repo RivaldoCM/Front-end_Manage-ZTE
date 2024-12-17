@@ -1,38 +1,58 @@
-import { useState } from "react";
-import { Controller } from "./style";
+import React, { useState } from "react";
+
+import { Modal } from "@mui/material";
+import { Controller, QRCodeResult } from "./style";
 import { QRCodeScanner } from ".";
 
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
-export function ModalQRCodeViwer({handleClose}: any){
 
+export function ModalQRCodeViwer(props: any){
     const [qrCode, setQRCode] = useState<string | null>(null);
+    const [isScanning, setIsScanning] = useState(true);
 
     const handleScanSuccess = (decodedText: string) => {
-        setQRCode(decodedText);  // Atualiza o estado com o valor do QR Code lido
-        console.log("QR Code lido:", decodedText);
+        setQRCode(decodedText);
+        console.log(decodedText)
+        setIsScanning(false);
     };
 
-      const handleScanError = (error: any) => {
-        setQRCode(error)
+    const handleScanError = (error: any) => {
         console.error("Erro ao ler QR Code:", error);
     };
 
     return(
-        <Controller>
-            <div>
-                <IconButton size="medium" color="error" onClick={handleClose}>
-                    <CloseIcon />
-                </IconButton>
-            </div>
-            <div>
-                <QRCodeScanner
-                    onScanSuccess={handleScanSuccess} 
-                    onScanError={handleScanError} 
-                />
-                {qrCode && <p>QR Code lido: {qrCode}</p>}
-            </div>
-        </Controller>
+        <React.Fragment>
+            <Modal
+                open={true}
+                onClose={props.handleClose}
+            >
+                <Controller className="flex">
+                    {
+                        isScanning && (
+                            <QRCodeScanner
+                                onScanSuccess={handleScanSuccess} 
+                                onScanError={handleScanError} 
+                            />
+                        )
+                    }
+                    {
+                        !isScanning && (
+                            <QRCodeResult className="flex">
+                                <h1>Resultado:</h1>
+                                <div>
+                                    <p>{qrCode}</p>
+                                </div>
+                                <ButtonGroup variant="contained">
+                                    <Button>Salvar</Button>
+                                    <Button onClick={props.handleClose}>Fechar</Button>
+                                </ButtonGroup>
+                            </QRCodeResult>
+                        )
+                    }
+                </Controller>
+            </Modal>
+        </React.Fragment>
     )
 }

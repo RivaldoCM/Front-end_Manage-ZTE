@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
+import { QRCodeContainer } from './style';
 
 interface QRCodeScannerProps {
   onScanSuccess: (decodedText: string) => void;
@@ -7,26 +8,32 @@ interface QRCodeScannerProps {
 }
 
 export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScanSuccess, onScanError }) => {
+    const qrCodeRegionId = "reader";
+    const html5QrCode = useRef<Html5Qrcode | null>(null); //UseRef PARA PERSISTIR O ESTADO MESMO RE-RENDERIZANDO
+  
     useEffect(() => {
-        const scanner = new Html5Qrcode(
-            "reader",
-        );
-        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-
-        scanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanError);
-
-        scanner.stop().then(() => {
-            scanner.clear()
-        }).catch(() => {
-            // Stop failed, handle it.
-        });
-
-        return () => {
-            scanner.clear();
+        html5QrCode.current = new Html5Qrcode(qrCodeRegionId);
+        const config = {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
         };
 
-
-    }, [onScanSuccess, onScanError]);
-
-    return <div id="reader" style={{ width: "100%", height: "300px" }} />;
+        html5QrCode.current.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText) => {
+                html5QrCode.current!.stop()
+                .then(() => {
+                    onScanSuccess(decodedText);
+                })
+            },
+            (errorMessage) => {
+                onScanError(errorMessage);
+            }
+        );
+    }, []);
+  
+    return (
+        <QRCodeContainer id={qrCodeRegionId}></QRCodeContainer>
+    );
 };
