@@ -5,6 +5,11 @@ export const Mobile = styled.div`
     height: calc(100vh - var(--top-menu-size));
 `;
 
+export const Desktop = styled.div`
+    width: 100%;
+    height: calc(100vh - var(--top-menu-size));
+`;
+
 export const Controller = styled.div`
     width: 100%;
     height:100dvh;
@@ -29,12 +34,8 @@ export const QRCodeResult = styled.div`
 
     form{
         flex-direction: column;
-
-
         > div{
             margin: .5rem 0;
-
         }
     }
-
 `;

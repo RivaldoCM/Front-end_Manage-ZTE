@@ -1,7 +1,6 @@
 import { useState } from "react";
 import IconButton from '@mui/joy/IconButton';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { QRCodeScanner } from "../../../components/qrCodeScanner";
 import { ModalQRCodeViwer } from "./modals/qrcodeViwer";
 import { Mobile } from "./style";
 

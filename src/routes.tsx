@@ -36,6 +36,7 @@ import { FiberNetwork } from "./pages/telecom/FiberNetwork";
 import { Tickets } from "./pages/helpdesk/tickets";
 import { Dashboard } from "./pages/helpdesk/dashboard";
 import { ClientLocationByFiberNetwork } from "./pages/telecom/ClientLocationByFiberNetwork/mobile";
+import ClientFiberNetworkData from "./pages/telecom/ClientLocationByFiberNetwork/desktop";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -205,7 +206,7 @@ export function AppRoutes() {
                 <Route
                     path="/client_location"
                     element={
-                        <PrivateRoute element={<ClientLocationByFiberNetwork />} />
+                        <PrivateRoute element={matches ? <ClientLocationByFiberNetwork /> : <ClientFiberNetworkData />} />
                     }
                 />
                 <Route path="helpdesk">
