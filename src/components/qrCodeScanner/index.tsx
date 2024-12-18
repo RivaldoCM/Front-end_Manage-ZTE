@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { QRCodeContainer } from './style';
-import { IconButton } from '@mui/material';
+import { InCamera, QRCodeContainer } from './style';
+import IconButton from '@mui/joy/IconButton';
 import NoPhotographyIcon from '@mui/icons-material/NoPhotographyOutlined';
 
 interface QRCodeScannerProps {
@@ -43,15 +43,16 @@ export const QRCodeScanner: React.FC<QRCodeScannerProps> = ({ onScanSuccess, onS
     }
 
     return (
-        <div>
-            <IconButton 
-                sx={{color: '#fff'}} 
-                size='large' 
+        <InCamera>
+            <IconButton
+                size='md'
+                color='primary'
+                variant="soft"
                 onClick={handleCloseScanning}
             >
                 <NoPhotographyIcon />
             </IconButton>
             <QRCodeContainer id={qrCodeRegionId}></QRCodeContainer>
-        </div>
+        </InCamera>
     );
 };

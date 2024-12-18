@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
 import { Modal } from "@mui/material";
-import { Controller, QRCodeResult } from "./style";
-import { QRCodeScanner } from ".";
+import { QRCodeScanner } from "../../../../components/qrCodeScanner";
 
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-
+import Button from '@mui/joy/Button';
+import ButtonGroup from '@mui/joy/ButtonGroup';
+import Input from '@mui/joy/Input';
+import { Controller, QRCodeResult } from "../style";
 
 export function ModalQRCodeViwer(props: any){
     const [qrCode, setQRCode] = useState<string | null>(null);
@@ -14,13 +14,10 @@ export function ModalQRCodeViwer(props: any){
 
     const handleScanSuccess = (decodedText: string) => {
         setQRCode(decodedText);
-        console.log(decodedText)
         setIsScanning(false);
     };
 
-    const handleScanError = (error: any) => {
-        console.error("Erro ao ler QR Code:", error);
-    };
+    const handleScanError = (_error: string) => {};
 
     return(
         <React.Fragment>
@@ -45,10 +42,22 @@ export function ModalQRCodeViwer(props: any){
                                 <div>
                                     <p>{qrCode}</p>
                                 </div>
-                                <ButtonGroup variant="contained">
-                                    <Button>Salvar</Button>
-                                    <Button onClick={props.handleClose}>Fechar</Button>
-                                </ButtonGroup>
+
+                                <form className="flex" action="">
+                                    <div>
+                                        <Input 
+                                            size="sm" 
+                                            type="number" 
+                                            placeholder="N° CTO" 
+                                            sx={{margin: '.5rem 0'}}
+                                        />
+                                        <Input type="number" placeholder="N° Porta CTO" size="sm"/>
+                                    </div>
+                                    <ButtonGroup variant="soft" color="primary">
+                                        <Button>Salvar</Button>
+                                        <Button onClick={props.handleClose}>Fechar</Button>
+                                    </ButtonGroup>
+                                </form>
                             </QRCodeResult>
                         )
                     }

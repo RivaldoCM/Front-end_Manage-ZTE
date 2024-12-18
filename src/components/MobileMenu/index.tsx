@@ -20,7 +20,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { Alert } from '@mui/material';
 
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
-import { ModalQRCodeViwer } from '../qrCodeScanner/qrcodeViwer';
+import { ModalQRCodeViwer } from '../../pages/telecom/ClientLocationByFiberNetwork/modals/qrcodeViwer';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 

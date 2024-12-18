@@ -89,6 +89,7 @@ export const handlePages: IAllPages[] = [
         name: "Infra",
         pages: [
             {fiber_network: 'Mapa de rede Fibra'},
+            {client_location: 'Localização de clientes'}
         ]
     },
     {
