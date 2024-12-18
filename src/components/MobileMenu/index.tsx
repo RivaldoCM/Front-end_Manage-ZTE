@@ -19,6 +19,9 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Alert } from '@mui/material';
 
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
+import { ModalQRCodeViwer } from '../qrCodeScanner/qrcodeViwer';
+
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
 export function MobileDrawerMenu() {
@@ -26,6 +29,8 @@ export function MobileDrawerMenu() {
     const {response, severityStatus, responseMassage} = useResponse();
     const { setUser } = useAuth();
 
+
+    const [isQrCodeOpen, setIsQrCodeOpen] = useState(false);
     const [state, setState] = useState({
         top: false,
         left: false,
@@ -56,6 +61,14 @@ export function MobileDrawerMenu() {
 		setUser(undefined);
 		navigate('/login');
 	};
+
+    const handleOpenQrCode = () => {
+        setIsQrCodeOpen(true);
+    }
+
+    const handleClose = () => {
+        setIsQrCodeOpen(false);
+    }
 
 
     const list = (anchor: Anchor) => (
@@ -123,6 +136,14 @@ export function MobileDrawerMenu() {
                 <div className="flex">
                     <Button
                         className='logout' 
+                        onClick={handleOpenQrCode}
+                    >
+                        <QrCodeScannerIcon />
+                    </Button>
+                </div>
+                <div className="flex">
+                    <Button
+                        className='logout' 
                         onClick={handleLogout}
                     >
                         <LogoutIcon />
@@ -131,10 +152,15 @@ export function MobileDrawerMenu() {
             </header>
             <Outlet/>
             {
+                isQrCodeOpen && (
+                    <ModalQRCodeViwer handleClose={handleClose} />
+                )
+            }
+            {
                 response ? 
                     <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
                     : <></>
-            	}
+            }
         </Container>
     );
 }
