@@ -24,6 +24,8 @@ export async function writeONU(props: IAuthOnuProps): Promise<IResponseData | IR
             pppPass: props.pppPass,
             wifiSSID: props.wifiSSID,
             wifiPass: props.wifiPass,
+            sipUser: props.sipUser,
+            sipPass: props.sipPass
         }
     })
     .then(response => {

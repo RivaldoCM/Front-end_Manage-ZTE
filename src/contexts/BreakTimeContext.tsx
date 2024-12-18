@@ -18,7 +18,7 @@ export function BreakTimeContextProvider({ children }: { children: ReactNode }){
     useEffect(() => {
         const getData = async () => {
             const getTimes = getBreakTime(true);
-            const getTypes = getBreakTimeTypes();
+            const getTypes = getBreakTimeTypes({rule: user!.rule});
             const [ times, types ] = await Promise.all([getTimes, getTypes]);
 
             times.success ? setBreakTimes(times.responses.response) : setBreakTimes([]);
