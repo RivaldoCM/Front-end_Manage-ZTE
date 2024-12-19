@@ -1,5 +1,4 @@
-import { Desktop } from "./style";
-import * as React from 'react';
+import React, { useEffect, useState } from "react";
 import Box from '@mui/joy/Box';
 import Table from '@mui/joy/Table';
 import Typography from '@mui/joy/Typography';
@@ -13,55 +12,27 @@ import Option from '@mui/joy/Option';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { EnhancedTableHead, EnhancedTableToolbar } from "./table";
+import { getClientUpdate } from "../../../services/apiManageONU/getClientUpdate";
+import { useResponse } from "../../../hooks/useResponse";
 
 interface Data {
-    calories: number;
-    carbs: number;
-    fat: number;
-    name: string;
-    protein: number;
+    pppoe: string;
+    serialNumber: string;
+    rxOnt: number;
+    txOlt: number;
+    ctoId: number;
+    portId: number;
+    isUpdated: boolean
 }
-
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-): Data {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-];
 
 function labelDisplayedRows({
-  from,
-  to,
-  count,
+    from,
+    to,
+    count,
 }: {
-  from: number;
-  to: number;
-  count: number;
+    from: number;
+    to: number;
+    count: number;
 }) {
   return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
 }
@@ -91,13 +62,34 @@ function getComparator<Key extends keyof any>(
 }
 
 export default function ClientFiberNetworkData(){
-    const [order, setOrder] = React.useState<Order>('asc');
-    const [orderBy, setOrderBy] = React.useState<keyof Data>('calories');
-    const [selected, setSelected] = React.useState<readonly string[]>([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const { setFetchResponseMessage } = useResponse();
+
+    const [rows, setRows] = useState<any[]>([]);
+    const [order, setOrder] = useState<Order>('asc');
+    const [orderBy, setOrderBy] = useState<keyof Data>('isUpdated');
+    const [selected, setSelected] = useState<readonly string[]>([]);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    useEffect(() => {
+        async function getData(){
+            const data = await getClientUpdate();
+            if(data){
+                if(data.success){
+                    setRows(data.responses.response);
+                }else{
+                    setRows([]);
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
+            }
+        }
+        getData();
+    },[])
+
     const handleRequestSort = (
-        event: React.MouseEvent<unknown>,
+        _event: React.MouseEvent<unknown>,
         property: keyof Data,
     ) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -106,13 +98,14 @@ export default function ClientFiberNetworkData(){
     };
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.name);
+            const newSelected = rows.map((n) => n.id);
+            console.log(newSelected)
             setSelected(newSelected);
             return;
         }
         setSelected([]);
     };
-    const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+    const handleClick = (_event: React.MouseEvent<unknown>, name: string) => {
         const selectedIndex = selected.indexOf(name);
         let newSelected: readonly string[] = [];
         if (selectedIndex === -1) {
@@ -127,12 +120,13 @@ export default function ClientFiberNetworkData(){
                 selected.slice(selectedIndex + 1),
             );
         }
+        console.log(newSelected)
         setSelected(newSelected);
     };
     const handleChangePage = (newPage: number) => {
         setPage(newPage);
     };
-    const handleChangeRowsPerPage = (event: any, newValue: number | null) => {
+    const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
         setRowsPerPage(parseInt(newValue!.toString(), 10));
         setPage(0);
     };
@@ -156,16 +150,16 @@ export default function ClientFiberNetworkData(){
                 aria-labelledby="tableTitle"
                 hoverRow
                 sx={{
-                '--TableCell-headBackground': 'transparent',
-                '--TableCell-selectedBackground': (theme) =>
-                    theme.vars.palette.success.softBg,
-                '& thead th:nth-child(1)': {
-                    width: '40px',
-                },
-                '& thead th:nth-child(2)': {
-                    width: '30%',
-                },
-                '& tr > *:nth-child(n+3)': { textAlign: 'right' },
+                    '--TableCell-headBackground': 'transparent',
+                    '--TableCell-selectedBackground': (theme) =>
+                        theme.vars.palette.success.softBg,
+                    '& thead th:nth-child(1)': {
+                        width: '40px',
+                    },
+                    '& thead th:nth-child(2)': {
+                        width: '30%',
+                    },
+                    '& tr > *:nth-child(n+3)': { textAlign: 'right' },
                 }}
             >
                 <EnhancedTableHead
@@ -181,26 +175,26 @@ export default function ClientFiberNetworkData(){
                     .sort(getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                        const isItemSelected = selected.includes(row.name);
+                        const isItemSelected = selected.includes(row.id);
                         const labelId = `enhanced-table-checkbox-${index}`;
 
                         return (
                             <tr
-                            onClick={(event) => handleClick(event, row.name)}
-                            role="checkbox"
-                            aria-checked={isItemSelected}
-                            tabIndex={-1}
-                            key={row.name}
-                            // selected={isItemSelected}
-                            style={
-                                isItemSelected
-                                ? ({
-                                    '--TableCell-dataBackground':
-                                        'var(--TableCell-selectedBackground)',
-                                    '--TableCell-headBackground':
-                                        'var(--TableCell-selectedBackground)',
-                                    } as React.CSSProperties)
-                                : {}
+                                onClick={(event) => handleClick(event, row.id)}
+                                role="checkbox"
+                                aria-checked={isItemSelected}
+                                tabIndex={-1}
+                                key={row.id}
+                                // selected={isItemSelected}
+                                style={
+                                    isItemSelected
+                                    ? ({
+                                        '--TableCell-dataBackground':
+                                            'var(--TableCell-selectedBackground)',
+                                        '--TableCell-headBackground':
+                                            'var(--TableCell-selectedBackground)',
+                                        } as React.CSSProperties)
+                                    : {}
                             }
                             >
                                 <th scope="row">
@@ -215,12 +209,14 @@ export default function ClientFiberNetworkData(){
                                     />
                                 </th>
                                 <th id={labelId} scope="row">
-                                    {row.name}
+                                    {row.pppoe}
                                 </th>
-                                <td>{row.calories}</td>
-                                <td>{row.fat}</td>
-                                <td>{row.carbs}</td>
-                                <td>{row.protein}</td>
+                                <td>{row.serialNumber}</td>
+                                <td>{row.ontPower}</td>
+                                <td>{row.oltPower}</td>
+                                <td>{row.ctoId}</td>
+                                <td>{row.portId}</td>
+                                <td>{row.is_updated ? 'sim' : 'nao'}</td>
                             </tr>
                         );
                     })}
@@ -233,19 +229,19 @@ export default function ClientFiberNetworkData(){
                                 } as React.CSSProperties
                             }
                         >
-                        <td colSpan={6} aria-hidden />
+                        <td colSpan={8} aria-hidden />
                         </tr>
                     )}
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colSpan={6}>
+                        <td colSpan={8}>
                             <Box
                                 sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2,
-                                justifyContent: 'flex-end',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 2,
+                                    justifyContent: 'flex-end',
                                 }}
                             >
                                 <FormControl orientation="horizontal" size="sm">

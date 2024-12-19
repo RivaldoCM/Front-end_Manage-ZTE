@@ -9,12 +9,14 @@ import Input from '@mui/joy/Input';
 import { Controller, QRCodeResult } from "../style";
 import { useAuth } from "../../../../hooks/useAuth";
 import { addClientUpdate } from "../../../../services/apiManageONU/addClientUpdate";
+import { useResponse } from "../../../../hooks/useResponse";
 
 export function ModalQRCodeViwer(props: any){
     const { user } = useAuth();
+    const { setFetchResponseMessage } = useResponse();
 
-    const [isScanning, setIsScanning] = useState(false);
-    const [qrCode, setQRCode] = useState<string | null>('G FHTT11002AB8 NULL fiberhome ---- 0.00 -11.20');
+    const [isScanning, setIsScanning] = useState(true);
+    const [qrCode, setQRCode] = useState<string | null>(null);
     const [form, setForm] = useState({
         userId: user?.uid,
         pppoe: '',
@@ -22,21 +24,21 @@ export function ModalQRCodeViwer(props: any){
         portId: 0,
         serialNumber: '',
         oltPower: '',
-        onuPower: ''
+        ontPower: ''
     });
 
     useEffect(() => {
-        const slittedText = qrCode!.split(' ');
-        setForm({
-            ...form,
-            serialNumber: slittedText[1],
-            pppoe: slittedText[4],
-            oltPower: slittedText[5],
-            onuPower: slittedText[6],
-        });
-    }, [qrCode && qrCode?.length > 0]);
-
-    console.log(form)
+        if(qrCode !== null){
+            const splittedText = qrCode!.split('\n');
+            setForm({
+                ...form,
+                serialNumber: splittedText[1],
+                pppoe: splittedText[4],
+                oltPower: splittedText[5],
+                ontPower: splittedText[6],
+            });
+        }
+    }, [qrCode]);
 
     const handleScanError = (_error: string) => {};
     const handleScanSuccess = (decodedText: string) => {
@@ -55,10 +57,18 @@ export function ModalQRCodeViwer(props: any){
         e.preventDefault();
 
         const response = await addClientUpdate(form);
-
+        if(response){
+            if(response.success){
+                setFetchResponseMessage('success/data-created');
+                setIsScanning(false);
+                props.handleClose();
+            } else {
+                setFetchResponseMessage('error/data-not-created');
+            }
+        } else {
+            setFetchResponseMessage('error/data-not-created');
+        }
     }
-
-    console.log(form)
 
     return(
         <React.Fragment>
@@ -92,6 +102,7 @@ export function ModalQRCodeViwer(props: any){
                                             placeholder="N° CTO"
                                             sx={{margin: '.5rem 0'}}
                                             onChange={handleFormChange}
+                                            required
                                         />
                                         <Input
                                             size="sm"
@@ -99,6 +110,7 @@ export function ModalQRCodeViwer(props: any){
                                             type="number"
                                             placeholder="N° Porta CTO"
                                             onChange={handleFormChange}
+                                            required
                                         />
                                     </div>
                                     <ButtonGroup variant="soft" color="primary">

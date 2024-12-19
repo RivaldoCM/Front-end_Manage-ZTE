@@ -13,50 +13,72 @@ import { visuallyHidden } from '@mui/utils';
 type Order = 'asc' | 'desc';
 
 interface Data {
-    calories: number;
-    carbs: number;
-    fat: number;
-    name: string;
-    protein: number;
+    pppoe: string;
+    serialNumber: string;
+    rxOnt: number;
+    txOlt: number;
+    ctoId: number;
+    portId: number;
+    isUpdated: boolean
 }
 
 interface HeadCell {
     disablePadding: boolean;
     id: keyof Data;
+    sort: boolean;
     label: string;
     numeric: boolean;
 }
   
 const headCells: readonly HeadCell[] = [
     {
-      id: 'name',
+      id: 'pppoe',
+      sort: false,
       numeric: false,
       disablePadding: true,
-      label: 'Dessert (100g serving)',
+      label: 'PPPoE',
     },
     {
-      id: 'calories',
+      id: 'serialNumber',
+      sort: false,
       numeric: true,
       disablePadding: false,
-      label: 'Calories',
+      label: 'SerialNumber',
     },
     {
-      id: 'fat',
+      id: 'rxOnt',
+      sort: false,
       numeric: true,
       disablePadding: false,
-      label: 'Fat (g)',
+      label: 'Rx ONT',
     },
     {
-      id: 'carbs',
+      id: 'txOlt',
+      sort: false,
       numeric: true,
       disablePadding: false,
-      label: 'Carbs (g)',
+      label: 'TX OLT',
     },
     {
-      id: 'protein',
+      id: 'ctoId',
+      sort: false,
       numeric: true,
       disablePadding: false,
-      label: 'Protein (g)',
+      label: 'N° CTO',
+    },
+    {
+        id: 'portId',
+        sort: false,
+        numeric: true,
+        disablePadding: false,
+        label: 'N° Porta CTO',
+    },
+    {
+        id: 'isUpdated',
+        sort: true,
+        numeric: true,
+        disablePadding: false,
+        label: 'Atualizado?',
     },
 ];
   
@@ -71,8 +93,8 @@ interface EnhancedTableProps {
 
 export function EnhancedTableHead(props: EnhancedTableProps) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-        onRequestSort(event, property);
+    const createSortHandler = (property: keyof Data, isSortable: boolean) => (event: React.MouseEvent<unknown>) => {
+        isSortable ? onRequestSort(event, property): null;
     };
 
     return (
@@ -107,16 +129,16 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
                                 color="neutral"
                                 textColor={active ? 'primary.plainColor' : undefined}
                                 component="button"
-                                onClick={createSortHandler(headCell.id)}
+                                onClick={createSortHandler(headCell.id, headCell.sort)}
                                 startDecorator={
-                                    headCell.numeric ? (
+                                    headCell.numeric  && headCell.sort ? (
                                         <ArrowDownwardIcon
                                             sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                                         />
                                     ) : null
                                 }
                                 endDecorator={
-                                    !headCell.numeric ? (
+                                    !headCell.numeric && headCell.sort ? (
                                         <ArrowDownwardIcon
                                             sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                                         />
@@ -145,12 +167,17 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
             </tr>
         </thead>
     );
-  }
-  interface EnhancedTableToolbarProps {
+}
+
+interface EnhancedTableToolbarProps {
     numSelected: number;
-  }
+}
+
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { numSelected } = props;
+
+    console.log(numSelected)
+
     return (
         <Box
             sx={[
