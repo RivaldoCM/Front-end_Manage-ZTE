@@ -18,6 +18,8 @@ import { IconExitLag } from '../assets/icons/iconExitLag';
 import WifiChannelOutlinedIcon from '@mui/icons-material/WifiChannelOutlined';
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import SchemaOutlinedIcon from '@mui/icons-material/SchemaOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -182,6 +184,10 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <ConfirmationNumberOutlinedIcon />;
         case 'helpdesk/dashboard':
             return <DashboardOutlinedIcon />;
+        case 'client_location':
+            return <AssignmentOutlinedIcon />;
+        case 'fiber_network':
+            return <SchemaOutlinedIcon />;
         default:
             return <></>;
     }

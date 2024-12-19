@@ -68,27 +68,27 @@ interface EnhancedTableProps {
     orderBy: string;
     rowCount: number;
 }
-  
+
 export function EnhancedTableHead(props: EnhancedTableProps) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
         onRequestSort(event, property);
     };
-  
+
     return (
         <thead>
             <tr>
                 <th>
                     <Checkbox
-                    indeterminate={numSelected > 0 && numSelected < rowCount}
-                    checked={rowCount > 0 && numSelected === rowCount}
-                    onChange={onSelectAllClick}
-                    slotProps={{
-                        input: {
-                        'aria-label': 'select all desserts',
-                        },
-                    }}
-                    sx={{ verticalAlign: 'sub' }}
+                        indeterminate={numSelected > 0 && numSelected < rowCount}
+                        checked={rowCount > 0 && numSelected === rowCount}
+                        onChange={onSelectAllClick}
+                        slotProps={{
+                            input: {
+                            'aria-label': 'select all desserts',
+                            },
+                        }}
+                        sx={{ verticalAlign: 'sub' }}
                     />
                 </th>
                 {headCells.map((headCell) => {

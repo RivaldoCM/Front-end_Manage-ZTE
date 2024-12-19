@@ -216,7 +216,7 @@ export function AppRoutes() {
                             <PrivateRoute element={<Dashboard />} />
                         }
                     />
-                    <Route 
+                    <Route
                         path="tickets"
                         element={
                             <PrivateRoute element={<Tickets/>} />
