@@ -68,6 +68,7 @@ export default function ClientFiberNetworkData(){
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof Data>('isUpdated');
     const [selected, setSelected] = useState<readonly string[]>([]);
+    const [upToDate, setUpToDate] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -99,37 +100,27 @@ export default function ClientFiberNetworkData(){
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
             const newSelected = rows.map((n) => n.id);
-            console.log(newSelected)
             setSelected(newSelected);
             return;
         }
         setSelected([]);
     };
-    const handleClick = (_event: React.MouseEvent<unknown>, name: string) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected: readonly string[] = [];
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1),
-            );
+
+    const handleClick = (_event: React.MouseEvent<unknown>, id: string, upToDate: boolean) => {
+        setUpToDate(upToDate);
+        if(selected[0] === id){
+            setSelected([]);
+            return;
         }
-        console.log(newSelected)
-        setSelected(newSelected);
-    };
-    const handleChangePage = (newPage: number) => {
-        setPage(newPage);
-    };
+        setSelected([id]);
+    }
+
+    const handleChangePage = (newPage: number) => { setPage(newPage); };
     const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
         setRowsPerPage(parseInt(newValue!.toString(), 10));
         setPage(0);
     };
+
     const getLabelDisplayedRowsTo = () => {
         if (rows.length === -1) {
             return (page + 1) * rowsPerPage;
@@ -145,7 +136,7 @@ export default function ClientFiberNetworkData(){
             variant="outlined"
             sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
         >
-            <EnhancedTableToolbar numSelected={selected.length} />
+            <EnhancedTableToolbar numSelected={selected.length} upToDate={upToDate}/>
             <Table
                 aria-labelledby="tableTitle"
                 hoverRow
@@ -180,7 +171,7 @@ export default function ClientFiberNetworkData(){
 
                         return (
                             <tr
-                                onClick={(event) => handleClick(event, row.id)}
+                                onClick={(event) => handleClick(event, row.id, row.is_updated)}
                                 role="checkbox"
                                 aria-checked={isItemSelected}
                                 tabIndex={-1}
@@ -229,7 +220,7 @@ export default function ClientFiberNetworkData(){
                                 } as React.CSSProperties
                             }
                         >
-                        <td colSpan={8} aria-hidden />
+                            <td colSpan={8} aria-hidden />
                         </tr>
                     )}
                 </tbody>
@@ -245,7 +236,7 @@ export default function ClientFiberNetworkData(){
                                 }}
                             >
                                 <FormControl orientation="horizontal" size="sm">
-                                    <FormLabel>Rows per page:</FormLabel>
+                                    <FormLabel>Linhas por página:</FormLabel>
                                     <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
                                         <Option value={5}>5</Option>
                                         <Option value={10}>10</Option>

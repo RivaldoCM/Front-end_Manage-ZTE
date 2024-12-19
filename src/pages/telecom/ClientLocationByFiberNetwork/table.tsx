@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { visuallyHidden } from '@mui/utils';
+import { Switch } from '@mui/joy';
 
 type Order = 'asc' | 'desc';
 
@@ -174,30 +175,34 @@ interface EnhancedTableToolbarProps {
 }
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected } = props;
+    const { numSelected, upToDate } = props;
+    const [checked, setChecked] = React.useState<boolean>(false);
 
-    console.log(numSelected)
+    const handleSubmit = () => {
+        setChecked(!checked)
+        console.log(upToDate)
+    }
 
     return (
         <Box
             sx={[
-            {
-                display: 'flex',
-                alignItems: 'center',
-                py: 1,
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                borderTopLeftRadius: 'var(--unstable_actionRadius)',
-                borderTopRightRadius: 'var(--unstable_actionRadius)',
-            },
-            numSelected > 0 && {
-                bgcolor: 'background.level1',
-            },
+                {
+                    display: 'flex',
+                    alignItems: 'center',
+                    py: 1,
+                    pl: { sm: 2 },
+                    pr: { xs: 1, sm: 1 },
+                    borderTopLeftRadius: 'var(--unstable_actionRadius)',
+                    borderTopRightRadius: 'var(--unstable_actionRadius)',
+                },
+                numSelected > 0 && {
+                    bgcolor: 'background.level1',
+                },
             ]}
         >
             {numSelected > 0 ? (
                 <Typography sx={{ flex: '1 1 100%' }} component="div">
-                    {numSelected} selected
+                    {numSelected} selecionado
                 </Typography>
             ) : (
                 <Typography
@@ -206,15 +211,24 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     id="tableTitle"
                     component="div"
                 >
-                    Nutrition
+                    {/*Nutrition*/}
                 </Typography>
             )}
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton size="sm" color="danger" variant="solid">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <Switch
+                    checked={upToDate}
+                    onChange={() => handleSubmit()}
+                    color={upToDate ? 'success' : 'neutral'}
+                    variant={upToDate ? 'solid' : 'outlined'}
+                    startDecorator={upToDate ? 'Atualizado' : 'Desatualizado'}
+                    slotProps={{
+                        endDecorator: {
+                            sx: {
+                                minWidth: 24,
+                            },
+                        },
+                    }}
+                />
             ) : (
                 <Tooltip title="Filter list">
                     <IconButton size="sm" variant="outlined" color="neutral">
