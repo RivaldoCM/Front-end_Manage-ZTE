@@ -1,7 +1,8 @@
+import { useState } from "react";
+
 import { Controller, InfoCard } from "./style";
 import Button from '@mui/joy/Button';
 import Add from '@mui/icons-material/Add';
-
 import Box from '@mui/joy/Box';
 import Table from '@mui/joy/Table';
 import Typography from '@mui/joy/Typography';
@@ -10,18 +11,12 @@ import Checkbox from '@mui/joy/Checkbox';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import IconButton from '@mui/joy/IconButton';
-import Link from '@mui/joy/Link';
-import Tooltip from '@mui/joy/Tooltip';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { visuallyHidden } from '@mui/utils';
 import { EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
-import { useState } from "react";
+
 
 type Order = 'asc' | 'desc';
 
@@ -74,7 +69,7 @@ export function Tickets(){
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const handleRequestSort = (
-        event: React.MouseEvent<unknown>,
+        _event: React.MouseEvent<unknown>,
         property: keyof Data,
     ) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -90,7 +85,7 @@ export function Tickets(){
         setSelected([]);
     };
 
-    const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+    const handleClick = (_event: React.MouseEvent<unknown>, name: string) => {
         const selectedIndex = selected.indexOf(name);
         let newSelected: readonly string[] = [];
         if (selectedIndex === -1) {
@@ -110,7 +105,7 @@ export function Tickets(){
       const handleChangePage = (newPage: number) => {
         setPage(newPage);
       };
-      const handleChangeRowsPerPage = (event: any, newValue: number | null) => {
+      const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
         setRowsPerPage(parseInt(newValue!.toString(), 10));
         setPage(0);
     };

@@ -21,7 +21,7 @@ import Checkbox from '@mui/joy/Checkbox';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 
-export default function AddItemModal({ open, handleClose }) {
+export default function AddItemModal({ open, handleClose }: any) {
     const { setFetchResponseMessage } = useResponse();
 
     const [olts, setOlts] = useState<IOlt[]>([]);

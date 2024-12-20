@@ -21,7 +21,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-src/pages/telecom/FiberNetwork
 
 # sensitive data
 src/services/apiConfig.ts

@@ -9,7 +9,7 @@ import ModalDialog from '@mui/joy/ModalDialog';
 
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 
-export default function DeleteItemModal({ open, handleClose }) {
+export default function DeleteItemModal({ open, handleClose }: any) {
     return (
         <React.Fragment>
             <Modal open={open} onClose={handleClose}>

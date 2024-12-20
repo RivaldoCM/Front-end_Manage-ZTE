@@ -343,9 +343,12 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                             <AddBoxOutlinedIcon />
                         </IconButton>
                     </Tooltip>
-                    <SearchInput
-                        placeholder='Pesquise aqui'
-                    />
+                    {/*
+                        <SearchInput
+                            placeholder='Pesquise aqui'
+                        />
+                    */}
+
                     <Tooltip title="Lista de Filtros">
                         <IconButton size="sm" variant="soft" sx={{ color: '#9c27b0'}}>
                             <FilterListIcon />

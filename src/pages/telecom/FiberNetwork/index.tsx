@@ -1,4 +1,3 @@
-/*
 import React, { useEffect, useState } from 'react';
 import Box from '@mui/joy/Box';
 import Table from '@mui/joy/Table';
@@ -302,7 +301,7 @@ export function FiberNetwork(){
                 :
                     <></>
             }
-                        {
+            {
                 openDeleteItemModal ?
                     <DeleteItemModal
                         open={openDeleteItemModal}
@@ -314,4 +313,3 @@ export function FiberNetwork(){
         </TableController>
     );
 }
-*/
