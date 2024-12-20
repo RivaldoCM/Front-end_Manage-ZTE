@@ -14,6 +14,10 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { EnhancedTableHead, EnhancedTableToolbar } from "./table";
 import { getClientUpdate } from "../../../services/apiManageONU/getClientUpdate";
 import { useResponse } from "../../../hooks/useResponse";
+import { useAuth } from "../../../hooks/useAuth";
+import { useSocket } from "../../../hooks/useSocket";
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 interface Data {
     pppoe: string;
@@ -62,6 +66,8 @@ function getComparator<Key extends keyof any>(
 }
 
 export default function ClientFiberNetworkData(){
+    const { user } = useAuth();
+    const { socket } = useSocket();
     const { setFetchResponseMessage } = useResponse();
 
     const [rows, setRows] = useState<any[]>([]);
@@ -78,7 +84,7 @@ export default function ClientFiberNetworkData(){
             if(data){
                 if(data.success){
                     setRows(data.responses.response);
-                }else{
+                } else {
                     setRows([]);
                     setFetchResponseMessage('error/no-connection-with-API');
                 }
@@ -87,7 +93,20 @@ export default function ClientFiberNetworkData(){
             }
         }
         getData();
-    },[])
+    },[]);
+
+    useEffect(() => {
+        if(socket){
+            socket.emit('select_room', {
+                uid: user?.uid,
+                room: '/client-update'
+            });
+    
+            socket.on('update-data', data => {
+                setRows(data.responses.response);
+            });
+        }
+    },[selected]);
 
     const handleRequestSort = (
         _event: React.MouseEvent<unknown>,
@@ -96,14 +115,6 @@ export default function ClientFiberNetworkData(){
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-    const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
-            setSelected(newSelected);
-            return;
-        }
-        setSelected([]);
     };
 
     const handleClick = (_event: React.MouseEvent<unknown>, id: string, upToDate: boolean) => {
@@ -128,7 +139,11 @@ export default function ClientFiberNetworkData(){
         return rowsPerPage === -1
         ? rows.length
         : Math.min(rows.length, (page + 1) * rowsPerPage);
-    };
+    }
+
+    const handleSentUpdate = () => {
+        setSelected([]);
+    }
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
     return (
@@ -136,7 +151,13 @@ export default function ClientFiberNetworkData(){
             variant="outlined"
             sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
         >
-            <EnhancedTableToolbar numSelected={selected.length} upToDate={upToDate}/>
+            <EnhancedTableToolbar 
+                numSelected={selected.length}
+                onUpdateSent={handleSentUpdate}
+                upToDate={upToDate}
+                userId={user?.uid}
+                rowId={selected}
+            />
             <Table
                 aria-labelledby="tableTitle"
                 hoverRow
@@ -157,7 +178,6 @@ export default function ClientFiberNetworkData(){
                     numSelected={selected.length}
                     order={order}
                     orderBy={orderBy}
-                    onSelectAllClick={handleSelectAllClick}
                     onRequestSort={handleRequestSort}
                     rowCount={rows.length}
                 />
@@ -176,7 +196,6 @@ export default function ClientFiberNetworkData(){
                                 aria-checked={isItemSelected}
                                 tabIndex={-1}
                                 key={row.id}
-                                // selected={isItemSelected}
                                 style={
                                     isItemSelected
                                     ? ({
@@ -190,13 +209,13 @@ export default function ClientFiberNetworkData(){
                             >
                                 <th scope="row">
                                     <Checkbox
-                                    checked={isItemSelected}
-                                    slotProps={{
-                                        input: {
-                                        'aria-labelledby': labelId,
-                                        },
-                                    }}
-                                    sx={{ verticalAlign: 'top' }}
+                                        checked={isItemSelected}
+                                        slotProps={{
+                                            input: {
+                                            'aria-labelledby': labelId,
+                                            },
+                                        }}
+                                        sx={{ verticalAlign: 'top' }}
                                     />
                                 </th>
                                 <th id={labelId} scope="row">
@@ -207,7 +226,15 @@ export default function ClientFiberNetworkData(){
                                 <td>{row.oltPower}</td>
                                 <td>{row.ctoId}</td>
                                 <td>{row.portId}</td>
-                                <td>{row.is_updated ? 'sim' : 'nao'}</td>
+                                <td>{row.Client_created_by.name}</td>
+                                <td>{row.Client_updated_by.name}</td>
+                                <td>
+                                    {
+                                        row.is_updated ? 
+                                        <CheckCircleOutlinedIcon color="success" fontSize="medium"/> : 
+                                        <CancelOutlinedIcon color="error" fontSize="medium"/>
+                                    }
+                                </td>
                             </tr>
                         );
                     })}
@@ -220,13 +247,13 @@ export default function ClientFiberNetworkData(){
                                 } as React.CSSProperties
                             }
                         >
-                            <td colSpan={8} aria-hidden />
+                            <td colSpan={10} aria-hidden />
                         </tr>
                     )}
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colSpan={8}>
+                        <td colSpan={10}>
                             <Box
                                 sx={{
                                     display: 'flex',

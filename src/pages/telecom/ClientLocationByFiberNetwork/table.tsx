@@ -1,15 +1,16 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/joy/Box';
 import Typography from '@mui/joy/Typography';
 import Checkbox from '@mui/joy/Checkbox';
 import IconButton from '@mui/joy/IconButton';
 import Link from '@mui/joy/Link';
 import Tooltip from '@mui/joy/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { visuallyHidden } from '@mui/utils';
 import { Switch } from '@mui/joy';
+import { updateClientUpdated } from '../../../services/apiManageONU/updateClientUpdated';
+import { useResponse } from '../../../hooks/useResponse';
 
 type Order = 'asc' | 'desc';
 
@@ -20,6 +21,8 @@ interface Data {
     txOlt: number;
     ctoId: number;
     portId: number;
+    createdBy: string;
+    updatedBy: string;
     isUpdated: boolean
 }
 
@@ -33,39 +36,39 @@ interface HeadCell {
   
 const headCells: readonly HeadCell[] = [
     {
-      id: 'pppoe',
-      sort: false,
-      numeric: false,
-      disablePadding: true,
-      label: 'PPPoE',
+        id: 'pppoe',
+        sort: false,
+        numeric: false,
+        disablePadding: true,
+        label: 'PPPoE',
     },
     {
-      id: 'serialNumber',
-      sort: false,
-      numeric: true,
-      disablePadding: false,
-      label: 'SerialNumber',
+        id: 'serialNumber',
+        sort: false,
+        numeric: true,
+        disablePadding: false,
+        label: 'SerialNumber',
     },
     {
-      id: 'rxOnt',
-      sort: false,
-      numeric: true,
-      disablePadding: false,
-      label: 'Rx ONT',
+        id: 'rxOnt',
+        sort: false,
+        numeric: true,
+        disablePadding: false,
+        label: 'Rx ONT',
+        },
+    {
+        id: 'txOlt',
+        sort: false,
+        numeric: true,
+        disablePadding: false,
+        label: 'TX OLT',
     },
     {
-      id: 'txOlt',
-      sort: false,
-      numeric: true,
-      disablePadding: false,
-      label: 'TX OLT',
-    },
-    {
-      id: 'ctoId',
-      sort: false,
-      numeric: true,
-      disablePadding: false,
-      label: 'N° CTO',
+        id: 'ctoId',
+        sort: false,
+        numeric: true,
+        disablePadding: false,
+        label: 'N° CTO',
     },
     {
         id: 'portId',
@@ -73,6 +76,20 @@ const headCells: readonly HeadCell[] = [
         numeric: true,
         disablePadding: false,
         label: 'N° Porta CTO',
+    },
+    {
+        id: 'createdBy',
+        sort: false,
+        numeric: true,
+        disablePadding: false,
+        label: 'Adicionado por',
+    },
+    {
+        id: 'updatedBy',
+        sort: false,
+        numeric: true,
+        disablePadding: false,
+        label: 'Atualizado por',
     },
     {
         id: 'isUpdated',
@@ -92,8 +109,12 @@ interface EnhancedTableProps {
     rowCount: number;
 }
 
+interface EnhancedTableToolbarProps {
+    numSelected: number;
+}
+
 export function EnhancedTableHead(props: EnhancedTableProps) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const { order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property: keyof Data, isSortable: boolean) => (event: React.MouseEvent<unknown>) => {
         isSortable ? onRequestSort(event, property): null;
     };
@@ -105,12 +126,6 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
                     <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        slotProps={{
-                            input: {
-                            'aria-label': 'select all desserts',
-                            },
-                        }}
                         sx={{ verticalAlign: 'sub' }}
                     />
                 </th>
@@ -170,17 +185,32 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
     );
 }
 
-interface EnhancedTableToolbarProps {
-    numSelected: number;
-}
+export function EnhancedTableToolbar(props: EnhancedTableToolbarProps){
+    const { numSelected, upToDate, userId, rowId, onUpdateSent } = props;
+    const { setFetchResponseMessage } = useResponse();
 
-export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected, upToDate } = props;
-    const [checked, setChecked] = React.useState<boolean>(false);
+    const [checked, setChecked] = useState<boolean>(upToDate);
+
+    useEffect(() => {
+        setChecked(upToDate);
+    },[upToDate]);
 
     const handleSubmit = () => {
-        setChecked(!checked)
-        console.log(upToDate)
+        setChecked(!checked);
+
+        async function getData(){
+            const data = await updateClientUpdated({id: rowId[0], isUpdated: upToDate, userId: userId});
+            if(data){
+                if(data.success){
+                    onUpdateSent(true);
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
+            }
+        }
+        getData();
     }
 
     return (
@@ -216,11 +246,11 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             )}
             {numSelected > 0 ? (
                 <Switch
-                    checked={upToDate}
+                    checked={checked}
                     onChange={() => handleSubmit()}
-                    color={upToDate ? 'success' : 'neutral'}
-                    variant={upToDate ? 'solid' : 'outlined'}
-                    startDecorator={upToDate ? 'Atualizado' : 'Desatualizado'}
+                    color={checked ? 'success' : 'neutral'}
+                    variant={checked ? 'solid' : 'outlined'}
+                    startDecorator={checked ? 'Atualizado' : 'Desatualizado'}
                     slotProps={{
                         endDecorator: {
                             sx: {
@@ -232,7 +262,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             ) : (
                 <Tooltip title="Filter list">
                     <IconButton size="sm" variant="outlined" color="neutral">
-                    <FilterListIcon />
+                        <FilterListIcon />
                     </IconButton>
                 </Tooltip>
             )}
