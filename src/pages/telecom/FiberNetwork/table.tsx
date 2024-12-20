@@ -59,9 +59,8 @@ function descendingComparator<T>(a: any, b: any, orderBy: keyof T, isNested: Boo
         }
         return 0;
     }
-
 }
-  
+
 type Order = 'asc' | 'desc';
 
 export function getComparator<Key extends keyof Data>(

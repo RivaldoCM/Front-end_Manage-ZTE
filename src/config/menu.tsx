@@ -90,10 +90,11 @@ export const handlePages: IAllPages[] = [
     {
         name: "Infra",
         pages: [
-            {fiber_network: 'Mapa de rede Fibra'},
-            {client_location: 'Localização de clientes'}
+            {fiber_network: 'Mapa de rede Fibra(DEV)'},
+            {client_location: 'Organização de clientes'}
         ]
     },
+    /*
     {
         name: "HelpDesk",
         pages: [
@@ -105,6 +106,7 @@ export const handlePages: IAllPages[] = [
             }
         ]
     },
+    */
     {
         name: 'ExitLag',
         pages: [
@@ -124,28 +126,36 @@ export const handleShowPageByRule = (rule?: number) => {
         case 10: 
             let onusMassive = cloneDeep(handlePages);
             onusMassive.splice(1,2);
-            onusMassive.splice(2,2);
+            onusMassive.splice(2,3);
             onusMassive[1].pages.splice(1,2);
         return handleDynamicPagesByRule = onusMassive;
         case 1:
         case 2: 
             let withoutDashboardBreak = cloneDeep(handlePages);
             withoutDashboardBreak.splice(0,3);
+            withoutDashboardBreak.splice(2,1)
             withoutDashboardBreak[1].pages.splice(0,1);
         return handleDynamicPagesByRule = withoutDashboardBreak;
         case 6:
             let massiveAndExitLag = cloneDeep(handlePages);
             massiveAndExitLag.splice(0,3);
-            massiveAndExitLag.splice(1,1);
+            massiveAndExitLag.splice(1,2);
             return handleDynamicPagesByRule = massiveAndExitLag;
         case 3:
             let onlyBreakTime = cloneDeep(handlePages);
             onlyBreakTime.splice(0,3);
+            onlyBreakTime.splice(2,1);
             return handleDynamicPagesByRule = onlyBreakTime;
+        case 19:
+            let withoutAdmin = cloneDeep(handlePages);
+            withoutAdmin.splice(1,1);
+            withoutAdmin.splice(3,1);
+            withoutAdmin.splice(4,2);
+        return handleDynamicPagesByRule = withoutAdmin;
         default:
             let onlyMassive = cloneDeep(handlePages);
             onlyMassive.splice(0,3);
-            onlyMassive.splice(1,2);
+            onlyMassive.splice(1,4);
         return handleDynamicPagesByRule = onlyMassive;
     }
 }

@@ -7,19 +7,13 @@ import { Mobile } from "./style";
 export function ClientLocationByFiberNetwork(){
     const [isScannerOpen, setIsScannerOpen] = useState(false);
 
-    const handleScannerOpen = () => {
-        setIsScannerOpen(true);
-    }
-
-    const handleScannerClose = () => {
-        setIsScannerOpen(false);
-    }
-
+    const handleScannerOpen = () => setIsScannerOpen(true);
+    const handleScannerClose = () => setIsScannerOpen(false);
 
     return(
         <Mobile className="flex">
-            <IconButton onClick={handleScannerOpen}>
-                <QrCodeScannerIcon color="primary"/>
+            <IconButton onClick={handleScannerOpen} size="lg">
+                <QrCodeScannerIcon color="primary" fontSize="large"/>
             </IconButton>
             {
                 isScannerOpen && (

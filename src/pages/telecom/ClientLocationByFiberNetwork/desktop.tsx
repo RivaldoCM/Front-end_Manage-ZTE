@@ -11,7 +11,7 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { EnhancedTableHead, EnhancedTableToolbar } from "./table";
+import { EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
 import { getClientUpdate } from "../../../services/apiManageONU/getClientUpdate";
 import { useResponse } from "../../../hooks/useResponse";
 import { useAuth } from "../../../hooks/useAuth";
@@ -26,44 +26,12 @@ interface Data {
     txOlt: number;
     ctoId: number;
     portId: number;
-    isUpdated: boolean
-}
-
-function labelDisplayedRows({
-    from,
-    to,
-    count,
-}: {
-    from: number;
-    to: number;
-    count: number;
-}) {
-  return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
-}
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
+    'Client_created_by.name': string;
+    'Client_updated_by.name': string;
+    'is_updated': boolean;
 }
 
 type Order = 'asc' | 'desc';
-
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key,
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 export default function ClientFiberNetworkData(){
     const { user } = useAuth();
@@ -72,8 +40,9 @@ export default function ClientFiberNetworkData(){
 
     const [rows, setRows] = useState<any[]>([]);
     const [order, setOrder] = useState<Order>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Data>('isUpdated');
-    const [selected, setSelected] = useState<readonly string[]>([]);
+    const [orderBy, setOrderBy] = useState<keyof Data>('is_updated');
+    const [isNested, setIsNested] = useState<Boolean>(false);
+    const [selected, setSelected] = useState<number[]>([]);
     const [upToDate, setUpToDate] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -111,18 +80,20 @@ export default function ClientFiberNetworkData(){
     const handleRequestSort = (
         _event: React.MouseEvent<unknown>,
         property: keyof Data,
+        isNested: boolean,
     ) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+        setIsNested(isNested);
     };
 
-    const handleClick = (_event: React.MouseEvent<unknown>, id: string, upToDate: boolean) => {
-        setUpToDate(upToDate);
+    const handleClick = (_event: React.MouseEvent<unknown>, id: number, upToDate: boolean) => {
         if(selected[0] === id){
             setSelected([]);
             return;
         }
+        setUpToDate(upToDate);
         setSelected([id]);
     }
 
@@ -142,6 +113,7 @@ export default function ClientFiberNetworkData(){
     }
 
     const handleSentUpdate = () => {
+        //ASSIM QUE ATUALIZA O VALOR, AQUI VAI RETIRAR A SELEÇÃO DO USER
         setSelected([]);
     }
 
@@ -149,13 +121,13 @@ export default function ClientFiberNetworkData(){
     return (
         <Sheet
             variant="outlined"
-            sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
+            sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm'}}
         >
             <EnhancedTableToolbar 
                 numSelected={selected.length}
                 onUpdateSent={handleSentUpdate}
                 upToDate={upToDate}
-                userId={user?.uid}
+                userId={user!.uid}
                 rowId={selected}
             />
             <Table
@@ -168,10 +140,7 @@ export default function ClientFiberNetworkData(){
                     '& thead th:nth-child(1)': {
                         width: '40px',
                     },
-                    '& thead th:nth-child(2)': {
-                        width: '30%',
-                    },
-                    '& tr > *:nth-child(n+3)': { textAlign: 'right' },
+                    '& tr > *:nth-child(n+3)': { textAlign: 'center' },
                 }}
             >
                 <EnhancedTableHead
@@ -183,7 +152,7 @@ export default function ClientFiberNetworkData(){
                 />
                 <tbody>
                     {[...rows]
-                    .sort(getComparator(order, orderBy))
+                    .sort(getComparator(order, orderBy, isNested))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                         const isItemSelected = selected.includes(row.id);

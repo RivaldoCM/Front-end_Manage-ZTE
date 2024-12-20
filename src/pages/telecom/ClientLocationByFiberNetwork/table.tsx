@@ -21,15 +21,16 @@ interface Data {
     txOlt: number;
     ctoId: number;
     portId: number;
-    createdBy: string;
-    updatedBy: string;
-    isUpdated: boolean
+    'Client_created_by.name': string;
+    'Client_updated_by.name': string;
+    'is_updated': boolean
 }
 
 interface HeadCell {
     disablePadding: boolean;
     id: keyof Data;
     sort: boolean;
+    nested: boolean;
     label: string;
     numeric: boolean;
 }
@@ -38,6 +39,7 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'pppoe',
         sort: false,
+        nested: false,
         numeric: false,
         disablePadding: true,
         label: 'PPPoE',
@@ -45,6 +47,7 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'serialNumber',
         sort: false,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'SerialNumber',
@@ -52,6 +55,7 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'rxOnt',
         sort: false,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'Rx ONT',
@@ -59,6 +63,7 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'txOlt',
         sort: false,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'TX OLT',
@@ -66,6 +71,7 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'ctoId',
         sort: false,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'N° CTO',
@@ -73,27 +79,31 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'portId',
         sort: false,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'N° Porta CTO',
     },
     {
-        id: 'createdBy',
+        id: 'Client_created_by.name',
         sort: false,
+        nested: true,
         numeric: true,
         disablePadding: false,
         label: 'Adicionado por',
     },
     {
-        id: 'updatedBy',
+        id: 'Client_updated_by.name',
         sort: false,
+        nested: true,
         numeric: true,
         disablePadding: false,
         label: 'Atualizado por',
     },
     {
-        id: 'isUpdated',
+        id: 'is_updated',
         sort: true,
+        nested: false,
         numeric: true,
         disablePadding: false,
         label: 'Atualizado?',
@@ -102,8 +112,7 @@ const headCells: readonly HeadCell[] = [
   
 interface EnhancedTableProps {
     numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
-    onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data, isNested: boolean) => void;
     order: Order;
     orderBy: string;
     rowCount: number;
@@ -111,12 +120,64 @@ interface EnhancedTableProps {
 
 interface EnhancedTableToolbarProps {
     numSelected: number;
+    upToDate: boolean;
+    userId: number;
+    rowId: number[]; 
+    onUpdateSent: (value: boolean) => void;
+}
+
+export function labelDisplayedRows({
+    from,
+    to,
+    count,
+}: {
+    from: number;
+    to: number;
+    count: number;
+}) {
+  return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
+}
+
+function descendingComparator(a: any, b: any, orderBy: any, isNested: Boolean) {
+    if(isNested){
+        const nested = orderBy.toString().split('.');
+        if (b[nested[0]][nested[1]] < a[nested[0]][nested[1]]) {
+            return -1;
+        }
+        if (b[nested[0]][nested[1]] > a[nested[0]][nested[1]]) {
+            return 1;
+        }
+        return 0;
+    } else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+}
+
+export function getComparator<Key extends keyof any>(
+    order: Order,
+    orderBy: Key,
+    isNested: Boolean
+): (
+    a: { [key in Key]: number | string },
+    b: { [key in Key]: number | string },
+) => number {
+
+    console.log(order, orderBy, isNested)
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy, isNested)
+        : (a, b) => -descendingComparator(a, b, orderBy, isNested);
 }
 
 export function EnhancedTableHead(props: EnhancedTableProps) {
     const { order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property: keyof Data, isSortable: boolean) => (event: React.MouseEvent<unknown>) => {
-        isSortable ? onRequestSort(event, property): null;
+    const createSortHandler = (property: keyof Data, isSortable: boolean, isNested: boolean) => (event: React.MouseEvent<unknown>) => {
+        isSortable ? onRequestSort(event, property, isNested): null;
     };
 
     return (
@@ -145,7 +206,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
                                 color="neutral"
                                 textColor={active ? 'primary.plainColor' : undefined}
                                 component="button"
-                                onClick={createSortHandler(headCell.id, headCell.sort)}
+                                onClick={createSortHandler(headCell.id, headCell.sort, headCell.nested)}
                                 startDecorator={
                                     headCell.numeric  && headCell.sort ? (
                                         <ArrowDownwardIcon
@@ -241,7 +302,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps){
                     id="tableTitle"
                     component="div"
                 >
-                    {/*Nutrition*/}
+                    Clientes para atualizar no Voalle
                 </Typography>
             )}
             {numSelected > 0 ? (
@@ -260,11 +321,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps){
                     }}
                 />
             ) : (
-                <Tooltip title="Filter list">
-                    <IconButton size="sm" variant="outlined" color="neutral">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
+                <></>
             )}
         </Box>
     );
