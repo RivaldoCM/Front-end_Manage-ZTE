@@ -32,7 +32,7 @@ import { Exitlag } from "./pages/exitLag";
 import { EditOlt } from "./pages/admin/olts/editOlt";
 import { AddOlt } from "./pages/admin/olts/addOlt";
 import { OnuInfo } from "./pages/OnuInfo";
-import { FiberNetwork } from "./pages/telecom/FiberNetwork";
+//import { FiberNetwork } from "./pages/telecom/FiberNetwork";
 import { Tickets } from "./pages/helpdesk/tickets";
 import { Dashboard } from "./pages/helpdesk/dashboard";
 import { ClientLocationByFiberNetwork } from "./pages/telecom/ClientLocationByFiberNetwork/mobile";
@@ -196,13 +196,15 @@ export function AppRoutes() {
                     }
                 >
                 </Route>
+                {/*
                 <Route
                     path="/fiber_network"
                     element={
                         <PrivateRoute element={<FiberNetwork/>} />
                     }
-                >
-                </Route>
+                />
+                */ }
+
                 <Route
                     path="/client_location"
                     element={

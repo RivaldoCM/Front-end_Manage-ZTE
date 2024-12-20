@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Box from '@mui/joy/Box';
-import Typography from '@mui/joy/Typography';
-import Checkbox from '@mui/joy/Checkbox';
-import IconButton from '@mui/joy/IconButton';
-import Link from '@mui/joy/Link';
-import Tooltip from '@mui/joy/Tooltip';
-import FilterListIcon from '@mui/icons-material/FilterList';
+
+import { useResponse } from '../../../hooks/useResponse';
+import { updateClientUpdated } from '../../../services/apiManageONU/updateClientUpdated';
+
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { visuallyHidden } from '@mui/utils';
-import { Switch } from '@mui/joy';
-import { updateClientUpdated } from '../../../services/apiManageONU/updateClientUpdated';
-import { useResponse } from '../../../hooks/useResponse';
+import { Switch, Box, Checkbox, Link, Typography } from '@mui/joy';
 
 type Order = 'asc' | 'desc';
 
@@ -168,7 +163,6 @@ export function getComparator<Key extends keyof any>(
     b: { [key in Key]: number | string },
 ) => number {
 
-    console.log(order, orderBy, isNested)
     return order === 'desc'
         ? (a, b) => descendingComparator(a, b, orderBy, isNested)
         : (a, b) => -descendingComparator(a, b, orderBy, isNested);
