@@ -16,6 +16,10 @@ import ViewModuleOutlinedIcon from '@mui/icons-material/ViewModuleOutlined';
 import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
 import { IconExitLag } from '../assets/icons/iconExitLag';
 import WifiChannelOutlinedIcon from '@mui/icons-material/WifiChannelOutlined';
+import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import SchemaOutlinedIcon from '@mui/icons-material/SchemaOutlined';
 
 export var handleDynamicPagesByRule: IAllPages[];
 export const handlePages: IAllPages[] = [
@@ -84,9 +88,29 @@ export const handlePages: IAllPages[] = [
         ]
     },
     {
+        name: "Infra",
+        pages: [
+            {fiber_network: 'Mapa de rede Fibra(DEV)'},
+            {client_location: 'Organização de clientes'}
+        ]
+    },
+    /*
+    {
+        name: "HelpDesk",
+        pages: [
+            {
+                'helpdesk/dashboard': 'Dashboard'
+            },
+            {
+                'helpdesk/tickets': 'Tickets'
+            }
+        ]
+    },
+    */
+    {
         name: 'ExitLag',
         pages: [
-            {'exitlag': 'Dashboard Clientes'}
+            {exitlag: 'Dashboard Clientes'}
         ]
     }
 ]
@@ -102,28 +126,36 @@ export const handleShowPageByRule = (rule?: number) => {
         case 10: 
             let onusMassive = cloneDeep(handlePages);
             onusMassive.splice(1,2);
-            onusMassive.splice(2,2);
+            onusMassive.splice(2,3);
             onusMassive[1].pages.splice(1,2);
         return handleDynamicPagesByRule = onusMassive;
         case 1:
         case 2: 
             let withoutDashboardBreak = cloneDeep(handlePages);
             withoutDashboardBreak.splice(0,3);
+            withoutDashboardBreak.splice(2,1)
             withoutDashboardBreak[1].pages.splice(0,1);
         return handleDynamicPagesByRule = withoutDashboardBreak;
         case 6:
             let massiveAndExitLag = cloneDeep(handlePages);
             massiveAndExitLag.splice(0,3);
-            massiveAndExitLag.splice(1,1);
+            massiveAndExitLag.splice(1,2);
             return handleDynamicPagesByRule = massiveAndExitLag;
         case 3:
             let onlyBreakTime = cloneDeep(handlePages);
             onlyBreakTime.splice(0,3);
+            onlyBreakTime.splice(2,1);
             return handleDynamicPagesByRule = onlyBreakTime;
+        case 19:
+            let withoutAdmin = cloneDeep(handlePages);
+            withoutAdmin.splice(1,1);
+            withoutAdmin.splice(3,1);
+            withoutAdmin.splice(4,2);
+        return handleDynamicPagesByRule = withoutAdmin;
         default:
             let onlyMassive = cloneDeep(handlePages);
             onlyMassive.splice(0,3);
-            onlyMassive.splice(1,2);
+            onlyMassive.splice(1,4);
         return handleDynamicPagesByRule = onlyMassive;
     }
 }
@@ -158,6 +190,14 @@ export const handleIconMenu = (text: string): React.ReactElement => {
             return <IconExitLag />;
         case 'onu_info':
             return <WifiChannelOutlinedIcon />;
+        case 'helpdesk/tickets':
+            return <ConfirmationNumberOutlinedIcon />;
+        case 'helpdesk/dashboard':
+            return <DashboardOutlinedIcon />;
+        case 'client_location':
+            return <AssignmentOutlinedIcon />;
+        case 'fiber_network':
+            return <SchemaOutlinedIcon />;
         default:
             return <></>;
     }

@@ -120,6 +120,7 @@ export function EditUser(props: IEditUser){
                         <MenuItem value={11}>Cobrança</MenuItem>
                         <MenuItem value={12}>Supervisor Cobrança</MenuItem>
                         <MenuItem value={13}>Retenção</MenuItem>
+                        <MenuItem value={19}>Infra</MenuItem>
                     </Select>
                 </FormControl>
                 <FormControl fullWidth sx={{ mt: 2 }}>

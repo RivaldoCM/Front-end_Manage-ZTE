@@ -57,7 +57,6 @@ export function MobileDrawerMenu() {
 		navigate('/login');
 	};
 
-
     const list = (anchor: Anchor) => (
         <Box
             sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
@@ -134,7 +133,7 @@ export function MobileDrawerMenu() {
                 response ? 
                     <Alert severity={severityStatus} className="alert">{responseMassage}</Alert>
                     : <></>
-            	}
+            }
         </Container>
     );
 }

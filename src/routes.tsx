@@ -32,6 +32,11 @@ import { Exitlag } from "./pages/exitLag";
 import { EditOlt } from "./pages/admin/olts/editOlt";
 import { AddOlt } from "./pages/admin/olts/addOlt";
 import { OnuInfo } from "./pages/OnuInfo";
+//import { FiberNetwork } from "./pages/telecom/FiberNetwork";
+import { Tickets } from "./pages/helpdesk/tickets";
+import { Dashboard } from "./pages/helpdesk/dashboard";
+import { ClientLocationByFiberNetwork } from "./pages/telecom/ClientLocationByFiberNetwork/mobile";
+import ClientFiberNetworkData from "./pages/telecom/ClientLocationByFiberNetwork/desktop";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -180,16 +185,45 @@ export function AppRoutes() {
                     element={
                         <PrivateRoute
                             element={<Exitlag />}
-                        />}
+                        />
+                    }
                 >
                 </Route>
                 <Route 
                     path="onu_info"
                     element={
-                        <PrivateRoute 
-                            element={<OnuInfo />}
-                        />}
-                    >
+                        <PrivateRoute element={<OnuInfo />}/>
+                    }
+                >
+                </Route>
+                {/*
+                <Route
+                    path="/fiber_network"
+                    element={
+                        <PrivateRoute element={<FiberNetwork/>} />
+                    }
+                />
+                */ }
+
+                <Route
+                    path="/client_location"
+                    element={
+                        <PrivateRoute element={matches ? <ClientLocationByFiberNetwork /> : <ClientFiberNetworkData />} />
+                    }
+                />
+                <Route path="helpdesk">
+                    <Route 
+                        path="dashboard"
+                        element={
+                            <PrivateRoute element={<Dashboard />} />
+                        }
+                    />
+                    <Route
+                        path="tickets"
+                        element={
+                            <PrivateRoute element={<Tickets/>} />
+                        }
+                    />
                 </Route>
             </Route>
         </Routes>
