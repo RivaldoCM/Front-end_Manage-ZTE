@@ -94,7 +94,6 @@ export const handlePages: IAllPages[] = [
             {client_location: 'Organização de clientes'}
         ]
     },
-    /*
     {
         name: "HelpDesk",
         pages: [
@@ -106,7 +105,6 @@ export const handlePages: IAllPages[] = [
             }
         ]
     },
-    */
     {
         name: 'ExitLag',
         pages: [

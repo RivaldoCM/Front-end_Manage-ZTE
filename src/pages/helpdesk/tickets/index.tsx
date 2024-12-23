@@ -16,6 +16,7 @@ import Option from '@mui/joy/Option';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
+import CreateTicket from "./modals/createTicket";
 
 
 type Order = 'asc' | 'desc';
@@ -28,7 +29,6 @@ interface Data {
     protein: number;
 }
   
-
 function createData(
     name: string,
     calories: number,
@@ -67,6 +67,11 @@ export function Tickets(){
     const [selected, setSelected] = useState<readonly string[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const [openNewTicket, setOpenNewTicket] = useState(false);
+
+    const handleOpenNewTicket = () => { setOpenNewTicket(true); }
+    const handleCloseNewTicket = () => { setOpenNewTicket(false) }
 
     const handleRequestSort = (
         _event: React.MouseEvent<unknown>,
@@ -124,7 +129,8 @@ export function Tickets(){
     return(
         <Controller className="flex">
             <header>
-                <Button 
+                <Button
+                    onClick={handleOpenNewTicket}
                     startDecorator={<Add />} 
                     color="success"
                     size="sm"
@@ -166,9 +172,6 @@ export function Tickets(){
                         '& thead th:nth-child(1)': {
                             width: '40px',
                         },
-                        '& thead th:nth-child(2)': {
-                            width: '30%',
-                        },
                         '& tr > *:nth-child(n+3)': { textAlign: 'right' },
                         }}
                     >
@@ -195,7 +198,6 @@ export function Tickets(){
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}
                                     key={row.name}
-                                    // selected={isItemSelected}
                                     style={
                                         isItemSelected
                                         ? ({
@@ -299,6 +301,14 @@ export function Tickets(){
                     </Table>
                 </Sheet>
             </section>
+            {
+                openNewTicket && ( 
+                <CreateTicket 
+                    open={openNewTicket} 
+                    handleClose={handleCloseNewTicket}
+                /> 
+            )
+            }
         </Controller>
     )
 }
