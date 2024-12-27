@@ -20,6 +20,7 @@ import Add from '@mui/icons-material/Add';
 import { AddModal } from '../../../telecom/FiberNetwork/style';
 import { getDepartments } from '../../../../services/apiManageONU/getDepartments';
 import { getTicketTypes } from '../../../../services/apiManageONU/getTicketTypes';
+import { Textarea } from '@mui/joy';
 
 export default function CreateTicket({ open, handleClose }: any) {
     const { setFetchResponseMessage } = useResponse();
@@ -30,9 +31,9 @@ export default function CreateTicket({ open, handleClose }: any) {
     const [departments, setDepartments] = useState([]);
     const [form, setForm] = useState({
         departmentId: null,
-        city: '',
+        cityId: null,
         ticketType: null,
-        olt: '',
+        oltId: null,
         location: '',
         status: '',
     });
@@ -52,9 +53,10 @@ export default function CreateTicket({ open, handleClose }: any) {
 
         if(!loadingOlts){ return undefined};
         (async () => {
-            const res = await getOlt({});
+            const res = await getOlt({id: form.cityId, vlans: false});
             if(active){
                 if(res.success){
+                    console.log(res.responses.response);
                     setOlts(res.responses.response);
                 }
             }
@@ -111,18 +113,16 @@ export default function CreateTicket({ open, handleClose }: any) {
         return () => { active = false; }
     },[loadingTicketType]);
 
-    const handleChange = (_e: any, value: any) => {
-        if(value){
-            setForm({
-                ...form,
-                departmentId: value.id
-            });
-        } else {
-            setForm({
-                ...form,
-                departmentId: value
-            });
-        }
+    const handleChangeDepartment = (_e: any, value: any) => {
+        value ? setForm({...form, departmentId: value.id}) : setForm({...form, departmentId: value});
+    }
+
+    const handleChangeCity = (_e: any, value: any) => {
+        value ? setForm({...form, cityId: value.id}) : setForm({...form, cityId: value});
+    }
+
+    const handleChangeOlt = (_e: any, value: any) => {
+        value ? setForm({...form, oltId: value.id}) : setForm({...form, oltId: value});
     }
 
     return (
@@ -155,7 +155,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                             getOptionLabel={(option) => option.name}
                             loading={loadingDepartments}
                             options={departments}
-                            onChange={handleChange}
+                            onChange={handleChangeDepartment}
                             sx={{ width: 300, marginBottom: '.5rem' }}
                             endDecorator={
                                 loadingDepartments ? (
@@ -179,10 +179,6 @@ export default function CreateTicket({ open, handleClose }: any) {
                                 ) : null
                             }
                         />
-                        <Select placeholder='Tipo'>
-                            <Option value="dog">Atendimento</Option>
-                            <Option value="cat">Em Projeto</Option>
-                        </Select>
                         <div>
                             <Autocomplete
                                 placeholder='Cidade'
@@ -193,6 +189,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                                 getOptionLabel={(option) => option.name}
                                 loading={loadingCities}
                                 options={cities}
+                                onChange={handleChangeCity}
                                 sx={{ width: 300, marginBottom: '.5rem' }}
                                 endDecorator={
                                     loadingCities ? (
@@ -209,10 +206,11 @@ export default function CreateTicket({ open, handleClose }: any) {
                                 getOptionLabel={(option) => option.name}
                                 loading={loadingOlts}
                                 options={olts}
+                                onChange={handleChangeOlt}
                                 sx={{ width: 300, marginBottom: '.2rem' }}
                                 endDecorator={
                                     loadingOlts ? (
-                                    <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
+                                        <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
                                     ) : null
                                 }
                             />
@@ -226,15 +224,12 @@ export default function CreateTicket({ open, handleClose }: any) {
                             }
                             sx={{ width: 300, marginBottom: '.5rem' }}
                         />
-                        <Select placeholder='Status'>
-                            <Option value="dog">Atendimento</Option>
-                            <Option value="cat">Em Projeto</Option>
-                        </Select>
+                        <Textarea name="Soft" placeholder="Descrição" variant="outlined"  minRows={3}/>
                         <Button
                             variant='soft' 
                             startDecorator={<Add />}
                         >
-                            Criar equipamento
+                            Gerar Ticket
                         </Button>
                     </AddModal>
                 </Sheet>
