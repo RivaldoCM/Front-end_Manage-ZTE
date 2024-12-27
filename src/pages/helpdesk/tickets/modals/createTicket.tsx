@@ -19,6 +19,7 @@ import Option from '@mui/joy/Option';
 import Add from '@mui/icons-material/Add';
 import { AddModal } from '../../../telecom/FiberNetwork/style';
 import { getDepartments } from '../../../../services/apiManageONU/getDepartments';
+import { getTicketTypes } from '../../../../services/apiManageONU/getTicketTypes';
 
 export default function CreateTicket({ open, handleClose }: any) {
     const { setFetchResponseMessage } = useResponse();
@@ -28,7 +29,7 @@ export default function CreateTicket({ open, handleClose }: any) {
     const [ticketType, setTicketType] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [form, setForm] = useState({
-        department: null,
+        departmentId: null,
         city: '',
         ticketType: null,
         olt: '',
@@ -94,14 +95,36 @@ export default function CreateTicket({ open, handleClose }: any) {
         return () => { active = false; }
     },[loadingDepartments]);
 
-    const handleChange = (e: any) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
+    useEffect(() => {
+        let active = true;
+
+        if(!loadingTicketType){ return undefined};
+        (async () => {
+            const res = await getTicketTypes(form.departmentId);
+            if(active){
+                if(res.success){
+                    setTicketType(res.responses.response);
+                }
+            }
+        })();
+
+        return () => { active = false; }
+    },[loadingTicketType]);
+
+    const handleChange = (_e: any, value: any) => {
+        if(value){
+            setForm({
+                ...form,
+                departmentId: value.id
+            });
+        } else {
+            setForm({
+                ...form,
+                departmentId: value
+            });
+        }
     }
 
-        console.log(form)
     return (
         <React.Fragment>
             <Modal
@@ -123,6 +146,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                     </Typography>
                     <AddModal>
                         <Autocomplete
+                            name='departmentId'
                             placeholder='Para quem?'
                             open={openDepartments}
                             onOpen={() => { setOpenDepartments(true); }}
@@ -132,7 +156,6 @@ export default function CreateTicket({ open, handleClose }: any) {
                             loading={loadingDepartments}
                             options={departments}
                             onChange={handleChange}
-                            name='department'
                             sx={{ width: 300, marginBottom: '.5rem' }}
                             endDecorator={
                                 loadingDepartments ? (
@@ -142,13 +165,13 @@ export default function CreateTicket({ open, handleClose }: any) {
                         />
                         <Autocomplete
                             placeholder='Qual o problema?'
-                            open={openCities}
-                            onOpen={() => { setOpenCities(true); }}
-                            onClose={() => { setOpenCities(false); }}
+                            open={openTicketType}
+                            onOpen={() => { setOpenTicketType(true); }}
+                            onClose={() => { setOpenTicketType(false); }}
                             isOptionEqualToValue={(option, value) => option.name === value.name}
                             getOptionLabel={(option) => option.name}
-                            loading={loadingCities}
-                            options={cities}
+                            loading={loadingTicketType}
+                            options={ticketType}
                             sx={{ width: 300, marginBottom: '.5rem' }}
                             endDecorator={
                                 loadingCities ? (
