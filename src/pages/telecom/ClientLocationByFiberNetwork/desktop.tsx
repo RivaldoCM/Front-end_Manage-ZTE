@@ -56,7 +56,6 @@ export default function ClientFiberNetworkData(){
             const data = await getClientUpdate();
             if(data){
                 if(data.success){
-                    console.log(data.responses.response)
                     setRows(data.responses.response);
                 } else {
                     setRows([]);
@@ -120,6 +119,7 @@ export default function ClientFiberNetworkData(){
     const handleSentUpdate = () => {
         //ASSIM QUE ATUALIZA O VALOR, AQUI VAI RETIRAR A SELEÇÃO DO USER
         setSelected([]);
+        setUpToDate(false);
     }
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
