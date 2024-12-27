@@ -56,6 +56,7 @@ export default function ClientFiberNetworkData(){
             const data = await getClientUpdate();
             if(data){
                 if(data.success){
+                    console.log(data.responses.response)
                     setRows(data.responses.response);
                 } else {
                     setRows([]);
@@ -144,6 +145,9 @@ export default function ClientFiberNetworkData(){
                     '& thead th:nth-child(1)': {
                         width: '40px',
                     },
+                    '& thead th:nth-child(2)': {
+                        width: '200px',
+                    },
                     '& tr > *:nth-child(n+3)': { textAlign: 'center' },
                 }}
             >
@@ -200,7 +204,7 @@ export default function ClientFiberNetworkData(){
                                 <td>{row.ctoId}</td>
                                 <td>{row.portId}</td>
                                 <td>{row.Client_created_by.name}</td>
-                                <td>{row.Client_updated_by.name}</td>
+                                <td>{row.Client_updated_by ? row.Client_updated_by.name : ''}</td>
                                 <td>
                                     {
                                         row.is_updated ? 
