@@ -67,7 +67,6 @@ export default function CreateTicket({ open, handleClose }: any) {
 
     useEffect(() => {
         let active = true;
-
         if(!loadingCities){ return undefined};
         (async () => {
             const res = await getCities();
@@ -124,6 +123,8 @@ export default function CreateTicket({ open, handleClose }: any) {
     const handleChangeOlt = (_e: any, value: any) => {
         value ? setForm({...form, oltId: value.id}) : setForm({...form, oltId: value});
     }
+
+    console.log(form);
 
     return (
         <React.Fragment>
