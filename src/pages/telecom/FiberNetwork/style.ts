@@ -15,9 +15,7 @@ export const AddModal = styled.div`
 
     >div:nth-child(4){
         display: flex;
-        flex-direction: column;
         margin: .5rem 0;
-
         > div {
             justify-content: flex-start;
         }

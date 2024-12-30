@@ -42,6 +42,8 @@ export default function CreateTicket({ open, handleClose }: any) {
     const [openCities, setOpenCities] = useState(false);
     const [openTicketType, setOpenTicketType] = useState(false);
     const [openDepartments, setOpenDepartments] = useState(false);
+    const [ticketTypeDisabled, setTicketTypeDisabled] = useState(true);
+    const [oltDisabled, setOltDisabled] = useState(true);
     
     const loadingOlts = openOlts && olts.length === 0;
     const loadingCities = openCities && cities.length === 0;
@@ -50,13 +52,12 @@ export default function CreateTicket({ open, handleClose }: any) {
 
     useEffect(() => {
         let active = true;
-
+        
         if(!loadingOlts){ return undefined};
         (async () => {
             const res = await getOlt({id: form.cityId, vlans: false});
             if(active){
                 if(res.success){
-                    console.log(res.responses.response);
                     setOlts(res.responses.response);
                 }
             }
@@ -112,6 +113,18 @@ export default function CreateTicket({ open, handleClose }: any) {
         return () => { active = false; }
     },[loadingTicketType]);
 
+    useEffect(() => { 
+        setOlts([]);
+        setForm({...form, oltId: null});
+        form.cityId !== null ? setOltDisabled(false) : setOltDisabled(true);
+    },[form.cityId]);
+
+    useEffect(() => { 
+        setTicketType([]);
+        setForm({...form, ticketType: null}); 
+        form.departmentId !== null ? setTicketTypeDisabled(false) : setTicketTypeDisabled(true);
+    },[form.departmentId]);
+
     const handleChangeDepartment = (_e: any, value: any) => {
         value ? setForm({...form, departmentId: value.id}) : setForm({...form, departmentId: value});
     }
@@ -124,12 +137,9 @@ export default function CreateTicket({ open, handleClose }: any) {
         value ? setForm({...form, oltId: value.id}) : setForm({...form, oltId: value});
     }
 
-    console.log(form);
-
     return (
         <React.Fragment>
             <Modal
-                aria-labelledby="close-modal-title"
                 open={open}
                 onClose={handleClose}
                 sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -138,7 +148,6 @@ export default function CreateTicket({ open, handleClose }: any) {
                     <ModalClose variant="outlined" />
                     <Typography
                         component="h2"
-                        id="close-modal-title"
                         level="h4"
                         textColor="inherit"
                         sx={{ fontWeight: 'lg' }}
@@ -166,6 +175,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                         />
                         <Autocomplete
                             placeholder='Qual o problema?'
+                            disabled={ticketTypeDisabled}
                             open={openTicketType}
                             onOpen={() => { setOpenTicketType(true); }}
                             onClose={() => { setOpenTicketType(false); }}
@@ -194,13 +204,14 @@ export default function CreateTicket({ open, handleClose }: any) {
                                 sx={{ width: 300, marginBottom: '.5rem' }}
                                 endDecorator={
                                     loadingCities ? (
-                                    <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
+                                        <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
                                     ) : null
                                 }
                             />
                             <Autocomplete
                                 placeholder='OLT'
                                 open={openOlts}
+                                disabled={oltDisabled}
                                 onOpen={() => { setOpenOlts(true); }}
                                 onClose={() => { setOpenOlts(false); }}
                                 isOptionEqualToValue={(option, value) => option.name === value.name}
@@ -223,9 +234,9 @@ export default function CreateTicket({ open, handleClose }: any) {
                                     Local
                                 </Button>
                             }
-                            sx={{ width: 300, marginBottom: '.5rem' }}
+                            sx={{ width: 300 }}
                         />
-                        <Textarea name="Soft" placeholder="Descrição" variant="outlined"  minRows={3}/>
+                        <Textarea name="Soft" placeholder="Descrição" variant="outlined" minRows={3}/>
                         <Button
                             variant='soft' 
                             startDecorator={<Add />}
