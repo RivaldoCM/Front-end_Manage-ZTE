@@ -13,8 +13,6 @@ import { getCities } from '../../../../services/apiManageONU/getCities';
 import Input from '@mui/joy/Input';
 import Button from '@mui/joy/Button';
 import LocationOn from '@mui/icons-material/LocationOn';
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
 
 import Add from '@mui/icons-material/Add';
 import { AddModal } from '../../../telecom/FiberNetwork/style';
@@ -22,9 +20,10 @@ import { getDepartments } from '../../../../services/apiManageONU/getDepartments
 import { getTicketTypes } from '../../../../services/apiManageONU/getTicketTypes';
 import { Textarea } from '@mui/joy';
 import { getNetworkTopology } from '../../../../services/apiManageONU/getNetworkTopology';
-import { set } from 'lodash';
+import { useAuth } from '../../../../hooks/useAuth';
 
 export default function CreateTicket({ open, handleClose }: any) {
+    const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
     const [olts, setOlts] = useState<IOlt[]>([]);
@@ -33,13 +32,15 @@ export default function CreateTicket({ open, handleClose }: any) {
     const [departments, setDepartments] = useState([]);
     const [fiberNetwork, setFiberNetwork] = useState([]);
     const [form, setForm] = useState({
-        departmentId: null,
+        userId: user?.uid,
+        originDepartmentId: user?.rule,
+        destinationDepartmentId: null,
         cityId: null,
-        ticketType: null,
+        ticketTypeId: null,
         oltId: null,
         ctoId: null,
         location: '',
-        status: '',
+        description: '',
     });
     
     const [openOlts, setOpenOlts] = useState(false);
@@ -109,7 +110,7 @@ export default function CreateTicket({ open, handleClose }: any) {
 
         if(!loadingTicketType){ return undefined};
         (async () => {
-            const res = await getTicketTypes(form.departmentId);
+            const res = await getTicketTypes(form.destinationDepartmentId);
             if(active){
                 if(res.success){
                     setTicketType(res.responses.response);
@@ -144,7 +145,7 @@ export default function CreateTicket({ open, handleClose }: any) {
 
     useEffect(() => { 
         setTicketType([]);
-        setForm({...form, ticketType: null}); 
+        setForm({...form, ticketTypeId: null}); 
         form.departmentId !== null ? setTicketTypeDisabled(false) : setTicketTypeDisabled(true);
     },[form.departmentId]);
 
@@ -155,7 +156,7 @@ export default function CreateTicket({ open, handleClose }: any) {
     },[form.oltId]);
 
     const handleChangeDepartment = (_e: any, value: any) => {
-        value ? setForm({...form, departmentId: value.id}) : setForm({...form, departmentId: value});
+        value ? setForm({...form, destinationDepartmentId: value.id}) : setForm({...form, destinationDepartmentId: value});
     }
 
     const handleChangeCity = (_e: any, value: any) => {
@@ -168,6 +169,19 @@ export default function CreateTicket({ open, handleClose }: any) {
 
     const handleChangeFiberNetwork = (_e: any, value: any) => {
         value ? setForm({...form, ctoId: value.id}) : setForm({...form, ctoId: value});
+    }
+
+    const handleChangeTicketType = (_e: any, value: any) => {
+        value ? setForm({...form, ticketTypeId: value.id}) : setForm({...form, ticketTypeId: value});
+    }
+
+    const handleChange = (e: any) => {
+        setForm({...form, [e.target.name]: e.target.value});
+    }
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+        console.log(form);
     }
 
     return (
@@ -187,9 +201,8 @@ export default function CreateTicket({ open, handleClose }: any) {
                     >
                         Novo Ticket
                     </Typography>
-                    <AddModal>
+                    <AddModal onSubmit={handleSubmit}>
                         <Autocomplete
-                            name='departmentId'
                             placeholder='Para quem?'
                             open={openDepartments}
                             onOpen={() => { setOpenDepartments(true); }}
@@ -212,13 +225,14 @@ export default function CreateTicket({ open, handleClose }: any) {
                             open={openTicketType}
                             onOpen={() => { setOpenTicketType(true); }}
                             onClose={() => { setOpenTicketType(false); }}
+                            onChange={handleChangeTicketType}
                             isOptionEqualToValue={(option, value) => option.name === value.name}
                             getOptionLabel={(option) => option.name}
                             loading={loadingTicketType}
                             options={ticketType}
                             sx={{ width: 300, marginBottom: '.5rem' }}
                             endDecorator={
-                                loadingCities ? (
+                                loadingTicketType ? (
                                     <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
                                 ) : null
                             }
@@ -229,11 +243,11 @@ export default function CreateTicket({ open, handleClose }: any) {
                                 open={openCities}
                                 onOpen={() => { setOpenCities(true); }}
                                 onClose={() => { setOpenCities(false); }}
+                                onChange={handleChangeCity}
                                 isOptionEqualToValue={(option, value) => option.name === value.name}
                                 getOptionLabel={(option) => option.name}
                                 loading={loadingCities}
                                 options={cities}
-                                onChange={handleChangeCity}
                                 sx={{ width: 300, marginBottom: '.5rem' }}
                                 endDecorator={
                                     loadingCities ? (
@@ -247,11 +261,11 @@ export default function CreateTicket({ open, handleClose }: any) {
                                 disabled={oltDisabled}
                                 onOpen={() => { setOpenOlts(true); }}
                                 onClose={() => { setOpenOlts(false); }}
+                                onChange={handleChangeOlt}
                                 isOptionEqualToValue={(option, value) => option.name === value.name}
                                 getOptionLabel={(option) => option.name}
                                 loading={loadingOlts}
                                 options={olts}
-                                onChange={handleChangeOlt}
                                 sx={{ width: 300, marginBottom: '.2rem' }}
                                 endDecorator={
                                     loadingOlts ? (
@@ -266,11 +280,11 @@ export default function CreateTicket({ open, handleClose }: any) {
                             disabled={fiberNetworkDisabled}
                             onOpen={() => { setOpenFiberNetwork(true); }}
                             onClose={() => { setOpenFiberNetwork(false); }}
+                            onChange={handleChangeFiberNetwork}
                             isOptionEqualToValue={(option, value) => option.name === value.name}
                             getOptionLabel={(option) => option.name}
                             loading={loadingFiberNetwork}
                             options={fiberNetwork}
-                            onChange={handleChangeFiberNetwork}
                             sx={{ width: 300, marginBottom: '.2rem' }}
                             endDecorator={
                                 loadingOlts ? (
@@ -279,18 +293,25 @@ export default function CreateTicket({ open, handleClose }: any) {
                             }
                         />
                         <Input
-                            placeholder="Latitude, Longitude"
+                            name='location'
+                            placeholder="Localização"
+                            onChange={handleChange}
                             startDecorator={
-                                <Button variant="soft" color="neutral" startDecorator={<LocationOn />}>
-                                    Local
-                                </Button>
+                                <Button variant="soft" color="neutral" startDecorator={<LocationOn />}></Button>
                             }
                             sx={{ width: 300, marginBottom: '.5rem' }}
                         />
-                        <Textarea name="Soft" placeholder="Descrição" variant="outlined" minRows={3}/>
+                        <Textarea 
+                            name="description"
+                            onChange={handleChange} 
+                            placeholder="Descrição"
+                            variant="outlined" 
+                            minRows={3}    
+                        />
                         <Button
-                            variant='soft' 
                             startDecorator={<Add />}
+                            variant='soft'
+                            type='submit'
                         >
                             Gerar Ticket
                         </Button>

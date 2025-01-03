@@ -4,7 +4,7 @@ export const TableController = styled.div`
 
 `;
 
-export const AddModal = styled.div`
+export const AddModal = styled.form`
     padding: .5rem;
 
     > div:nth-child(1){
