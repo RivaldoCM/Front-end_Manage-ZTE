@@ -11,7 +11,8 @@ export const Controller = styled.div`
         display: flex;
         justify-content: flex-end;
         width: inherit;
-        height: 9%;
+        height: 10%;
+        max-height: 56px;
         padding: .5rem 0;
     }
     section:first-of-type{
@@ -40,8 +41,52 @@ export const InfoCard = styled.div`
     }
 `;
 
+export const AddTicketStyle = styled.form`
+    padding: .5rem;
+    max-width: 368px;
+
+    > div:nth-child(1){
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: .5rem;
+    }
+
+    >div:nth-child(4){
+        display: flex;
+        margin: .5rem 0;
+        > div {
+            justify-content: flex-start;
+        }
+    }
+
+    > button:last-child {
+        margin-top: .5rem;
+        width: 100%;
+    }
+`
+
+
 export const ViewTicketStyle = styled.div`
-    width: 300px;
-    height: 100%;
-    background-color: black;
+    width: 90%;
+    max-width: 768px;
+    height: 500px;
+    background-color: aliceblue;
+    padding: 1rem;
+    border-radius: 10px;
+
+    header{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        height: 10%;
+
+        button {
+            //BOTÃO DO JOY UI
+            position: relative !important;
+            top: 0;
+            left: 0;
+        }
+    }
+
 `;

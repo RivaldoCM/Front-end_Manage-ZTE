@@ -1,6 +1,7 @@
 import axios from "axios"
+import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export const addTickets = async (props: any) => {
+export async function addTicket(props: any): Promise<IResponseData | IResponseError | null>{
     const response = await axios({
         method: 'post',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/tickets`,
@@ -14,13 +15,13 @@ export const addTickets = async (props: any) => {
             destinationDepartmentId: props.destinationDepartmentId,
             ticketTypeId: props.ticketTypeId,
             ctoId: props.ctoId,
-            localization: props.localization,
+            location: props.location,
             description: props.description,
         }
-    }).then((response) => {
-
-    }).catch((err) => {
-
+    }).then(response => {
+        return response.data;
+    }).catch(() => {
+        return null;
     });
 
     return response;

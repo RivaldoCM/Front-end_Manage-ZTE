@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Controller, InfoCard } from "./style";
 import Button from '@mui/joy/Button';
@@ -16,61 +16,61 @@ import Option from '@mui/joy/Option';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
-import CreateTicket from "./modals/createTicket";
+import CreateTicket from "./modals/AddTicket";
 import { ViewTicketModal } from "./modals/viewTicket";
-
+import { useAuth } from "../../../hooks/useAuth";
+import { getTickets } from "../../../services/apiManageONU/getTickets";
+import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
+import { useResponse } from "../../../hooks/useResponse";
+import AddTicket from "./modals/AddTicket";
 
 type Order = 'asc' | 'desc';
 
 interface Data {
-    calories: number;
-    carbs: number;
-    fat: number;
-    name: string;
-    protein: number;
+    ticketId: number;
+    createdBy: string;
+    appropriatedBy: string;
+    status: string;
+    problemType: number;
 }
-  
-function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-  ): Data {
-    return {
-      name,
-      calories,
-      fat,
-      carbs,
-      protein,
-    };
-  }
-
-const rows = [
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Donut', 452, 25.0, 51, 4.9),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-    createData('Honeycomb', 408, 3.2, 87, 6.5),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Jelly Bean', 375, 0.0, 94, 0.0),
-    createData('KitKat', 518, 26.0, 65, 7.0),
-    createData('Lollipop', 392, 0.2, 98, 0.0),
-    createData('Marshmallow', 318, 0, 81, 2.0),
-    createData('Nougat', 360, 19.0, 9, 37.0),
-    createData('Oreo', 437, 18.0, 63, 4.0),
-];
 
 export function Tickets(){
+    const { user } = useAuth();
+    const { setFetchResponseMessage } = useResponse();
+
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof Data>('calories');
     const [selected, setSelected] = useState<readonly string[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    const [rows, setRows] = useState([]);
+
     const [openNewTicket, setOpenNewTicket] = useState(false);
     const [openViewTicket, setOpenViewTicket] = useState(false);
+
+    useEffect(() => {
+        async function getData(){
+            let data: IResponseData | IResponseError;
+            if(user?.rule !== 19){
+                data = await getTickets({userId: user?.uid});
+            } else {
+                data = await getTickets({departmentId: user?.rule});
+            }
+
+            if(data){
+                if(data.success){
+                    setRows(data.responses.response);
+                }else{
+                    setRows([]);
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+            } else {
+                setFetchResponseMessage('error/no-connection-with-API');
+            }
+        }
+        getData();
+    }, []);
 
     const handleOpenNewTicket = () => { setOpenNewTicket(true); }
     const handleCloseNewTicket = () => { setOpenNewTicket(false) }
@@ -94,27 +94,19 @@ export function Tickets(){
         setSelected([]);
     };
 
-    const handleClick = (_event: React.MouseEvent<unknown>, name: string) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected: readonly string[] = [];
-        if (selectedIndex === -1) {
-          newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-          newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-          newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-          newSelected = newSelected.concat(
-            selected.slice(0, selectedIndex),
-            selected.slice(selectedIndex + 1),
-          );
+    const handleClick = (_event: React.MouseEvent<unknown>, id: string) => {
+        if(selected[0] === id){
+            setSelected([]);
+            return;
         }
-        setSelected(newSelected);
-      };
-      const handleChangePage = (newPage: number) => {
+        setSelected([id]);
+    };
+      
+    const handleChangePage = (newPage: number) => {
         setPage(newPage);
-      };
-      const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
+    };
+      
+    const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
         setRowsPerPage(parseInt(newValue!.toString(), 10));
         setPage(0);
     };
@@ -173,13 +165,16 @@ export function Tickets(){
                         stickyFooter
                         hoverRow
                         sx={{
-                        '--TableCell-headBackground': 'transparent',
-                        '--TableCell-selectedBackground': (theme) =>
-                            theme.vars.palette.success.softBg,
-                        '& thead th:nth-child(1)': {
-                            width: '40px',
-                        },
-                        '& tr > *:nth-child(n+3)': { textAlign: 'right' },
+                            '--TableCell-headBackground': 'transparent',
+                            '--TableCell-selectedBackground': (theme) =>
+                                theme.vars.palette.success.softBg,
+                            '& thead th:nth-child(1)': {
+                                width: '40px',
+                            },
+                            '& thead th:nth-child(2)': {
+                                width: '120px',
+                            },
+                            '& tr > *:nth-child(n+3)': { textAlign: 'center' },
                         }}
                     >
                         <EnhancedTableHead
@@ -228,9 +223,9 @@ export function Tickets(){
                                         />
                                     </th>
                                     <th id={labelId} scope="row">
-                                        {row.name}
+                                        {row.id}
                                     </th>
-                                    <td>{row.calories}</td>
+                                    <td>{row.created_by.name}</td>
                                     <td>{row.fat}</td>
                                     <td>{row.carbs}</td>
                                     <td>{row.protein}</td>
@@ -261,7 +256,6 @@ export function Tickets(){
                                         }}
                                     >
                                         <FormControl orientation="horizontal" size="sm">
-                                            <FormLabel>Rows per page:</FormLabel>
                                             <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
                                                 <Option value={5}>5</Option>
                                                 <Option value={10}>10</Option>
@@ -310,7 +304,7 @@ export function Tickets(){
             </section>
             {
                 openNewTicket && ( 
-                    <CreateTicket 
+                    <AddTicket 
                         open={openNewTicket} 
                         handleClose={handleCloseNewTicket}
                     /> 
@@ -320,7 +314,7 @@ export function Tickets(){
                 openViewTicket && ( 
                     <ViewTicketModal 
                         open={openViewTicket} 
-                        handleClose={handleCloseNewTicket}
+                        handleClose={handleCloseViewTicket}
                     /> 
                 )
             }

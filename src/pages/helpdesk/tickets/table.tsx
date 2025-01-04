@@ -6,16 +6,17 @@ import IconButton from '@mui/joy/IconButton';
 import Link from '@mui/joy/Link';
 import Tooltip from '@mui/joy/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { visuallyHidden } from '@mui/utils';
+import { SearchInput } from '../../../components/SeachInput';
 
+type Order = 'asc' | 'desc';
 interface Data {
-  calories: number;
-  carbs: number;
-  fat: number;
-  name: string;
-  protein: number;
+  ticketId: number;
+  createdBy: string;
+  appropriatedBy: string;
+  status: string;
+  problemType: number;
 }
 
 interface EnhancedTableToolbarProps {
@@ -45,8 +46,6 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     return 0;
 }
 
-type Order = 'asc' | 'desc';
-
 export function getComparator<Key extends keyof any>(
     order: Order,
     orderBy: Key,
@@ -64,39 +63,45 @@ interface HeadCell {
     id: keyof Data;
     label: string;
     numeric: boolean;
+    sort: Boolean;
 }
 
 const headCells: readonly HeadCell[] = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Dessert (100g serving)',
-  },
-  {
-    id: 'calories',
-    numeric: true,
-    disablePadding: false,
-    label: 'Calories',
-  },
-  {
-    id: 'fat',
-    numeric: true,
-    disablePadding: false,
-    label: 'Fat (g)',
-  },
-  {
-    id: 'carbs',
-    numeric: true,
-    disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
-  },
+    {
+        id: 'ticketId',
+        sort: false,
+        numeric: false,
+        disablePadding: true,
+        label: 'Identificador',
+    },
+    {
+        id: 'createdBy',
+        sort: false,
+        numeric: false,
+        disablePadding: false,
+        label: 'Aberto por',
+    },
+    {
+        id: 'problemType',
+        sort: false,
+        numeric: false,
+        disablePadding: false,
+        label: 'Tipo de problema',
+    },
+    {
+        id: 'appropriatedBy',
+        sort: false,
+        numeric: false,
+        disablePadding: false,
+        label: 'Apropriado por',
+    },
+    {
+        id: 'status',
+        sort: true,
+        numeric: true,
+        disablePadding: false,
+        label: 'Status',
+    },
 ];
 
 interface EnhancedTableProps {
@@ -110,8 +115,8 @@ interface EnhancedTableProps {
 
 export function EnhancedTableHead(props: EnhancedTableProps) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-        onRequestSort(event, property);
+    const createSortHandler = (property: keyof Data, isSortable: Boolean) => (event: React.MouseEvent<unknown>) => {
+        isSortable ? onRequestSort(event, property): null;
     };
 
     return (
@@ -124,8 +129,8 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
                         onChange={onSelectAllClick}
                         slotProps={{
                         input: {
-                            'aria-label': 'select all desserts',
-                        },
+                                'aria-label': 'select all desserts',
+                            },
                         }}
                         sx={{ verticalAlign: 'sub' }}
                     />
@@ -141,35 +146,34 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
                                 : undefined
                             }
                         >
-                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                             <Link
                                 underline="none"
                                 color="neutral"
                                 textColor={active ? 'primary.plainColor' : undefined}
                                 component="button"
-                                onClick={createSortHandler(headCell.id)}
+                                onClick={createSortHandler(headCell.id, headCell.sort)}
                                 startDecorator={
-                                    headCell.numeric ? (
+                                    headCell.numeric && headCell.sort ? (
                                         <ArrowDownwardIcon
                                             sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                                         />
                                     ) : null
                                 }
                                 endDecorator={
-                                    !headCell.numeric ? (
+                                    !headCell.numeric && headCell.sort ? (
                                         <ArrowDownwardIcon
                                             sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                                         />
                                     ) : null
                                 }
                                 sx={{
-                                fontWeight: 'lg',
-                                '& svg': {
-                                    transition: '0.2s',
-                                    transform:
-                                    active && order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
-                                },
-                                '&:hover': { '& svg': { opacity: 1 } },
+                                    fontWeight: 'lg',
+                                    '& svg': {
+                                        transition: '0.2s',
+                                        transform:
+                                        active && order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                                    },
+                                    '&:hover': { '& svg': { opacity: 1 } },
                                 }}
                             >
                                 {headCell.label}
@@ -228,9 +232,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 </Tooltip>
             ) : (
                 <Tooltip title="Filter list">
-                    <IconButton size="sm" variant="outlined" color="neutral">
-                        <FilterListIcon />
-                    </IconButton>
+                    <SearchInput placeholder='Busque aqui'/>
                 </Tooltip>
             )}
         </Box>

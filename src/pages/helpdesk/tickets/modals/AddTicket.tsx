@@ -15,14 +15,16 @@ import Button from '@mui/joy/Button';
 import LocationOn from '@mui/icons-material/LocationOn';
 
 import Add from '@mui/icons-material/Add';
-import { AddModal } from '../../../telecom/FiberNetwork/style';
+
 import { getDepartments } from '../../../../services/apiManageONU/getDepartments';
 import { getTicketTypes } from '../../../../services/apiManageONU/getTicketTypes';
 import { Textarea } from '@mui/joy';
 import { getNetworkTopology } from '../../../../services/apiManageONU/getNetworkTopology';
 import { useAuth } from '../../../../hooks/useAuth';
+import { AddTicketStyle } from '../style';
+import { addTicket } from '../../../../services/apiManageONU/addTicket';
 
-export default function CreateTicket({ open, handleClose }: any) {
+export default function AddTicket({ open, handleClose }: any) {
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
@@ -42,7 +44,7 @@ export default function CreateTicket({ open, handleClose }: any) {
         location: '',
         description: '',
     });
-    
+
     const [openOlts, setOpenOlts] = useState(false);
     const [openCities, setOpenCities] = useState(false);
     const [openTicketType, setOpenTicketType] = useState(false);
@@ -182,14 +184,25 @@ export default function CreateTicket({ open, handleClose }: any) {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         console.log(form);
+
+        const response = await addTicket(form);
+        if(response){
+            if(response.success){
+                setFetchResponseMessage(response.responses.status);
+            } else {
+                setFetchResponseMessage(response.messages.message);
+            }
+        } else {
+            setFetchResponseMessage('error/no-connection-with-API');
+        }
     }
 
     return (
         <React.Fragment>
             <Modal
+                className="flex"
                 open={open}
                 onClose={handleClose}
-                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
                 <Sheet variant="outlined" sx={{ minWidth: 300, borderRadius: 'md', p: 3 }}>
                     <ModalClose variant="outlined" />
@@ -201,7 +214,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                     >
                         Novo Ticket
                     </Typography>
-                    <AddModal onSubmit={handleSubmit}>
+                    <AddTicketStyle onSubmit={handleSubmit}>
                         <Autocomplete
                             placeholder='Para quem?'
                             open={openDepartments}
@@ -212,7 +225,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                             loading={loadingDepartments}
                             options={departments}
                             onChange={handleChangeDepartment}
-                            sx={{ width: 300, marginBottom: '.5rem' }}
+                            sx={{ marginBottom: '.5rem' }}
                             endDecorator={
                                 loadingDepartments ? (
                                     <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
@@ -230,7 +243,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                             getOptionLabel={(option) => option.name}
                             loading={loadingTicketType}
                             options={ticketType}
-                            sx={{ width: 300, marginBottom: '.5rem' }}
+                            sx={{ marginBottom: '.5rem' }}
                             endDecorator={
                                 loadingTicketType ? (
                                     <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
@@ -248,7 +261,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                                 getOptionLabel={(option) => option.name}
                                 loading={loadingCities}
                                 options={cities}
-                                sx={{ width: 300, marginBottom: '.5rem' }}
+                                sx={{ marginBottom: '.5rem' }}
                                 endDecorator={
                                     loadingCities ? (
                                         <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
@@ -266,7 +279,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                                 getOptionLabel={(option) => option.name}
                                 loading={loadingOlts}
                                 options={olts}
-                                sx={{ width: 300, marginBottom: '.2rem' }}
+                                sx={{ marginBottom: '.2rem' }}
                                 endDecorator={
                                     loadingOlts ? (
                                         <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
@@ -285,7 +298,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                             getOptionLabel={(option) => option.name}
                             loading={loadingFiberNetwork}
                             options={fiberNetwork}
-                            sx={{ width: 300, marginBottom: '.2rem' }}
+                            sx={{ marginBottom: '.2rem' }}
                             endDecorator={
                                 loadingOlts ? (
                                     <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
@@ -299,7 +312,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                             startDecorator={
                                 <Button variant="soft" color="neutral" startDecorator={<LocationOn />}></Button>
                             }
-                            sx={{ width: 300, marginBottom: '.5rem' }}
+                            sx={{ marginBottom: '.5rem' }}
                         />
                         <Textarea 
                             name="description"
@@ -315,7 +328,7 @@ export default function CreateTicket({ open, handleClose }: any) {
                         >
                             Gerar Ticket
                         </Button>
-                    </AddModal>
+                    </AddTicketStyle>
                 </Sheet>
             </Modal>
         </React.Fragment>
