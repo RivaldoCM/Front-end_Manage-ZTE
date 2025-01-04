@@ -39,3 +39,9 @@ export const InfoCard = styled.div`
         color: grey;
     }
 `;
+
+export const ViewTicketStyle = styled.div`
+    width: 300px;
+    height: 100%;
+    background-color: black;
+`;

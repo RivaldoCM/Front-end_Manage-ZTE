@@ -20,6 +20,7 @@ interface Data {
 
 interface EnhancedTableToolbarProps {
     numSelected: number;
+    onOpenViewTicket: () => void;
 }
 
 export function labelDisplayedRows({
@@ -216,12 +217,12 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     id="tableTitle"
                     component="div"
                 >
-                    Nutrition
+                    Tickets
                 </Typography>
             )}
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
-                    <IconButton size="sm" color="danger" variant="solid">
+                    <IconButton size="sm" color="danger" variant="solid" onClick={props.onOpenViewTicket}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>

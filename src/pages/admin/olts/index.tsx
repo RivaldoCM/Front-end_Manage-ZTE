@@ -45,7 +45,7 @@ export function Olts(){
 
     useEffect(() => {
         async function olts(){
-            const oltData = await getOlt({});
+            const oltData = await getOlt({vlans: true});
 
             if(oltData){
                 if(oltData.success){

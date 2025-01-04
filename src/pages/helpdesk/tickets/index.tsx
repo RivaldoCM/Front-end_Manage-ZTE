@@ -17,6 +17,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
 import CreateTicket from "./modals/createTicket";
+import { ViewTicketModal } from "./modals/viewTicket";
 
 
 type Order = 'asc' | 'desc';
@@ -69,9 +70,12 @@ export function Tickets(){
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     const [openNewTicket, setOpenNewTicket] = useState(false);
+    const [openViewTicket, setOpenViewTicket] = useState(false);
 
     const handleOpenNewTicket = () => { setOpenNewTicket(true); }
     const handleCloseNewTicket = () => { setOpenNewTicket(false) }
+    const handleOpenViewTicket = () => { setOpenViewTicket(true); }
+    const handleCloseViewTicket = () => { setOpenViewTicket(false) }
 
     const handleRequestSort = (
         _event: React.MouseEvent<unknown>,
@@ -161,7 +165,10 @@ export function Tickets(){
                     variant="outlined"
                     sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
                 >
-                    <EnhancedTableToolbar numSelected={selected.length} />
+                    <EnhancedTableToolbar 
+                        numSelected={selected.length} 
+                        onOpenViewTicket={handleOpenViewTicket}
+                    />
                     <Table
                         stickyFooter
                         hoverRow
@@ -303,11 +310,19 @@ export function Tickets(){
             </section>
             {
                 openNewTicket && ( 
-                <CreateTicket 
-                    open={openNewTicket} 
-                    handleClose={handleCloseNewTicket}
-                /> 
-            )
+                    <CreateTicket 
+                        open={openNewTicket} 
+                        handleClose={handleCloseNewTicket}
+                    /> 
+                )
+            }
+            {
+                openViewTicket && ( 
+                    <ViewTicketModal 
+                        open={openViewTicket} 
+                        handleClose={handleCloseNewTicket}
+                    /> 
+                )
             }
         </Controller>
     )
