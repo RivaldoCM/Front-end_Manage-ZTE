@@ -24,6 +24,7 @@ import { IResponseData, IResponseError } from "../../../interfaces/IDefaultRespo
 import { useResponse } from "../../../hooks/useResponse";
 import AddTicket from "./modals/AddTicket";
 import { ITickets } from "../../../interfaces/ITickets";
+import { useTickets } from "../../../hooks/useTickets";
 
 type Order = 'asc' | 'desc';
 
@@ -37,6 +38,7 @@ interface Data {
 
 export function Tickets(){
     const { user } = useAuth();
+    const { tickets } = useTickets();
     const { setFetchResponseMessage } = useResponse();
 
     const [order, setOrder] = useState<Order>('asc');
@@ -45,33 +47,8 @@ export function Tickets(){
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const [rows, setRows] = useState<ITickets[]>([]);
-
     const [openNewTicket, setOpenNewTicket] = useState(false);
     const [openViewTicket, setOpenViewTicket] = useState(false);
-
-    useEffect(() => {
-        async function getData(){
-            let data: IResponseData | IResponseError;
-            if(user?.rule !== 19){
-                data = await getTickets({userId: user?.uid});
-            } else {
-                data = await getTickets({departmentId: user?.rule});
-            }
-
-            if(data){
-                if(data.success){
-                    setRows(data.responses.response);
-                } else {
-                    setRows([]);
-                    setFetchResponseMessage('error/no-connection-with-API');
-                }
-            } else {
-                setFetchResponseMessage('error/no-connection-with-API');
-            }
-        }
-        getData();
-    }, []);
 
     const handleOpenNewTicket = () => { setOpenNewTicket(true); }
     const handleCloseNewTicket = () => { setOpenNewTicket(false) }
@@ -88,7 +65,7 @@ export function Tickets(){
     };
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-          const newSelected = rows.map((n) => n.id);
+          const newSelected = tickets.map((n) => n.id);
           setSelected(newSelected);
           return;
         }
@@ -110,14 +87,14 @@ export function Tickets(){
     };
 
     const getLabelDisplayedRowsTo = () => {
-        if (rows.length === -1) {
+        if (tickets.length === -1) {
             return (page + 1) * rowsPerPage;
         }
         return rowsPerPage === -1
-        ? rows.length
-        : Math.min(rows.length, (page + 1) * rowsPerPage);
+        ? tickets.length
+        : Math.min(tickets.length, (page + 1) * rowsPerPage);
     };
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tickets.length) : 0;
 
     return(
         <Controller className="flex">
@@ -134,7 +111,7 @@ export function Tickets(){
             <section className="flex">
                 <InfoCard>
                     <p>Abertos por mim</p>
-                    <p>{rows.length}</p>
+                    <p>{tickets.length}</p>
                 </InfoCard>
                 <InfoCard>
                     <p>Abertos para mim</p>
@@ -152,8 +129,8 @@ export function Tickets(){
                 >
                     <EnhancedTableToolbar
                         user={user}
-                        ticketId={rows.find((row) => row.id === selected[0])?.id}
-                        destinationDepartmentId={rows.find((row) => row.id === selected[0])?.Destination_department.id}
+                        ticketId={tickets.find((row) => row.id === selected[0])?.id}
+                        destinationDepartmentId={tickets.find((row) => row.id === selected[0])?.Destination_department.id}
                         numSelected={selected.length}
                         onOpenViewTicket={handleOpenViewTicket}
                     />
@@ -179,10 +156,10 @@ export function Tickets(){
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
+                            rowCount={tickets.length}
                         />
                         <tbody>
-                        {[...rows]
+                        {[...tickets]
                             .sort(getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
@@ -224,7 +201,7 @@ export function Tickets(){
                                     <td>{row.User_created_by.name}</td>
                                     <td>{row.Ticket_Types.name}</td>
                                     <td>{row.User_appropriated_by ? row.User_appropriated_by.name : ''}</td>
-
+                                    <td>{row.Ticket_status.name}</td>
                                 </tr>
                             );
                         })}
@@ -260,9 +237,9 @@ export function Tickets(){
                                         </FormControl>
                                         <Typography sx={{ textAlign: 'center', minWidth: 80 }}>
                                             {labelDisplayedRows({
-                                                from: rows.length === 0 ? 0 : page * rowsPerPage + 1,
+                                                from: tickets.length === 0 ? 0 : page * rowsPerPage + 1,
                                                 to: getLabelDisplayedRowsTo(),
-                                                count: rows.length === -1 ? -1 : rows.length,
+                                                count: tickets.length === -1 ? -1 : tickets.length,
                                             })}
                                         </Typography>
                                         <Box sx={{ display: 'flex', gap: 1 }}>
@@ -281,8 +258,8 @@ export function Tickets(){
                                                 color="neutral"
                                                 variant="outlined"
                                                 disabled={
-                                                    rows.length !== -1
-                                                        ? page >= Math.ceil(rows.length / rowsPerPage) - 1
+                                                    tickets.length !== -1
+                                                        ? page >= Math.ceil(tickets.length / rowsPerPage) - 1
                                                         : false
                                                     }
                                                 onClick={() => handleChangePage(page + 1)}
@@ -310,7 +287,7 @@ export function Tickets(){
                 openViewTicket && ( 
                     <ViewTicketModal 
                         open={openViewTicket}
-                        ticket={rows.find((row) => row.id === selected[0])}
+                        ticket={tickets.find((row) => row.id === selected[0])}
                         handleClose={handleCloseViewTicket}
                     /> 
                 )
