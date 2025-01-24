@@ -1,14 +1,17 @@
-import * as React from 'react';
 import Box from '@mui/joy/Box';
 import Typography from '@mui/joy/Typography';
 import Checkbox from '@mui/joy/Checkbox';
 import IconButton from '@mui/joy/IconButton';
 import Link from '@mui/joy/Link';
 import Tooltip from '@mui/joy/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { visuallyHidden } from '@mui/utils';
 import { SearchInput } from '../../../components/SeachInput';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
+import { IAuthedUser } from '../../../interfaces/IUsers';
+import React from 'react';
+import { updateTicket } from '../../../services/apiManageONU/updateTicket';
 
 type Order = 'asc' | 'desc';
 interface Data {
@@ -20,7 +23,10 @@ interface Data {
 }
 
 interface EnhancedTableToolbarProps {
+    user: IAuthedUser;
     numSelected: number;
+    ticketId: number;
+    destinationDepartmentId?: number;
     onOpenViewTicket: () => void;
 }
 
@@ -192,7 +198,13 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected } = props;
+    const { numSelected, user, ticketId, destinationDepartmentId } = props;
+    const handleAppropriate = async () => {
+        if(user.rule === destinationDepartmentId){
+            await updateTicket({ ticketId: ticketId, appropriatedBy: user.uid});
+        }
+    };
+
     return (
         <Box
             sx={[
@@ -225,11 +237,22 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 </Typography>
             )}
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton size="sm" color="danger" variant="solid" onClick={props.onOpenViewTicket}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <React.Fragment>
+                    {
+                        user.rule === destinationDepartmentId && (
+                            <Tooltip title="Apropriar-se" sx={{m: 1}}>
+                                <IconButton size="sm" color="neutral" variant="outlined" onClick={handleAppropriate}>
+                                    <PushPinOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )
+                    }
+                    <Tooltip title="Vizualizar ticket">
+                        <IconButton size="sm" color="primary" variant="soft" onClick={props.onOpenViewTicket}>
+                            <VisibilityOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
+                </React.Fragment>
             ) : (
                 <Tooltip title="Filter list">
                     <SearchInput placeholder='Busque aqui'/>

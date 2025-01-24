@@ -23,6 +23,7 @@ import { getTickets } from "../../../services/apiManageONU/getTickets";
 import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
 import { useResponse } from "../../../hooks/useResponse";
 import AddTicket from "./modals/AddTicket";
+import { ITickets } from "../../../interfaces/ITickets";
 
 type Order = 'asc' | 'desc';
 
@@ -39,12 +40,12 @@ export function Tickets(){
     const { setFetchResponseMessage } = useResponse();
 
     const [order, setOrder] = useState<Order>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Data>('calories');
-    const [selected, setSelected] = useState<readonly string[]>([]);
+    const [orderBy, setOrderBy] = useState<keyof Data>('id');
+    const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState<ITickets[]>([]);
 
     const [openNewTicket, setOpenNewTicket] = useState(false);
     const [openViewTicket, setOpenViewTicket] = useState(false);
@@ -61,7 +62,7 @@ export function Tickets(){
             if(data){
                 if(data.success){
                     setRows(data.responses.response);
-                }else{
+                } else {
                     setRows([]);
                     setFetchResponseMessage('error/no-connection-with-API');
                 }
@@ -87,25 +88,22 @@ export function Tickets(){
     };
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-          const newSelected = rows.map((n) => n.name);
+          const newSelected = rows.map((n) => n.id);
           setSelected(newSelected);
           return;
         }
         setSelected([]);
     };
 
-    const handleClick = (_event: React.MouseEvent<unknown>, id: string) => {
-        if(selected[0] === id){
+    const handleClick = (_event: React.MouseEvent<unknown>, ticket: ITickets) => {
+        if(selected[0] === ticket.id){
             setSelected([]);
             return;
         }
-        setSelected([id]);
+        setSelected([ticket.id]);
     };
       
-    const handleChangePage = (newPage: number) => {
-        setPage(newPage);
-    };
-      
+    const handleChangePage = (newPage: number) => { setPage(newPage); };
     const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
         setRowsPerPage(parseInt(newValue!.toString(), 10));
         setPage(0);
@@ -119,7 +117,6 @@ export function Tickets(){
         ? rows.length
         : Math.min(rows.length, (page + 1) * rowsPerPage);
     };
-    
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     return(
@@ -136,19 +133,15 @@ export function Tickets(){
             </header>
             <section className="flex">
                 <InfoCard>
-                    <p>Abertos</p>
-                    <p>0</p>
+                    <p>Abertos por mim</p>
+                    <p>{rows.length}</p>
                 </InfoCard>
                 <InfoCard>
-                    <p>Encerram hoje</p>
+                    <p>Abertos para mim</p>
                     <p>2</p>
                 </InfoCard>
                 <InfoCard>
-                    <p>Em atraso</p>
-                    <p>5</p>
-                </InfoCard>
-                <InfoCard>
-                    <p>Em atraso</p>
+                    <p>Encerram hoje</p>
                     <p>5</p>
                 </InfoCard>
             </section>
@@ -157,8 +150,11 @@ export function Tickets(){
                     variant="outlined"
                     sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
                 >
-                    <EnhancedTableToolbar 
-                        numSelected={selected.length} 
+                    <EnhancedTableToolbar
+                        user={user}
+                        ticketId={rows.find((row) => row.id === selected[0])?.id}
+                        destinationDepartmentId={rows.find((row) => row.id === selected[0])?.Destination_department.id}
+                        numSelected={selected.length}
                         onOpenViewTicket={handleOpenViewTicket}
                     />
                     <Table
@@ -190,16 +186,16 @@ export function Tickets(){
                             .sort(getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                            const isItemSelected = selected.includes(row.name);
+                            const isItemSelected = selected.includes(row.id);
                             const labelId = `enhanced-table-checkbox-${index}`;
 
                             return (
                                 <tr
-                                    onClick={(event) => handleClick(event, row.name)}
+                                    onClick={(event) => handleClick(event, row)}
                                     role="checkbox"
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}
-                                    key={row.name}
+                                    key={row.id}
                                     style={
                                         isItemSelected
                                         ? ({
@@ -225,10 +221,10 @@ export function Tickets(){
                                     <th id={labelId} scope="row">
                                         {row.id}
                                     </th>
-                                    <td>{row.created_by.name}</td>
-                                    <td>{row.fat}</td>
-                                    <td>{row.carbs}</td>
-                                    <td>{row.protein}</td>
+                                    <td>{row.User_created_by.name}</td>
+                                    <td>{row.Ticket_Types.name}</td>
+                                    <td>{row.User_appropriated_by ? row.User_appropriated_by.name : ''}</td>
+
                                 </tr>
                             );
                         })}
@@ -313,7 +309,8 @@ export function Tickets(){
             {
                 openViewTicket && ( 
                     <ViewTicketModal 
-                        open={openViewTicket} 
+                        open={openViewTicket}
+                        ticket={rows.find((row) => row.id === selected[0])}
                         handleClose={handleCloseViewTicket}
                     /> 
                 )

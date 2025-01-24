@@ -6,3 +6,8 @@ export interface IUsers{
     department_id: number,
     status: string
 }
+
+export type IAuthedUser = {
+    rule: number;
+    uid: number;
+}
