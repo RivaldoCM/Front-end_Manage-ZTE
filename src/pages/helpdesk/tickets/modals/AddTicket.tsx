@@ -3,7 +3,7 @@ import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
-import Autocomplete from '@mui/joy/Autocomplete';
+import Autocomplete, { AutocompleteChangeDetails } from '@mui/joy/Autocomplete';
 import { IOlt } from '../../../../interfaces/IOlt';
 import { getOlt } from '../../../../services/apiManageONU/getOlt';
 import CircularProgress from '@mui/joy/CircularProgress';
@@ -23,6 +23,7 @@ import { getNetworkTopology } from '../../../../services/apiManageONU/getNetwork
 import { useAuth } from '../../../../hooks/useAuth';
 import { AddTicketStyle } from '../style';
 import { addTicket } from '../../../../services/apiManageONU/addTicket';
+import { ITicketsForm, ITicketTypes } from '../../../../interfaces/ITickets';
 
 export default function AddTicket({ open, handleClose }: any) {
     const { user } = useAuth();
@@ -30,17 +31,17 @@ export default function AddTicket({ open, handleClose }: any) {
 
     const [olts, setOlts] = useState<IOlt[]>([]);
     const [cities, setCities] = useState<ICities[]>([]);
-    const [ticketType, setTicketType] = useState([]);
-    const [departments, setDepartments] = useState([]);
-    const [fiberNetwork, setFiberNetwork] = useState([]);
-    const [form, setForm] = useState({
+    const [ticketType, setTicketType] = useState<ITicketTypes[]>([]);
+    const [departments, setDepartments] = useState<IDepartments[]>([]);
+    const [fiberNetwork, setFiberNetwork] = useState<IFiberNetwork[]>([]);
+    const [form, setForm] = useState<ITicketsForm>({
         userId: user?.uid,
         originDepartmentId: user?.rule,
         destinationDepartmentId: null,
-        cityId: null,
+        cityId: 0 || null,
+        oltId: 0 || null,
         ticketTypeId: null,
-        oltId: null,
-        ctoId: null,
+        ctoId: 0 || null,
         location: '',
         description: '',
     });
@@ -128,7 +129,7 @@ export default function AddTicket({ open, handleClose }: any) {
 
         if(!loadingFiberNetwork){ return undefined};
         (async () => {
-            const res = await getNetworkTopology({oltId: form.oltId});
+            const res = await getNetworkTopology({oltId: form.oltId!});
             if(active){
                 if(res.success){
                     setFiberNetwork(res.responses.response);
@@ -148,8 +149,8 @@ export default function AddTicket({ open, handleClose }: any) {
     useEffect(() => { 
         setTicketType([]);
         setForm({...form, ticketTypeId: null}); 
-        form.departmentId !== null ? setTicketTypeDisabled(false) : setTicketTypeDisabled(true);
-    },[form.departmentId]);
+        form.destinationDepartmentId !== null ? setTicketTypeDisabled(false) : setTicketTypeDisabled(true);
+    },[form.destinationDepartmentId]);
 
     useEffect(() => { 
         setFiberNetwork([]);
@@ -157,37 +158,36 @@ export default function AddTicket({ open, handleClose }: any) {
         form.oltId !== null ? setFiberNetworkDisabled(false) : setFiberNetworkDisabled(true);
     },[form.oltId]);
 
-    const handleChangeDepartment = (_e: any, value: any) => {
+    const handleChangeDepartment = (_e: unknown, value: IDepartments | null) => {
         value ? setForm({...form, destinationDepartmentId: value.id}) : setForm({...form, destinationDepartmentId: value});
     }
 
-    const handleChangeCity = (_e: any, value: any) => {
+    const handleChangeCity = (_e: unknown, value: ICities | null) => {
         value ? setForm({...form, cityId: value.id}) : setForm({...form, cityId: value});
     }
 
-    const handleChangeOlt = (_e: any, value: any) => {
+    const handleChangeOlt = (_e: unknown, value: IOlt | null) => {
         value ? setForm({...form, oltId: value.id}) : setForm({...form, oltId: value});
     }
 
-    const handleChangeFiberNetwork = (_e: any, value: any) => {
+    const handleChangeFiberNetwork = (_e: unknown, value: IFiberNetwork | null) => {
         value ? setForm({...form, ctoId: value.id}) : setForm({...form, ctoId: value});
     }
 
-    const handleChangeTicketType = (_e: any, value: any) => {
+    const handleChangeTicketType = (_e: unknown, value: ITicketTypes | null) => {
         value ? setForm({...form, ticketTypeId: value.id}) : setForm({...form, ticketTypeId: value});
     }
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm({...form, [e.target.name]: e.target.value});
     }
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(form);
-
         const response = await addTicket(form);
         if(response){
             if(response.success){
+                handleClose();
                 setFetchResponseMessage(response.responses.status);
             } else {
                 setFetchResponseMessage(response.messages.message);

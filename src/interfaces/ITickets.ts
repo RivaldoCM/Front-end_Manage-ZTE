@@ -1,29 +1,32 @@
 export type ITickets = {
     id: number;
-    Origin_department: {
+    Origin_department:{
         id: number,
         name: string;
     };
-    Destination_department: {
+    Destination_department:{
         id: number,
         name: string;
     };
-    User_created_by: {
+    User_created_by:{
         name: string;
     };
-    User_updated_by?: {
+    User_updated_by?:{
         name: string;
     };
-    User_finished_by?: {
+    User_finished_by?:{
         name: string;
     };
-    User_appropriated_by?: {
+    User_appropriated_by?:{
+        name: string
+    };
+    Ticket_Types:{
         name: string;
     };
-    Ticket_Types: {
+    Tickets_city_id:{
         name: string;
     };
-    Tickets_cto_id?: {
+    Tickets_cto_id?:{
         name: string;
         lat: string;
         lng: string
@@ -37,5 +40,21 @@ export type ITickets = {
     finished_at?: string;
     is_viwed: boolean;
     is_opened: boolean;
+}
 
+export type ITicketTypes = {
+    id: number;
+    name: string;
+}
+
+export type ITicketsForm = {
+    userId: number;
+    originDepartmentId: number;
+    destinationDepartmentId: number | null;
+    cityId: number | null;
+    oltId: number | null;
+    ticketTypeId: number | null;
+    ctoId: number | null;
+    location: string;
+    description: string;
 }

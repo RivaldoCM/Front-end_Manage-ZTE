@@ -12,11 +12,13 @@ import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import { IAuthedUser } from '../../../interfaces/IUsers';
 import React from 'react';
 import { updateTicket } from '../../../services/apiManageONU/updateTicket';
+import { useResponse } from '../../../hooks/useResponse';
 
 type Order = 'asc' | 'desc';
 interface Data {
   ticketId: number;
   createdBy: string;
+  city: string;
   appropriatedBy: string;
   status: string;
   problemType: number;
@@ -25,7 +27,7 @@ interface Data {
 interface EnhancedTableToolbarProps {
     user: IAuthedUser;
     numSelected: number;
-    ticketId: number;
+    ticketId: number | undefined;
     destinationDepartmentId?: number;
     onOpenViewTicket: () => void;
 }
@@ -86,6 +88,13 @@ const headCells: readonly HeadCell[] = [
         numeric: false,
         disablePadding: false,
         label: 'Aberto por',
+    },
+    {
+        id: 'city',
+        sort: true,
+        numeric: false,
+        disablePadding: false,
+        label: 'Cidade',
     },
     {
         id: 'problemType',
@@ -198,10 +207,15 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+    const { setFetchResponseMessage } = useResponse();
     const { numSelected, user, ticketId, destinationDepartmentId } = props;
     const handleAppropriate = async () => {
         if(user.rule === destinationDepartmentId){
-            await updateTicket({ ticketId: ticketId, appropriatedBy: user.uid});
+            const response = await updateTicket({ ticketId: ticketId!, appropriatedBy: user.uid});
+
+            if(response && response.success){
+                setFetchResponseMessage(response.responses.status);
+            }
         }
     };
 

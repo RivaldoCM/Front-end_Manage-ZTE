@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function getTicketTypes(departmentId: number): Promise<IResponseData | IResponseError>{
+export async function getTicketTypes(departmentId: number | null): Promise<IResponseData | IResponseError>{
     const connectionId = await axios({
         method: 'get',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/ticketTypes`,

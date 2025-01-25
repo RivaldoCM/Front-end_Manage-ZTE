@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Controller, InfoCard } from "./style";
 import Button from '@mui/joy/Button';
@@ -9,17 +9,15 @@ import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import Checkbox from '@mui/joy/Checkbox';
 import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
+
 import IconButton from '@mui/joy/IconButton';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
-import CreateTicket from "./modals/AddTicket";
 import { ViewTicketModal } from "./modals/viewTicket";
 import { useAuth } from "../../../hooks/useAuth";
-import { getTickets } from "../../../services/apiManageONU/getTickets";
 import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
 import { useResponse } from "../../../hooks/useResponse";
 import AddTicket from "./modals/AddTicket";
@@ -31,6 +29,7 @@ type Order = 'asc' | 'desc';
 interface Data {
     ticketId: number;
     createdBy: string;
+    city: string;
     appropriatedBy: string;
     status: string;
     problemType: number;
@@ -42,7 +41,7 @@ export function Tickets(){
     const { setFetchResponseMessage } = useResponse();
 
     const [order, setOrder] = useState<Order>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Data>('id');
+    const [orderBy, setOrderBy] = useState<keyof Data>('ticketId');
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -63,6 +62,7 @@ export function Tickets(){
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
+
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
           const newSelected = tickets.map((n) => n.id);
@@ -199,6 +199,7 @@ export function Tickets(){
                                         {row.id}
                                     </th>
                                     <td>{row.User_created_by.name}</td>
+                                    <td>{row.Tickets_city_id.name}</td>
                                     <td>{row.Ticket_Types.name}</td>
                                     <td>{row.User_appropriated_by ? row.User_appropriated_by.name : ''}</td>
                                     <td>{row.Ticket_status.name}</td>
@@ -219,7 +220,7 @@ export function Tickets(){
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colSpan={6}>
+                                <td colSpan={7}>
                                     <Box
                                         sx={{
                                             display: 'flex',
@@ -287,7 +288,7 @@ export function Tickets(){
                 openViewTicket && ( 
                     <ViewTicketModal 
                         open={openViewTicket}
-                        ticket={tickets.find((row) => row.id === selected[0])}
+                        ticket={tickets.find((row) => row.id === selected[0])!}
                         handleClose={handleCloseViewTicket}
                     /> 
                 )

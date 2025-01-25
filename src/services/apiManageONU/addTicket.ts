@@ -13,6 +13,7 @@ export async function addTicket(props: any): Promise<IResponseData | IResponseEr
             userDepartmentId: props.userDepartmentId,
             originDepartmentId: props.originDepartmentId,
             destinationDepartmentId: props.destinationDepartmentId,
+            cityId: props.cityId,
             ticketTypeId: props.ticketTypeId,
             ctoId: props.ctoId,
             location: props.location,
