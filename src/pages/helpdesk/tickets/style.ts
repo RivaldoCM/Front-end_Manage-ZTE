@@ -69,7 +69,7 @@ export const AddTicketStyle = styled.form`
 export const ViewTicketStyle = styled.div`
     width: 90%;
     max-width: 768px;
-    height: 500px;
+    height: inherit;
     background-color: aliceblue;
     padding: 1rem;
     border-radius: 10px;
@@ -130,4 +130,17 @@ export const ViewTicketStyle = styled.div`
             }
         }
     }
+`;
+
+export const ViewTicketController = styled.div`
+    width: 90%;
+    height: 500px;
+    gap: .5rem;
+`;
+
+export const ChatLog = styled.div`
+    width: 350px;
+    height: inherit;
+    background-color: aliceblue;
+    border-radius: 10px;
 `;
