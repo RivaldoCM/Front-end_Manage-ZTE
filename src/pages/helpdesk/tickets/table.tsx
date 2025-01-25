@@ -32,11 +32,7 @@ interface EnhancedTableToolbarProps {
     onOpenViewTicket: () => void;
 }
 
-export function labelDisplayedRows({
-  from,
-  to,
-  count,
-}: {
+export function labelDisplayedRows({ from, to, count,} : {
   from: number;
   to: number;
   count: number;

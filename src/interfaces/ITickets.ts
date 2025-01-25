@@ -40,6 +40,7 @@ export type ITickets = {
     finished_at?: string;
     is_viwed: boolean;
     is_opened: boolean;
+    description: string;
 }
 
 export type ITicketTypes = {

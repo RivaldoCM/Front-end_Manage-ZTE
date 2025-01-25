@@ -20,7 +20,7 @@ import { ViewTicketModal } from "./modals/viewTicket";
 import { useAuth } from "../../../hooks/useAuth";
 import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
 import { useResponse } from "../../../hooks/useResponse";
-import AddTicket from "./modals/AddTicket";
+import AddTicket from "./modals/addTicket";
 import { ITickets } from "../../../interfaces/ITickets";
 import { useTickets } from "../../../hooks/useTickets";
 
