@@ -65,14 +65,18 @@ export const AddTicketStyle = styled.form`
     }
 `
 
+export const ViewTicketController = styled.div`
+    height: 500px;
+    gap: .5rem;
+`;
 
 export const ViewTicketStyle = styled.div`
-    width: 90%;
+    width: 90dvw;
     max-width: 768px;
     height: inherit;
-    background-color: aliceblue;
     padding: 1rem;
     border-radius: 10px;
+    background-color: aliceblue;
 
     *{
         font-family: 'Itim', sans-serif !important;
@@ -132,15 +136,24 @@ export const ViewTicketStyle = styled.div`
     }
 `;
 
-export const ViewTicketController = styled.div`
-    width: 90%;
-    height: 500px;
-    gap: .5rem;
-`;
-
-export const ChatLog = styled.div`
+export const ChatLog = styled.aside`
     width: 350px;
     height: inherit;
+    padding: 0.5rem;
     background-color: aliceblue;
     border-radius: 10px;
+
+    header{
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 10%;
+        justify-content: space-between;
+    }
+    > div{
+        height: 70%;
+    }
+    footer{
+        height: 20%;
+    }
 `;
