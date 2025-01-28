@@ -1,11 +1,39 @@
-import { Box, Button, Checkbox, Divider, IconButton, List, ListItem, ListItemDecorator, Modal, ModalClose, Option, Radio, RadioGroup, Select, Sheet, Textarea, Typography } from "@mui/joy";
-import React, { useEffect, useState } from "react";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useResponse } from "../../../../hooks/useResponse";
-import { ChatLog, ViewTicketController, ViewTicketStyle } from "../style";
-import { ITickets } from "../../../../interfaces/ITickets";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+
+
+import { useAuth } from "../../../../hooks/useAuth";
+import { useTickets } from "../../../../hooks/useTickets";
+import { useResponse } from "../../../../hooks/useResponse";
+
+import { Chat } from "../../../../components/Chat";
+
+import { addChatLog } from "../../../../services/apiManageONU/addChatLog";
 import { updateTicket } from "../../../../services/apiManageONU/updateTicket";
+import { getTicketStatus } from "../../../../services/apiManageONU/getTicketStatus";
+
+import { ITickets, ITicketStatus } from "../../../../interfaces/ITickets";
+
+import { ChatLog, ViewTicketController, ViewTicketStyle } from "../style";
+
+import { 
+    Box, 
+    Button, 
+    Divider, 
+    IconButton, 
+    List, 
+    ListItem, 
+    ListItemDecorator, 
+    Modal, 
+    ModalClose, 
+    Option, 
+    Radio, 
+    RadioGroup, 
+    Select, 
+    Sheet, 
+    Textarea, 
+    Typography 
+} from "@mui/joy";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
@@ -15,11 +43,6 @@ import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import ForumIcon from '@mui/icons-material/Forum';
 import BookIcon from '@mui/icons-material/Book';
 import CloseIcon from '@mui/icons-material/Close';
-import { addChatLog } from "../../../../services/apiManageONU/addChatLog";
-import { getTicketStatus } from "../../../../services/apiManageONU/getTicketStatus";
-import { useTickets } from "../../../../hooks/useTickets";
-import { useSocket } from "../../../../hooks/useSocket";
-import { Chat } from "../../../../components/Chat";
 
 type ViewTicketPropsLocal = {
     open: boolean;
@@ -29,16 +52,16 @@ type ViewTicketPropsLocal = {
 
 export function ViewTicketModal(props: ViewTicketPropsLocal){
     const { user } = useAuth();
-    const { socket } = useSocket();
-    const { setChatLogListener, chatLog } = useTickets();
-    const { setFetchResponseMessage } = useResponse();
 
+    const { setFetchResponseMessage } = useResponse();
+    const { setChatLogListener, chatLog } = useTickets();
+    
     const [isOpenedChat, setIsOpenedChat] = useState(false);
     const [isOpenedFilter, setIsOpenedFilter] = useState(false);
 
     const [filterStatus, setFilterStatus] = useState('');
     const [message, setMessage] = useState('');
-    const [ticketStatus, setTicketStatus] = useState([]);
+    const [ticketStatus, setTicketStatus] = useState<ITicketStatus[]>([]);
     const [currentStatus, setCurrentStatus] = useState<number>();
 
     useEffect(() => {
@@ -72,20 +95,24 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
     const handleOpenFilter = () => setIsOpenedFilter(true);
     const handleCloseFilter = () => setIsOpenedFilter(false);
     const handleMessageChange = (e: any) => { setMessage(e.target.value); }
-
-    const handleChangeTicketStatus = (e: any, value: number) => {
-        setCurrentStatus(value);
+    const handleChangeTicketStatus = (e: any, value: number | null) => {
+        if(value){
+            setCurrentStatus(value);
+        }
     }
 
     const handleSendMessage = async (e: any) => {
         e.preventDefault();
         setMessage('');
-        const response = await addChatLog({
-            userId: user.uid, 
-            ticketId: props.ticket.id, 
-            message: message,
-            isAutoMessage: false
-        });
+        console.log(message.match(/^(?!\s*$).+/))
+        if(message.match(/^(?!\s*$).+/)){
+            await addChatLog({
+                userId: user.uid, 
+                ticketId: props.ticket.id, 
+                message: message,
+                isAutoMessage: false
+            });
+        }
     }
 
     return(
@@ -117,7 +144,6 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                             <p>Descrição:</p>
                             <Textarea placeholder="Descrição" minRows={3} disabled value={props.ticket.description}/>
                         </div>
-                        
                     </section>
                     <footer className="flex">
                         <div>
@@ -250,7 +276,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                             </header>
                             <Divider />
                             <div>
-                                <Chat messages={chatLog} me={user.uid}/>
+                                <Chat messages={chatLog} me={user.uid} />
                             </div>
                             <footer>
                                 <Textarea

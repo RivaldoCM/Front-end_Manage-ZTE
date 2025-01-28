@@ -62,6 +62,7 @@ export const MessageOriginDepartmentTicket = styled.div`
     }
 
     .content{
+        white-space: break-spaces;
         color: #fff
     }
 `;

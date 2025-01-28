@@ -32,6 +32,7 @@ export type ITickets = {
         lng: string
     };
     Ticket_status:{
+        id: number;
         name: string;
     };
     localization: string;
@@ -58,4 +59,20 @@ export type ITicketsForm = {
     ctoId: number | null;
     location: string;
     description: string;
+}
+
+export type ITicketStatus = {
+    id: number;
+    name: string;
+}
+
+export type IChatLog = {
+    message: string;
+    is_automatic: boolean;
+    created_at: Date;
+    User:{
+        id: number;
+        name: string;
+        department_id: string;
+    }
 }

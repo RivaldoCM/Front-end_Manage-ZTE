@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
 import { ChatContainer, MessageDestinationDepartmentTicket, MessageOriginDepartmentTicket } from "./style";
 import { useEffect, useRef } from "react";
+import { IChatLog } from "../../interfaces/ITickets";
 
-export function Chat({ messages, me }){
+export function Chat({ messages, me } : {messages: IChatLog[], me: number}){
 
     const messagesScrollDown = useRef<HTMLDivElement>(null);
 
@@ -27,7 +28,7 @@ export function Chat({ messages, me }){
                             </div>
                             <div className="divider"></div>
                             <div className="content">
-                                {message.message}
+                                <p>{message.message}</p>
                             </div>
                         </MessageDestinationDepartmentTicket>
                     )
@@ -40,7 +41,7 @@ export function Chat({ messages, me }){
                             </div>
                             <div className="divider"></div>
                             <div className="content">
-                                {message.message}
+                                <p>{message.message}</p>
                             </div>
                         </MessageOriginDepartmentTicket>
                     )

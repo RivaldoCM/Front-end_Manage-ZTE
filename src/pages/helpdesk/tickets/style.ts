@@ -137,13 +137,13 @@ export const ViewTicketStyle = styled.div`
 `;
 
 export const ChatLog = styled.aside`
+    position: relative;
     width: 350px;
     height: inherit;
-    background-color: aliceblue;
     border-radius: 10px;
+    background-color: aliceblue;
 
     header{
-        position: relative;
         display: flex;
         width: 100%;
         height: 10%;
@@ -154,9 +154,14 @@ export const ChatLog = styled.aside`
         width: 100%;
         height: 70%;
         padding-top: .5rem;
+        
+        p{
+            white-space: break-spaces;
+        }
     }
 
     footer{
         height: 20%;
+        padding: 0 .5rem;
     }
 `;

@@ -1,13 +1,16 @@
 import { ReactNode, createContext, useEffect, useState, } from "react";
-import { useSocket } from "../hooks/useSocket";
+
 import { useAuth } from "../hooks/useAuth";
-import { ITickets } from "../interfaces/ITickets";
+import { useSocket } from "../hooks/useSocket";
+
+import { IChatLog, ITickets } from "../interfaces/ITickets";
+
 import { getTickets } from "../services/apiManageONU/getTickets";
 import { getChatLog } from "../services/apiManageONU/getChatLog";
 
 export const TicketContext = createContext<{
     tickets: ITickets[],
-    chatLog: any
+    chatLog: IChatLog[]
     setChatLogListener: any
 
 }| null>(null);
