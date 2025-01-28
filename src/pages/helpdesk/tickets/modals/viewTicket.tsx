@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, Divider, IconButton, List, ListItem, ListItemDec
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useResponse } from "../../../../hooks/useResponse";
-import { ChatLog, ViewTicketController, ViewTicketStyle } from "../style";
+import { ChatLog, MessageDestinationDepartmentTicket, MessageOriginDepartmentTicket, ViewTicketController, ViewTicketStyle } from "../style";
 import { ITickets } from "../../../../interfaces/ITickets";
 import dayjs from "dayjs";
 import { updateTicket } from "../../../../services/apiManageONU/updateTicket";
@@ -18,6 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { addChatLog } from "../../../../services/apiManageONU/addChatLog";
 import { getChatLog } from "../../../../services/apiManageONU/getChatLog";
 import { getTicketStatus } from "../../../../services/apiManageONU/getTicketStatus";
+import { useSocket } from "../../../../hooks/useSocket";
 
 type ViewTicketPropsLocal = {
     open: boolean;
@@ -27,15 +28,17 @@ type ViewTicketPropsLocal = {
 
 export function ViewTicketModal(props: ViewTicketPropsLocal){
     const { user } = useAuth();
+    const { socket } = useSocket();
     const { setFetchResponseMessage } = useResponse();
 
-    const [isOpenedChat, setIsOpenedChat] = useState(false);
+    const [isOpenedChat, setIsOpenedChat] = useState(true);
     const [isOpenedFilter, setIsOpenedFilter] = useState(false);
 
     const [filterStatus, setFilterStatus] = useState('');
     const [message, setMessage] = useState('');
     const [ticketStatus, setTicketStatus] = useState([]);
     const [currentStatus, setCurrentStatus] = useState<number>();
+    const [chatLog, setChatLog] = useState([]);
 
     useEffect(() => {
         async function updateData(){
@@ -54,9 +57,26 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
         setCurrentStatus(props.ticket.Ticket_status.id)
     }, []);
 
+
+    socket.emit('select_room', {
+        uid: user?.uid,
+        room: `ticket/chat/${props.ticket.id}`
+    });
+
+    socket.on('new-message', data => {
+        console.log('aq')
+        setChatLog(data.responses.response);
+    });
+
+
     useEffect(() => {
         async function getData(){
             const res = await getChatLog({ticketId: props.ticket.id});
+            if(res){
+                if(res.success){
+                    setChatLog(res.responses.response);
+                }
+            }
         }
         getData();
     }, [isOpenedChat === true])
@@ -76,7 +96,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
 
     const handleSendMessage = async (e: any) => {
         e.preventDefault();
-
+        setMessage('');
         const response = await addChatLog({
             userId: user.uid, 
             ticketId: props.ticket.id, 
@@ -84,8 +104,6 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
             isAutoMessage: false
         });
     }
-
-    console.log(currentStatus)
 
     return(
         <Modal
@@ -249,7 +267,37 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                             </header>
                             <Divider />
                             <div>
-
+                                {
+                                    chatLog && chatLog.map((chat, index) => {
+                                        if(chat.User.department_id === props.ticket.Destination_department.id){
+                                            return(
+                                                <MessageDestinationDepartmentTicket>
+                                                    <div className="header">
+                                                        <p className="sender">{chat.User.name}</p>
+                                                        <span className="timestamp">{dayjs(chat.created_at).format('HH:mm')}</span>
+                                                    </div>
+                                                    <div className="divider"></div>
+                                                    <div className="content">
+                                                        {chat.message}
+                                                    </div>
+                                                </MessageDestinationDepartmentTicket>
+                                            )
+                                        } else {
+                                            return(
+                                                <MessageOriginDepartmentTicket>
+                                                    <div className="header">
+                                                        <p className="sender">teste</p>
+                                                        <span className="timestamp">{dayjs(chat.created_at).format('HH:mm')}</span>
+                                                    </div>
+                                                    <div className="divider"></div>
+                                                    <div className="content">
+                                                        {chat.message}
+                                                    </div>
+                                                </MessageOriginDepartmentTicket>
+                                            )
+                                        }
+                                    })
+                                }
                             </div>
                             <footer>
                                 <Textarea
@@ -257,6 +305,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                     onChange={handleMessageChange}
                                     minRows={1}
                                     maxRows={1}
+                                    value={message}
                                     endDecorator={
                                         <Box
                                             sx={{
