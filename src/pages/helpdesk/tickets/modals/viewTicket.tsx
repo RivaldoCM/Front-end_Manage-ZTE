@@ -15,6 +15,9 @@ import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import ForumIcon from '@mui/icons-material/Forum';
 import BookIcon from '@mui/icons-material/Book';
 import CloseIcon from '@mui/icons-material/Close';
+import { addChatLog } from "../../../../services/apiManageONU/addChatLog";
+import { getChatLog } from "../../../../services/apiManageONU/getChatLog";
+import { getTicketStatus } from "../../../../services/apiManageONU/getTicketStatus";
 
 type ViewTicketPropsLocal = {
     open: boolean;
@@ -29,17 +32,34 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
     const [isOpenedChat, setIsOpenedChat] = useState(false);
     const [isOpenedFilter, setIsOpenedFilter] = useState(false);
 
-    const [filterStatus, setFilterStatus] = useState('')
+    const [filterStatus, setFilterStatus] = useState('');
+    const [message, setMessage] = useState('');
+    const [ticketStatus, setTicketStatus] = useState([]);
+    const [currentStatus, setCurrentStatus] = useState<number>();
 
     useEffect(() => {
         async function updateData(){
             if(!props.ticket.is_viwed && user.rule === props.ticket.Destination_department.id){
                 await updateTicket({ ticketId: props.ticket.id, isViwed: true});
             }
+            const response = await getTicketStatus();
+            if(response){
+                if(response.success){
+                    setTicketStatus(response.responses.response);
+                }
+            }
         }
         updateData();
+
+        setCurrentStatus(props.ticket.Ticket_status.id)
     }, []);
 
+    useEffect(() => {
+        async function getData(){
+            const res = await getChatLog({ticketId: props.ticket.id});
+        }
+        getData();
+    }, [isOpenedChat === true])
 
     const handleFilterChange = (e: any) => { setFilterStatus(e.target.value); }
     const handleClearFilter = () => { setFilterStatus(''); }
@@ -48,6 +68,24 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
     const handleCloseChatLog = () => setIsOpenedChat(false);
     const handleOpenFilter = () => setIsOpenedFilter(true);
     const handleCloseFilter = () => setIsOpenedFilter(false);
+    const handleMessageChange = (e: any) => { setMessage(e.target.value); }
+
+    const handleChangeTicketStatus = (e: any, value: number) => {
+        setCurrentStatus(value);
+    }
+
+    const handleSendMessage = async (e: any) => {
+        e.preventDefault();
+
+        const response = await addChatLog({
+            userId: user.uid, 
+            ticketId: props.ticket.id, 
+            message: message,
+            isAutoMessage: false
+        });
+    }
+
+    console.log(currentStatus)
 
     return(
         <Modal
@@ -86,11 +124,18 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                         </div>
                         |
                         <div className="flex">
-                            <Select size="md" variant="outlined">
-                                <Option value="dog">Dog</Option>
-                                <Option value="cat">Cat</Option>
-                                <Option value="fish">Fish</Option>
-                                <Option value="bird">Bird</Option>
+                            <Select 
+                                size="md" 
+                                variant="outlined"
+                                value={currentStatus}
+                                onChange={handleChangeTicketStatus} 
+                                disabled={user.rule === props.ticket.Destination_department.id ? false : true}
+                            >
+                                { 
+                                    ticketStatus && ticketStatus.map((status, index) => {
+                                        return <Option key={index} value={status.id}>{status.name}</Option>
+                                    })
+                                }
                             </Select>
                         </div>
                         |
@@ -209,6 +254,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                             <footer>
                                 <Textarea
                                     placeholder="Digite aqui..."
+                                    onChange={handleMessageChange}
                                     minRows={1}
                                     maxRows={1}
                                     endDecorator={
@@ -222,7 +268,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                                 flex: 'auto',
                                             }}
                                         >
-                                            <IconButton sx={{ ml: 'auto' }} variant="plain">
+                                            <IconButton sx={{ ml: 'auto' }} variant="plain" onClick={handleSendMessage}>
                                                 <SendIcon color="primary"/>
                                             </IconButton>
                                         </Box>
