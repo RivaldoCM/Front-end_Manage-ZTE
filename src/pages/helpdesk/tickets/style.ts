@@ -139,7 +139,6 @@ export const ViewTicketStyle = styled.div`
 export const ChatLog = styled.aside`
     width: 350px;
     height: inherit;
-    padding: 0.5rem;
     background-color: aliceblue;
     border-radius: 10px;
 
@@ -152,92 +151,12 @@ export const ChatLog = styled.aside`
     }
 
     > div{
-        display: flex;
         width: 100%;
-        flex-direction: column;
         height: 70%;
         padding-top: .5rem;
-        overflow: scroll;
-
-        .message {
-            align-self: flex-end;
-            background-color: #f9f9f9;
-            border-radius: .5rem;
-            padding: .5rem;
-            margin-bottom: .5rem;
-            width: 90%;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Cabeçalho com nome do remetente e horário */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .sender {
-            font-size: .9rem;
-            font-weight: bold;
-        }
-
-        .timestamp {
-            font-size: 0.9em;
-            color: #777;
-        }
-
-        /* Linha divisória */
-        .divider {
-            border-top: 1px solid #ddd;
-            margin: 10px 0;
-        }
-
-        /* Conteúdo da mensagem */
-        .content {
-            font-size: .8rem;
-            line-height: 1.4;
-        }
     }
 
     footer{
         height: 20%;
-    }
-`;
-
-export const MessageOriginDepartmentTicket = styled.div`
-    align-self: start;
-    background-color: #87CEFA;
-    border-radius: .5rem;
-    padding: .5rem;
-    margin-bottom: .5rem;
-    width: 90%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-    .sender{
-        color: #333333
-    }
-
-    .content{
-        color: #fff
-    }
-
-`;
-
-export const MessageDestinationDepartmentTicket = styled.div`
-    align-self: end;
-    background-color: #B2E0C7;
-    border-radius: .5rem;
-    padding: .5rem;
-    margin-bottom: .5rem;
-    width: 90%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-    .sender{
-        color: #ffffff !important;
-    }
-
-    .content{
-        color:rgb(39, 39, 39)
     }
 `;

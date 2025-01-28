@@ -13,6 +13,6 @@ export async function getTicketStatus(): Promise<IResponseData | IResponseError>
     }).catch(() => {
         return null;
     });
-    console.log(res)
+    
     return res;
 }

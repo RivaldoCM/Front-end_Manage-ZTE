@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, Divider, IconButton, List, ListItem, ListItemDec
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useResponse } from "../../../../hooks/useResponse";
-import { ChatLog, MessageDestinationDepartmentTicket, MessageOriginDepartmentTicket, ViewTicketController, ViewTicketStyle } from "../style";
+import { ChatLog, ViewTicketController, ViewTicketStyle } from "../style";
 import { ITickets } from "../../../../interfaces/ITickets";
 import dayjs from "dayjs";
 import { updateTicket } from "../../../../services/apiManageONU/updateTicket";
@@ -16,9 +16,10 @@ import ForumIcon from '@mui/icons-material/Forum';
 import BookIcon from '@mui/icons-material/Book';
 import CloseIcon from '@mui/icons-material/Close';
 import { addChatLog } from "../../../../services/apiManageONU/addChatLog";
-import { getChatLog } from "../../../../services/apiManageONU/getChatLog";
 import { getTicketStatus } from "../../../../services/apiManageONU/getTicketStatus";
+import { useTickets } from "../../../../hooks/useTickets";
 import { useSocket } from "../../../../hooks/useSocket";
+import { Chat } from "../../../../components/Chat";
 
 type ViewTicketPropsLocal = {
     open: boolean;
@@ -29,16 +30,16 @@ type ViewTicketPropsLocal = {
 export function ViewTicketModal(props: ViewTicketPropsLocal){
     const { user } = useAuth();
     const { socket } = useSocket();
+    const { setChatLogListener, chatLog } = useTickets();
     const { setFetchResponseMessage } = useResponse();
 
-    const [isOpenedChat, setIsOpenedChat] = useState(true);
+    const [isOpenedChat, setIsOpenedChat] = useState(false);
     const [isOpenedFilter, setIsOpenedFilter] = useState(false);
 
     const [filterStatus, setFilterStatus] = useState('');
     const [message, setMessage] = useState('');
     const [ticketStatus, setTicketStatus] = useState([]);
     const [currentStatus, setCurrentStatus] = useState<number>();
-    const [chatLog, setChatLog] = useState([]);
 
     useEffect(() => {
         async function updateData(){
@@ -53,38 +54,20 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
             }
         }
         updateData();
-
-        setCurrentStatus(props.ticket.Ticket_status.id)
+        setCurrentStatus(props.ticket.Ticket_status.id);
     }, []);
-
-
-    socket.emit('select_room', {
-        uid: user?.uid,
-        room: `ticket/chat/${props.ticket.id}`
-    });
-
-    socket.on('new-message', data => {
-        console.log('aq')
-        setChatLog(data.responses.response);
-    });
-
-
-    useEffect(() => {
-        async function getData(){
-            const res = await getChatLog({ticketId: props.ticket.id});
-            if(res){
-                if(res.success){
-                    setChatLog(res.responses.response);
-                }
-            }
-        }
-        getData();
-    }, [isOpenedChat === true])
 
     const handleFilterChange = (e: any) => { setFilterStatus(e.target.value); }
     const handleClearFilter = () => { setFilterStatus(''); }
 
-    const handleOpenChatLog = () => setIsOpenedChat(true);
+    const handleOpenChatLog = () => {
+        setIsOpenedChat(true);
+        setChatLogListener({
+            ticketId: props.ticket.id,
+            isOpened: true
+        })
+
+    }
     const handleCloseChatLog = () => setIsOpenedChat(false);
     const handleOpenFilter = () => setIsOpenedFilter(true);
     const handleCloseFilter = () => setIsOpenedFilter(false);
@@ -267,37 +250,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                             </header>
                             <Divider />
                             <div>
-                                {
-                                    chatLog && chatLog.map((chat, index) => {
-                                        if(chat.User.department_id === props.ticket.Destination_department.id){
-                                            return(
-                                                <MessageDestinationDepartmentTicket>
-                                                    <div className="header">
-                                                        <p className="sender">{chat.User.name}</p>
-                                                        <span className="timestamp">{dayjs(chat.created_at).format('HH:mm')}</span>
-                                                    </div>
-                                                    <div className="divider"></div>
-                                                    <div className="content">
-                                                        {chat.message}
-                                                    </div>
-                                                </MessageDestinationDepartmentTicket>
-                                            )
-                                        } else {
-                                            return(
-                                                <MessageOriginDepartmentTicket>
-                                                    <div className="header">
-                                                        <p className="sender">teste</p>
-                                                        <span className="timestamp">{dayjs(chat.created_at).format('HH:mm')}</span>
-                                                    </div>
-                                                    <div className="divider"></div>
-                                                    <div className="content">
-                                                        {chat.message}
-                                                    </div>
-                                                </MessageOriginDepartmentTicket>
-                                            )
-                                        }
-                                    })
-                                }
+                                <Chat messages={chatLog} me={user.uid}/>
                             </div>
                             <footer>
                                 <Textarea
