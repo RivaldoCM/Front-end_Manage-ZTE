@@ -17,7 +17,20 @@ export function Chat({ messages, me } : {messages: IChatLog[], me: number}){
         <ChatContainer>
            {
             messages && messages.map((message, index) => {
+                console.log(message.is_automatic)
                 if(message.is_automatic){
+                    return(
+                        <MessageDestinationDepartmentTicket key={index}>
+                        <div className="header">
+                            <p className="sender">EVENTO</p>
+                            <span className="timestamp">{dayjs(message.created_at).format('HH:mm')}</span>
+                        </div>
+                        <div className="divider"></div>
+                        <div className="content">
+                            <p>{message.message}</p>
+                        </div>
+                    </MessageDestinationDepartmentTicket>
+                    )
 
                 } else if(message.User.id === me){
                     return(

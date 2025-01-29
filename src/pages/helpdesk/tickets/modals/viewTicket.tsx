@@ -125,7 +125,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                 <ViewTicketStyle>
                     <header>
                         <p>ID: {props.ticket.id}</p>
-                        <p>{props.ticket.Ticket_Types.name}</p>
+                        <p>{props.ticket.Tickets_city.name} - {props.ticket.Ticket_Types.name}</p>
                         <ModalClose variant="outlined" />
                     </header>
                     <section>
@@ -134,11 +134,41 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                             {props.ticket.User_appropriated_by?.name}
                         </div>
                         <div>
-                            <p> Aberto por: {props.ticket.User_created_by.name} </p>
-                            <p><CalendarMonthIcon fontSize="small" color="secondary"/> {dayjs(props.ticket.created_at).add(3, "hour").format('DD/MM/YY [às] HH:mm') + 'hrs'}</p>
+                            <div>
+                                <p> Aberto por: {props.ticket.User_created_by.name} </p>
+                            </div>
+                            <div>
+                                <p> <CalendarMonthIcon 
+                                        fontSize="small" 
+                                        color="secondary"
+                                    /> 
+                                </p>
+                                <p>
+                                    {dayjs(props.ticket.created_at).add(3, "hour").format('DD/MM/YY [às] HH:mm') + 'hrs'}
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <p> Finalizado por: {props.ticket.User_created_by.name} </p>
+                            <p>
+                                <CalendarMonthIcon 
+                                    fontSize="small" 
+                                    color="secondary"
+                                /> 
+                                {dayjs(props.ticket.created_at).add(3, "hour").format('DD/MM/YY [às] HH:mm') + 'hrs'}
+                            </p>
                         </div>
                         <div>
 
+                        </div>
+
+                    </section>
+                    <section>
+                        cto
+                    </section>
+                    <section>
+                        <div>
+                            <p>Localização: </p>
                         </div>
                         <div>
                             <p>Descrição:</p>

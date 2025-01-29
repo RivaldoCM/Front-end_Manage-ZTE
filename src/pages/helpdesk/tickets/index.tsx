@@ -23,6 +23,7 @@ import { useResponse } from "../../../hooks/useResponse";
 import AddTicket from "./modals/addTicket";
 import { ITickets } from "../../../interfaces/ITickets";
 import { useTickets } from "../../../hooks/useTickets";
+import EditTicket from "./modals/editTicket";
 
 type Order = 'asc' | 'desc';
 
@@ -48,11 +49,14 @@ export function Tickets(){
 
     const [openNewTicket, setOpenNewTicket] = useState(false);
     const [openViewTicket, setOpenViewTicket] = useState(false);
+    const [openEditTicket, setOpenEditTicket] = useState(false);
 
     const handleOpenNewTicket = () => { setOpenNewTicket(true); }
-    const handleCloseNewTicket = () => { setOpenNewTicket(false) }
+    const handleCloseNewTicket = () => { setOpenNewTicket(false); }
     const handleOpenViewTicket = () => { setOpenViewTicket(true); }
-    const handleCloseViewTicket = () => { setOpenViewTicket(false) }
+    const handleCloseViewTicket = () => { setOpenViewTicket(false); }
+    const handleOpenEditTicket = () => { setOpenEditTicket(true); }
+    const handleCloseEditTicket = () => { setOpenEditTicket(false); }
 
     const handleRequestSort = (
         _event: React.MouseEvent<unknown>,
@@ -130,9 +134,11 @@ export function Tickets(){
                     <EnhancedTableToolbar
                         user={user}
                         ticketId={tickets.find((row) => row.id === selected[0])?.id}
+                        originDepartmentId={tickets.find((row) => row.id === selected[0])?.Origin_department.id}
                         destinationDepartmentId={tickets.find((row) => row.id === selected[0])?.Destination_department.id}
                         numSelected={selected.length}
                         onOpenViewTicket={handleOpenViewTicket}
+                        onOpenEditTicket={handleOpenEditTicket}
                     />
                     <Table
                         stickyFooter
@@ -199,7 +205,7 @@ export function Tickets(){
                                         {row.id}
                                     </th>
                                     <td>{row.User_created_by.name}</td>
-                                    <td>{row.Tickets_city_id.name}</td>
+                                    <td>{row.Tickets_city.name}</td>
                                     <td>{row.Ticket_Types.name}</td>
                                     <td>{row.User_appropriated_by ? row.User_appropriated_by.name : ''}</td>
                                     <td>{row.Ticket_status.name}</td>
@@ -290,6 +296,15 @@ export function Tickets(){
                         open={openViewTicket}
                         ticket={tickets.find((row) => row.id === selected[0])!}
                         handleClose={handleCloseViewTicket}
+                    /> 
+                )
+            }
+            {
+                openEditTicket && ( 
+                    <EditTicket 
+                        open={openEditTicket}
+                        ticket={tickets.find((row) => row.id === selected[0])!}
+                        handleClose={handleCloseEditTicket}
                     /> 
                 )
             }

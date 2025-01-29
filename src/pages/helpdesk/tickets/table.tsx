@@ -13,6 +13,7 @@ import { IAuthedUser } from '../../../interfaces/IUsers';
 import React from 'react';
 import { updateTicket } from '../../../services/apiManageONU/updateTicket';
 import { useResponse } from '../../../hooks/useResponse';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 type Order = 'asc' | 'desc';
 interface Data {
@@ -28,8 +29,10 @@ interface EnhancedTableToolbarProps {
     user: IAuthedUser;
     numSelected: number;
     ticketId: number | undefined;
+    originDepartmentId?: number;
     destinationDepartmentId?: number;
     onOpenViewTicket: () => void;
+    onOpenEditTicket: () => void;
 }
 
 export function labelDisplayedRows({ from, to, count,} : {
@@ -204,7 +207,8 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { setFetchResponseMessage } = useResponse();
-    const { numSelected, user, ticketId, destinationDepartmentId } = props;
+    const { numSelected, user, ticketId, originDepartmentId, destinationDepartmentId } = props;
+    
     const handleAppropriate = async () => {
         if(user.rule === destinationDepartmentId){
             const response = await updateTicket({ ticketId: ticketId!, appropriatedBy: user.uid});
@@ -250,9 +254,18 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 <React.Fragment>
                     {
                         user.rule === destinationDepartmentId && (
-                            <Tooltip title="Apropriar-se" sx={{m: 1}}>
-                                <IconButton size="sm" color="neutral" variant="outlined" onClick={handleAppropriate}>
-                                    <PushPinOutlinedIcon />
+                            <Tooltip title="Apropriar-se" sx={{mr: 1}}>
+                                <IconButton size="sm" color="primary" variant="soft" onClick={handleAppropriate}>
+                                    <PushPinOutlinedIcon color="primary" />
+                                </IconButton>
+                            </Tooltip>
+                        )
+                    }
+                    {
+                        user.rule === originDepartmentId && (
+                            <Tooltip title="Editar" sx={{mr: 1}}>
+                                <IconButton size="sm" color="primary" variant="soft" onClick={props.onOpenEditTicket}>
+                                    <EditOutlinedIcon color="secondary" />
                                 </IconButton>
                             </Tooltip>
                         )

@@ -21,12 +21,15 @@ export type ITickets = {
         name: string
     };
     Ticket_Types:{
+        id: number,
         name: string;
     };
-    Tickets_city_id:{
+    Tickets_city:{
+        id: number,
         name: string;
     };
-    Tickets_cto_id?:{
+    Tickets_cto?:{
+        id: number,
         name: string;
         lat: string;
         lng: string
@@ -54,10 +57,9 @@ export type ITicketsForm = {
     originDepartmentId: number;
     destinationDepartmentId: number | null;
     cityId: number | null;
-    oltId: number | null;
     ticketTypeId: number | null;
     ctoId: number | null;
-    location: string;
+    localization: string;
     description: string;
 }
 

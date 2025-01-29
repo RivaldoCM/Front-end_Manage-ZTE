@@ -80,3 +80,8 @@ export const MessageDestinationDepartmentTicket = styled.div`
         color: #ffffff ;
     }
 `;
+
+export const AutomaticMessages = styled.div`
+
+
+`;

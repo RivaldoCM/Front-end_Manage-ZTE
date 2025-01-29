@@ -99,24 +99,27 @@ export const ViewTicketStyle = styled.div`
 
     section:first-of-type{
         width: 100%;
-        height: 80%;
-        div:nth-of-type(2){
+        height: 20%;
+
+        div:nth-of-type(2), div:nth-of-type(3){
             display: flex;
-            justify-content: space-around;
-            width: inherit;
-            box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
-            border-radius: 5px;
+
         }
 
         div:last-of-type{
-            display: flex;
-            width: 100%;
-            p{
-                margin-right: 1rem;
-            }
-        }
 
+        }
     }
+
+    section:nth-of-type(2){
+        height: 30%;
+    }
+
+    section:nth-of-type(3){
+        height: 30%;
+    }
+
+
     footer{
         width: 100%;
         height: 10%;

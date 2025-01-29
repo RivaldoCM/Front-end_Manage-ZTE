@@ -1,17 +1,15 @@
 import axios from "axios"
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
-export async function addTicket(props: any): Promise<IResponseData | IResponseError | null>{
+export async function editTicket(props: any): Promise<IResponseData | IResponseError | null>{
     const response = await axios({
-        method: 'post',
+        method: 'patch',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/tickets`,
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
         data: {
             userId: props.userId,
-            originDepartmentId: props.originDepartmentId,
-            destinationDepartmentId: props.destinationDepartmentId,
             cityId: props.cityId,
             ticketTypeId: props.ticketTypeId,
             ctoId: props.ctoId,

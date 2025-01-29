@@ -29,7 +29,6 @@ export default function AddTicket({ open, handleClose }: any) {
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
-    const [olts, setOlts] = useState<IOlt[]>([]);
     const [cities, setCities] = useState<ICities[]>([]);
     const [ticketType, setTicketType] = useState<ITicketTypes[]>([]);
     const [departments, setDepartments] = useState<IDepartments[]>([]);
@@ -39,43 +38,23 @@ export default function AddTicket({ open, handleClose }: any) {
         originDepartmentId: user?.rule,
         destinationDepartmentId: null,
         cityId: 0 || null,
-        oltId: 0 || null,
         ticketTypeId: null,
         ctoId: 0 || null,
-        location: '',
+        localization: '',
         description: '',
     });
 
-    const [openOlts, setOpenOlts] = useState(false);
     const [openCities, setOpenCities] = useState(false);
     const [openTicketType, setOpenTicketType] = useState(false);
     const [openDepartments, setOpenDepartments] = useState(false);
     const [openFiberNetwork, setOpenFiberNetwork] = useState(false);
     const [ticketTypeDisabled, setTicketTypeDisabled] = useState(true);
-    const [oltDisabled, setOltDisabled] = useState(true);
     const [fiberNetworkDisabled, setFiberNetworkDisabled] = useState(true);
     
-    const loadingOlts = openOlts && olts.length === 0;
     const loadingCities = openCities && cities.length === 0;
     const loadingTicketType = openTicketType && ticketType.length === 0;
     const loadingDepartments = openDepartments && departments.length === 0;
     const loadingFiberNetwork = openFiberNetwork && fiberNetwork.length === 0; 
-
-    useEffect(() => {
-        let active = true;
-        
-        if(!loadingOlts){ return undefined};
-        (async () => {
-            const res = await getOlt({id: form.cityId, vlans: false});
-            if(active){
-                if(res.success){
-                    setOlts(res.responses.response);
-                }
-            }
-        })();
-
-        return () => { active = false; }
-    },[loadingOlts]);
 
     useEffect(() => {
         let active = true;
@@ -129,7 +108,7 @@ export default function AddTicket({ open, handleClose }: any) {
 
         if(!loadingFiberNetwork){ return undefined};
         (async () => {
-            const res = await getNetworkTopology({oltId: form.oltId!});
+            const res = await getNetworkTopology({cityId: form.cityId!});
             if(active){
                 if(res.success){
                     setFiberNetwork(res.responses.response);
@@ -141,12 +120,6 @@ export default function AddTicket({ open, handleClose }: any) {
     },[loadingFiberNetwork]);
 
     useEffect(() => { 
-        setOlts([]);
-        setForm({...form, oltId: null});
-        form.cityId !== null ? setOltDisabled(false) : setOltDisabled(true);
-    },[form.cityId]);
-
-    useEffect(() => { 
         setTicketType([]);
         setForm({...form, ticketTypeId: null}); 
         form.destinationDepartmentId !== null ? setTicketTypeDisabled(false) : setTicketTypeDisabled(true);
@@ -154,9 +127,9 @@ export default function AddTicket({ open, handleClose }: any) {
 
     useEffect(() => { 
         setFiberNetwork([]);
-        setForm({...form, ctoId: null});
-        form.oltId !== null ? setFiberNetworkDisabled(false) : setFiberNetworkDisabled(true);
-    },[form.oltId]);
+        setForm({...form, ctoId: null}); 
+        form.cityId !== null ? setFiberNetworkDisabled(false) : setFiberNetworkDisabled(true);
+    },[form.cityId]);
 
     const handleChangeDepartment = (_e: unknown, value: IDepartments | null) => {
         value ? setForm({...form, destinationDepartmentId: value.id}) : setForm({...form, destinationDepartmentId: value});
@@ -164,10 +137,6 @@ export default function AddTicket({ open, handleClose }: any) {
 
     const handleChangeCity = (_e: unknown, value: ICities | null) => {
         value ? setForm({...form, cityId: value.id}) : setForm({...form, cityId: value});
-    }
-
-    const handleChangeOlt = (_e: unknown, value: IOlt | null) => {
-        value ? setForm({...form, oltId: value.id}) : setForm({...form, oltId: value});
     }
 
     const handleChangeFiberNetwork = (_e: unknown, value: IFiberNetwork | null) => {
@@ -268,24 +237,6 @@ export default function AddTicket({ open, handleClose }: any) {
                                     ) : null
                                 }
                             />
-                            <Autocomplete
-                                placeholder='OLT'
-                                open={openOlts}
-                                disabled={oltDisabled}
-                                onOpen={() => { setOpenOlts(true); }}
-                                onClose={() => { setOpenOlts(false); }}
-                                onChange={handleChangeOlt}
-                                isOptionEqualToValue={(option, value) => option.name === value.name}
-                                getOptionLabel={(option) => option.name}
-                                loading={loadingOlts}
-                                options={olts}
-                                sx={{ marginBottom: '.2rem' }}
-                                endDecorator={
-                                    loadingOlts ? (
-                                        <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
-                                    ) : null
-                                }
-                            />
                         </div>
                         <Autocomplete
                             placeholder='CTO'
@@ -300,19 +251,20 @@ export default function AddTicket({ open, handleClose }: any) {
                             options={fiberNetwork}
                             sx={{ marginBottom: '.2rem' }}
                             endDecorator={
-                                loadingOlts ? (
+                                loadingFiberNetwork ? (
                                     <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
                                 ) : null
                             }
                         />
                         <Input
-                            name='location'
+                            name='localization'
                             placeholder="Localização"
                             onChange={handleChange}
+                            sx={{ marginBottom: '.5rem' }}
                             startDecorator={
                                 <Button variant="soft" color="neutral" startDecorator={<LocationOn />}></Button>
                             }
-                            sx={{ marginBottom: '.5rem' }}
+
                         />
                         <Textarea 
                             name="description"
