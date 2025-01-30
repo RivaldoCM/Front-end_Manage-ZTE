@@ -52,7 +52,6 @@ type ViewTicketPropsLocal = {
 
 export function ViewTicketModal(props: ViewTicketPropsLocal){
     const { user } = useAuth();
-
     const { setFetchResponseMessage } = useResponse();
     const { setChatLogListener, chatLog } = useTickets();
     
@@ -82,7 +81,6 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
 
     const handleFilterChange = (e: any) => { setFilterStatus(e.target.value); }
     const handleClearFilter = () => { setFilterStatus(''); }
-
     const handleOpenChatLog = () => {
         setIsOpenedChat(true);
         setChatLogListener({
@@ -104,7 +102,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
     const handleSendMessage = async (e: any) => {
         e.preventDefault();
         setMessage('');
-        console.log(message.match(/^(?!\s*$).+/))
+
         if(message.match(/^(?!\s*$).+/)){
             await addChatLog({
                 userId: user.uid, 

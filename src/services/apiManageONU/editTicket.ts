@@ -9,12 +9,13 @@ export async function editTicket(props: any): Promise<IResponseData | IResponseE
             'Authorization': `Bearer ${localStorage.getItem('Authorization')}`
         },
         data: {
-            userId: props.userId,
-            cityId: props.cityId,
-            ticketTypeId: props.ticketTypeId,
-            ctoId: props.ctoId,
-            localization: props.localization,
-            description: props.description,
+            user: props.userId,
+            ticket: props.ticketId,
+            city: props.cityId,
+            ticketType: props.ticketTypeId,
+            cto: props.ctoId,
+            loc: props.localization,
+            descriptionTicket: props.description,
         }
     }).then(response => {
         return response.data;

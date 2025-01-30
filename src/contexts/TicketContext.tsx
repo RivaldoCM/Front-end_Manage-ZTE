@@ -11,6 +11,7 @@ import { getChatLog } from "../services/apiManageONU/getChatLog";
 export const TicketContext = createContext<{
     tickets: ITickets[],
     chatLog: IChatLog[]
+    chatLogListener: any,
     setChatLogListener: any
 
 }| null>(null);
@@ -41,6 +42,8 @@ export function TicketContextProvider({ children }: {children: ReactNode}) {
                 response.success ? setChatLog(response.responses.response) : setChatLog([]);
             }
             getData();
+        } else {
+            setChatLog([]);
         }
     }, [chatLogListener.isOpened]);
 
@@ -68,7 +71,7 @@ export function TicketContextProvider({ children }: {children: ReactNode}) {
     }
 
     return (
-        <TicketContext.Provider value={{ tickets, chatLog, setChatLogListener }}>
+        <TicketContext.Provider value={{ tickets, chatLog, chatLogListener, setChatLogListener }}>
             {children}
         </TicketContext.Provider>
     );

@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { IChatLog } from "../../interfaces/ITickets";
 
 export function Chat({ messages, me } : {messages: IChatLog[], me: number}){
-
     const messagesScrollDown = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -17,7 +16,6 @@ export function Chat({ messages, me } : {messages: IChatLog[], me: number}){
         <ChatContainer>
            {
             messages && messages.map((message, index) => {
-                console.log(message.is_automatic)
                 if(message.is_automatic){
                     return(
                         <MessageDestinationDepartmentTicket key={index}>

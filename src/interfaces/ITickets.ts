@@ -54,6 +54,7 @@ export type ITicketTypes = {
 
 export type ITicketsForm = {
     userId: number;
+    ticketId: number;
     originDepartmentId: number;
     destinationDepartmentId: number | null;
     cityId: number | null;

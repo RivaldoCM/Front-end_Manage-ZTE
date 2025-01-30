@@ -38,7 +38,7 @@ interface Data {
 
 export function Tickets(){
     const { user } = useAuth();
-    const { tickets } = useTickets();
+    const { tickets, chatLogListener, setChatLogListener } = useTickets();
     const { setFetchResponseMessage } = useResponse();
 
     const [order, setOrder] = useState<Order>('asc');
@@ -54,7 +54,13 @@ export function Tickets(){
     const handleOpenNewTicket = () => { setOpenNewTicket(true); }
     const handleCloseNewTicket = () => { setOpenNewTicket(false); }
     const handleOpenViewTicket = () => { setOpenViewTicket(true); }
-    const handleCloseViewTicket = () => { setOpenViewTicket(false); }
+    const handleCloseViewTicket = () => { 
+        setOpenViewTicket(false); 
+        setChatLogListener({
+            ...chatLogListener,
+            isOpened: false
+        });
+    }
     const handleOpenEditTicket = () => { setOpenEditTicket(true); }
     const handleCloseEditTicket = () => { setOpenEditTicket(false); }
 

@@ -38,6 +38,7 @@ export default function EditTicket(props: EditTicketPropsLocal) {
     const [fiberNetwork, setFiberNetwork] = useState<IFiberNetwork[]>([]);
     const [form, setForm] = useState<ITicketsForm>({
         userId: user?.uid,
+        ticketId: props.ticket.id,
         originDepartmentId: user?.rule,
         destinationDepartmentId: props.ticket.Destination_department.id,
         cityId: props.ticket.Tickets_city.id,
