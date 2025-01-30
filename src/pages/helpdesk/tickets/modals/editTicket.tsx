@@ -50,7 +50,6 @@ export default function EditTicket(props: EditTicketPropsLocal) {
 
     useEffect(() => {
         async function getData(){
-
             const problemTypeData = getTicketTypes(props.ticket.Destination_department.id);
             const citiesData = getCities();
             const getCtos = getNetworkTopology({cityId: props.ticket.Tickets_city.id});
@@ -62,6 +61,14 @@ export default function EditTicket(props: EditTicketPropsLocal) {
         }
         getData(); 
     }, []);
+
+    useEffect(() => {
+        async function getData(){
+            const getCtos = await getNetworkTopology({cityId: form.cityId!});
+            if(getCtos && getCtos.success) setFiberNetwork(getCtos.responses.response);
+        }
+        getData(); 
+    },[form.cityId]);
 
     const handleChangeType = (_e: unknown, value: number | null) => { setForm({...form, ticketTypeId: value}); }
     const handleChangeCity = (_e: unknown, value: number | null) => { setForm({...form, cityId: value}); }
