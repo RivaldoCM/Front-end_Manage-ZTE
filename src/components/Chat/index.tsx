@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { ChatContainer, MessageDestinationDepartmentTicket, MessageOriginDepartmentTicket } from "./style";
+import { AutomaticMessages, ChatContainer, MessageDestinationDepartmentTicket, MessageOriginDepartmentTicket } from "./style";
 import { useEffect, useRef } from "react";
 import { IChatLog } from "../../interfaces/ITickets";
 
@@ -18,16 +18,16 @@ export function Chat({ messages, me } : {messages: IChatLog[], me: number}){
             messages && messages.map((message, index) => {
                 if(message.is_automatic){
                     return(
-                        <MessageDestinationDepartmentTicket key={index}>
-                        <div className="header">
-                            <p className="sender">EVENTO</p>
-                            <span className="timestamp">{dayjs(message.created_at).format('HH:mm')}</span>
-                        </div>
-                        <div className="divider"></div>
-                        <div className="content">
-                            <p>{message.message}</p>
-                        </div>
-                    </MessageDestinationDepartmentTicket>
+                        <AutomaticMessages key={index}>
+                            <div>
+                                <p>EVENTO</p>
+                                <span>{dayjs(message.created_at).format('HH:mm')}</span>
+                            </div>
+                            <div className="divider"></div>
+                            <div>
+                                <p>{message.message}</p>
+                            </div>
+                        </AutomaticMessages>
                     )
 
                 } else if(message.User.id === me){
@@ -47,7 +47,7 @@ export function Chat({ messages, me } : {messages: IChatLog[], me: number}){
                     return(
                         <MessageOriginDepartmentTicket key={index}>
                             <div className="header">
-                                <p className="sender">teste</p>
+                                <p className="sender">{message.User.name}</p>
                                 <span className="timestamp">{dayjs(message.created_at).format('HH:mm')}</span>
                             </div>
                             <div className="divider"></div>

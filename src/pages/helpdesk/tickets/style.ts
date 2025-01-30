@@ -150,6 +150,7 @@ export const ChatLog = styled.aside`
         display: flex;
         width: 100%;
         height: 10%;
+        padding: 0.5rem;
         justify-content: space-between;
     }
 

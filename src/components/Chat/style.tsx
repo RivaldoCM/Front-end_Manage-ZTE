@@ -82,6 +82,41 @@ export const MessageDestinationDepartmentTicket = styled.div`
 `;
 
 export const AutomaticMessages = styled.div`
+    align-self: center;
+    width: 90%;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    border-left: 5px solid #ffb300;
+    font-style: italic;
+    color: #5d4037;
+    background-color: #fff8e1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
+    > div:first-of-type {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
 
+        p{
+            font-size: .9rem;
+            font-weight: bold;
+        }
+
+        span{
+            font-size: 0.9em;
+            color: black;
+        }
+    }
+
+    .divider {
+        border-top: 1px solid #ddd;
+        margin: 10px 0;
+    }
+
+    > div:last-of-type{
+        font-size: .8rem;
+        line-height: 1.4;
+    }
 `;
