@@ -82,7 +82,7 @@ export default function EditTicket(props: EditTicketPropsLocal) {
         const response = await editTicket(form);
         if(response){
             if(response.success){
-                props.handleClose;
+                props.handleClose();
                 setFetchResponseMessage(response.responses.status);
             } else {
                 setFetchResponseMessage(response.messages.message);
@@ -150,8 +150,9 @@ export default function EditTicket(props: EditTicketPropsLocal) {
                         />
                         <Textarea 
                             name="description"
-                            onChange={handleChange} 
                             placeholder="Descrição"
+                            onChange={handleChange} 
+                            value={form.description}
                             variant="outlined" 
                             minRows={3}    
                         />

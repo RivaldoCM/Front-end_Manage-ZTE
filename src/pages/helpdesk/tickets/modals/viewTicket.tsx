@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 
@@ -112,6 +112,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
             });
         }
     }
+    console.log(props.ticket)
 
     return(
         <Modal
@@ -128,14 +129,18 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                     </header>
                     <section>
                         <div>
-                            <PushPinOutlinedIcon fontSize="small" color="secondary"/>
-                            {props.ticket.User_appropriated_by?.name}
+                            <div>
+                                <PushPinOutlinedIcon fontSize="small" color="secondary"/>
+                            </div>
+                            <div>
+                                {props.ticket.User_appropriated_by?.name}
+                            </div>
                         </div>
-                        <div>
+                        <div className="flex">
                             <div>
                                 <p> Aberto por: {props.ticket.User_created_by.name} </p>
                             </div>
-                            <div>
+                            <div className="flex">
                                 <p> <CalendarMonthIcon 
                                         fontSize="small" 
                                         color="secondary"
@@ -146,31 +151,60 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                 </p>
                             </div>
                         </div>
-                        <div>
-                            <p> Finalizado por: {props.ticket.User_created_by.name} </p>
-                            <p>
-                                <CalendarMonthIcon 
-                                    fontSize="small" 
-                                    color="secondary"
-                                /> 
-                                {dayjs(props.ticket.created_at).add(3, "hour").format('DD/MM/YY [às] HH:mm') + 'hrs'}
-                            </p>
+                        <div className="flex">
+                            {
+                                props.ticket.finished_at &&
+                                <React.Fragment>
+                                    <p> Finalizado por: {props.ticket.User_finished_by && props.ticket.User_finished_by.name}</p>
+                                    <p>
+                                        <CalendarMonthIcon 
+                                            fontSize="small" 
+                                            color="secondary"
+                                        />
+                                        {dayjs(props.ticket.finished_at).add(3, "hour").format('DD/MM/YY [às] HH:mm') + 'hrs'}
+                                    </p>
+                                </React.Fragment>
+                            }
                         </div>
-                        <div>
-
-                        </div>
-
                     </section>
                     <section>
-                        cto
+                        <h5>Informações do CTO:</h5>
+                        <div className="flex">
+                            {
+                                props.ticket.Tickets_cto ? 
+                                <div className="flex">
+                                    <div>
+                                        <p>Nome: {props.ticket.Tickets_cto.name}</p>
+                                        <p>Portas: 8</p>
+                                        <p>OLT: {props.ticket.Tickets_cto.Olts.name}</p>
+                                        <p>N° CTO: {props.ticket.Tickets_cto.number}</p>
+                                        <div>
+                                            <p>Localização do CTO:  
+                                                <a 
+                                                    href={
+                                                        `https://www.google.com/maps?q= ${props.ticket.Tickets_cto.lat.replace(',', '.')}, 
+                                                        ${props.ticket.Tickets_cto.lng.replace(',', '.')}`
+                                                    } 
+                                                    target="_blank"> 
+                                                        {props.ticket.Tickets_cto.lat + ', '+ props.ticket.Tickets_cto.lng}
+                                                </a>
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                : 'Nenhum CTO adicionado.'
+                            }
+
+                        </div>
                     </section>
                     <section>
                         <div>
-                            <p>Localização: </p>
+                            <p>Localização informada: {props.ticket.localization ?  props.ticket.localization : 'Nenhuma Localização adicionada.'}</p>
                         </div>
                         <div>
                             <p>Descrição:</p>
-                            <Textarea placeholder="Descrição" minRows={3} disabled value={props.ticket.description}/>
+                            <Textarea minRows={3} maxRows={3} value={props.ticket.description} />
                         </div>
                     </section>
                     <footer className="flex">

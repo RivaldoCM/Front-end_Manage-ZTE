@@ -73,7 +73,6 @@ export const ViewTicketController = styled.div`
 export const ViewTicketStyle = styled.div`
     width: 90dvw;
     max-width: 768px;
-    height: inherit;
     padding: 1rem;
     border-radius: 10px;
     background-color: aliceblue;
@@ -101,18 +100,35 @@ export const ViewTicketStyle = styled.div`
         width: 100%;
         height: 20%;
 
-        div:nth-of-type(2), div:nth-of-type(3){
+        > div:nth-of-type(1){
             display: flex;
-
+            flex-direction: row;
         }
 
-        div:last-of-type{
-
+        > div:nth-of-type(2), > div:nth-of-type(3){
+            justify-content: space-evenly;
+            
+            p {
+                margin: 0 .2rem;
+            }
         }
     }
 
     section:nth-of-type(2){
         height: 30%;
+
+        > div{
+            justify-content: flex-start;
+            height: 100%;
+            padding: 0.5rem;
+            border-radius: 10px;
+            box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+            div{
+                width: 100%;
+                height: 100%;
+                flex-direction: column;
+            }
+        }
     }
 
     section:nth-of-type(3){
@@ -123,7 +139,10 @@ export const ViewTicketStyle = styled.div`
     footer{
         width: 100%;
         height: 10%;
+        margin-top: .5rem;
+
         div {
+            //SEM TEMPO IRMÃO
             width: 33%;
         }
         div:nth-of-type(2){

@@ -30,9 +30,13 @@ export type ITickets = {
     };
     Tickets_cto?:{
         id: number,
+        number: number;
         name: string;
         lat: string;
-        lng: string
+        lng: string;
+        Olts:{
+            name: string;
+        }
     };
     Ticket_status:{
         id: number;
