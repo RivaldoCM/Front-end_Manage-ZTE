@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Box from '@mui/joy/Box';
 import Typography from '@mui/joy/Typography';
 import Checkbox from '@mui/joy/Checkbox';
@@ -10,10 +12,10 @@ import { SearchInput } from '../../../components/SeachInput';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import { IAuthedUser } from '../../../interfaces/IUsers';
-import React from 'react';
-import { updateTicket } from '../../../services/apiManageONU/updateTicket';
+
 import { useResponse } from '../../../hooks/useResponse';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { updateTicket } from '../../../services/apiManageONU/updateTicket';
 
 type Order = 'asc' | 'desc';
 interface Data {
@@ -211,7 +213,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     
     const handleAppropriate = async () => {
         if(user.rule === destinationDepartmentId){
-            const response = await updateTicket({ ticketId: ticketId!, appropriatedBy: user.uid});
+            const response = await updateTicket({ ticketId: ticketId!, appropriatedBy: user.uid, userId: user.uid});
 
             if(response && response.success){
                 setFetchResponseMessage(response.responses.status);

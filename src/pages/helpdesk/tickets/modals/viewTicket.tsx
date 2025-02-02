@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-
 import { useAuth } from "../../../../hooks/useAuth";
 import { useTickets } from "../../../../hooks/useTickets";
 import { useResponse } from "../../../../hooks/useResponse";
@@ -9,10 +8,11 @@ import { useResponse } from "../../../../hooks/useResponse";
 import { Chat } from "../../../../components/Chat";
 
 import { addChatLog } from "../../../../services/apiManageONU/addChatLog";
-import { updateTicket } from "../../../../services/apiManageONU/updateTicket";
 import { getTicketStatus } from "../../../../services/apiManageONU/getTicketStatus";
 
 import { ITickets, ITicketStatus } from "../../../../interfaces/ITickets";
+
+import { updateTicket } from "../../../../services/apiManageONU/updateTicket";
 
 import { ChatLog, ViewTicketController, ViewTicketStyle } from "../style";
 
@@ -52,18 +52,18 @@ type ViewTicketPropsLocal = {
 
 export function ViewTicketModal(props: ViewTicketPropsLocal){
     const { user } = useAuth();
-    const { setFetchResponseMessage } = useResponse();
     const { setChatLogListener, chatLog } = useTickets();
     
     const [isOpenedChat, setIsOpenedChat] = useState(false);
     const [isOpenedFilter, setIsOpenedFilter] = useState(false);
-
     const [filterStatus, setFilterStatus] = useState('');
     const [message, setMessage] = useState('');
     const [ticketStatus, setTicketStatus] = useState<ITicketStatus[]>([]);
-    const [currentStatus, setCurrentStatus] = useState<number>();
+    const [currentStatus, setCurrentStatus] = useState<number>(0); 
+    //POR MAIS QUE MUDE NA HORA QUE O COMPONENTE APARECER É PRECISO PARA O SELECT ESTAR SEMPRE 'CONTROLLED'
 
     useEffect(() => {
+        setCurrentStatus(props.ticket.Ticket_status.id);
         async function updateData(){
             if(!props.ticket.is_viwed && user.rule === props.ticket.Destination_department.id){
                 await updateTicket({ ticketId: props.ticket.id, isViwed: true});
@@ -76,7 +76,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
             }
         }
         updateData();
-        setCurrentStatus(props.ticket.Ticket_status.id);
+       
     }, []);
 
     const handleFilterChange = (e: any) => { setFilterStatus(e.target.value); }
@@ -87,16 +87,16 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
             ticketId: props.ticket.id,
             isOpened: true
         })
-
     }
     const handleCloseChatLog = () => setIsOpenedChat(false);
     const handleOpenFilter = () => setIsOpenedFilter(true);
     const handleCloseFilter = () => setIsOpenedFilter(false);
     const handleMessageChange = (e: any) => { setMessage(e.target.value); }
-    const handleChangeTicketStatus = (e: any, value: number | null) => {
+    const handleChangeTicketStatus = (_e: unknown, value: number | null) => {
         if(value){
             setCurrentStatus(value);
         }
+        console.log('aq')
     }
 
     const handleSendMessage = async (e: any) => {
@@ -112,7 +112,6 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
             });
         }
     }
-    console.log(props.ticket)
 
     return(
         <Modal
@@ -204,7 +203,11 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                         </div>
                         <div>
                             <p>Descrição:</p>
-                            <Textarea minRows={3} maxRows={3} value={props.ticket.description} />
+                            <Textarea minRows={3} maxRows={3} value={props.ticket.description ??  ''} />
+                            {/*
+                                OPERADOR DE COALESCÊNCIA NULA PARA NÃO TERMOS ERRO DO TEXTEREA, 
+                                E PARA COMEÇAR COM VALOR DEFAULT E NÃO SER POSSÍVEL ADICIONAR TEXTO.
+                            */}
                         </div>
                     </section>
                     <footer className="flex">

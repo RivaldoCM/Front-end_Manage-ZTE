@@ -21,7 +21,7 @@ import { addTicket } from '../../../../services/apiManageONU/addTicket';
 import { ITickets, ITicketsForm, ITicketTypes } from '../../../../interfaces/ITickets';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { SelectChangeEvent } from '@mui/material';
-import { editTicket } from '../../../../services/apiManageONU/editTicket';
+import { updateTicket } from '../../../../services/apiManageONU/updateTicket';
 
 type EditTicketPropsLocal = {
     open: boolean;
@@ -79,7 +79,7 @@ export default function EditTicket(props: EditTicketPropsLocal) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await editTicket(form);
+        const response = await updateTicket(form);
         if(response){
             if(response.success){
                 props.handleClose();
