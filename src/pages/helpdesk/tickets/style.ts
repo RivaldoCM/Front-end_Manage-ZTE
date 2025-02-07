@@ -73,6 +73,7 @@ export const ViewTicketController = styled.div`
 export const ViewTicketStyle = styled.div`
     width: 90dvw;
     max-width: 768px;
+    min-height: inherit;
     padding: 1rem;
     border-radius: 10px;
     background-color: aliceblue;
@@ -115,18 +116,24 @@ export const ViewTicketStyle = styled.div`
     }
 
     section:nth-of-type(2){
-        height: 30%;
+        height: auto;
+        min-height: 30%;
 
-        > div{
+        > div:first-of-type{
+            flex-direction: column;
             justify-content: flex-start;
-            height: 100%;
+            align-items: flex-start;
             padding: 0.5rem;
             border-radius: 10px;
             box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
-            div{
+            > div:first-of-type{
+                flex-direction: row;
                 width: 100%;
                 height: 100%;
-                flex-direction: column;
+
+                div{
+                    width: 50%
+                }
             }
         }
     }

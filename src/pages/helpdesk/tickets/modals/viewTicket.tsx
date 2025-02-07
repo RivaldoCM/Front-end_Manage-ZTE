@@ -168,34 +168,35 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                     </section>
                     <section>
                         <h5>Informações do CTO:</h5>
-                        <div className="flex">
-                            {
-                                props.ticket.Tickets_cto ? 
+                        {props.ticket.Tickets_cto ?
+                            <React.Fragment>
+                            <div className="flex">
                                 <div className="flex">
                                     <div>
                                         <p>Nome: {props.ticket.Tickets_cto.name}</p>
-                                        <p>Portas: 8</p>
                                         <p>OLT: {props.ticket.Tickets_cto.Olts.name}</p>
+                                    </div>
+                                    <div>
                                         <p>N° CTO: {props.ticket.Tickets_cto.number}</p>
-                                        <div>
-                                            <p>Localização do CTO:  
-                                                <a 
-                                                    href={
-                                                        `https://www.google.com/maps?q= ${props.ticket.Tickets_cto.lat.replace(',', '.')}, 
-                                                        ${props.ticket.Tickets_cto.lng.replace(',', '.')}`
-                                                    } 
-                                                    target="_blank"> 
-                                                        {props.ticket.Tickets_cto.lat + ', '+ props.ticket.Tickets_cto.lng}
-                                                </a>
-                                            </p>
-                                        </div>
-
+                                        <p>Portas: 8</p>
                                     </div>
                                 </div>
-                                : 'Nenhum CTO adicionado.'
-                            }
-
-                        </div>
+                                <div>
+                                <p>Localização do CTO:  
+                                    <a 
+                                        href={
+                                            `https://www.google.com/maps?q= ${props.ticket.Tickets_cto.lat.replace(',', '.')}, 
+                                            ${props.ticket.Tickets_cto.lng.replace(',', '.')}`
+                                        } 
+                                        target="_blank"> 
+                                            {props.ticket.Tickets_cto.lat + ', '+ props.ticket.Tickets_cto.lng}
+                                    </a>
+                                </p>
+                                </div>
+                            </div>
+                            </React.Fragment>
+                            : 'Nenhum CTO adicionado.'
+                        }
                     </section>
                     <section>
                         <div>
