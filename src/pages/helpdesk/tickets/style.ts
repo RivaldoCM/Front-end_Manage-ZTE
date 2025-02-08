@@ -66,14 +66,14 @@ export const AddTicketStyle = styled.form`
 `
 
 export const ViewTicketController = styled.div`
-    height: 500px;
+    height: 520px;
     gap: .5rem;
 `;
 
 export const ViewTicketStyle = styled.div`
     width: 90dvw;
     max-width: 768px;
-    min-height: inherit;
+    height: inherit;
     padding: 1rem;
     border-radius: 10px;
     background-color: aliceblue;
@@ -141,7 +141,6 @@ export const ViewTicketStyle = styled.div`
     section:nth-of-type(3){
         height: 30%;
     }
-
 
     footer{
         width: 100%;

@@ -2,7 +2,6 @@ import axios from "axios"
 import { IResponseData, IResponseError } from "../../interfaces/IDefaultResponse";
 
 export async function updateTicket(props: any): Promise<IResponseData | IResponseError | null>{
-    console.log(props)
     const response = await axios({
         method: 'patch',
         url: `${import.meta.env.VITE_BASEURL_MANAGE_ONU}/tickets`,
@@ -13,6 +12,7 @@ export async function updateTicket(props: any): Promise<IResponseData | IRespons
             userId: props.userId,
             ticketId: props.ticketId,
             cityId: props.cityId,
+            isViwed: props.isViwed,
             ticketTypeId: props.ticketTypeId,
             ctoId: props.ctoId,
             localization: props.localization,

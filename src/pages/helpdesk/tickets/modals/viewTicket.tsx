@@ -66,7 +66,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
         setCurrentStatus(props.ticket.Ticket_status.id);
         async function updateData(){
             if(!props.ticket.is_viwed && user.rule === props.ticket.Destination_department.id){
-                await updateTicket({ ticketId: props.ticket.id, isViwed: true});
+                await updateTicket({ ticketId: props.ticket.id, isViwed: true });
             }
             const response = await getTicketStatus();
             if(response){
@@ -170,37 +170,37 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                         <h5>Informações do CTO:</h5>
                         {props.ticket.Tickets_cto ?
                             <React.Fragment>
-                            <div className="flex">
                                 <div className="flex">
-                                    <div>
-                                        <p>Nome: {props.ticket.Tickets_cto.name}</p>
-                                        <p>OLT: {props.ticket.Tickets_cto.Olts.name}</p>
+                                    <div className="flex">
+                                        <div>
+                                            <p>Nome: {props.ticket.Tickets_cto.name}</p>
+                                            <p>OLT: {props.ticket.Tickets_cto.Olts.name} - {props.ticket.Tickets_cto.Olts.host}</p>
+                                        </div>
+                                        <div>
+                                            <p>N° CTO: {props.ticket.Tickets_cto.number}</p>
+                                            <p>Portas: {props.ticket.Tickets_cto.slots}</p>
+                                        </div>
                                     </div>
                                     <div>
-                                        <p>N° CTO: {props.ticket.Tickets_cto.number}</p>
-                                        <p>Portas: 8</p>
+                                        <p>Localização do CTO:  
+                                            <a 
+                                                href={
+                                                    `https://www.google.com/maps?q= ${props.ticket.Tickets_cto.lat.replace(',', '.')}, 
+                                                    ${props.ticket.Tickets_cto.lng.replace(',', '.')}`
+                                                } 
+                                                target="_blank"> 
+                                                    {props.ticket.Tickets_cto.lat + ', '+ props.ticket.Tickets_cto.lng}
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
-                                <div>
-                                <p>Localização do CTO:  
-                                    <a 
-                                        href={
-                                            `https://www.google.com/maps?q= ${props.ticket.Tickets_cto.lat.replace(',', '.')}, 
-                                            ${props.ticket.Tickets_cto.lng.replace(',', '.')}`
-                                        } 
-                                        target="_blank"> 
-                                            {props.ticket.Tickets_cto.lat + ', '+ props.ticket.Tickets_cto.lng}
-                                    </a>
-                                </p>
-                                </div>
-                            </div>
                             </React.Fragment>
                             : 'Nenhum CTO adicionado.'
                         }
                     </section>
                     <section>
                         <div>
-                            <p>Localização informada: {props.ticket.localization ?  props.ticket.localization : 'Nenhuma Localização adicionada.'}</p>
+                            Localização: {props.ticket.localization ?? props.ticket.localization}
                         </div>
                         <div>
                             <p>Descrição:</p>

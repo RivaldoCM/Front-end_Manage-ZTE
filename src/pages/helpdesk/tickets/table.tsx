@@ -210,7 +210,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { setFetchResponseMessage } = useResponse();
     const { numSelected, user, ticketId, originDepartmentId, destinationDepartmentId } = props;
-    
+
     const handleAppropriate = async () => {
         if(user.rule === destinationDepartmentId){
             const response = await updateTicket({ ticketId: ticketId!, appropriatedBy: user.uid, userId: user.uid});
