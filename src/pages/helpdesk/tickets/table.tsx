@@ -18,15 +18,16 @@ import { IAuthedUser } from '../../../interfaces/IUsers';
 import { useResponse } from '../../../hooks/useResponse';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { updateTicket } from '../../../services/apiManageONU/updateTicket';
+import { ITickets } from '../../../interfaces/ITickets';
 
 type Order = 'asc' | 'desc';
-interface Data {
+export interface Data {
   ticketId: number;
   createdBy: string;
   city: string;
   appropriatedBy: string;
-  status: string;
-  problemType: number;
+  'Ticket_status.id': string;
+  'Ticket_Types.id': number;
 }
 
 interface EnhancedTableToolbarProps {
@@ -49,27 +50,39 @@ export function labelDisplayedRows({ from, to, count,} : {
   return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    console.log( orderBy)
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
+function descendingComparator<T>(a: any, b: any, orderBy: keyof T, isNested: boolean) {
+    if(isNested){
+        const nested = orderBy.toString().split('.');
+        console.log(a.Ticket_status.id)
+        if (b[nested[0]][nested[1]] < a[nested[0]][nested[1]]) {
+            return -1;
+        }
+        if (b[nested[0]][nested[1]] > a[nested[0]][nested[1]]) {
+            return 1;
+        }
+        return 0;
+    } else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
     }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
 }
 
-export function getComparator<Key extends keyof any>(
+export function getComparator<Key extends keyof Data>(
     order: Order,
     orderBy: Key,
+    isNested: boolean
 ): (
-    a: { [key in Key]: number | string },
-    b: { [key in Key]: number | string },
+    a: ITickets,
+    b: ITickets,
 ) => number {
     return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
+        ? (a, b) => descendingComparator(a, b, orderBy, isNested)
+        : (a, b) => -descendingComparator(a, b, orderBy, isNested);
 }
 
 interface HeadCell {
@@ -78,12 +91,14 @@ interface HeadCell {
     label: string;
     numeric: boolean;
     sort: Boolean;
+    nested: boolean,
 }
 
 const headCells: readonly HeadCell[] = [
     {
         id: 'ticketId',
         sort: false,
+        nested: false,
         numeric: false,
         disablePadding: true,
         label: 'Identificador',
@@ -91,20 +106,23 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'createdBy',
         sort: false,
+        nested: false,
         numeric: false,
         disablePadding: false,
         label: 'Aberto por',
     },
     {
         id: 'city',
-        sort: true,
+        sort: false,
+        nested: false,
         numeric: false,
         disablePadding: false,
         label: 'Cidade',
     },
     {
-        id: 'problemType',
-        sort: false,
+        id: 'Ticket_Types.id',
+        sort: true,
+        nested: true,
         numeric: false,
         disablePadding: false,
         label: 'Tipo de problema',
@@ -112,13 +130,15 @@ const headCells: readonly HeadCell[] = [
     {
         id: 'appropriatedBy',
         sort: false,
+        nested: false,
         numeric: false,
         disablePadding: false,
         label: 'Apropriado por',
     },
     {
-        id: 'status',
+        id: 'Ticket_status.id',
         sort: true,
+        nested: true,
         numeric: true,
         disablePadding: false,
         label: 'Status',
@@ -127,7 +147,7 @@ const headCells: readonly HeadCell[] = [
 
 interface EnhancedTableProps {
     numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data, isNested: boolean) => void;
     onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
     order: Order;
     orderBy: string;
@@ -136,8 +156,8 @@ interface EnhancedTableProps {
 
 export function EnhancedTableHead(props: EnhancedTableProps) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property: keyof Data, isSortable: Boolean) => (event: React.MouseEvent<unknown>) => {
-        isSortable ? onRequestSort(event, property): null;
+    const createSortHandler = (property: keyof Data, isSortable: Boolean, isNested: boolean) => (event: React.MouseEvent<unknown>) => {
+        isSortable ? onRequestSort(event, property, isNested): null;
     };
 
     return (
@@ -172,7 +192,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
                                 color="neutral"
                                 textColor={active ? 'primary.plainColor' : undefined}
                                 component="button"
-                                onClick={createSortHandler(headCell.id, headCell.sort)}
+                                onClick={createSortHandler(headCell.id, headCell.sort, headCell.nested)}
                                 startDecorator={
                                     headCell.numeric && headCell.sort ? (
                                         <ArrowDownwardIcon

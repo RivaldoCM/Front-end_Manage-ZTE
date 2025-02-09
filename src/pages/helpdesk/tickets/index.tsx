@@ -15,7 +15,7 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
+import { Data, EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
 import { ViewTicketModal } from "./modals/viewTicket";
 import { useAuth } from "../../../hooks/useAuth";
 import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
@@ -24,18 +24,9 @@ import AddTicket from "./modals/addTicket";
 import { ITickets } from "../../../interfaces/ITickets";
 import { useTickets } from "../../../hooks/useTickets";
 import EditTicket from "./modals/editTicket";
-import FinishTicket from "./modals/finishTicket";
+//import FinishTicket from "./modals/finishTicket";
 
 type Order = 'asc' | 'desc';
-
-interface Data {
-    ticketId: number;
-    createdBy: string;
-    city: string;
-    appropriatedBy: string;
-    status: string;
-    problemType: number;
-}
 
 export function Tickets(){
     const { user } = useAuth();
@@ -44,6 +35,7 @@ export function Tickets(){
 
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof Data>('ticketId');
+    const [isNested, setIsNested] = useState<boolean>(false);
     const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -71,10 +63,12 @@ export function Tickets(){
     const handleRequestSort = (
         _event: React.MouseEvent<unknown>,
         property: keyof Data,
+        isNested: boolean
     ) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+        setIsNested(isNested);
     };
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,7 +172,7 @@ export function Tickets(){
                         />
                         <tbody>
                         {[...tickets]
-                            .sort(getComparator(order, orderBy))
+                            .sort(getComparator(order, orderBy, isNested))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
                             const isItemSelected = selected.includes(row.id);
