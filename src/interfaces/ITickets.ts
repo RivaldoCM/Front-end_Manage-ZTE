@@ -34,8 +34,10 @@ export type ITickets = {
         name: string;
         lat: string;
         lng: string;
+        slots: number;
         Olts:{
             name: string;
+            host: string;
         }
     };
     Ticket_status:{

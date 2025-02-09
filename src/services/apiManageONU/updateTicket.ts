@@ -17,7 +17,9 @@ export async function updateTicket(props: any): Promise<IResponseData | IRespons
             ctoId: props.ctoId,
             localization: props.localization,
             description: props.description,
-            appropriatedBy: props.appropriatedBy
+            appropriatedBy: props.appropriatedBy,
+            status: props.status,
+            isOpened: props.isOpened
         }
     }).then(response => {
         return response.data;

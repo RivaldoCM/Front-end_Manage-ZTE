@@ -24,6 +24,7 @@ import AddTicket from "./modals/addTicket";
 import { ITickets } from "../../../interfaces/ITickets";
 import { useTickets } from "../../../hooks/useTickets";
 import EditTicket from "./modals/editTicket";
+import FinishTicket from "./modals/finishTicket";
 
 type Order = 'asc' | 'desc';
 
@@ -50,6 +51,7 @@ export function Tickets(){
     const [openNewTicket, setOpenNewTicket] = useState(false);
     const [openViewTicket, setOpenViewTicket] = useState(false);
     const [openEditTicket, setOpenEditTicket] = useState(false);
+    //const [openFinishTicket, setOpenFinishTicket] = useState(false);
 
     const handleOpenNewTicket = () => { setOpenNewTicket(true); }
     const handleCloseNewTicket = () => { setOpenNewTicket(false); }
@@ -63,6 +65,8 @@ export function Tickets(){
     }
     const handleOpenEditTicket = () => { setOpenEditTicket(true); }
     const handleCloseEditTicket = () => { setOpenEditTicket(false); }
+    //const handleOpenFinishTicket = () => { setOpenFinishTicket(true); }
+    //const handleCloseFinishTicket = () => { setOpenFinishTicket(false); }
 
     const handleRequestSort = (
         _event: React.MouseEvent<unknown>,
@@ -140,11 +144,13 @@ export function Tickets(){
                     <EnhancedTableToolbar
                         user={user}
                         ticketId={tickets.find((row) => row.id === selected[0])?.id}
+                        isOpened={tickets.find((row) => row.id === selected[0])?.is_opened}
                         originDepartmentId={tickets.find((row) => row.id === selected[0])?.Origin_department.id}
                         destinationDepartmentId={tickets.find((row) => row.id === selected[0])?.Destination_department.id}
                         numSelected={selected.length}
                         onOpenViewTicket={handleOpenViewTicket}
                         onOpenEditTicket={handleOpenEditTicket}
+                        //onOpenFinishTicket={handleOpenFinishTicket}
                     />
                     <Table
                         stickyFooter
@@ -313,6 +319,17 @@ export function Tickets(){
                         handleClose={handleCloseEditTicket}
                     /> 
                 )
+            }
+            {
+                /*
+                openFinishTicket && ( 
+                    <FinishTicket 
+                        open={openFinishTicket}
+                        ticket={tickets.find((row) => row.id === selected[0])!}
+                        handleClose={handleCloseFinishTicket}
+                    /> 
+                )
+                */
             }
         </Controller>
     )

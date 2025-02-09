@@ -194,3 +194,7 @@ export const ChatLog = styled.aside`
         padding: 0 .5rem;
     }
 `;
+
+export const FinishTicketStyle = styled.div`
+
+`;

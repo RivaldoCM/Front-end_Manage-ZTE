@@ -92,11 +92,13 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
     const handleOpenFilter = () => setIsOpenedFilter(true);
     const handleCloseFilter = () => setIsOpenedFilter(false);
     const handleMessageChange = (e: any) => { setMessage(e.target.value); }
-    const handleChangeTicketStatus = (_e: unknown, value: number | null) => {
-        if(value){
-            setCurrentStatus(value);
-        }
-        console.log('aq')
+    const handleChangeTicketStatus = async (_e: unknown, value: number | null) => {
+        if(value){ setCurrentStatus(value); }
+        await updateTicket({
+            userId: user.uid, 
+            ticketId: props.ticket.id, 
+            status: value, 
+        });
     }
 
     const handleSendMessage = async (e: any) => {
@@ -140,7 +142,8 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                 <p> Aberto por: {props.ticket.User_created_by.name} </p>
                             </div>
                             <div className="flex">
-                                <p> <CalendarMonthIcon 
+                                <p> 
+                                    <CalendarMonthIcon 
                                         fontSize="small" 
                                         color="secondary"
                                     /> 
@@ -222,11 +225,11 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                 variant="outlined"
                                 value={currentStatus}
                                 onChange={handleChangeTicketStatus} 
-                                disabled={user.rule === props.ticket.Destination_department.id ? false : true}
+                                disabled={props.ticket.is_opened && user.rule === props.ticket.Destination_department.id ? false : true}
                             >
                                 { 
                                     ticketStatus && ticketStatus.map((status, index) => {
-                                        return <Option key={index} value={status.id}>{status.name}</Option>
+                                        return <Option key={index} value={status.id} >{status.name}</Option>
                                     })
                                 }
                             </Select>

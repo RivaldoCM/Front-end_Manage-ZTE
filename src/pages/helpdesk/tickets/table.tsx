@@ -13,6 +13,8 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import { IAuthedUser } from '../../../interfaces/IUsers';
 
+//import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+
 import { useResponse } from '../../../hooks/useResponse';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { updateTicket } from '../../../services/apiManageONU/updateTicket';
@@ -31,10 +33,12 @@ interface EnhancedTableToolbarProps {
     user: IAuthedUser;
     numSelected: number;
     ticketId: number | undefined;
+    isOpened: boolean | undefined;
     originDepartmentId?: number;
     destinationDepartmentId?: number;
     onOpenViewTicket: () => void;
     onOpenEditTicket: () => void;
+    //onOpenFinishTicket: () => void;
 }
 
 export function labelDisplayedRows({ from, to, count,} : {
@@ -46,6 +50,7 @@ export function labelDisplayedRows({ from, to, count,} : {
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+    console.log( orderBy)
     if (b[orderBy] < a[orderBy]) {
         return -1;
     }
@@ -209,7 +214,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     const { setFetchResponseMessage } = useResponse();
-    const { numSelected, user, ticketId, originDepartmentId, destinationDepartmentId } = props;
+    const { numSelected, user, ticketId, originDepartmentId, destinationDepartmentId, isOpened } = props;
 
     const handleAppropriate = async () => {
         if(user.rule === destinationDepartmentId){
@@ -255,7 +260,18 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
             {numSelected > 0 ? (
                 <React.Fragment>
                     {
+                        /*
                         user.rule === destinationDepartmentId && (
+                            <Tooltip title="Encerrar ticket" sx={{mr: 1}}>
+                                <IconButton size="sm" variant="soft" >
+                                    <CheckCircleOutlinedIcon color="success" />
+                                </IconButton>
+                            </Tooltip>
+                        )
+                        */
+                    }
+                    {
+                        isOpened && user.rule === destinationDepartmentId && (
                             <Tooltip title="Apropriar-se" sx={{mr: 1}}>
                                 <IconButton size="sm" color="primary" variant="soft" onClick={handleAppropriate}>
                                     <PushPinOutlinedIcon color="primary" />
@@ -264,7 +280,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                         )
                     }
                     {
-                        user.rule === originDepartmentId && (
+                        isOpened && user.rule === originDepartmentId && (
                             <Tooltip title="Editar" sx={{mr: 1}}>
                                 <IconButton size="sm" color="primary" variant="soft" onClick={props.onOpenEditTicket}>
                                     <EditOutlinedIcon color="secondary" />
