@@ -118,12 +118,12 @@ export function Tickets(){
             </header>
             <section className="flex">
                 <InfoCard>
-                    <p>Abertos por mim</p>
-                    <p>{tickets.length}</p>
+                    <p>Total em aberto</p>
+                    <p>{tickets.filter((ticket) => ticket.is_opened ===  true).length}</p>
                 </InfoCard>
                 <InfoCard>
-                    <p>Abertos para mim</p>
-                    <p>2</p>
+                    <p>Em aberto por mim</p>
+                    <p>{tickets.filter((ticket) => ticket.is_opened ===  true && ticket.User_created_by.id === user.uid).length}</p>
                 </InfoCard>
                 <InfoCard>
                     <p>Encerram hoje</p>

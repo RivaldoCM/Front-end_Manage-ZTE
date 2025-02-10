@@ -4,16 +4,11 @@ import dayjs from "dayjs";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useTickets } from "../../../../hooks/useTickets";
 import { useResponse } from "../../../../hooks/useResponse";
-
 import { Chat } from "../../../../components/Chat";
-
 import { addChatLog } from "../../../../services/apiManageONU/addChatLog";
 import { getTicketStatus } from "../../../../services/apiManageONU/getTicketStatus";
-
-import { ITickets, ITicketStatus } from "../../../../interfaces/ITickets";
-
+import { IChatLog, ITickets, ITicketStatus } from "../../../../interfaces/ITickets";
 import { updateTicket } from "../../../../services/apiManageONU/updateTicket";
-
 import { ChatLog, ViewTicketController, ViewTicketStyle } from "../style";
 
 import { 
@@ -54,12 +49,13 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
     const { user } = useAuth();
     const { setChatLogListener, chatLog } = useTickets();
     
+    const [chatLogFiltered, setChatLogFiltered] = useState<IChatLog[]>([]);
     const [isOpenedChat, setIsOpenedChat] = useState(false);
     const [isOpenedFilter, setIsOpenedFilter] = useState(false);
-    const [filterStatus, setFilterStatus] = useState('');
+    const [filterMessagesOnly, setFilterMessagesOnly] = useState('both');
     const [message, setMessage] = useState('');
     const [ticketStatus, setTicketStatus] = useState<ITicketStatus[]>([]);
-    const [currentStatus, setCurrentStatus] = useState<number>(0); 
+    const [currentStatus, setCurrentStatus] = useState<number>(0);
     //POR MAIS QUE MUDE NA HORA QUE O COMPONENTE APARECER É PRECISO PARA O SELECT ESTAR SEMPRE 'CONTROLLED'
 
     useEffect(() => {
@@ -76,11 +72,18 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
             }
         }
         updateData();
-       
     }, []);
+    
+    useEffect(() => {
+        /*
+            CRIADO SOMENTE PARA MONITORAR NOVAS MENSAGENS
+            SERVE PARA ATUALIZAR O CHATLOG BASEADO NO FILTRO
+            ESCOLHIDO PELO USUÁRIO, TORNANDO DINAMICO E 
+            POSSIBILITANDO O FILTRO FUNCIONAR
+        */
+        setChatLogFiltered(chatLog);
+    },[chatLog])
 
-    const handleFilterChange = (e: any) => { setFilterStatus(e.target.value); }
-    const handleClearFilter = () => { setFilterStatus(''); }
     const handleOpenChatLog = () => {
         setIsOpenedChat(true);
         setChatLogListener({
@@ -99,6 +102,17 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
             ticketId: props.ticket.id, 
             status: value, 
         });
+    }
+
+    const handleClearFilterChatLog = () => { setFilterMessagesOnly('both'), setChatLogFiltered(chatLog); }
+    const handleChangeFilterMessages = (e: any) => {
+        setFilterMessagesOnly(e.target.value); //ATUALIZANDO VIZUALMENTE
+
+        if(e.target.value === 'messages'){
+            setChatLogFiltered(chatLog.filter((row) => row.is_automatic === false))
+        } else{
+            setChatLogFiltered(chatLog.filter((row) => row.is_automatic === true))
+        }
     }
 
     const handleSendMessage = async (e: any) => {
@@ -216,7 +230,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                     </section>
                     <footer className="flex">
                         <div>
-                            Prazo:
+                            Prazo: {props.ticket.Ticket_Types.deadLine} dia(s)
                         </div>
                         |
                         <div className="flex">
@@ -229,7 +243,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                             >
                                 { 
                                     ticketStatus && ticketStatus.map((status, index) => {
-                                        return <Option key={index} value={status.id} >{status.name}</Option>
+                                        return <Option key={index} value={status.id} disabled={!status.is_choosable}>{status.name}</Option>
                                     })
                                 }
                             </Select>
@@ -274,7 +288,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                             >
                                                 Filtrar Chat
                                             </Typography>
-                                            <RadioGroup onChange={handleFilterChange} value={filterStatus}>
+                                            <RadioGroup onChange={handleChangeFilterMessages} value={filterMessagesOnly}>
                                                 <List
                                                     sx={{
                                                     minWidth: 240,
@@ -290,7 +304,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                                         </ListItemDecorator>
                                                         <Radio
                                                             overlay
-                                                            value='onlyMessages'
+                                                            value="messages"
                                                             label='Somente Mensagens'
                                                             sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
                                                             slotProps={{
@@ -312,8 +326,8 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                                         </ListItemDecorator>
                                                         <Radio
                                                             overlay
-                                                            value='onlyLogs'
-                                                            label='Somente Registros'
+                                                            value="events"
+                                                            label='Somente Eventos'
                                                             sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
                                                             slotProps={{
                                                                 action: ({ checked }) => ({
@@ -333,9 +347,9 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                                         color="neutral"
                                                         size="sm"
                                                         sx={{ px: 1.5, mt: 1 }}
-                                                        onClick={handleClearFilter}
+                                                        onClick={handleClearFilterChatLog}
                                                     >
-                                                        Limpar seleção
+                                                        Limpar
                                                     </Button>
                                                 </List>
                                             </RadioGroup>
@@ -345,7 +359,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                             </header>
                             <Divider />
                             <div>
-                                <Chat messages={chatLog} me={user.uid} />
+                                <Chat messages={chatLogFiltered} me={user.uid} />
                             </div>
                             <footer>
                                 <Textarea

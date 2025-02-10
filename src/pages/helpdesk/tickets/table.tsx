@@ -265,7 +265,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         >
             {numSelected > 0 ? (
                 <Typography sx={{ flex: '1 1 100%' }} component="div">
-                    {numSelected} selected
+                    
                 </Typography>
             ) : (
                 <Typography

@@ -9,6 +9,7 @@ export type ITickets = {
         name: string;
     };
     User_created_by:{
+        id: number;
         name: string;
     };
     User_updated_by?:{
@@ -23,6 +24,7 @@ export type ITickets = {
     Ticket_Types:{
         id: number,
         name: string;
+        deadLine: number;
     };
     Tickets_city:{
         id: number,
@@ -73,6 +75,7 @@ export type ITicketsForm = {
 export type ITicketStatus = {
     id: number;
     name: string;
+    is_choosable: boolean;
 }
 
 export type IChatLog = {
