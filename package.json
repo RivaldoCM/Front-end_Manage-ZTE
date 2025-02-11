@@ -21,6 +21,7 @@
     "@react-google-maps/api": "^2.19.3",
     "@svgr/rollup": "^8.1.0",
     "@vercel/analytics": "^1.1.1",
+    "@xyflow/react": "^12.4.2",
     "axios": "^1.7.2",
     "dayjs": "^1.11.10",
     "html5-qrcode": "^2.3.8",

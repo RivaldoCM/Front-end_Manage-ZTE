@@ -37,6 +37,7 @@ import { Tickets } from "./pages/helpdesk/tickets";
 import { Dashboard } from "./pages/helpdesk/dashboard";
 import { ClientLocationByFiberNetwork } from "./pages/telecom/ClientLocationByFiberNetwork/mobile";
 import ClientFiberNetworkData from "./pages/telecom/ClientLocationByFiberNetwork/desktop";
+import { Flow } from "./pages/flows";
 
 const PrivateRoute: React.FC<{element: ReactElement}> = ({ element }: {element: ReactElement}) => {
     return isLogged() ? element : <Navigate to='/login' />;
@@ -225,6 +226,12 @@ export function AppRoutes() {
                         }
                     />
                 </Route>
+                <Route
+                    path="/flow"
+                    element={
+                        <PrivateRoute element={<Flow />} />
+                    }
+                />
             </Route>
         </Routes>
     );
