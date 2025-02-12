@@ -20,10 +20,10 @@ import { ViewTicketModal } from "./modals/viewTicket";
 import { useAuth } from "../../../hooks/useAuth";
 import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
 import { useResponse } from "../../../hooks/useResponse";
-import AddTicket from "./modals/addTicket";
 import { ITickets } from "../../../interfaces/ITickets";
 import { useTickets } from "../../../hooks/useTickets";
 import EditTicket from "./modals/editTicket";
+import AddTicket from "./modals/AddTicket";
 //import FinishTicket from "./modals/finishTicket";
 
 type Order = 'asc' | 'desc';
@@ -122,7 +122,7 @@ export function Tickets(){
                     <p>{tickets.filter((ticket) => ticket.is_opened ===  true).length}</p>
                 </InfoCard>
                 <InfoCard>
-                    <p>Em aberto por mim</p>
+                    <p>Abertos por mim</p>
                     <p>{tickets.filter((ticket) => ticket.is_opened ===  true && ticket.User_created_by.id === user.uid).length}</p>
                 </InfoCard>
                 <InfoCard>
@@ -290,7 +290,7 @@ export function Tickets(){
             </section>
             {
                 openNewTicket && ( 
-                    <AddTicket 
+                    <AddTicket
                         open={openNewTicket} 
                         handleClose={handleCloseNewTicket}
                     /> 
