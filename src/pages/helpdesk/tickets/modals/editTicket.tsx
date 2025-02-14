@@ -29,7 +29,7 @@ type EditTicketPropsLocal = {
     handleClose: () => void;
 }
 
-export default function EditTicket(props: EditTicketPropsLocal) {
+export function EditTicket(props: EditTicketPropsLocal) {
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 

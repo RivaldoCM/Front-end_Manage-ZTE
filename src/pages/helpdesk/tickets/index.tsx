@@ -22,8 +22,8 @@ import { IResponseData, IResponseError } from "../../../interfaces/IDefaultRespo
 import { useResponse } from "../../../hooks/useResponse";
 import { ITickets } from "../../../interfaces/ITickets";
 import { useTickets } from "../../../hooks/useTickets";
-import EditTicket from "./modals/editTicket";
-import AddTicket from "./modals/addTicket";
+import { EditTicket } from "./modals/editTicket";
+import { AddTicket } from "./modals/addTicket";
 //import FinishTicket from "./modals/finishTicket";
 
 type Order = 'asc' | 'desc';
