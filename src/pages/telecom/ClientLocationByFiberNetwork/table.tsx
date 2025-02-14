@@ -10,6 +10,7 @@ import { Switch, Box, Checkbox, Link, Typography } from '@mui/joy';
 type Order = 'asc' | 'desc';
 
 interface Data {
+    created_at: Date;
     pppoe: string;
     serialNumber: string;
     rxOnt: number;
@@ -31,6 +32,14 @@ interface HeadCell {
 }
   
 const headCells: readonly HeadCell[] = [
+    {
+        id: 'created_at',
+        sort: true,
+        nested: false,
+        numeric: false,
+        disablePadding: true,
+        label: 'Criado em',
+    },
     {
         id: 'pppoe',
         sort: false,

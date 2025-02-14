@@ -29,7 +29,7 @@ export function TicketContextProvider({ children }: {children: ReactNode}) {
 
     useEffect(() => {
         const getData = async () => {
-            const response = await getTickets({departmentId: user.rule});
+            const response = await getTickets({departmentId: user!.rule});
             response.success ? setTickets(response.responses.response) : setTickets([]);
         }
         getData();

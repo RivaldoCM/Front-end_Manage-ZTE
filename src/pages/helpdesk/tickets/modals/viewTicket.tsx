@@ -61,7 +61,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
     useEffect(() => {
         setCurrentStatus(props.ticket.Ticket_status.id);
         async function updateData(){
-            if(!props.ticket.is_viwed && user.rule === props.ticket.Destination_department.id){
+            if(!props.ticket.is_viwed && user!.rule === props.ticket.Destination_department.id){
                 await updateTicket({ ticketId: props.ticket.id, isViwed: true });
             }
             const response = await getTicketStatus();
@@ -98,7 +98,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
     const handleChangeTicketStatus = async (_e: unknown, value: number | null) => {
         if(value){ setCurrentStatus(value); }
         await updateTicket({
-            userId: user.uid, 
+            userId: user!.uid, 
             ticketId: props.ticket.id, 
             status: value, 
         });
@@ -121,7 +121,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
 
         if(message.match(/^(?!\s*$).+/)){
             await addChatLog({
-                userId: user.uid, 
+                userId: user!.uid, 
                 ticketId: props.ticket.id, 
                 message: message,
                 isAutoMessage: false
@@ -239,7 +239,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                 variant="outlined"
                                 value={currentStatus}
                                 onChange={handleChangeTicketStatus} 
-                                disabled={props.ticket.is_opened && user.rule === props.ticket.Destination_department.id ? false : true}
+                                disabled={props.ticket.is_opened && user!.rule === props.ticket.Destination_department.id ? false : true}
                             >
                                 { 
                                     ticketStatus && ticketStatus.map((status, index) => {
@@ -359,7 +359,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                             </header>
                             <Divider />
                             <div>
-                                <Chat messages={chatLogFiltered} me={user.uid} />
+                                <Chat messages={chatLogFiltered} me={user!.uid} />
                             </div>
                             <footer>
                                 <Textarea

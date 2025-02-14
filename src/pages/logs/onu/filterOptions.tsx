@@ -120,7 +120,7 @@ export function FilterOptions({onFilterChange}: IFilterOnuLogsProps){
         }
 
         (async () => {
-            const olts = await getOlt({});
+            const olts = await getOlt({vlans: false});
             if (active) {
                 if(olts.success){
                     if(olts.success){

@@ -34,8 +34,8 @@ export default function AddTicket({ open, handleClose }: any) {
     const [departments, setDepartments] = useState<IDepartments[]>([]);
     const [fiberNetwork, setFiberNetwork] = useState<IFiberNetwork[]>([]);
     const [form, setForm] = useState<ITicketsForm>({
-        userId: user?.uid,
-        originDepartmentId: user?.rule,
+        userId: user!.uid,
+        originDepartmentId: user!.rule,
         destinationDepartmentId: null,
         cityId: 0 || null,
         ticketTypeId: null,

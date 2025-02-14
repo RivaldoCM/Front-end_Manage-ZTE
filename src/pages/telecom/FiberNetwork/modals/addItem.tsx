@@ -38,7 +38,7 @@ export default function AddItemModal({ open, handleClose }: any) {
 
         if(!loadingOlts){ return undefined};
         (async () => {
-            const res = await getOlt({});
+            const res = await getOlt({vlans: false});
             if(active){
                 if(res.success){
                     setOlts(res.responses.response);

@@ -61,7 +61,7 @@ export function EditOlt(){
     useEffect(() => {
         async function getData(){
             const getCity = getCities();
-            const getOlts = getOlt({id: parseInt(params.id!)})
+            const getOlts = getOlt({id: parseInt(params.id!), vlans: true});
             const getModel = getOltModel();
             const getManufacturer = getOltManufacturer();
             const [olt, cities, models, manufacturers] = await Promise.all([getOlts, getCity, getModel, getManufacturer]);
@@ -116,7 +116,7 @@ export function EditOlt(){
     const handleMouseDownFormIp = async () => {
         //verifica se tem OLT's com o mesmo IP.
         if(form.host !== '' && form.host.match(isValidIp)){
-            const response = await getOlt({id: parseInt(params.id!), host: form.host});
+            const response = await getOlt({id: parseInt(params.id!), host: form.host, vlans: false});
             if(response){
                 if(response.success){
                     if(response.responses.response){

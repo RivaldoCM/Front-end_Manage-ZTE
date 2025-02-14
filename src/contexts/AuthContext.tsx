@@ -15,9 +15,10 @@ export function AuthContextProvider(props: IAuthContextProviderProps){
                 const decodedToken: IDecodedJWT = jwtDecode(storedToken);
                 return decodedToken;
             } catch(err){
-                return;
+                return undefined;
             }
         }
+        return undefined;
     });
     handleShowPageByRule(user?.rule);
     return(

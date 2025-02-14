@@ -122,12 +122,8 @@ export function Tickets(){
                     <p>{tickets.filter((ticket) => ticket.is_opened ===  true).length}</p>
                 </InfoCard>
                 <InfoCard>
-                    <p>Em aberto por mim</p>
-                    <p>{tickets.filter((ticket) => ticket.is_opened ===  true && ticket.User_created_by.id === user.uid).length}</p>
-                </InfoCard>
-                <InfoCard>
-                    <p>Encerram hoje</p>
-                    <p>5</p>
+                    <p>Abertos por mim</p>
+                    <p>{tickets.filter((ticket) => ticket.is_opened ===  true && ticket.User_created_by.id === user!.uid).length}</p>
                 </InfoCard>
             </section>
             <section>
@@ -136,7 +132,7 @@ export function Tickets(){
                     sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
                 >
                     <EnhancedTableToolbar
-                        user={user}
+                        user={user!}
                         ticketId={tickets.find((row) => row.id === selected[0])?.id}
                         isOpened={tickets.find((row) => row.id === selected[0])?.is_opened}
                         originDepartmentId={tickets.find((row) => row.id === selected[0])?.Origin_department.id}
