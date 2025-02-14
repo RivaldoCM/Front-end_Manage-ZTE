@@ -17,10 +17,9 @@ import { Option, Select, Textarea } from '@mui/joy';
 import { getNetworkTopology } from '../../../../services/apiManageONU/getNetworkTopology';
 import { useAuth } from '../../../../hooks/useAuth';
 import { AddTicketStyle } from '../style';
-import { addTicket } from '../../../../services/apiManageONU/addTicket';
 import { ITickets, ITicketsForm, ITicketTypes } from '../../../../interfaces/ITickets';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { SelectChangeEvent } from '@mui/material';
+
 import { updateTicket } from '../../../../services/apiManageONU/updateTicket';
 
 type EditTicketPropsLocal = {

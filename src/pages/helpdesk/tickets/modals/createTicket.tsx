@@ -25,7 +25,7 @@ import { AddTicketStyle } from '../style';
 import { addTicket } from '../../../../services/apiManageONU/addTicket';
 import { ITicketsForm, ITicketTypes } from '../../../../interfaces/ITickets';
 
-export function AddTicket({ open, handleClose }: any) {
+export function CreateTicket({ open, handleClose }: any) {
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 

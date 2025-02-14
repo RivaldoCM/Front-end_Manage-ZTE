@@ -18,12 +18,11 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Data, EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
 import { ViewTicketModal } from "./modals/viewTicket";
 import { useAuth } from "../../../hooks/useAuth";
-import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
 import { useResponse } from "../../../hooks/useResponse";
 import { ITickets } from "../../../interfaces/ITickets";
 import { useTickets } from "../../../hooks/useTickets";
 import { EditTicket } from "./modals/editTicket";
-import { AddTicket } from "./modals/addTicket";
+import { CreateTicket } from "./modals/createTicket";
 //import FinishTicket from "./modals/finishTicket";
 
 type Order = 'asc' | 'desc';
@@ -286,7 +285,7 @@ export function Tickets(){
             </section>
             {
                 openNewTicket && ( 
-                    <AddTicket
+                    <CreateTicket
                         open={openNewTicket} 
                         handleClose={handleCloseNewTicket}
                     /> 
