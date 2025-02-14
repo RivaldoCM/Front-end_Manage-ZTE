@@ -119,6 +119,7 @@ export default function ClientFiberNetworkData(){
     const handleSentUpdate = () => {
         //ASSIM QUE ATUALIZA O VALOR, AQUI VAI RETIRAR A SELEÇÃO DO USER
         setSelected([]);
+        setUpToDate(false);
     }
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -143,6 +144,9 @@ export default function ClientFiberNetworkData(){
                         theme.vars.palette.success.softBg,
                     '& thead th:nth-child(1)': {
                         width: '40px',
+                    },
+                    '& thead th:nth-child(2)': {
+                        width: '200px',
                     },
                     '& tr > *:nth-child(n+3)': { textAlign: 'center' },
                 }}
@@ -200,7 +204,7 @@ export default function ClientFiberNetworkData(){
                                 <td>{row.ctoId}</td>
                                 <td>{row.portId}</td>
                                 <td>{row.Client_created_by.name}</td>
-                                <td>{row.Client_updated_by.name}</td>
+                                <td>{row.Client_updated_by ? row.Client_updated_by.name : ''}</td>
                                 <td>
                                     {
                                         row.is_updated ? 

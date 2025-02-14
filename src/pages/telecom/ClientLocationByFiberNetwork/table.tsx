@@ -251,8 +251,6 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps){
     },[upToDate]);
 
     const handleSubmit = () => {
-        setChecked(!checked);
-
         async function getData(){
             const data = await updateClientUpdated({id: rowId[0], isUpdated: upToDate, userId: userId});
             if(data){
