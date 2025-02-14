@@ -13,7 +13,7 @@ type IOnuLogs = {
     User:{
         name: string;
     }
-    City: {
+    Cities: {
         name: string
     },
     Olts: {
@@ -37,7 +37,7 @@ type IOnuLogsProps = {
         User:{
             name: string;
         }
-        City: {
+        Cities: {
             name: string
         },
         Olts: {

@@ -14,6 +14,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { SearchInput } from '../../../components/SeachInput';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 
+type Order = 'asc' | 'desc';
 export interface Data {
     name: string,
     number: number,
@@ -60,8 +61,6 @@ function descendingComparator<T>(a: any, b: any, orderBy: keyof T, isNested: Boo
         return 0;
     }
 }
-
-type Order = 'asc' | 'desc';
 
 export function getComparator<Key extends keyof Data>(
     order: Order,

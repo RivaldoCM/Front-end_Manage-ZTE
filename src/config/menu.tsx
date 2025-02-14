@@ -90,23 +90,23 @@ export const handlePages: IAllPages[] = [
     {
         name: "Infra",
         pages: [
-            {fiber_network: 'Mapa de rede Fibra(DEV)'},
+            /*{fiber_network: 'Mapa de rede Fibra(DEV)'},*/
             {client_location: 'Organização de clientes'}
         ]
     },
-    /*
     {
         name: "HelpDesk",
         pages: [
+            /*
             {
                 'helpdesk/dashboard': 'Dashboard'
             },
+            */
             {
                 'helpdesk/tickets': 'Tickets'
             }
         ]
     },
-    */
     {
         name: 'ExitLag',
         pages: [
@@ -126,31 +126,31 @@ export const handleShowPageByRule = (rule?: number) => {
         case 10: 
             let onusMassive = cloneDeep(handlePages);
             onusMassive.splice(1,2);
-            onusMassive.splice(2,3);
+            onusMassive.splice(2,4);
             onusMassive[1].pages.splice(1,2);
         return handleDynamicPagesByRule = onusMassive;
         case 1:
         case 2: 
             let withoutDashboardBreak = cloneDeep(handlePages);
             withoutDashboardBreak.splice(0,3);
-            withoutDashboardBreak.splice(2,1)
+            withoutDashboardBreak.splice(2,2)
             withoutDashboardBreak[1].pages.splice(0,1);
         return handleDynamicPagesByRule = withoutDashboardBreak;
         case 6:
             let massiveAndExitLag = cloneDeep(handlePages);
             massiveAndExitLag.splice(0,3);
-            massiveAndExitLag.splice(1,2);
+            massiveAndExitLag.splice(1,3);
             return handleDynamicPagesByRule = massiveAndExitLag;
         case 3:
             let onlyBreakTime = cloneDeep(handlePages);
             onlyBreakTime.splice(0,3);
-            onlyBreakTime.splice(2,1);
+            onlyBreakTime.splice(2,2);
             return handleDynamicPagesByRule = onlyBreakTime;
         case 19:
             let withoutAdmin = cloneDeep(handlePages);
             withoutAdmin.splice(1,1);
             withoutAdmin.splice(3,1);
-            withoutAdmin.splice(4,2);
+            withoutAdmin.splice(5,1);
         return handleDynamicPagesByRule = withoutAdmin;
         default:
             let onlyMassive = cloneDeep(handlePages);

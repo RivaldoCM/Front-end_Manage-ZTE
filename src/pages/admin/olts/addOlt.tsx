@@ -76,7 +76,7 @@ export function AddOlt(){
     const handleMouseDownFormIp = async () => {
         //verifica se tem OLT's com o mesmo IP.
         if(form.host !== '' && form.host.match(isValidIp)){
-            const response = await getOlt({host: form.host});
+            const response = await getOlt({host: form.host, vlans: false});
             if(response){
                 if(response.success){
                     if(response.responses.response){

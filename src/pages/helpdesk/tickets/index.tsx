@@ -9,122 +9,105 @@ import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import Checkbox from '@mui/joy/Checkbox';
 import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
+
 import IconButton from '@mui/joy/IconButton';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
-
+import { Data, EnhancedTableHead, EnhancedTableToolbar, getComparator, labelDisplayedRows } from "./table";
+import { ViewTicketModal } from "./modals/viewTicket";
+import { useAuth } from "../../../hooks/useAuth";
+import { useResponse } from "../../../hooks/useResponse";
+import { ITickets } from "../../../interfaces/ITickets";
+import { useTickets } from "../../../hooks/useTickets";
+import { EditTicket } from "./modals/editTicket";
+import { CreateTicket } from "./modals/createTicket";
+//import FinishTicket from "./modals/finishTicket";
 
 type Order = 'asc' | 'desc';
 
-interface Data {
-    calories: number;
-    carbs: number;
-    fat: number;
-    name: string;
-    protein: number;
-}
-  
-
-function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-  ): Data {
-    return {
-      name,
-      calories,
-      fat,
-      carbs,
-      protein,
-    };
-  }
-
-const rows = [
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Donut', 452, 25.0, 51, 4.9),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-    createData('Honeycomb', 408, 3.2, 87, 6.5),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Jelly Bean', 375, 0.0, 94, 0.0),
-    createData('KitKat', 518, 26.0, 65, 7.0),
-    createData('Lollipop', 392, 0.2, 98, 0.0),
-    createData('Marshmallow', 318, 0, 81, 2.0),
-    createData('Nougat', 360, 19.0, 9, 37.0),
-    createData('Oreo', 437, 18.0, 63, 4.0),
-];
-
 export function Tickets(){
+    const { user } = useAuth();
+    const { tickets, chatLogListener, setChatLogListener } = useTickets();
+    const { setFetchResponseMessage } = useResponse();
+
     const [order, setOrder] = useState<Order>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Data>('calories');
-    const [selected, setSelected] = useState<readonly string[]>([]);
+    const [orderBy, setOrderBy] = useState<keyof Data>('ticketId');
+    const [isNested, setIsNested] = useState<boolean>(false);
+    const [selected, setSelected] = useState<readonly number[]>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const [openNewTicket, setOpenNewTicket] = useState(false);
+    const [openViewTicket, setOpenViewTicket] = useState(false);
+    const [openEditTicket, setOpenEditTicket] = useState(false);
+    //const [openFinishTicket, setOpenFinishTicket] = useState(false);
+
+    const handleOpenNewTicket = () => { setOpenNewTicket(true); }
+    const handleCloseNewTicket = () => { setOpenNewTicket(false); }
+    const handleOpenViewTicket = () => { setOpenViewTicket(true); }
+    const handleCloseViewTicket = () => { 
+        setOpenViewTicket(false); 
+        setChatLogListener({
+            ...chatLogListener,
+            isOpened: false
+        });
+    }
+    const handleOpenEditTicket = () => { setOpenEditTicket(true); }
+    const handleCloseEditTicket = () => { setOpenEditTicket(false); }
+    //const handleOpenFinishTicket = () => { setOpenFinishTicket(true); }
+    //const handleCloseFinishTicket = () => { setOpenFinishTicket(false); }
 
     const handleRequestSort = (
         _event: React.MouseEvent<unknown>,
         property: keyof Data,
+        isNested: boolean
     ) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+        setIsNested(isNested);
     };
+
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-          const newSelected = rows.map((n) => n.name);
+          const newSelected = tickets.map((n) => n.id);
           setSelected(newSelected);
           return;
         }
         setSelected([]);
     };
 
-    const handleClick = (_event: React.MouseEvent<unknown>, name: string) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected: readonly string[] = [];
-        if (selectedIndex === -1) {
-          newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-          newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-          newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-          newSelected = newSelected.concat(
-            selected.slice(0, selectedIndex),
-            selected.slice(selectedIndex + 1),
-          );
+    const handleClick = (_event: React.MouseEvent<unknown>, ticket: ITickets) => {
+        if(selected[0] === ticket.id){
+            setSelected([]);
+            return;
         }
-        setSelected(newSelected);
-      };
-      const handleChangePage = (newPage: number) => {
-        setPage(newPage);
-      };
-      const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
+        setSelected([ticket.id]);
+    };
+      
+    const handleChangePage = (newPage: number) => { setPage(newPage); };
+    const handleChangeRowsPerPage = (_event: any, newValue: number | null) => {
         setRowsPerPage(parseInt(newValue!.toString(), 10));
         setPage(0);
     };
 
     const getLabelDisplayedRowsTo = () => {
-        if (rows.length === -1) {
+        if (tickets.length === -1) {
             return (page + 1) * rowsPerPage;
         }
         return rowsPerPage === -1
-        ? rows.length
-        : Math.min(rows.length, (page + 1) * rowsPerPage);
+        ? tickets.length
+        : Math.min(tickets.length, (page + 1) * rowsPerPage);
     };
-    
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tickets.length) : 0;
 
     return(
         <Controller className="flex">
             <header>
-                <Button 
+                <Button
+                    onClick={handleOpenNewTicket}
                     startDecorator={<Add />} 
                     color="success"
                     size="sm"
@@ -134,20 +117,12 @@ export function Tickets(){
             </header>
             <section className="flex">
                 <InfoCard>
-                    <p>Abertos</p>
-                    <p>0</p>
+                    <p>Total em aberto</p>
+                    <p>{tickets.filter((ticket) => ticket.is_opened ===  true).length}</p>
                 </InfoCard>
                 <InfoCard>
-                    <p>Encerram hoje</p>
-                    <p>2</p>
-                </InfoCard>
-                <InfoCard>
-                    <p>Em atraso</p>
-                    <p>5</p>
-                </InfoCard>
-                <InfoCard>
-                    <p>Em atraso</p>
-                    <p>5</p>
+                    <p>Abertos por mim</p>
+                    <p>{tickets.filter((ticket) => ticket.is_opened ===  true && ticket.User_created_by.id === user!.uid).length}</p>
                 </InfoCard>
             </section>
             <section>
@@ -155,21 +130,31 @@ export function Tickets(){
                     variant="outlined"
                     sx={{ width: '100%', boxShadow: 'sm', borderRadius: 'sm' }}
                 >
-                    <EnhancedTableToolbar numSelected={selected.length} />
+                    <EnhancedTableToolbar
+                        user={user!}
+                        ticketId={tickets.find((row) => row.id === selected[0])?.id}
+                        isOpened={tickets.find((row) => row.id === selected[0])?.is_opened}
+                        originDepartmentId={tickets.find((row) => row.id === selected[0])?.Origin_department.id}
+                        destinationDepartmentId={tickets.find((row) => row.id === selected[0])?.Destination_department.id}
+                        numSelected={selected.length}
+                        onOpenViewTicket={handleOpenViewTicket}
+                        onOpenEditTicket={handleOpenEditTicket}
+                        //onOpenFinishTicket={handleOpenFinishTicket}
+                    />
                     <Table
                         stickyFooter
                         hoverRow
                         sx={{
-                        '--TableCell-headBackground': 'transparent',
-                        '--TableCell-selectedBackground': (theme) =>
-                            theme.vars.palette.success.softBg,
-                        '& thead th:nth-child(1)': {
-                            width: '40px',
-                        },
-                        '& thead th:nth-child(2)': {
-                            width: '30%',
-                        },
-                        '& tr > *:nth-child(n+3)': { textAlign: 'right' },
+                            '--TableCell-headBackground': 'transparent',
+                            '--TableCell-selectedBackground': (theme) =>
+                                theme.vars.palette.success.softBg,
+                            '& thead th:nth-child(1)': {
+                                width: '40px',
+                            },
+                            '& thead th:nth-child(2)': {
+                                width: '120px',
+                            },
+                            '& tr > *:nth-child(n+3)': { textAlign: 'center' },
                         }}
                     >
                         <EnhancedTableHead
@@ -178,24 +163,23 @@ export function Tickets(){
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
+                            rowCount={tickets.length}
                         />
                         <tbody>
-                        {[...rows]
-                            .sort(getComparator(order, orderBy))
+                        {[...tickets]
+                            .sort(getComparator(order, orderBy, isNested))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-                            const isItemSelected = selected.includes(row.name);
+                            const isItemSelected = selected.includes(row.id);
                             const labelId = `enhanced-table-checkbox-${index}`;
 
                             return (
                                 <tr
-                                    onClick={(event) => handleClick(event, row.name)}
+                                    onClick={(event) => handleClick(event, row)}
                                     role="checkbox"
                                     aria-checked={isItemSelected}
                                     tabIndex={-1}
-                                    key={row.name}
-                                    // selected={isItemSelected}
+                                    key={row.id}
                                     style={
                                         isItemSelected
                                         ? ({
@@ -219,12 +203,13 @@ export function Tickets(){
                                         />
                                     </th>
                                     <th id={labelId} scope="row">
-                                        {row.name}
+                                        {row.id}
                                     </th>
-                                    <td>{row.calories}</td>
-                                    <td>{row.fat}</td>
-                                    <td>{row.carbs}</td>
-                                    <td>{row.protein}</td>
+                                    <td>{row.User_created_by.name}</td>
+                                    <td>{row.Tickets_city.name}</td>
+                                    <td>{row.Ticket_Types.name}</td>
+                                    <td>{row.User_appropriated_by ? row.User_appropriated_by.name : ''}</td>
+                                    <td>{row.Ticket_status.name}</td>
                                 </tr>
                             );
                         })}
@@ -242,7 +227,7 @@ export function Tickets(){
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colSpan={6}>
+                                <td colSpan={7}>
                                     <Box
                                         sx={{
                                             display: 'flex',
@@ -252,7 +237,6 @@ export function Tickets(){
                                         }}
                                     >
                                         <FormControl orientation="horizontal" size="sm">
-                                            <FormLabel>Rows per page:</FormLabel>
                                             <Select onChange={handleChangeRowsPerPage} value={rowsPerPage}>
                                                 <Option value={5}>5</Option>
                                                 <Option value={10}>10</Option>
@@ -261,9 +245,9 @@ export function Tickets(){
                                         </FormControl>
                                         <Typography sx={{ textAlign: 'center', minWidth: 80 }}>
                                             {labelDisplayedRows({
-                                                from: rows.length === 0 ? 0 : page * rowsPerPage + 1,
+                                                from: tickets.length === 0 ? 0 : page * rowsPerPage + 1,
                                                 to: getLabelDisplayedRowsTo(),
-                                                count: rows.length === -1 ? -1 : rows.length,
+                                                count: tickets.length === -1 ? -1 : tickets.length,
                                             })}
                                         </Typography>
                                         <Box sx={{ display: 'flex', gap: 1 }}>
@@ -282,8 +266,8 @@ export function Tickets(){
                                                 color="neutral"
                                                 variant="outlined"
                                                 disabled={
-                                                    rows.length !== -1
-                                                        ? page >= Math.ceil(rows.length / rowsPerPage) - 1
+                                                    tickets.length !== -1
+                                                        ? page >= Math.ceil(tickets.length / rowsPerPage) - 1
                                                         : false
                                                     }
                                                 onClick={() => handleChangePage(page + 1)}
@@ -299,6 +283,43 @@ export function Tickets(){
                     </Table>
                 </Sheet>
             </section>
+            {
+                openNewTicket && ( 
+                    <CreateTicket
+                        open={openNewTicket} 
+                        handleClose={handleCloseNewTicket}
+                    /> 
+                )
+            }
+            {
+                openViewTicket && ( 
+                    <ViewTicketModal 
+                        open={openViewTicket}
+                        ticket={tickets.find((row) => row.id === selected[0])!}
+                        handleClose={handleCloseViewTicket}
+                    /> 
+                )
+            }
+            {
+                openEditTicket && ( 
+                    <EditTicket 
+                        open={openEditTicket}
+                        ticket={tickets.find((row) => row.id === selected[0])!}
+                        handleClose={handleCloseEditTicket}
+                    /> 
+                )
+            }
+            {
+                /*
+                openFinishTicket && ( 
+                    <FinishTicket 
+                        open={openFinishTicket}
+                        ticket={tickets.find((row) => row.id === selected[0])!}
+                        handleClose={handleCloseFinishTicket}
+                    /> 
+                )
+                */
+            }
         </Controller>
     )
 }

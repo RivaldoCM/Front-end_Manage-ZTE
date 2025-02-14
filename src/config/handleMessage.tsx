@@ -192,6 +192,16 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
                 responseMessage: 'Preencha de forma correta os campos.',
                 severityStatus: 'warning'
             }
+        case 'success/appropriated-successful':
+            return{
+                responseMessage: 'Ticket Apropriado com sucesso.',
+                severityStatus: 'success'
+            }
+        case 'success/appropriated-failed':
+            return{
+                responseMessage: 'Não foi possível se apropriar deste ticket.',
+                severityStatus: 'error'
+            }
         default:
             return{
                 responseMessage: 'Erro interno, verifique com o suporte.',

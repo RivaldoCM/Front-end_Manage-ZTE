@@ -58,17 +58,19 @@ const renderDepartment = (args: number) => {
         case 11:
             return <TableCell align="right">Cobrança</TableCell>
         case 12:
-            return <TableCell align="right">Cobrança</TableCell>
+            return <TableCell align="right">Supervisor Cobrança</TableCell>
         case 13:
             return <TableCell align="right">Retenção</TableCell>
         case 14:
             return <TableCell align="right">NOC</TableCell>
         case 15:
-            return <TableCell align="right">Cobrança</TableCell>
+            return <TableCell align="right">Supervisor Tecnicos</TableCell>
         case 16:
             return <TableCell align="right">CGR</TableCell>
         case 17:
             return <TableCell align="right">Administrador</TableCell>
+        case 18:
+            return <TableCell align="right">Infra</TableCell>
         default:
             return <TableCell align="right">Outros</TableCell>
     }

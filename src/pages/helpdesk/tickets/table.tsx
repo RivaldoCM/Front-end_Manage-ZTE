@@ -1,32 +1,48 @@
-import * as React from 'react';
+import React from 'react';
+
 import Box from '@mui/joy/Box';
 import Typography from '@mui/joy/Typography';
 import Checkbox from '@mui/joy/Checkbox';
 import IconButton from '@mui/joy/IconButton';
 import Link from '@mui/joy/Link';
 import Tooltip from '@mui/joy/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { visuallyHidden } from '@mui/utils';
+import { SearchInput } from '../../../components/SeachInput';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
+import { IAuthedUser } from '../../../interfaces/IUsers';
 
-interface Data {
-  calories: number;
-  carbs: number;
-  fat: number;
-  name: string;
-  protein: number;
+//import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+
+import { useResponse } from '../../../hooks/useResponse';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { updateTicket } from '../../../services/apiManageONU/updateTicket';
+import { ITickets } from '../../../interfaces/ITickets';
+
+type Order = 'asc' | 'desc';
+export interface Data {
+  ticketId: number;
+  createdBy: string;
+  city: string;
+  appropriatedBy: string;
+  'Ticket_status.id': string;
+  'Ticket_Types.id': number;
 }
 
 interface EnhancedTableToolbarProps {
+    user: IAuthedUser;
     numSelected: number;
+    ticketId: number | undefined;
+    isOpened: boolean | undefined;
+    originDepartmentId?: number;
+    destinationDepartmentId?: number;
+    onOpenViewTicket: () => void;
+    onOpenEditTicket: () => void;
+    //onOpenFinishTicket: () => void;
 }
 
-export function labelDisplayedRows({
-  from,
-  to,
-  count,
-}: {
+export function labelDisplayedRows({ from, to, count,} : {
   from: number;
   to: number;
   count: number;
@@ -34,28 +50,39 @@ export function labelDisplayedRows({
   return `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`;
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
+function descendingComparator<T>(a: any, b: any, orderBy: keyof T, isNested: boolean) {
+    if(isNested){
+        const nested = orderBy.toString().split('.');
+        console.log(a.Ticket_status.id)
+        if (b[nested[0]][nested[1]] < a[nested[0]][nested[1]]) {
+            return -1;
+        }
+        if (b[nested[0]][nested[1]] > a[nested[0]][nested[1]]) {
+            return 1;
+        }
+        return 0;
+    } else {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
     }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
 }
 
-type Order = 'asc' | 'desc';
-
-export function getComparator<Key extends keyof any>(
+export function getComparator<Key extends keyof Data>(
     order: Order,
     orderBy: Key,
+    isNested: boolean
 ): (
-    a: { [key in Key]: number | string },
-    b: { [key in Key]: number | string },
+    a: ITickets,
+    b: ITickets,
 ) => number {
     return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
+        ? (a, b) => descendingComparator(a, b, orderBy, isNested)
+        : (a, b) => -descendingComparator(a, b, orderBy, isNested);
 }
 
 interface HeadCell {
@@ -63,44 +90,64 @@ interface HeadCell {
     id: keyof Data;
     label: string;
     numeric: boolean;
+    sort: Boolean;
+    nested: boolean,
 }
 
 const headCells: readonly HeadCell[] = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Dessert (100g serving)',
-  },
-  {
-    id: 'calories',
-    numeric: true,
-    disablePadding: false,
-    label: 'Calories',
-  },
-  {
-    id: 'fat',
-    numeric: true,
-    disablePadding: false,
-    label: 'Fat (g)',
-  },
-  {
-    id: 'carbs',
-    numeric: true,
-    disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
-  },
+    {
+        id: 'ticketId',
+        sort: false,
+        nested: false,
+        numeric: false,
+        disablePadding: true,
+        label: 'Identificador',
+    },
+    {
+        id: 'createdBy',
+        sort: false,
+        nested: false,
+        numeric: false,
+        disablePadding: false,
+        label: 'Aberto por',
+    },
+    {
+        id: 'city',
+        sort: false,
+        nested: false,
+        numeric: false,
+        disablePadding: false,
+        label: 'Cidade',
+    },
+    {
+        id: 'Ticket_Types.id',
+        sort: true,
+        nested: true,
+        numeric: false,
+        disablePadding: false,
+        label: 'Tipo de problema',
+    },
+    {
+        id: 'appropriatedBy',
+        sort: false,
+        nested: false,
+        numeric: false,
+        disablePadding: false,
+        label: 'Apropriado por',
+    },
+    {
+        id: 'Ticket_status.id',
+        sort: true,
+        nested: true,
+        numeric: true,
+        disablePadding: false,
+        label: 'Status',
+    },
 ];
 
 interface EnhancedTableProps {
     numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
+    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data, isNested: boolean) => void;
     onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
     order: Order;
     orderBy: string;
@@ -109,8 +156,8 @@ interface EnhancedTableProps {
 
 export function EnhancedTableHead(props: EnhancedTableProps) {
     const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-        onRequestSort(event, property);
+    const createSortHandler = (property: keyof Data, isSortable: Boolean, isNested: boolean) => (event: React.MouseEvent<unknown>) => {
+        isSortable ? onRequestSort(event, property, isNested): null;
     };
 
     return (
@@ -123,8 +170,8 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
                         onChange={onSelectAllClick}
                         slotProps={{
                         input: {
-                            'aria-label': 'select all desserts',
-                        },
+                                'aria-label': 'select all desserts',
+                            },
                         }}
                         sx={{ verticalAlign: 'sub' }}
                     />
@@ -140,35 +187,34 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
                                 : undefined
                             }
                         >
-                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                             <Link
                                 underline="none"
                                 color="neutral"
                                 textColor={active ? 'primary.plainColor' : undefined}
                                 component="button"
-                                onClick={createSortHandler(headCell.id)}
+                                onClick={createSortHandler(headCell.id, headCell.sort, headCell.nested)}
                                 startDecorator={
-                                    headCell.numeric ? (
+                                    headCell.numeric && headCell.sort ? (
                                         <ArrowDownwardIcon
                                             sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                                         />
                                     ) : null
                                 }
                                 endDecorator={
-                                    !headCell.numeric ? (
+                                    !headCell.numeric && headCell.sort ? (
                                         <ArrowDownwardIcon
                                             sx={[active ? { opacity: 1 } : { opacity: 0 }]}
                                         />
                                     ) : null
                                 }
                                 sx={{
-                                fontWeight: 'lg',
-                                '& svg': {
-                                    transition: '0.2s',
-                                    transform:
-                                    active && order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
-                                },
-                                '&:hover': { '& svg': { opacity: 1 } },
+                                    fontWeight: 'lg',
+                                    '& svg': {
+                                        transition: '0.2s',
+                                        transform:
+                                        active && order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                                    },
+                                    '&:hover': { '& svg': { opacity: 1 } },
                                 }}
                             >
                                 {headCell.label}
@@ -187,7 +233,19 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected } = props;
+    const { setFetchResponseMessage } = useResponse();
+    const { numSelected, user, ticketId, originDepartmentId, destinationDepartmentId, isOpened } = props;
+
+    const handleAppropriate = async () => {
+        if(user.rule === destinationDepartmentId){
+            const response = await updateTicket({ ticketId: ticketId!, appropriatedBy: user.uid, userId: user.uid});
+
+            if(response && response.success){
+                setFetchResponseMessage(response.responses.status);
+            }
+        }
+    };
+
     return (
         <Box
             sx={[
@@ -207,7 +265,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         >
             {numSelected > 0 ? (
                 <Typography sx={{ flex: '1 1 100%' }} component="div">
-                    {numSelected} selected
+                    
                 </Typography>
             ) : (
                 <Typography
@@ -216,20 +274,49 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     id="tableTitle"
                     component="div"
                 >
-                    Nutrition
+                    Tickets
                 </Typography>
             )}
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton size="sm" color="danger" variant="solid">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <React.Fragment>
+                    {
+                        /*
+                        user.rule === destinationDepartmentId && (
+                            <Tooltip title="Encerrar ticket" sx={{mr: 1}}>
+                                <IconButton size="sm" variant="soft" >
+                                    <CheckCircleOutlinedIcon color="success" />
+                                </IconButton>
+                            </Tooltip>
+                        )
+                        */
+                    }
+                    {
+                        isOpened && user.rule === destinationDepartmentId && (
+                            <Tooltip title="Apropriar-se" sx={{mr: 1}}>
+                                <IconButton size="sm" color="primary" variant="soft" onClick={handleAppropriate}>
+                                    <PushPinOutlinedIcon color="primary" />
+                                </IconButton>
+                            </Tooltip>
+                        )
+                    }
+                    {
+                        isOpened && user.rule === originDepartmentId && (
+                            <Tooltip title="Editar" sx={{mr: 1}}>
+                                <IconButton size="sm" color="primary" variant="soft" onClick={props.onOpenEditTicket}>
+                                    <EditOutlinedIcon color="secondary" />
+                                </IconButton>
+                            </Tooltip>
+                        )
+                    }
+                    <Tooltip title="Vizualizar ticket">
+                        <IconButton size="sm" color="primary" variant="soft" onClick={props.onOpenViewTicket}>
+                            <VisibilityOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
+                </React.Fragment>
             ) : (
                 <Tooltip title="Filter list">
-                    <IconButton size="sm" variant="outlined" color="neutral">
-                        <FilterListIcon />
-                    </IconButton>
+                    <SearchInput placeholder='Busque aqui'/>
                 </Tooltip>
             )}
         </Box>

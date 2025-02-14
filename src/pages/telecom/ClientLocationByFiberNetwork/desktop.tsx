@@ -22,8 +22,10 @@ import {
     Table, 
     Typography 
 } from "@mui/joy";
+import dayjs from "dayjs";
 
 interface Data {
+    created_at: Date;
     pppoe: string;
     serialNumber: string;
     rxOnt: number;
@@ -196,6 +198,9 @@ export default function ClientFiberNetworkData(){
                                     />
                                 </th>
                                 <th id={labelId} scope="row">
+                                    {dayjs(row.created_at).add(3, "hour").format('DD/MM [às] HH:mm') + 'hrs'}
+                                </th>
+                                <th id={labelId} scope="row">
                                     {row.pppoe}
                                 </th>
                                 <td>{row.serialNumber}</td>
@@ -224,13 +229,13 @@ export default function ClientFiberNetworkData(){
                                 } as React.CSSProperties
                             }
                         >
-                            <td colSpan={10} aria-hidden />
+                            <td colSpan={11} aria-hidden />
                         </tr>
                     )}
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colSpan={10}>
+                        <td colSpan={11}>
                             <Box
                                 sx={{
                                     display: 'flex',
