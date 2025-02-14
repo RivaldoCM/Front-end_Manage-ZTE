@@ -368,6 +368,7 @@ export function ViewTicketModal(props: ViewTicketPropsLocal){
                                     minRows={1}
                                     maxRows={1}
                                     value={message}
+                                    disabled={props.ticket.Ticket_status.id === 4 ? true : false}
                                     endDecorator={
                                         <Box
                                             sx={{

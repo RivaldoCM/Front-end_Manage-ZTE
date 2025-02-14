@@ -20,10 +20,10 @@ import { ViewTicketModal } from "./modals/viewTicket";
 import { useAuth } from "../../../hooks/useAuth";
 import { IResponseData, IResponseError } from "../../../interfaces/IDefaultResponse";
 import { useResponse } from "../../../hooks/useResponse";
-import AddTicket from "./modals/addTicket";
 import { ITickets } from "../../../interfaces/ITickets";
 import { useTickets } from "../../../hooks/useTickets";
 import EditTicket from "./modals/editTicket";
+import AddTicket from "./modals/addTicket";
 //import FinishTicket from "./modals/finishTicket";
 
 type Order = 'asc' | 'desc';
@@ -286,7 +286,7 @@ export function Tickets(){
             </section>
             {
                 openNewTicket && ( 
-                    <AddTicket 
+                    <AddTicket
                         open={openNewTicket} 
                         handleClose={handleCloseNewTicket}
                     /> 
