@@ -19,13 +19,15 @@ import { updateLogsOnu } from '../../../../services/apiManageONU/updateLogOnu';
 import { IOnu } from '../../../../interfaces/IOnus';
 
 import { InputContainer } from '../../../../styles/globalStyles';
-import { SIP } from '../../style';
+import { SIP, Wifi } from '../../style';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import DialerSipOutlinedIcon from '@mui/icons-material/DialerSipOutlined';
+import RssFeedOutlinedIcon from '@mui/icons-material/RssFeedOutlined';
+import { Divider } from '@mui/material';
 
 export function ZTEForm({onu}: IOnu){
     const navigate = useNavigate();
@@ -34,7 +36,9 @@ export function ZTEForm({onu}: IOnu){
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
 
+    console.log(onu)
     const [checkedSIP, setCheckedSIP] = useState(false);
+    const [checkBandSteering, setCheckBandSteering] = useState(false);
 
     useEffect(() => {
         setAuthOnu({
@@ -42,7 +46,7 @@ export function ZTEForm({onu}: IOnu){
             sipUser: '',
             sipPass: ''
         });
-    }, [checkedSIP === false])
+    }, [checkedSIP === false]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setAuthOnu({
@@ -53,6 +57,14 @@ export function ZTEForm({onu}: IOnu){
 
     const handleChangeSIP = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckedSIP(event.target.checked);
+    };
+
+    const handleChangeCheckBandSteering = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckBandSteering(event.target.checked);
+        setAuthOnu({
+            ...authOnu,
+            isActiveBS: event.target.checked
+        });
     };
 
     const handleUpdateOltData = () => {
@@ -68,16 +80,27 @@ export function ZTEForm({onu}: IOnu){
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        console.log(onu.model,authOnu.isActiveBS)
         if(isLoading){
             setFetchResponseMessage('warning/has-action-in-progress');
         }else if(!authOnu.cpf.match(isValidCpf)){
             setFetchResponseMessage('warning/invalid-cpf-input');
-        }else if(typePppoeZte.includes(onu.model) && !authOnu.wifiName.match(isAlphaNumeric)){
-            setFetchResponseMessage('info/wifi-ssid-did-not-match');
-        }else if(typePppoeZte.includes(onu.model) && !authOnu.wifiPassword.match(isAlphaNumeric)){
-            setFetchResponseMessage('info/wifi-password-did-not-match');
-        }else if(typePppoeZte.includes(onu.model) && authOnu.wifiPassword.length < 8){
-            setFetchResponseMessage('info/wrong-type-passoword');
+        }else if(typePppoeZte.includes(onu.model) && authOnu.isActiveBS){
+            console.log('aq')
+            if(!authOnu.wifiNameBS.match(isAlphaNumeric) || !authOnu.wifiPasswordBS.match(isAlphaNumeric) 
+                || !authOnu.wifiNameBS.match(isAlphaNumeric) && !authOnu.wifiPasswordBS.match(isAlphaNumeric)){
+                setFetchResponseMessage('info/wifi-ssid-did-not-match');
+            }
+            if (authOnu.wifiPasswordBS.length < 8) { setFetchResponseMessage('info/wifi-password-did-not-match'); }
+        }else if(typePppoeZte.includes(onu.model) && !authOnu.isActiveBS){
+            if(!authOnu.wifiName24.match(isAlphaNumeric) || !authOnu.wifiPassword24.match(isAlphaNumeric)){
+                setFetchResponseMessage('info/wifi-ssid-did-not-match');
+            }
+            if (authOnu.wifiPassword24.length < 8) { setFetchResponseMessage('info/wifi-password-did-not-match'); }
+            if(!authOnu.wifiName58.match(isAlphaNumeric) || !authOnu.wifiPassword58.match(isAlphaNumeric)){
+                setFetchResponseMessage('info/wifi-ssid-did-not-match');
+            }
+            if (authOnu.wifiPassword58.length < 8) { setFetchResponseMessage('info/wifi-password-did-not-match'); }
         }else{
             startLoading();
             const peopleId = await getPeopleId(authOnu.cpf);
@@ -111,8 +134,12 @@ export function ZTEForm({onu}: IOnu){
                 cpf: authOnu.cpf,
                 pppoeUser: authOnu.pppoeUser,
                 pppPass: authOnu.pppoePassword,
-                wifiSSID: authOnu.wifiName,
-                wifiPass: authOnu.wifiPassword,
+                wifiSSIDBS: authOnu.wifiNameBS,
+                wifiPassBS: authOnu.wifiPasswordBS,
+                wifiSSID24: authOnu.wifiName24,
+                wifiPass24: authOnu.wifiPassword24,
+                wifiSSID58: authOnu.wifiName58,
+                wifiPass58: authOnu.wifiPassword58,
                 sipUser: authOnu.sipUser,
                 sipPass: authOnu.sipPass
             });
@@ -137,8 +164,12 @@ export function ZTEForm({onu}: IOnu){
                         cpf: '',
                         pppoeUser: '',
                         pppoePassword: '',
-                        wifiName: '',
-                        wifiPassword: '',
+                        wifiNameBS: '',
+                        wifiPasswordBS: '',
+                        wifiName24: '',
+                        wifiPassword24: '',
+                        wifiName58: '',
+                        wifiPassword58: '',
                         typeOnu: '',
                         modelOnu: 'F601',
                         voalleAccessPointId: ''
@@ -164,8 +195,8 @@ export function ZTEForm({onu}: IOnu){
                     serialNumber: onu.serialNumber,
                     modelOlt: onu.modelOlt,
                     accessPointId: authOnu.voalleAccessPointId,
-                    wifiSSID: authOnu.wifiName,
-                    wifiPass: authOnu.wifiPassword
+                    wifiSSID: authOnu.wifiNameBS ? authOnu.wifiNameBS : authOnu.wifiName24,
+                    wifiPass: authOnu.wifiPasswordBS ? authOnu.wifiPasswordBS : authOnu.wifiPassword24
                 });
                 updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
             } else {
@@ -173,6 +204,112 @@ export function ZTEForm({onu}: IOnu){
             }
         }
     };
+
+    const handleRenderWifiConfig = () => {
+        switch(checkBandSteering){
+            case true:
+                return(
+                    <React.Fragment>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiNameBS'
+                                    value={authOnu.wifiNameBS}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiPasswordBS'
+                                    value={authOnu.wifiPasswordBS}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                    </React.Fragment>
+                );
+            case false:
+                return(
+                    <React.Fragment>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi 2.4:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiName24'
+                                    value={authOnu.wifiName24}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi 2.4:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiPassword24'
+                                    value={authOnu.wifiPassword24}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <Divider />
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi 5.8:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiName58'
+                                    value={authOnu.wifiName58}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi 5.8:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiPassword58'
+                                    value={authOnu.wifiPassword58}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                    </React.Fragment>
+                );
+        }
+    }
 
     const handleRenderAddicionalConfig = () => {
         const onuModel = cleanUpModelName(onu.model);
@@ -198,36 +335,22 @@ export function ZTEForm({onu}: IOnu){
                                 </TextField>
                             </div>
                         </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Nome do Wifi:</p>
+                        <Wifi>
+                            <div className="wifi-header flex">
+                                <RssFeedOutlinedIcon color="primary"/>
+                                <p>Ativar Band Steering?</p>
+                                <Checkbox
+                                    checked={checkBandSteering}
+                                    onChange={handleChangeCheckBandSteering}
+                                    inputProps={{ 'aria-label': 'controlled' }}
+                                />
                             </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    variant="standard"
-                                    name='wifiName'
-                                    value={authOnu.wifiName}
-                                    onChange={(e) => handleChange(e)}
-                                >
-                                </TextField>
+                            <div className='input-wifi'>
+                                {
+                                    handleRenderWifiConfig()
+                                }
                             </div>
-                        </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Senha do Wifi:</p>
-                            </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    variant="standard"
-                                    name='wifiPassword'
-                                    value={authOnu.wifiPassword}
-                                    onChange={(e) => handleChange(e)}
-                                >
-                                </TextField>
-                            </div>
-                        </InputContainer>
+                        </Wifi>
                         <SIP>
                             <div className="sip-header flex">
                                 <DialerSipOutlinedIcon color="primary"/>

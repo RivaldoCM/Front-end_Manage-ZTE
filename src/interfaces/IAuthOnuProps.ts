@@ -13,8 +13,12 @@ export interface IAuthOnuProps {
     cpf: string,
     pppoeUser: string,
     pppPass?: string,
-    wifiSSID?: string,
-    wifiPass?: string,
+    wifiSSIDBS?: string,
+    wifiPassBS?: string,
+    wifiSSID24?: string,
+    wifiPass24?: string,
+    wifiSSID58?: string,
+    wifiPass58?: string,
     sipUser?: string,
     sipPass?: string
 }
