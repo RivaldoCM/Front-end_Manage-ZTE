@@ -1,5 +1,12 @@
 import styled from "styled-components";
 
+export const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`
+
 export const DataField = styled.div`
     width: 95%;
     flex-direction: column;
@@ -39,13 +46,6 @@ export const DataField = styled.div`
         }
     }
 `;
-
-export const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-`
 
 export const InfoStyle = styled.div`
     justify-content: space-around;
@@ -105,43 +105,6 @@ export const Macs = styled.div`
     }
 `
 
-export const Wireless = styled.div`
-    flex-direction: column;
-    justify-content: space-around;
-    width: 100%;
-    margin: .5rem 0;
-    padding: 0.4rem;
-    font-family: "Itim" !important;
-    border-radius: .8rem;
-    background-color: #f3f3f3;
-
-    div:first-of-type{
-        width: 100%;
-        margin-bottom: .5rem;
-        text-align: center;
-    }
-
-    .interface{
-        flex-direction: column;
-        width: 100%;
-        padding: 0.4rem;
-        border-radius: 0.8rem;
-        background: #e0e0e0 !important;
-
-        //TITULO
-        div:first-of-type{
-            width: 100%;
-            margin-bottom: .5rem;
-            text-align: start;
-        }
-
-        //CONTEUDO
-        div:last-of-type{
-            width: 90%;
-        }
-    }
-`
-
 export const Alarms = styled.div`
     flex-direction: column;
 
@@ -180,8 +143,52 @@ export const Alarms = styled.div`
     }
 `
 
+export const WirelessContainer = styled.div`
+    flex-direction: column;
+    width: 100%;
+    margin: .5rem 0;
+    border:1px solid hsl(0, 2.00%, 80.40%);
+    border-radius: .8rem;
+`
+
 export const WirelessTitle = styled.div`
     width: 100%;
     justify-content: space-around;
+    margin: .5rem 0;
+`
 
+export const Wireless = styled.div`
+    flex-direction: column;
+    justify-content: space-around;
+    width: 100%;
+    padding: 0 0.4rem;
+    font-family: "Itim" !important;
+    border-radius: .8rem;
+
+
+    div:first-of-type{
+        width: 100%;
+        margin-bottom: .5rem;
+        text-align: center;
+    }
+
+    .interface{
+        flex-direction: column;
+        width: 100%;
+        padding: 0.4rem;
+        border-radius: 0.8rem;
+        background: #e0e0e0 !important;
+
+        //TITULO
+        div:first-of-type{
+            width: 100%;
+            margin-bottom: .5rem;
+            text-align: start;
+        }
+
+        //CONTEUDO
+        div:last-of-type{
+            width: 90%;
+        }
+    }
 `

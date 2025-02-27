@@ -10,11 +10,13 @@ import { useLoading } from "../../hooks/useLoading";
 import { getOnuInfo } from "../../services/apiManageONU/getOnuInfo";
 
 import SendIcon from '@mui/icons-material/Send';
-import { Alarms, Container, DataField, InfoStyle, Macs, Wireless, WirelessTitle } from "./style";
+import { Alarms, Container, DataField, InfoStyle, Macs, Wireless, WirelessContainer, WirelessTitle } from "./style";
 //import { getVendors } from "../../services/macVendors/getVendors";
 import RssFeedOutlinedIcon from '@mui/icons-material/RssFeedOutlined';
 import { Wifi } from "../Provisionamento/style";
 import { InputContainer } from "../../styles/globalStyles";
+import CloseIcon from '@mui/icons-material/Close';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
 export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
@@ -101,9 +103,7 @@ export function OnuInfo(){
         setCheckBandSteering(e.target.checked);
     }
 
-    const handleEditWifi = () => {
-        setEditWifi(!editWifi);
-    }
+    const handleEditWifi = () => { setEditWifi(!editWifi); }
 
     const handleRenderWifiConfig = () => {
         switch(checkBandSteering){
@@ -211,7 +211,10 @@ export function OnuInfo(){
         }
     }
 
-    console.log(form)
+    const handleSubmitWifi = async () => {
+
+    }
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setOnu(null);
         e.preventDefault();
@@ -416,51 +419,68 @@ export function OnuInfo(){
                                     )
                                 }
                             </Alarms>
-                            <WirelessTitle className="flex">
-                                <h3>Wireless</h3>
-                                <Button variant="contained" endIcon={<RssFeedOutlinedIcon />} onClick={handleEditWifi}>
-                                    Editar wifi
-                                </Button>
-                            </WirelessTitle>
-                            {
-                                !editWifi ?
-                                    onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
-                                        //{ checkBandSteering && key === 'wifi_0/2' ? setForm({...form, wifi24: value.name}) : setForm({...form, wifi58: value.name})}
-                                        return(
-                                            <Wireless className="flex">
-
-                                                <div className="interface flex">
-                                                    <div><h4>{key}</h4></div>
-                                                    <div>
-                                                        <p><b>SSID:</b>{value.name}</p>
-                                                        <p><b>Senha:</b> {value.password}</p>
-                                                        <p><b>Segurança:</b> {value.authType}</p>
-                                                        <p><b>Encriptação:</b> {value.encryption}</p>
-                                                        <p><b>Isolamento:</b> {value.isolation}</p>
-                                                        <p><b>Usuários online:</b> {value.currentUsers}</p>
+                            <WirelessContainer className="flex">
+                                <WirelessTitle className="flex">
+                                    <h3>Wireless</h3>
+                                    <Button 
+                                        size="small" 
+                                        variant="contained"
+                                        color={!editWifi ? 'primary' : 'error'}
+                                        endIcon={!editWifi ? <RssFeedOutlinedIcon /> : <CloseIcon />} 
+                                        onClick={handleEditWifi} 
+                                    >
+                                        {!editWifi ? 'Editar wifi' : 'Cancelar'}
+                                    </Button>
+                                </WirelessTitle>
+                                {
+                                    !editWifi ?
+                                        onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
+                                            return(
+                                                <Wireless className="flex">
+                                                    <div className="interface flex">
+                                                        <div><h4>{key}</h4></div>
+                                                        <div>
+                                                            <p><b>SSID:</b>{value.name}</p>
+                                                            <p><b>Senha:</b> {value.password}</p>
+                                                            <p><b>Segurança:</b> {value.authType}</p>
+                                                            <p><b>Encriptação:</b> {value.encryption}</p>
+                                                            <p><b>Isolamento:</b> {value.isolation}</p>
+                                                            <p><b>Usuários online:</b> {value.currentUsers}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </Wireless>
-                                        )
-                                    })
-                                :
-                                 <Wifi>
-                                    <div className="wifi-header flex">
-                                        <RssFeedOutlinedIcon color="primary"/>
-                                        <p>Ativar Band Steering?</p>
-                                        <Checkbox
-                                            checked={checkBandSteering}
-                                            onChange={handleChangeCheckBandSteering}
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    </div>
-                                    <div className='input-wifi'>
-                                        {
-                                            handleRenderWifiConfig()
-                                        }
-                                    </div>
-                                 </Wifi>
-                            }
+                                                </Wireless>
+                                            )
+                                        })
+                                    :
+                                    <Wifi>
+                                        <div className="wifi-header flex">
+                                            <RssFeedOutlinedIcon color="primary"/>
+                                            <p>Ativar Band Steering?</p>
+                                            <Checkbox
+                                                checked={checkBandSteering}
+                                                onChange={handleChangeCheckBandSteering}
+                                                inputProps={{ 'aria-label': 'controlled' }}
+                                            />
+                                        </div>
+                                        <div className='input-wifi'>
+                                            {
+                                                handleRenderWifiConfig()
+                                            }
+                                        </div>
+                                        <div className="flex">
+                                            <Button
+                                                size="small" 
+                                                variant="contained"
+                                                color='success'
+                                                endIcon={<CheckRoundedIcon />}
+                                                sx={{mb: '.5rem'}}
+                                            >
+                                                Salvar
+                                            </Button>
+                                        </div>
+                                    </Wifi>
+                                }
+                            </WirelessContainer>
                         </div>
                     </DataField>
                 )
