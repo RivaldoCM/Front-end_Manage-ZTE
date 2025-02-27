@@ -179,3 +179,9 @@ export const Alarms = styled.div`
         }
     }
 `
+
+export const WirelessTitle = styled.div`
+    width: 100%;
+    justify-content: space-around;
+
+`

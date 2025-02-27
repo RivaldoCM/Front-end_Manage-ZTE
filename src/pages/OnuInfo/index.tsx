@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Autocomplete, Button, CircularProgress, TextField } from "@mui/material";
+import { Autocomplete, Button, Checkbox, CircularProgress, Divider, TextField } from "@mui/material";
 import { Form } from "../onuDelete/style";
 
 import { getCities } from "../../services/apiManageONU/getCities";
@@ -10,8 +10,11 @@ import { useLoading } from "../../hooks/useLoading";
 import { getOnuInfo } from "../../services/apiManageONU/getOnuInfo";
 
 import SendIcon from '@mui/icons-material/Send';
-import { Alarms, Container, DataField, InfoStyle, Macs, Wireless } from "./style";
+import { Alarms, Container, DataField, InfoStyle, Macs, Wireless, WirelessTitle } from "./style";
 //import { getVendors } from "../../services/macVendors/getVendors";
+import RssFeedOutlinedIcon from '@mui/icons-material/RssFeedOutlined';
+import { Wifi } from "../Provisionamento/style";
+import { InputContainer } from "../../styles/globalStyles";
 
 export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
@@ -20,10 +23,19 @@ export function OnuInfo(){
     const [onu, setOnu] = useState<IGetOnu | null>();
     const [open, setOpen] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
+    const [editWifi, setEditWifi] = useState(false);
+    const [checkBandSteering, setCheckBandSteering] = useState(false);
     const [form, setForm] = useState({
         cityId: '' as number | '' | null,
         serial: '',
+        wifiBS: '',
+        passwordBS: '',
+        wifi24: '',
+        password24: '',
+        wifi58: '',
+        password58: ''
     });
+
 
     const loadingCities = open && cities.length === 0;
     useEffect(() => {
@@ -85,6 +97,121 @@ export function OnuInfo(){
     }
     */
 
+    const handleChangeCheckBandSteering = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckBandSteering(e.target.checked);
+    }
+
+    const handleEditWifi = () => {
+        setEditWifi(!editWifi);
+    }
+
+    const handleRenderWifiConfig = () => {
+        switch(checkBandSteering){
+            case true:
+                return(
+                    <React.Fragment>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiBS'
+                                    value={form.wifiBS}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='passwordBS'
+                                    value={form.passwordBS}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                    </React.Fragment>
+                );
+            case false:
+                return(
+                    <React.Fragment>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi 2.4:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifi24'
+                                    value={form.wifi24}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi 2.4:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='password24'
+                                    value={form.password24}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <Divider />
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi 5.8:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifi58'
+                                    value={form.wifi58}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi 5.8:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='password58'
+                                    value={form.password58}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                    </React.Fragment>
+                );
+        }
+    }
+
+    console.log(form)
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setOnu(null);
         e.preventDefault();
@@ -289,25 +416,50 @@ export function OnuInfo(){
                                     )
                                 }
                             </Alarms>
+                            <WirelessTitle className="flex">
+                                <h3>Wireless</h3>
+                                <Button variant="contained" endIcon={<RssFeedOutlinedIcon />} onClick={handleEditWifi}>
+                                    Editar wifi
+                                </Button>
+                            </WirelessTitle>
                             {
-                                onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
-                                    return(
-                                        <Wireless className="flex">
-                                            <div><h3>Wireless</h3></div>
-                                            <div className="interface flex">
-                                                <div><h4>{key}</h4></div>
-                                                <div>
-                                                    <p><b>SSID:</b> {value.name}</p>
-                                                    <p><b>Senha:</b> {value.password}</p>
-                                                    <p><b>Segurança:</b> {value.authType}</p>
-                                                    <p><b>Encriptação:</b> {value.encryption}</p>
-                                                    <p><b>Isolamento:</b> {value.isolation}</p>
-                                                    <p><b>Usuários online:</b> {value.currentUsers}</p>
+                                !editWifi ?
+                                    onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
+                                        //{ checkBandSteering && key === 'wifi_0/2' ? setForm({...form, wifi24: value.name}) : setForm({...form, wifi58: value.name})}
+                                        return(
+                                            <Wireless className="flex">
+
+                                                <div className="interface flex">
+                                                    <div><h4>{key}</h4></div>
+                                                    <div>
+                                                        <p><b>SSID:</b>{value.name}</p>
+                                                        <p><b>Senha:</b> {value.password}</p>
+                                                        <p><b>Segurança:</b> {value.authType}</p>
+                                                        <p><b>Encriptação:</b> {value.encryption}</p>
+                                                        <p><b>Isolamento:</b> {value.isolation}</p>
+                                                        <p><b>Usuários online:</b> {value.currentUsers}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </Wireless>
-                                    )
-                                })
+                                            </Wireless>
+                                        )
+                                    })
+                                :
+                                 <Wifi>
+                                    <div className="wifi-header flex">
+                                        <RssFeedOutlinedIcon color="primary"/>
+                                        <p>Ativar Band Steering?</p>
+                                        <Checkbox
+                                            checked={checkBandSteering}
+                                            onChange={handleChangeCheckBandSteering}
+                                            inputProps={{ 'aria-label': 'controlled' }}
+                                        />
+                                    </div>
+                                    <div className='input-wifi'>
+                                        {
+                                            handleRenderWifiConfig()
+                                        }
+                                    </div>
+                                 </Wifi>
                             }
                         </div>
                     </DataField>
