@@ -6,7 +6,7 @@ import { useAuth } from '../../../../hooks/useAuth';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
 import { useResponse } from '../../../../hooks/useResponse';
 
-import { isAlphaNumeric, isValidCpf } from '../../../../config/regex';
+import { isAlphaNumeric, isValidCpf, spaceNotAllowed, wifiPassword } from '../../../../config/regex';
 import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
 import { verifyOnuType } from '../../../../config/verifyOnuType';
 
@@ -36,7 +36,6 @@ export function ZTEForm({onu}: IOnu){
     const { isLoading, startLoading, stopLoading } = useLoading();
     const { setFetchResponseMessage } = useResponse();
 
-    console.log(onu)
     const [checkedSIP, setCheckedSIP] = useState(false);
     const [checkBandSteering, setCheckBandSteering] = useState(false);
 
@@ -79,130 +78,134 @@ export function ZTEForm({onu}: IOnu){
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        console.log(onu.model,authOnu.isActiveBS)
+        console.log(typePppoeZte.includes(onu.model), onu.model)
         if(isLoading){
             setFetchResponseMessage('warning/has-action-in-progress');
         }else if(!authOnu.cpf.match(isValidCpf)){
             setFetchResponseMessage('warning/invalid-cpf-input');
-        }else if(typePppoeZte.includes(onu.model) && authOnu.isActiveBS){
-            console.log('aq')
-            if(!authOnu.wifiNameBS.match(isAlphaNumeric) || !authOnu.wifiPasswordBS.match(isAlphaNumeric) 
-                || !authOnu.wifiNameBS.match(isAlphaNumeric) && !authOnu.wifiPasswordBS.match(isAlphaNumeric)){
-                setFetchResponseMessage('info/wifi-ssid-did-not-match');
+        }else if(typePppoeZte.includes(cleanUpModelName(onu.model))){
+            if(checkBandSteering){
+                if(!authOnu.wifiNameBS.match(spaceNotAllowed)){
+                    setFetchResponseMessage('info/wifi-ssid-did-not-match');
+                    return;
+                }
+                if(!authOnu.wifiPasswordBS.match(wifiPassword)){
+                    setFetchResponseMessage('info/wifi-password-did-not-match');
+                    return;
+                }
+            } else {
+                if(!authOnu.wifiName24.match(spaceNotAllowed) || !authOnu.wifiName58.match(spaceNotAllowed)){
+                    setFetchResponseMessage('info/wifi-ssid-did-not-match');
+                    return;
+                }
+                if(!authOnu.wifiPassword24.match(wifiPassword) || !authOnu.wifiPassword58.match(wifiPassword)){
+                    setFetchResponseMessage('info/wifi-password-did-not-match');
+                    return;
+                }
             }
-            if (authOnu.wifiPasswordBS.length < 8) { setFetchResponseMessage('info/wifi-password-did-not-match'); }
-        }else if(typePppoeZte.includes(onu.model) && !authOnu.isActiveBS){
-            if(!authOnu.wifiName24.match(isAlphaNumeric) || !authOnu.wifiPassword24.match(isAlphaNumeric)){
-                setFetchResponseMessage('info/wifi-ssid-did-not-match');
-            }
-            if (authOnu.wifiPassword24.length < 8) { setFetchResponseMessage('info/wifi-password-did-not-match'); }
-            if(!authOnu.wifiName58.match(isAlphaNumeric) || !authOnu.wifiPassword58.match(isAlphaNumeric)){
-                setFetchResponseMessage('info/wifi-ssid-did-not-match');
-            }
-            if (authOnu.wifiPassword58.length < 8) { setFetchResponseMessage('info/wifi-password-did-not-match'); }
-        }else{
-            startLoading();
-            const peopleId = await getPeopleId(authOnu.cpf);
-            let connectionData = {contractId: 0, connectionId: 0, password: ''}
-            
-            if(peopleId){
-                const response = await getConnectionId(authOnu.cpf, peopleId.id, authOnu.pppoeUser);
-                if(response){
-                    if(response.success){
-                        connectionData.connectionId = response.responses.response.connectionId;
-                        connectionData.contractId = response.responses.response.contractId;
-                        connectionData.password = response.responses.response.password;
-                    } else {
-                        connectionData.contractId = 0;
-                    }
+        }
+
+        startLoading();
+        const peopleId = await getPeopleId(authOnu.cpf);
+        let connectionData = {contractId: 0, connectionId: 0, password: ''}
+        
+        if(peopleId){
+            const response = await getConnectionId(authOnu.cpf, peopleId.id, authOnu.pppoeUser);
+            if(response){
+                if(response.success){
+                    connectionData.connectionId = response.responses.response.connectionId;
+                    connectionData.contractId = response.responses.response.contractId;
+                    connectionData.password = response.responses.response.password;
                 } else {
                     connectionData.contractId = 0;
                 }
-            }else{
+            } else {
                 connectionData.contractId = 0;
             }
+        }else{
+            connectionData.contractId = 0;
+        }
 
-            const hasAuth = await writeONU({
-                userId: user?.uid,
-                oltId: authOnu.oltId,
+        const hasAuth = await writeONU({
+            userId: user?.uid,
+            oltId: authOnu.oltId,
+            slot: onu.slot,
+            pon: onu.pon,
+            serialNumber: onu.serialNumber,
+            modelOnu: authOnu.modelOnu,
+            contract: connectionData.contractId,
+            cpf: authOnu.cpf,
+            pppoeUser: authOnu.pppoeUser,
+            pppPass: authOnu.pppoePassword,
+            wifiSSIDBS: authOnu.wifiNameBS,
+            wifiPassBS: authOnu.wifiPasswordBS,
+            wifiSSID24: authOnu.wifiName24,
+            wifiPass24: authOnu.wifiPassword24,
+            wifiSSID58: authOnu.wifiName58,
+            wifiPass58: authOnu.wifiPassword58,
+            sipUser: authOnu.sipUser,
+            sipPass: authOnu.sipPass
+        });
+        stopLoading();
+
+        if(hasAuth){
+            if(!hasAuth.success){
+                setFetchResponseMessage(hasAuth.messages.message);
+                setOnus([]);
+                setAuthOnu({
+                    ...authOnu,
+                    oltId: '',
+                    voalleAccessPointId: ''
+                });
+                return;
+            } else {
+                setFetchResponseMessage(hasAuth.responses.status!);
+                setOnus([]);
+                setAuthOnu({
+                    ...authOnu,
+                    oltId: '',
+                    cpf: '',
+                    pppoeUser: '',
+                    pppoePassword: '',
+                    wifiNameBS: '',
+                    wifiPasswordBS: '',
+                    wifiName24: '',
+                    wifiPassword24: '',
+                    wifiName58: '',
+                    wifiPassword58: '',
+                    typeOnu: '',
+                    modelOnu: 'F601',
+                    voalleAccessPointId: ''
+                });
+                setTimeout(() => {
+                    navigate('/my_auth_onus');
+                }, 2000);
+            }
+        } else {
+            setFetchResponseMessage('error/no-connection-with-API');
+            return;
+        }
+
+        const onuId: number = hasAuth.responses.response.onuId;
+        if(connectionData.connectionId){
+            const response = await updateConnection({
+                onuId: onuId,
+                connectionId: connectionData.connectionId,
+                pppoeUser: authOnu.pppoeUser,
+                pppoePassword: connectionData.password,
                 slot: onu.slot,
                 pon: onu.pon,
                 serialNumber: onu.serialNumber,
-                modelOnu: authOnu.modelOnu,
-                contract: connectionData.contractId,
-                cpf: authOnu.cpf,
-                pppoeUser: authOnu.pppoeUser,
-                pppPass: authOnu.pppoePassword,
-                wifiSSIDBS: authOnu.wifiNameBS,
-                wifiPassBS: authOnu.wifiPasswordBS,
-                wifiSSID24: authOnu.wifiName24,
-                wifiPass24: authOnu.wifiPassword24,
-                wifiSSID58: authOnu.wifiName58,
-                wifiPass58: authOnu.wifiPassword58,
-                sipUser: authOnu.sipUser,
-                sipPass: authOnu.sipPass
+                modelOlt: onu.modelOlt,
+                accessPointId: authOnu.voalleAccessPointId,
+                wifiSSID: authOnu.wifiNameBS ? authOnu.wifiNameBS : authOnu.wifiName24,
+                wifiPass: authOnu.wifiPasswordBS ? authOnu.wifiPasswordBS : authOnu.wifiPassword24
             });
-            stopLoading();
-
-            if(hasAuth){
-                if(!hasAuth.success){
-                    setFetchResponseMessage(hasAuth.messages.message);
-                    setOnus([]);
-                    setAuthOnu({
-                        ...authOnu,
-                        oltId: '',
-                        voalleAccessPointId: ''
-                    });
-                    return;
-                } else {
-                    setFetchResponseMessage(hasAuth.responses.status!);
-                    setOnus([]);
-                    setAuthOnu({
-                        ...authOnu,
-                        oltId: '',
-                        cpf: '',
-                        pppoeUser: '',
-                        pppoePassword: '',
-                        wifiNameBS: '',
-                        wifiPasswordBS: '',
-                        wifiName24: '',
-                        wifiPassword24: '',
-                        wifiName58: '',
-                        wifiPassword58: '',
-                        typeOnu: '',
-                        modelOnu: 'F601',
-                        voalleAccessPointId: ''
-                    });
-                    setTimeout(() => {
-                        navigate('/my_auth_onus');
-                    }, 2000);
-                }
-            } else {
-                setFetchResponseMessage('error/no-connection-with-API');
-                return;
-            }
-
-            const onuId: number = hasAuth.responses.response.onuId;
-            if(connectionData.connectionId){
-                const response = await updateConnection({
-                    onuId: onuId,
-                    connectionId: connectionData.connectionId,
-                    pppoeUser: authOnu.pppoeUser,
-                    pppoePassword: connectionData.password,
-                    slot: onu.slot,
-                    pon: onu.pon,
-                    serialNumber: onu.serialNumber,
-                    modelOlt: onu.modelOlt,
-                    accessPointId: authOnu.voalleAccessPointId,
-                    wifiSSID: authOnu.wifiNameBS ? authOnu.wifiNameBS : authOnu.wifiName24,
-                    wifiPass: authOnu.wifiPasswordBS ? authOnu.wifiPasswordBS : authOnu.wifiPassword24
-                });
-                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
-            } else {
-                updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
-            }
+            updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
+        } else {
+            updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
         }
+        
     };
 
     const handleRenderWifiConfig = () => {

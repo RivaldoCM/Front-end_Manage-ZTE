@@ -18,6 +18,7 @@ import { InputContainer } from "../../styles/globalStyles";
 import CloseIcon from '@mui/icons-material/Close';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { updateWifi } from "../../services/apiManageONU/updateWifi";
+import { spaceNotAllowed, wifiPassword } from "../../config/regex";
 
 export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
@@ -27,18 +28,18 @@ export function OnuInfo(){
     const [open, setOpen] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
     const [editWifi, setEditWifi] = useState(false);
+    const [waitWifiRequest, setWaitWifiRequest] = useState(false);
     const [checkBandSteering, setCheckBandSteering] = useState(false);
     const [form, setForm] = useState({
         cityId: '' as number | '' | null,
         serial: '',
-        wifiBS: '',
-        passwordBS: '',
-        wifi24: '',
-        password24: '',
-        wifi58: '',
-        password58: ''
+        wifiBS: null as string | null,
+        passwordBS: null as string | null,
+        wifi24: null as string | null,
+        password24: null as string | null,
+        wifi58: null as string | null,
+        password58: null as string | null
     });
-
 
     const loadingCities = open && cities.length === 0;
     useEffect(() => {
@@ -105,7 +106,6 @@ export function OnuInfo(){
     }
 
     const handleEditWifi = () => { setEditWifi(!editWifi); }
-
     const handleRenderWifiConfig = () => {
         switch(checkBandSteering){
             case true:
@@ -215,17 +215,57 @@ export function OnuInfo(){
     const handleSubmitWifi = async (e: any) => {
         e.preventDefault();
 
+        if(checkBandSteering){
+            if(form.wifiBS && !form.wifiBS.match(spaceNotAllowed)){
+                setFetchResponseMessage('info/wifi-ssid-did-not-match');
+                return;
+            }
+            if(form.passwordBS && !form.passwordBS.match(wifiPassword)){
+                setFetchResponseMessage('info/wifi-password-did-not-match');
+                return;
+            }
+        } else {
+            console.log(form.wifi24 && form.wifi24.match(spaceNotAllowed))
+            if(
+                form.wifi24 && !form.wifi24.match(spaceNotAllowed)
+                || form.wifi58 && !form.wifi58.match(spaceNotAllowed)
+            ){
+                setFetchResponseMessage('info/wifi-ssid-did-not-match');
+                return;
+            }
+            if(
+                form.password24 && !form.password24.match(wifiPassword) 
+                || form.password58 && !form.password58.match(wifiPassword)
+            ){
+                setFetchResponseMessage('info/wifi-password-did-not-match');
+                return;
+            }
+        }
+
+        setWaitWifiRequest(true);
         const response = await updateWifi({
             onu: onu,
             form: form,
         });
+        setWaitWifiRequest(false);
+
+        if(response){
+            if(response.success){
+                setOnu(null);
+                setFetchResponseMessage(response.responses.status);
+            } else {
+                setFetchResponseMessage(response.messages.message);
+            }
+        } else {
+            setFetchResponseMessage('error/no-connection-with-API');
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setOnu(null);
         e.preventDefault();
-        startLoading();
 
+        startLoading();
         const response = await getOnuInfo({cityId: parseInt(form.cityId as string), serialNumber: form.serial});
         stopLoading();
 
@@ -428,8 +468,8 @@ export function OnuInfo(){
                             <WirelessContainer className="flex">
                                 <WirelessTitle className="flex">
                                     <h3>Wireless</h3>
-                                    <Button 
-                                        size="small" 
+                                    <Button
+                                        size="small"
                                         variant="contained"
                                         color={!editWifi ? 'primary' : 'error'}
                                         endIcon={!editWifi ? <RssFeedOutlinedIcon /> : <CloseIcon />} 
@@ -446,7 +486,7 @@ export function OnuInfo(){
                                                     <div className="interface flex">
                                                         <div><h4>{key}</h4></div>
                                                         <div>
-                                                            <p><b>SSID:</b>{value.name}</p>
+                                                            <p><b>SSID: </b>{value.name}</p>
                                                             <p><b>Senha:</b> {value.password}</p>
                                                             <p><b>Segurança:</b> {value.authType}</p>
                                                             <p><b>Encriptação:</b> {value.encryption}</p>
@@ -474,16 +514,20 @@ export function OnuInfo(){
                                             }
                                         </div>
                                         <div className="flex">
-                                            <Button
-                                                size="small" 
-                                                variant="contained"
-                                                color='success'
-                                                sx={{mb: '.5rem'}}
-                                                endIcon={<CheckRoundedIcon />}
-                                                onClick={handleSubmitWifi}
-                                            >
-                                                Salvar
-                                            </Button>
+                                            {
+                                                waitWifiRequest ? <CircularProgress className="MUI-CircularProgress" size='sm'/> :
+                                                <Button
+                                                    size="small" 
+                                                    variant="contained"
+                                                    color='success'
+                                                    sx={{mb: '.5rem'}}
+                                                    endIcon={<CheckRoundedIcon />}
+                                                    onClick={handleSubmitWifi}
+                                                >
+                                                    Salvar
+                                                </Button>
+                                            }
+
                                         </div>
                                     </Wifi>
                                 }

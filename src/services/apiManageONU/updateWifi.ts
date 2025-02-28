@@ -13,10 +13,10 @@ export async function updateWifi({onu, form}: any) {
             slot: parseInt(onu.slot),
             pon: parseInt(onu.pon),
             onuId: parseInt(onu.id),
-            wifi28: form.wifi28,
+            wifi24: form.wifi24,
             wifi58: form.wifi58,
             password24: form.password24,
-            passwork58: form.passwork58,
+            password58: form.password58,
             wifiBS: form.wifiBS,
             passwordBS: form.passwordBS,
         }

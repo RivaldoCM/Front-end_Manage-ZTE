@@ -6,3 +6,5 @@ export const isValidIp = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
 
 //NAO DEIXA COLOCAR SÓ SIMBOLO, PERMITE ACENTUAÇÕES, MINIMO DE 3 CARACTERES, PROS ANIMAIS NÃO FAZER MERDA
 export const formatInput = /^(?=.*[a-zA-Z0-9\u00C0-\u00FF])[a-zA-Z0-9\u00C0-\u00FF.()_+\-=/\\|, ]{3,}$/;
+export const wifiPassword = /^[a-zA-Z0-9_]{8,}$/;
+export const spaceNotAllowed = /^\S*$/;
