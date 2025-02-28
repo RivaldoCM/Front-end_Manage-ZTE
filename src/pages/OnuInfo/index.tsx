@@ -17,6 +17,7 @@ import { Wifi } from "../Provisionamento/style";
 import { InputContainer } from "../../styles/globalStyles";
 import CloseIcon from '@mui/icons-material/Close';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import { updateWifi } from "../../services/apiManageONU/updateWifi";
 
 export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
@@ -211,8 +212,13 @@ export function OnuInfo(){
         }
     }
 
-    const handleSubmitWifi = async () => {
+    const handleSubmitWifi = async (e: any) => {
+        e.preventDefault();
 
+        const response = await updateWifi({
+            onu: onu,
+            form: form,
+        });
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -472,8 +478,9 @@ export function OnuInfo(){
                                                 size="small" 
                                                 variant="contained"
                                                 color='success'
-                                                endIcon={<CheckRoundedIcon />}
                                                 sx={{mb: '.5rem'}}
+                                                endIcon={<CheckRoundedIcon />}
+                                                onClick={handleSubmitWifi}
                                             >
                                                 Salvar
                                             </Button>
