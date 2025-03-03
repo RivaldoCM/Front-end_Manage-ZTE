@@ -2,9 +2,10 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    margin: 0 .5rem;
 
     .onu-callback{
         width: 100%;

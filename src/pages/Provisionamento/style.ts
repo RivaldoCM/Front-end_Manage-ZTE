@@ -54,6 +54,6 @@ export const Wifi = styled.div`
         border-radius: 12px;
         background-color: #f1f1f1;
     }
-    .input-wifi{ padding: 0 2rem; }
+    .input-wifi{ margin: 0 .5rem; }
 
 `;

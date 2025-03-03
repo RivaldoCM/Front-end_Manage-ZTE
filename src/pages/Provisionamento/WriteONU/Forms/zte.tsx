@@ -205,7 +205,6 @@ export function ZTEForm({onu}: IOnu){
         } else {
             updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: false});
         }
-        
     };
 
     const handleRenderWifiConfig = () => {
@@ -338,22 +337,26 @@ export function ZTEForm({onu}: IOnu){
                                 </TextField>
                             </div>
                         </InputContainer>
-                        <Wifi>
-                            <div className="wifi-header flex">
-                                <RssFeedOutlinedIcon color="primary"/>
-                                <p>Ativar Band Steering?</p>
-                                <Checkbox
-                                    checked={checkBandSteering}
-                                    onChange={handleChangeCheckBandSteering}
-                                    inputProps={{ 'aria-label': 'controlled' }}
-                                />
-                            </div>
-                            <div className='input-wifi'>
-                                {
-                                    handleRenderWifiConfig()
-                                }
-                            </div>
-                        </Wifi>
+                        {
+                            onu.serialNumber.startsWith('ZTEG') && (
+                                <Wifi>
+                                    <div className="wifi-header flex">
+                                        <RssFeedOutlinedIcon color="primary"/>
+                                        <p>Ativar Band Steering?</p>
+                                        <Checkbox
+                                            checked={checkBandSteering}
+                                            onChange={handleChangeCheckBandSteering}
+                                            inputProps={{ 'aria-label': 'controlled' }}
+                                        />
+                                    </div>
+                                    <div className='input-wifi'>
+                                        {
+                                            handleRenderWifiConfig()
+                                        }
+                                    </div>
+                                </Wifi>
+                            )
+                        }
                         <SIP>
                             <div className="sip-header flex">
                                 <DialerSipOutlinedIcon color="primary"/>
