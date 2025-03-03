@@ -11,7 +11,7 @@ type Order = 'asc' | 'desc';
 
 interface Data {
     created_at: Date;
-    'Client_City.name': string;
+    'Client_city.name': string;
     pppoe: string;
     serialNumber: string;
     rxOnt: number;
@@ -41,8 +41,8 @@ const headCells: readonly HeadCell[] = [
         label: 'Criado em',
     },
     {
-        id: 'Client_City.name',
-        sort: true,
+        id: 'Client_city.name',
+        sort: false,
         nested: true,
         numeric: false,
         disablePadding: false,
@@ -103,6 +103,10 @@ interface EnhancedTableToolbarProps {
     upToDate: boolean;
     userId: number;
     rowId: number[]; 
+    addedBy: string, 
+    updatedBy: {
+        name: string;
+    },
     onUpdateSent: (value: boolean) => void;
 }
 
@@ -228,7 +232,6 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps){
     const { numSelected, upToDate, userId, rowId, onUpdateSent, addedBy, updatedBy } = props;
     const { setFetchResponseMessage } = useResponse();
-    console.log(props)
     const [checked, setChecked] = useState<boolean>(upToDate);
 
     useEffect(() => {

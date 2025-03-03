@@ -56,4 +56,12 @@ export const Wifi = styled.div`
     }
     .input-wifi{ margin: 0 .5rem; }
 
+    .fs{
+        font-size: 14px;
+    }
+
+`;
+
+export const HelpPopover = styled.div`
+
 `;

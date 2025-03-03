@@ -23,7 +23,6 @@ import {
     Typography 
 } from "@mui/joy";
 import dayjs from "dayjs";
-import { useMediaQuery, useTheme } from "@mui/material";
 
 interface Data {
     created_at: Date;
@@ -33,7 +32,7 @@ interface Data {
     txOlt: number;
     ctoId: number;
     portId: number;
-    'Client_City.name': string;
+    'Client_city.name': string;
     'Client_created_by.name': string;
     'Client_updated_by.name': string;
     'is_updated': boolean;
@@ -60,7 +59,6 @@ export default function ClientFiberNetworkData(){
             const data = await getClientUpdate();
             if(data){
                 if(data.success){
-                    console.log(data.responses.response);
                     setRows(data.responses.response);
                 } else {
                     setRows([]);

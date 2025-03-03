@@ -6,7 +6,7 @@ import { useAuth } from '../../../../hooks/useAuth';
 import { useAuthOnu } from '../../../../hooks/useAuthOnu';
 import { useResponse } from '../../../../hooks/useResponse';
 
-import { isAlphaNumeric, isValidCpf, spaceNotAllowed, wifiPassword } from '../../../../config/regex';
+import { isValidCpf, spaceNotAllowed, wifiPassword } from '../../../../config/regex';
 import { cleanUpModelName, typePppoeZte } from '../../../../config/typesOnus';
 import { verifyOnuType } from '../../../../config/verifyOnuType';
 
@@ -19,7 +19,7 @@ import { updateLogsOnu } from '../../../../services/apiManageONU/updateLogOnu';
 import { IOnu } from '../../../../interfaces/IOnus';
 
 import { InputContainer } from '../../../../styles/globalStyles';
-import { SIP, Wifi } from '../../style';
+import { HelpPopover, SIP, Wifi } from '../../style';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
@@ -27,7 +27,8 @@ import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import DialerSipOutlinedIcon from '@mui/icons-material/DialerSipOutlined';
 import RssFeedOutlinedIcon from '@mui/icons-material/RssFeedOutlined';
-import { Divider } from '@mui/material';
+import { Divider, IconButton, Popover, Typography } from '@mui/material';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 
 export function ZTEForm({onu}: IOnu){
     const navigate = useNavigate();
@@ -38,6 +39,10 @@ export function ZTEForm({onu}: IOnu){
 
     const [checkedSIP, setCheckedSIP] = useState(false);
     const [checkBandSteering, setCheckBandSteering] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     useEffect(() => {
         setAuthOnu({
@@ -75,6 +80,11 @@ export function ZTEForm({onu}: IOnu){
             voalleAccessPointId: onu.voalleId
         }));
     }
+
+    const handleClose = () => { setAnchorEl(null); };
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -207,112 +217,6 @@ export function ZTEForm({onu}: IOnu){
         }
     };
 
-    const handleRenderWifiConfig = () => {
-        switch(checkBandSteering){
-            case true:
-                return(
-                    <React.Fragment>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Nome do Wifi:</p>
-                            </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    variant="standard"
-                                    name='wifiNameBS'
-                                    value={authOnu.wifiNameBS}
-                                    onChange={(e) => handleChange(e)}
-                                >
-                                </TextField>
-                            </div>
-                        </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Senha do Wifi:</p>
-                            </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    variant="standard"
-                                    name='wifiPasswordBS'
-                                    value={authOnu.wifiPasswordBS}
-                                    onChange={(e) => handleChange(e)}
-                                >
-                                </TextField>
-                            </div>
-                        </InputContainer>
-                    </React.Fragment>
-                );
-            case false:
-                return(
-                    <React.Fragment>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Nome do Wifi 2.4:</p>
-                            </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    variant="standard"
-                                    name='wifiName24'
-                                    value={authOnu.wifiName24}
-                                    onChange={(e) => handleChange(e)}
-                                >
-                                </TextField>
-                            </div>
-                        </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Senha do Wifi 2.4:</p>
-                            </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    variant="standard"
-                                    name='wifiPassword24'
-                                    value={authOnu.wifiPassword24}
-                                    onChange={(e) => handleChange(e)}
-                                >
-                                </TextField>
-                            </div>
-                        </InputContainer>
-                        <Divider />
-                        <InputContainer>
-                            <div className="text">
-                                <p>Nome do Wifi 5.8:</p>
-                            </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    variant="standard"
-                                    name='wifiName58'
-                                    value={authOnu.wifiName58}
-                                    onChange={(e) => handleChange(e)}
-                                >
-                                </TextField>
-                            </div>
-                        </InputContainer>
-                        <InputContainer>
-                            <div className="text">
-                                <p>Senha do Wifi 5.8:</p>
-                            </div>
-                            <div className="content">
-                                <TextField
-                                    required
-                                    variant="standard"
-                                    name='wifiPassword58'
-                                    value={authOnu.wifiPassword58}
-                                    onChange={(e) => handleChange(e)}
-                                >
-                                </TextField>
-                            </div>
-                        </InputContainer>
-                    </React.Fragment>
-                );
-        }
-    }
-
     const handleRenderAddicionalConfig = () => {
         const onuModel = cleanUpModelName(onu.model);
         switch(onuModel){
@@ -341,7 +245,29 @@ export function ZTEForm({onu}: IOnu){
                             onu.serialNumber.startsWith('ZTEG') && (
                                 <Wifi>
                                     <div className="wifi-header flex">
-                                        <RssFeedOutlinedIcon color="primary"/>
+                                        <div className="flex">
+                                            <RssFeedOutlinedIcon color="primary"/>
+                                            <HelpPopover className="flex">
+                                                <IconButton onClick={handleClick}>
+                                                    <HelpOutlineOutlinedIcon fontSize="small" color="secondary"/>
+                                                </IconButton>
+                                                <Popover
+                                                    id={id}
+                                                    open={open}
+                                                    anchorEl={anchorEl}
+                                                    onClose={handleClose}
+                                                    anchorOrigin={{
+                                                        vertical: 'bottom',
+                                                        horizontal: 'left',
+                                                    }}
+                                                >
+                                                    <Typography sx={{ p: 2, background: '#fffff0', color: '#000' }}>
+                                                        A senha deve ter pelo menos 8 caracteres, 
+                                                        <br/>sem espaços em branco ou caracteres especiais.
+                                                    </Typography>
+                                                </Popover>
+                                            </HelpPopover>
+                                        </div>
                                         <p>Ativar Band Steering?</p>
                                         <Checkbox
                                             checked={checkBandSteering}
@@ -410,6 +336,112 @@ export function ZTEForm({onu}: IOnu){
             break;
         }
     };
+
+    const handleRenderWifiConfig = () => {
+        switch(checkBandSteering){
+            case true:
+                return(
+                    <React.Fragment>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiNameBS'
+                                    value={authOnu.wifiNameBS}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiPasswordBS'
+                                    value={authOnu.wifiPasswordBS}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                    </React.Fragment>
+                );
+            case false:
+                return(
+                    <React.Fragment>
+                        <InputContainer>
+                            <div className="text fs">
+                                <p>Nome do Wifi 2.4:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiName24'
+                                    value={authOnu.wifiName24}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text fs">
+                                <p>Senha do Wifi 2.4:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiPassword24'
+                                    value={authOnu.wifiPassword24}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <Divider />
+                        <InputContainer>
+                            <div className="text fs">
+                                <p>Nome do Wifi 5.8:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiName58'
+                                    value={authOnu.wifiName58}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text fs">
+                                <p>Senha do Wifi 5.8:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiPassword58'
+                                    value={authOnu.wifiPassword58}
+                                    onChange={(e) => handleChange(e)}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                    </React.Fragment>
+                );
+        }
+    }
 
     return(
         <form onSubmit={handleSubmit} className="flex">

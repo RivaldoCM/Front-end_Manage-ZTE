@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Autocomplete, Button, Checkbox, CircularProgress, Divider, TextField } from "@mui/material";
+import { Autocomplete, Button, Checkbox, CircularProgress, Divider, IconButton, Popover, TextField, Typography } from "@mui/material";
 import { Form } from "../onuDelete/style";
 
 import { getCities } from "../../services/apiManageONU/getCities";
@@ -19,6 +19,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { updateWifi } from "../../services/apiManageONU/updateWifi";
 import { spaceNotAllowed, wifiPassword } from "../../config/regex";
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 
 export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
@@ -29,6 +30,7 @@ export function OnuInfo(){
     const [cities, setCities] = useState<ICities[]>([]);
     const [editWifi, setEditWifi] = useState(false);
     const [waitWifiRequest, setWaitWifiRequest] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const [checkBandSteering, setCheckBandSteering] = useState(false);
     const [form, setForm] = useState({
         cityId: '' as number | '' | null,
@@ -40,6 +42,15 @@ export function OnuInfo(){
         wifi58: null as string | null,
         password58: null as string | null
     });
+
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => { setAnchorEl(null); };
+
+    const openPopOver = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     const loadingCities = open && cities.length === 0;
     useEffect(() => {
@@ -225,7 +236,6 @@ export function OnuInfo(){
                 return;
             }
         } else {
-            console.log(form.wifi24 && form.wifi24.match(spaceNotAllowed))
             if(
                 form.wifi24 && !form.wifi24.match(spaceNotAllowed)
                 || form.wifi58 && !form.wifi58.match(spaceNotAllowed)
@@ -500,7 +510,29 @@ export function OnuInfo(){
                                     :
                                     <Wifi>
                                         <div className="wifi-header flex">
-                                            <RssFeedOutlinedIcon color="primary"/>
+                                            <div className="flex">
+                                                <RssFeedOutlinedIcon color="primary"/>
+                                                <div className="flex">
+                                                    <IconButton onClick={handleClick}>
+                                                        <HelpOutlineOutlinedIcon fontSize="small" color="secondary"/>
+                                                    </IconButton>
+                                                    <Popover
+                                                        id={id}
+                                                        open={openPopOver}
+                                                        anchorEl={anchorEl}
+                                                        onClose={handleClose}
+                                                        anchorOrigin={{
+                                                            vertical: 'bottom',
+                                                            horizontal: 'left',
+                                                        }}
+                                                    >
+                                                        <Typography sx={{ p: 2, background: '#fffff0', color: '#000' }}>
+                                                            A senha deve ter pelo menos 8 caracteres, 
+                                                            <br/>sem espaços em branco ou caracteres especiais.
+                                                        </Typography>
+                                                    </Popover>
+                                                </div>
+                                            </div>
                                             <p>Ativar Band Steering?</p>
                                             <Checkbox
                                                 checked={checkBandSteering}

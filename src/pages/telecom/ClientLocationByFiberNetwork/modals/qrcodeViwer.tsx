@@ -10,7 +10,7 @@ import { Controller, QRCodeResult } from "../style";
 import { useAuth } from "../../../../hooks/useAuth";
 import { addClientUpdate } from "../../../../services/apiManageONU/addClientUpdate";
 import { useResponse } from "../../../../hooks/useResponse";
-import { Autocomplete, CircularProgress, TextField } from "@mui/joy";
+import { Autocomplete } from "@mui/joy";
 import { ICities } from "../../../../interfaces/ICities";
 import { getCities } from "../../../../services/apiManageONU/getCities";
 
@@ -19,7 +19,7 @@ export function ModalQRCodeViwer(props: any){
     const { setFetchResponseMessage } = useResponse();
 
     const [open, setOpen] = useState(false);
-    const [isScanning, setIsScanning] = useState(false);
+    const [isScanning, setIsScanning] = useState(true);
     const [cities, setCities] = useState<ICities[]>([]);
     const [qrCode, setQRCode] = useState<string | null>(null);
     const [form, setForm] = useState({
