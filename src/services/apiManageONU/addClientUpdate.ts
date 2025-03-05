@@ -10,8 +10,9 @@ export async function addClientUpdate(form: any): Promise<IResponseData | IRespo
         },
         data:{
             userId: form.userId,
-            serialNumber: form.serialNumber,
+            cityId: form.cityId,
             pppoe: form.pppoe,
+            serialNumber: form.serialNumber,
             portId: parseInt(form.portId),
             ctoId: parseInt(form.ctoId),
             ontPower: parseInt(form.ontPower),

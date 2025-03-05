@@ -14,6 +14,7 @@ type IGetOnu = {
     uptime?: string,
     firmware?: string,
     model?: string,
+    modelOlt: string,
     macs?: [{ 
         mac: string,
         vlan: number

@@ -49,7 +49,7 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
             }
         case 'info/wifi-password-did-not-match':
             return{
-                responseMessage: 'Não são permitidos carcteres especiais na senha.',
+                responseMessage: 'Senha inválida, clique na interrogação para saber mais.',
                 severityStatus: 'info'
             }
         case 'info/wrong-type-passoword':
@@ -59,7 +59,7 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
             }
         case 'info/wifi-ssid-did-not-match':
             return{
-                responseMessage: 'O único caracter especial permitido no nome do wifi é o underline(_).',
+                responseMessage: 'Não são permitidos espaços no nome do wifi.',
                 severityStatus: 'info'
             }
         case 'success/user-updated':
@@ -201,6 +201,11 @@ export const handleMessage = (res: string): {responseMessage: string, severitySt
             return{
                 responseMessage: 'Não foi possível se apropriar deste ticket.',
                 severityStatus: 'error'
+            }
+        case 'success/wifi-updated':
+            return{
+                responseMessage: 'Wifi atualizado com sucesso.',
+                severityStatus: 'success'
             }
         default:
             return{

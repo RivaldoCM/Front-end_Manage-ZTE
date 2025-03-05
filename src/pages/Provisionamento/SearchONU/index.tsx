@@ -65,8 +65,12 @@ export function SearchONU() {
             cpf: '',
             pppoeUser: '',
             pppoePassword: '',
-            wifiName: '',
-            wifiPassword: '',
+            wifiNameBS: '',
+            wifiPasswordBS: '',
+            wifiName24: '',
+            wifiPassword24: '',
+            wifiName58: '',
+            wifiPassword58: '',
             typeOnu: '',
             modelOnu: 'F601',
             modelOlt: [],
@@ -142,7 +146,7 @@ export function SearchONU() {
                 <div className="content">
                     <Autocomplete
                         open={open}
-                        sx={{width: '200px'}}
+                        sx={{maxWidth: '200px'}}
                         onOpen={() => setOpen(true)}
                         onClose={() => setOpen(false)}
                         onChange={handleCityChange}
@@ -187,6 +191,7 @@ export function SearchONU() {
                         name="matchSerialNumber"
                         variant="standard"
                         onChange={handleChange}
+                        sx={{maxWidth: '200px'}}
                     />
                 </div>
             </InputContainer>

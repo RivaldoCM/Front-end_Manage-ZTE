@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Modal } from "@mui/material";
+import { ListItem, Modal } from "@mui/material";
 import { QRCodeScanner } from "../../../../components/qrCodeScanner";
 
 import Button from '@mui/joy/Button';
@@ -10,16 +10,22 @@ import { Controller, QRCodeResult } from "../style";
 import { useAuth } from "../../../../hooks/useAuth";
 import { addClientUpdate } from "../../../../services/apiManageONU/addClientUpdate";
 import { useResponse } from "../../../../hooks/useResponse";
+import { Autocomplete } from "@mui/joy";
+import { ICities } from "../../../../interfaces/ICities";
+import { getCities } from "../../../../services/apiManageONU/getCities";
 
 export function ModalQRCodeViwer(props: any){
     const { user } = useAuth();
     const { setFetchResponseMessage } = useResponse();
 
+    const [open, setOpen] = useState(false);
     const [isScanning, setIsScanning] = useState(true);
+    const [cities, setCities] = useState<ICities[]>([]);
     const [qrCode, setQRCode] = useState<string | null>(null);
     const [form, setForm] = useState({
         userId: user?.uid,
         pppoe: '',
+        cityId: '' as number | '' | null,
         ctoId: 0,
         portId: 0,
         serialNumber: '',
@@ -40,6 +46,56 @@ export function ModalQRCodeViwer(props: any){
         }
     }, [qrCode]);
 
+    const handleOpen = () => {
+        setOpen(true);
+        (async () => {
+
+            (async () => {
+                const response = await getCities();
+                
+                if(response){
+                    if(response.success){
+                        setCities(response.responses.response);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+
+            })();
+
+          setCities(cities);
+        })();
+      };
+    
+      const handleClose = () => {
+        setOpen(false);
+      };
+
+    const loadingCities = open && cities.length === 0;
+    useEffect(() => {
+        let active = true;
+        if (!loadingCities) {
+            return undefined;
+        }
+
+        (async () => {
+            const response = await getCities();
+            if (active) {
+                if(response){
+                    if(response.success){
+                        setCities(response.responses.response);
+                    }
+                } else {
+                    setFetchResponseMessage('error/no-connection-with-API');
+                }
+            }
+        })();
+
+        return () => {
+            active = false;
+        };
+    }, [loadingCities]);
+
     const handleScanError = (_error: string) => {};
     const handleScanSuccess = (decodedText: string) => {
         setQRCode(decodedText);
@@ -53,9 +109,22 @@ export function ModalQRCodeViwer(props: any){
         });
     };
 
+    const handleCityChange = (_e: unknown, value: ICities | null) => {
+        if(value){
+            setForm({
+                ...form,
+                cityId: value.id
+            });
+        }else{
+            setForm({
+                ...form,
+                cityId: value
+            });
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         const response = await addClientUpdate(form);
         if(response){
             if(response.success){
@@ -75,6 +144,7 @@ export function ModalQRCodeViwer(props: any){
             <Modal
                 open={true}
                 onClose={props.handleClose}
+                sx={{ zIndex: 0 }}
             >
                 <Controller className="flex">
                     {
@@ -95,6 +165,32 @@ export function ModalQRCodeViwer(props: any){
                                 </div>
                                 <form className="flex" onSubmit={handleSubmit}>
                                     <div>
+                                        <Autocomplete
+                                            open={open}
+                                            sx={{ width: 300 }}
+                                            placeholder="Cidade"
+                                            onOpen={handleOpen}
+                                            onClose={handleClose}
+                                            onChange={handleCityChange}
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                            getOptionLabel={(option) => option.name}
+                                            options={cities}
+                                            loading={loadingCities}
+                                            renderOption={(props, option) => (
+                                                <ListItem 
+                                                    {...props}
+                                                    sx={{
+                                                        padding: '8px 16px',
+                                                        marginBottom: '4px',
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                                                        },
+                                                    }}
+                                                >
+                                                    {option.name}
+                                                </ListItem> // renderiza as opções personalizadas
+                                            )}
+                                        />
                                         <Input
                                             size="sm"
                                             name="ctoId"

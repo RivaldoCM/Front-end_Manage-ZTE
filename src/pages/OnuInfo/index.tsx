@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from "react";
 
-import { Autocomplete, Button, CircularProgress, TextField } from "@mui/material";
-import { Form } from "../onuDelete/style";
-
 import { getCities } from "../../services/apiManageONU/getCities";
 import { ICities } from "../../interfaces/ICities";
 import { useResponse } from "../../hooks/useResponse";
 import { useLoading } from "../../hooks/useLoading";
 import { getOnuInfo } from "../../services/apiManageONU/getOnuInfo";
+import { updateWifi } from "../../services/apiManageONU/updateWifi";
+import { spaceNotAllowed, wifiPassword } from "../../config/regex";
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import { cleanUpModelName, typePppoeZte } from "../../config/typesOnus";
 
+import { Form } from "../onuDelete/style";
+import { Wifi } from "../Provisionamento/style";
+import { InputContainer } from "../../styles/globalStyles";
+import { Autocomplete, Button, Checkbox, CircularProgress, Divider, IconButton, Popover, TextField, Typography } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
-import { Alarms, Container, DataField, InfoStyle, Macs, Wireless } from "./style";
+import { Alarms, Container, DataField, InfoStyle, Macs, Wireless, WirelessContainer, WirelessTitle } from "./style";
 //import { getVendors } from "../../services/macVendors/getVendors";
+import RssFeedOutlinedIcon from '@mui/icons-material/RssFeedOutlined';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
 export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
@@ -20,10 +28,29 @@ export function OnuInfo(){
     const [onu, setOnu] = useState<IGetOnu | null>();
     const [open, setOpen] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
+    const [editWifi, setEditWifi] = useState(false);
+    const [waitWifiRequest, setWaitWifiRequest] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const [checkBandSteering, setCheckBandSteering] = useState(false);
     const [form, setForm] = useState({
         cityId: '' as number | '' | null,
         serial: '',
+        wifiBS: null as string | null,
+        passwordBS: null as string | null,
+        wifi24: null as string | null,
+        password24: null as string | null,
+        wifi58: null as string | null,
+        password58: null as string | null
     });
+
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => { setAnchorEl(null); };
+
+    const openPopOver = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     const loadingCities = open && cities.length === 0;
     useEffect(() => {
@@ -85,11 +112,170 @@ export function OnuInfo(){
     }
     */
 
+    const handleChangeCheckBandSteering = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckBandSteering(e.target.checked);
+    }
+
+    const handleEditWifi = () => { setEditWifi(!editWifi); }
+    const handleRenderWifiConfig = () => {
+        switch(checkBandSteering){
+            case true:
+                return(
+                    <React.Fragment>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifiBS'
+                                    value={form.wifiBS}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='passwordBS'
+                                    value={form.passwordBS}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                    </React.Fragment>
+                );
+            case false:
+                return(
+                    <React.Fragment>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi 2.4:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifi24'
+                                    value={form.wifi24}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi 2.4:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='password24'
+                                    value={form.password24}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <Divider />
+                        <InputContainer>
+                            <div className="text">
+                                <p>Nome do Wifi 5.8:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='wifi58'
+                                    value={form.wifi58}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                        <InputContainer>
+                            <div className="text">
+                                <p>Senha do Wifi 5.8:</p>
+                            </div>
+                            <div className="content">
+                                <TextField
+                                    required
+                                    variant="standard"
+                                    name='password58'
+                                    value={form.password58}
+                                    onChange={handleFormChange}
+                                >
+                                </TextField>
+                            </div>
+                        </InputContainer>
+                    </React.Fragment>
+                );
+        }
+    }
+
+    const handleSubmitWifi = async (e: any) => {
+        e.preventDefault();
+
+        if(checkBandSteering){
+            if(form.wifiBS && !form.wifiBS.match(spaceNotAllowed)){
+                setFetchResponseMessage('info/wifi-ssid-did-not-match');
+                return;
+            }
+            if(form.passwordBS && !form.passwordBS.match(wifiPassword)){
+                setFetchResponseMessage('info/wifi-password-did-not-match');
+                return;
+            }
+        } else {
+            if(
+                form.wifi24 && !form.wifi24.match(spaceNotAllowed)
+                || form.wifi58 && !form.wifi58.match(spaceNotAllowed)
+            ){
+                setFetchResponseMessage('info/wifi-ssid-did-not-match');
+                return;
+            }
+            if(
+                form.password24 && !form.password24.match(wifiPassword) 
+                || form.password58 && !form.password58.match(wifiPassword)
+            ){
+                setFetchResponseMessage('info/wifi-password-did-not-match');
+                return;
+            }
+        }
+
+        setWaitWifiRequest(true);
+        const response = await updateWifi({
+            onu: onu,
+            form: form,
+        });
+        setWaitWifiRequest(false);
+
+        if(response){
+            if(response.success){
+                setOnu(null);
+                setFetchResponseMessage(response.responses.status);
+            } else {
+                setFetchResponseMessage(response.messages.message);
+            }
+        } else {
+            setFetchResponseMessage('error/no-connection-with-API');
+        }
+    }
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setOnu(null);
         e.preventDefault();
-        startLoading();
 
+        startLoading();
         const response = await getOnuInfo({cityId: parseInt(form.cityId as string), serialNumber: form.serial});
         stopLoading();
 
@@ -290,24 +476,97 @@ export function OnuInfo(){
                                 }
                             </Alarms>
                             {
-                                onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
-                                    return(
-                                        <Wireless className="flex">
-                                            <div><h3>Wireless</h3></div>
-                                            <div className="interface flex">
-                                                <div><h4>{key}</h4></div>
-                                                <div>
-                                                    <p><b>SSID:</b> {value.name}</p>
-                                                    <p><b>Senha:</b> {value.password}</p>
-                                                    <p><b>Segurança:</b> {value.authType}</p>
-                                                    <p><b>Encriptação:</b> {value.encryption}</p>
-                                                    <p><b>Isolamento:</b> {value.isolation}</p>
-                                                    <p><b>Usuários online:</b> {value.currentUsers}</p>
+                                onu.modelOlt && typePppoeZte.includes(cleanUpModelName(onu.model!)) && (
+                                    <WirelessContainer className="flex">
+                                        <WirelessTitle className="flex">
+                                            <h3>Wireless</h3>
+                                            <Button
+                                                size="small"
+                                                variant="contained"
+                                                color={!editWifi ? 'primary' : 'error'}
+                                                endIcon={!editWifi ? <RssFeedOutlinedIcon /> : <CloseIcon />} 
+                                                onClick={handleEditWifi} 
+                                            >
+                                                {!editWifi ? 'Editar wifi' : 'Cancelar'}
+                                            </Button>
+                                        </WirelessTitle>
+                                        {
+                                            !editWifi ?
+                                                onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
+                                                    return(
+                                                        <Wireless className="flex">
+                                                            <div className="interface flex">
+                                                                <div><h4>{key}</h4></div>
+                                                                <div>
+                                                                    <p><b>SSID: </b>{value.name}</p>
+                                                                    <p><b>Senha:</b> {value.password}</p>
+                                                                    <p><b>Segurança:</b> {value.authType}</p>
+                                                                    <p><b>Encriptação:</b> {value.encryption}</p>
+                                                                    <p><b>Isolamento:</b> {value.isolation}</p>
+                                                                    <p><b>Usuários online:</b> {value.currentUsers}</p>
+                                                                </div>
+                                                            </div>
+                                                        </Wireless>
+                                                    )
+                                                })
+                                            :
+                                            <Wifi>
+                                                <div className="wifi-header flex">
+                                                    <div className="flex">
+                                                        <RssFeedOutlinedIcon color="primary"/>
+                                                        <div className="flex">
+                                                            <IconButton onClick={handleClick}>
+                                                                <HelpOutlineOutlinedIcon fontSize="small" color="secondary"/>
+                                                            </IconButton>
+                                                            <Popover
+                                                                id={id}
+                                                                open={openPopOver}
+                                                                anchorEl={anchorEl}
+                                                                onClose={handleClose}
+                                                                anchorOrigin={{
+                                                                    vertical: 'bottom',
+                                                                    horizontal: 'left',
+                                                                }}
+                                                            >
+                                                                <Typography sx={{ p: 2, background: '#fffff0', color: '#000' }}>
+                                                                    A senha deve ter pelo menos 8 caracteres, 
+                                                                    <br/>sem espaços em branco ou caracteres especiais.
+                                                                </Typography>
+                                                            </Popover>
+                                                        </div>
+                                                    </div>
+                                                    <p>Ativar Band Steering?</p>
+                                                    <Checkbox
+                                                        checked={checkBandSteering}
+                                                        onChange={handleChangeCheckBandSteering}
+                                                        inputProps={{ 'aria-label': 'controlled' }}
+                                                    />
                                                 </div>
-                                            </div>
-                                        </Wireless>
-                                    )
-                                })
+                                                <div className='input-wifi'>
+                                                    {
+                                                        handleRenderWifiConfig()
+                                                    }
+                                                </div>
+                                                <div className="flex">
+                                                    {
+                                                        waitWifiRequest ? <CircularProgress className="MUI-CircularProgress" size='sm'/> :
+                                                        <Button
+                                                            size="small" 
+                                                            variant="contained"
+                                                            color='success'
+                                                            sx={{mb: '.5rem'}}
+                                                            endIcon={<CheckRoundedIcon />}
+                                                            onClick={handleSubmitWifi}
+                                                        >
+                                                            Salvar
+                                                        </Button>
+                                                    }
+
+                                                </div>
+                                            </Wifi>
+                                        }
+                                    </WirelessContainer>
+                                )
                             }
                         </div>
                     </DataField>

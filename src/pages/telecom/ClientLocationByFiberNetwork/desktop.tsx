@@ -32,6 +32,7 @@ interface Data {
     txOlt: number;
     ctoId: number;
     portId: number;
+    'Client_city.name': string;
     'Client_created_by.name': string;
     'Client_updated_by.name': string;
     'is_updated': boolean;
@@ -45,13 +46,13 @@ export default function ClientFiberNetworkData(){
     const { setFetchResponseMessage } = useResponse();
 
     const [rows, setRows] = useState<any[]>([]);
-    const [order, setOrder] = useState<Order>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Data>('is_updated');
+    const [order, setOrder] = useState<Order>('desc');
+    const [orderBy, setOrderBy] = useState<keyof Data>('created_at');
     const [isNested, setIsNested] = useState<Boolean>(false);
     const [selected, setSelected] = useState<number[]>([]);
     const [upToDate, setUpToDate] = useState(false);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     useEffect(() => {
         async function getData(){
@@ -136,6 +137,8 @@ export default function ClientFiberNetworkData(){
                 upToDate={upToDate}
                 userId={user!.uid}
                 rowId={selected}
+                addedBy={rows.filter(row => row.id === selected[0])[0]?.Client_created_by.name}
+                updatedBy={rows.filter(row => row.id === selected[0])[0]?.Client_updated_by}
             />
             <Table
                 aria-labelledby="tableTitle"
@@ -148,7 +151,7 @@ export default function ClientFiberNetworkData(){
                         width: '40px',
                     },
                     '& thead th:nth-child(2)': {
-                        width: '200px',
+                        width: '150px',
                     },
                     '& tr > *:nth-child(n+3)': { textAlign: 'center' },
                 }}
@@ -186,7 +189,7 @@ export default function ClientFiberNetworkData(){
                                     : {}
                             }
                             >
-                                <th scope="row">
+                                <td scope="row">
                                     <Checkbox
                                         checked={isItemSelected}
                                         slotProps={{
@@ -196,20 +199,17 @@ export default function ClientFiberNetworkData(){
                                         }}
                                         sx={{ verticalAlign: 'top' }}
                                     />
-                                </th>
-                                <th id={labelId} scope="row">
+                                </td>
+                                <td id={labelId} scope="row">
                                     {dayjs(row.created_at).add(3, "hour").format('DD/MM [às] HH:mm') + 'hrs'}
-                                </th>
-                                <th id={labelId} scope="row">
+                                </td>
+                                <td>{row.Client_city ? row.Client_city.name : ''}</td>
+                                <td id={labelId} scope="row">
                                     {row.pppoe}
-                                </th>
+                                </td>
                                 <td>{row.serialNumber}</td>
-                                <td>{row.ontPower}</td>
-                                <td>{row.oltPower}</td>
                                 <td>{row.ctoId}</td>
                                 <td>{row.portId}</td>
-                                <td>{row.Client_created_by.name}</td>
-                                <td>{row.Client_updated_by ? row.Client_updated_by.name : ''}</td>
                                 <td>
                                     {
                                         row.is_updated ? 
@@ -229,13 +229,13 @@ export default function ClientFiberNetworkData(){
                                 } as React.CSSProperties
                             }
                         >
-                            <td colSpan={11} aria-hidden />
+                            <td colSpan={8} aria-hidden />
                         </tr>
                     )}
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colSpan={11}>
+                        <td colSpan={8}>
                             <Box
                                 sx={{
                                     display: 'flex',
