@@ -19,7 +19,7 @@ export function ModalQRCodeViwer(props: any){
     const { setFetchResponseMessage } = useResponse();
 
     const [open, setOpen] = useState(false);
-    const [isScanning, setIsScanning] = useState(false);
+    const [isScanning, setIsScanning] = useState(true);
     const [cities, setCities] = useState<ICities[]>([]);
     const [qrCode, setQRCode] = useState<string | null>(null);
     const [form, setForm] = useState({
