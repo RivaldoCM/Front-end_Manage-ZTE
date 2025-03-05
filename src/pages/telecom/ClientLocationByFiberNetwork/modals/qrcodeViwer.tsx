@@ -19,7 +19,7 @@ export function ModalQRCodeViwer(props: any){
     const { setFetchResponseMessage } = useResponse();
 
     const [open, setOpen] = useState(false);
-    const [isScanning, setIsScanning] = useState(true);
+    const [isScanning, setIsScanning] = useState(false);
     const [cities, setCities] = useState<ICities[]>([]);
     const [qrCode, setQRCode] = useState<string | null>(null);
     const [form, setForm] = useState({
@@ -166,6 +166,7 @@ export function ModalQRCodeViwer(props: any){
                                 <form className="flex" onSubmit={handleSubmit}>
                                     <div>
                                         <Autocomplete
+                                            required
                                             open={open}
                                             sx={{ width: 300 }}
                                             placeholder="Cidade"
