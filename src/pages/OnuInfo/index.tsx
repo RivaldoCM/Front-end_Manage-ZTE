@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from "react";
 
-import { Autocomplete, Button, Checkbox, CircularProgress, Divider, IconButton, Popover, TextField, Typography } from "@mui/material";
-import { Form } from "../onuDelete/style";
-
 import { getCities } from "../../services/apiManageONU/getCities";
 import { ICities } from "../../interfaces/ICities";
 import { useResponse } from "../../hooks/useResponse";
 import { useLoading } from "../../hooks/useLoading";
 import { getOnuInfo } from "../../services/apiManageONU/getOnuInfo";
+import { updateWifi } from "../../services/apiManageONU/updateWifi";
+import { spaceNotAllowed, wifiPassword } from "../../config/regex";
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import { cleanUpModelName, typePppoeZte } from "../../config/typesOnus";
 
+import { Form } from "../onuDelete/style";
+import { Wifi } from "../Provisionamento/style";
+import { InputContainer } from "../../styles/globalStyles";
+import { Autocomplete, Button, Checkbox, CircularProgress, Divider, IconButton, Popover, TextField, Typography } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import { Alarms, Container, DataField, InfoStyle, Macs, Wireless, WirelessContainer, WirelessTitle } from "./style";
 //import { getVendors } from "../../services/macVendors/getVendors";
 import RssFeedOutlinedIcon from '@mui/icons-material/RssFeedOutlined';
-import { Wifi } from "../Provisionamento/style";
-import { InputContainer } from "../../styles/globalStyles";
 import CloseIcon from '@mui/icons-material/Close';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import { updateWifi } from "../../services/apiManageONU/updateWifi";
-import { spaceNotAllowed, wifiPassword } from "../../config/regex";
-import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 
 export function OnuInfo(){
     const { setFetchResponseMessage } = useResponse();
@@ -475,95 +475,99 @@ export function OnuInfo(){
                                     )
                                 }
                             </Alarms>
-                            <WirelessContainer className="flex">
-                                <WirelessTitle className="flex">
-                                    <h3>Wireless</h3>
-                                    <Button
-                                        size="small"
-                                        variant="contained"
-                                        color={!editWifi ? 'primary' : 'error'}
-                                        endIcon={!editWifi ? <RssFeedOutlinedIcon /> : <CloseIcon />} 
-                                        onClick={handleEditWifi} 
-                                    >
-                                        {!editWifi ? 'Editar wifi' : 'Cancelar'}
-                                    </Button>
-                                </WirelessTitle>
-                                {
-                                    !editWifi ?
-                                        onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
-                                            return(
-                                                <Wireless className="flex">
-                                                    <div className="interface flex">
-                                                        <div><h4>{key}</h4></div>
-                                                        <div>
-                                                            <p><b>SSID: </b>{value.name}</p>
-                                                            <p><b>Senha:</b> {value.password}</p>
-                                                            <p><b>Segurança:</b> {value.authType}</p>
-                                                            <p><b>Encriptação:</b> {value.encryption}</p>
-                                                            <p><b>Isolamento:</b> {value.isolation}</p>
-                                                            <p><b>Usuários online:</b> {value.currentUsers}</p>
+                            {
+                                onu.modelOlt && typePppoeZte.includes(cleanUpModelName(onu.model!)) && (
+                                    <WirelessContainer className="flex">
+                                        <WirelessTitle className="flex">
+                                            <h3>Wireless</h3>
+                                            <Button
+                                                size="small"
+                                                variant="contained"
+                                                color={!editWifi ? 'primary' : 'error'}
+                                                endIcon={!editWifi ? <RssFeedOutlinedIcon /> : <CloseIcon />} 
+                                                onClick={handleEditWifi} 
+                                            >
+                                                {!editWifi ? 'Editar wifi' : 'Cancelar'}
+                                            </Button>
+                                        </WirelessTitle>
+                                        {
+                                            !editWifi ?
+                                                onu.wireless && Object.entries(onu.wireless).map(([key, value]) => {
+                                                    return(
+                                                        <Wireless className="flex">
+                                                            <div className="interface flex">
+                                                                <div><h4>{key}</h4></div>
+                                                                <div>
+                                                                    <p><b>SSID: </b>{value.name}</p>
+                                                                    <p><b>Senha:</b> {value.password}</p>
+                                                                    <p><b>Segurança:</b> {value.authType}</p>
+                                                                    <p><b>Encriptação:</b> {value.encryption}</p>
+                                                                    <p><b>Isolamento:</b> {value.isolation}</p>
+                                                                    <p><b>Usuários online:</b> {value.currentUsers}</p>
+                                                                </div>
+                                                            </div>
+                                                        </Wireless>
+                                                    )
+                                                })
+                                            :
+                                            <Wifi>
+                                                <div className="wifi-header flex">
+                                                    <div className="flex">
+                                                        <RssFeedOutlinedIcon color="primary"/>
+                                                        <div className="flex">
+                                                            <IconButton onClick={handleClick}>
+                                                                <HelpOutlineOutlinedIcon fontSize="small" color="secondary"/>
+                                                            </IconButton>
+                                                            <Popover
+                                                                id={id}
+                                                                open={openPopOver}
+                                                                anchorEl={anchorEl}
+                                                                onClose={handleClose}
+                                                                anchorOrigin={{
+                                                                    vertical: 'bottom',
+                                                                    horizontal: 'left',
+                                                                }}
+                                                            >
+                                                                <Typography sx={{ p: 2, background: '#fffff0', color: '#000' }}>
+                                                                    A senha deve ter pelo menos 8 caracteres, 
+                                                                    <br/>sem espaços em branco ou caracteres especiais.
+                                                                </Typography>
+                                                            </Popover>
                                                         </div>
                                                     </div>
-                                                </Wireless>
-                                            )
-                                        })
-                                    :
-                                    <Wifi>
-                                        <div className="wifi-header flex">
-                                            <div className="flex">
-                                                <RssFeedOutlinedIcon color="primary"/>
-                                                <div className="flex">
-                                                    <IconButton onClick={handleClick}>
-                                                        <HelpOutlineOutlinedIcon fontSize="small" color="secondary"/>
-                                                    </IconButton>
-                                                    <Popover
-                                                        id={id}
-                                                        open={openPopOver}
-                                                        anchorEl={anchorEl}
-                                                        onClose={handleClose}
-                                                        anchorOrigin={{
-                                                            vertical: 'bottom',
-                                                            horizontal: 'left',
-                                                        }}
-                                                    >
-                                                        <Typography sx={{ p: 2, background: '#fffff0', color: '#000' }}>
-                                                            A senha deve ter pelo menos 8 caracteres, 
-                                                            <br/>sem espaços em branco ou caracteres especiais.
-                                                        </Typography>
-                                                    </Popover>
+                                                    <p>Ativar Band Steering?</p>
+                                                    <Checkbox
+                                                        checked={checkBandSteering}
+                                                        onChange={handleChangeCheckBandSteering}
+                                                        inputProps={{ 'aria-label': 'controlled' }}
+                                                    />
                                                 </div>
-                                            </div>
-                                            <p>Ativar Band Steering?</p>
-                                            <Checkbox
-                                                checked={checkBandSteering}
-                                                onChange={handleChangeCheckBandSteering}
-                                                inputProps={{ 'aria-label': 'controlled' }}
-                                            />
-                                        </div>
-                                        <div className='input-wifi'>
-                                            {
-                                                handleRenderWifiConfig()
-                                            }
-                                        </div>
-                                        <div className="flex">
-                                            {
-                                                waitWifiRequest ? <CircularProgress className="MUI-CircularProgress" size='sm'/> :
-                                                <Button
-                                                    size="small" 
-                                                    variant="contained"
-                                                    color='success'
-                                                    sx={{mb: '.5rem'}}
-                                                    endIcon={<CheckRoundedIcon />}
-                                                    onClick={handleSubmitWifi}
-                                                >
-                                                    Salvar
-                                                </Button>
-                                            }
+                                                <div className='input-wifi'>
+                                                    {
+                                                        handleRenderWifiConfig()
+                                                    }
+                                                </div>
+                                                <div className="flex">
+                                                    {
+                                                        waitWifiRequest ? <CircularProgress className="MUI-CircularProgress" size='sm'/> :
+                                                        <Button
+                                                            size="small" 
+                                                            variant="contained"
+                                                            color='success'
+                                                            sx={{mb: '.5rem'}}
+                                                            endIcon={<CheckRoundedIcon />}
+                                                            onClick={handleSubmitWifi}
+                                                        >
+                                                            Salvar
+                                                        </Button>
+                                                    }
 
-                                        </div>
-                                    </Wifi>
-                                }
-                            </WirelessContainer>
+                                                </div>
+                                            </Wifi>
+                                        }
+                                    </WirelessContainer>
+                                )
+                            }
                         </div>
                     </DataField>
                 )
