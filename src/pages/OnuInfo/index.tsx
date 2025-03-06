@@ -42,7 +42,7 @@ export function OnuInfo(){
         wifi58: null as string | null,
         password58: null as string | null
     });
-
+    console.log(onu)
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -476,7 +476,7 @@ export function OnuInfo(){
                                 }
                             </Alarms>
                             {
-                                onu.modelOlt && typePppoeZte.includes(cleanUpModelName(onu.model!)) && (
+                                onu.modelOlt === "ZTE" && typePppoeZte.includes(cleanUpModelName(onu.model!)) && (
                                     <WirelessContainer className="flex">
                                         <WirelessTitle className="flex">
                                             <h3>Wireless</h3>
