@@ -132,9 +132,11 @@ export const handleShowPageByRule = (rule?: number) => {
         case 1:
         case 2: 
             let withoutDashboardBreak = cloneDeep(handlePages);
-            withoutDashboardBreak.splice(0,3);
-            withoutDashboardBreak.splice(2,2)
-            withoutDashboardBreak[1].pages.splice(0,1);
+            withoutDashboardBreak[0].pages.splice(0,3);
+            withoutDashboardBreak.splice(1,2);
+            withoutDashboardBreak[2].pages.splice(0,1);
+            withoutDashboardBreak.splice(3,2);
+
         return handleDynamicPagesByRule = withoutDashboardBreak;
         case 6:
             let massiveAndExitLag = cloneDeep(handlePages);
@@ -143,8 +145,9 @@ export const handleShowPageByRule = (rule?: number) => {
             return handleDynamicPagesByRule = massiveAndExitLag;
         case 3:
             let onlyBreakTime = cloneDeep(handlePages);
-            onlyBreakTime.splice(0,3);
-            onlyBreakTime.splice(2,2);
+            onlyBreakTime[0].pages.splice(0,3);
+            onlyBreakTime.splice(1,2);
+            onlyBreakTime.splice(3,2);
             return handleDynamicPagesByRule = onlyBreakTime;
         case 19:
             let withoutAdmin = cloneDeep(handlePages);

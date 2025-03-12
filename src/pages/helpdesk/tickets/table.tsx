@@ -164,17 +164,6 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
         <thead>
             <tr>
                 <th>
-                    <Checkbox
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        slotProps={{
-                        input: {
-                                'aria-label': 'select all desserts',
-                            },
-                        }}
-                        sx={{ verticalAlign: 'sub' }}
-                    />
                 </th>
                 {headCells.map((headCell) => {
                     const active = orderBy === headCell.id;

@@ -36,7 +36,7 @@ export function CreateTicket({ open, handleClose }: any) {
     const [form, setForm] = useState<ITicketsForm>({
         userId: user!.uid,
         originDepartmentId: user!.rule,
-        destinationDepartmentId: null,
+        destinationDepartmentId: 19,
         cityId: 0 || null,
         ticketTypeId: null,
         ctoId: 0 || null,
@@ -53,7 +53,7 @@ export function CreateTicket({ open, handleClose }: any) {
     
     const loadingCities = openCities && cities.length === 0;
     const loadingTicketType = openTicketType && ticketType.length === 0;
-    const loadingDepartments = openDepartments && departments.length === 0;
+    //const loadingDepartments = openDepartments && departments.length === 0;
     const loadingFiberNetwork = openFiberNetwork && fiberNetwork.length === 0; 
 
     useEffect(() => {
@@ -70,7 +70,7 @@ export function CreateTicket({ open, handleClose }: any) {
 
         return () => { active = false; }
     },[loadingCities]);
-
+/*
     useEffect(() => {
         let active = true;
 
@@ -86,7 +86,7 @@ export function CreateTicket({ open, handleClose }: any) {
 
         return () => { active = false; }
     },[loadingDepartments]);
-
+*/
     useEffect(() => {
         let active = true;
 
@@ -184,23 +184,27 @@ export function CreateTicket({ open, handleClose }: any) {
                         Novo Ticket
                     </Typography>
                     <AddTicketStyle onSubmit={handleSubmit}>
-                        <Autocomplete
-                            placeholder='Para quem?'
-                            open={openDepartments}
-                            onOpen={() => { setOpenDepartments(true); }}
-                            onClose={() => { setOpenDepartments(false); }}
-                            isOptionEqualToValue={(option, value) => option.name === value.name}
-                            getOptionLabel={(option) => option.name}
-                            loading={loadingDepartments}
-                            options={departments}
-                            onChange={handleChangeDepartment}
-                            sx={{ marginBottom: '.5rem' }}
-                            endDecorator={
-                                loadingDepartments ? (
-                                    <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
-                                ) : null
-                            }
-                        />
+                        {
+                            /*
+                                <Autocomplete
+                                    placeholder='Para quem?'
+                                    open={openDepartments}
+                                    onOpen={() => { setOpenDepartments(true); }}
+                                    onClose={() => { setOpenDepartments(false); }}
+                                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                                    getOptionLabel={(option) => option.name}
+                                    loading={loadingDepartments}
+                                    options={departments}
+                                    onChange={handleChangeDepartment}
+                                    sx={{ marginBottom: '.5rem' }}
+                                    endDecorator={
+                                        loadingDepartments ? (
+                                            <CircularProgress size="sm" sx={{ bgcolor: 'background.surface' }} />
+                                        ) : null
+                                    }
+                                />
+                            */
+                        }
                         <Autocomplete
                             placeholder='Qual o problema?'
                             disabled={ticketTypeDisabled}
