@@ -7,14 +7,25 @@ export const Main = styled.div`
     justify-content: space-between;
 
     aside{
-        width: 15%;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 20%;
         height: 100%;
-        align-items: flex-start;
+
+        > div{
+            width: 80%;
+            height: 250px;
+            border-left: 5px solid black;
+            border-radius: .5rem;
+            background: aliceblue;
+        }
     }
 
-    > div:first-of-type{
-        width: 85%;
-        height: 100%;
+    main{
+        width: 80%;
+        height: 98%;
+        margin-left: 1rem;
         border: 3px solid black;
         border-radius:10px
     }

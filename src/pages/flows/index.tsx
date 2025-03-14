@@ -3,10 +3,9 @@ import { Background, Controls, ReactFlow, applyEdgeChanges, applyNodeChanges, ad
 import { Main } from './style';
 
 import '@xyflow/react/dist/style.css';
-import { Button } from '@mui/joy';
+import { Button, Input } from '@mui/joy';
 import Add from '@mui/icons-material/Add';
-import { CustomNode } from '../../components/flow/node';
-
+import { CardEmployees } from '../../components/flow/node';
 
 const initialNodes = [
     {
@@ -17,7 +16,7 @@ const initialNodes = [
     },
     {
         id: '2',
-        position: { x: 0, y: 0 },
+        position: { x: 500, y: 60 },
         data: { label: 'Hello', jobTitle: 'Software Engineer', },
     },
 ];
@@ -27,9 +26,7 @@ const initialEdges = [];
 export function Flow() {
     const [nodes, setNodes] = useState(initialNodes);
     const [edges, setEdges] = useState(initialEdges);
-    const [showMenu, setShowMenu] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-    const [selectedNodeId, setSelectedNodeId] = useState(null);
+    const [selectedNode, setSelectedNode] = useState(null);
 
     const onNodesChange = useCallback(
         (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -50,35 +47,13 @@ export function Flow() {
     const removeNode = useCallback((nodeId) => {
         setNodes((nds) => applyNodeChanges([{ id: nodeId, type: 'remove' }], nds));
         setEdges((eds) => applyEdgeChanges([{ id: nodeId, type: 'remove' }], eds));
-        setShowMenu(false);  // Fechar o menu após a remoção
     }, []);
 
     // Exibir o menu de contexto
     const onNodeClick = useCallback((event, node) => {
-        // Evitar propagação do evento para que o menu não apareça ao clicar fora
         event.stopPropagation();
-
-        // Setar a posição do menu e o node selecionado
-        setMenuPosition({
-            x: event.clientX, // Posição X do clique
-            y: event.clientY, // Posição Y do clique
-        });
-        setSelectedNodeId(node.id);
-        setShowMenu(true); // Mostrar o menu
+        setSelectedNode(node);
     }, []);
-
-    // Função para fechar o menu
-    const closeMenu = () => {
-        setShowMenu(false);
-    };
-
-    // Função para lidar com a ação de clicar em uma opção do menu
-    const handleMenuAction = (action) => {
-        if (action === 'remove') {
-            removeNode(selectedNodeId);
-        }
-        setShowMenu(false);  // Fechar o menu após a ação
-    };
 
     const addNode = useCallback(() => {
         const newNode = {
@@ -86,30 +61,41 @@ export function Flow() {
             position: { x: 100, y: 100 }, 
             data: { label: 'New Node' },
             type: 'custom'
-        };
-        
+        }
         setNodes((nds) => [...nds, newNode]); 
     }, [nodes]);
 
+
+
     return (
-        <Main onClick={closeMenu} className='flex'>
+        <Main className='flex'>
             <aside className='flex'>
-                <Button startDecorator={<Add />} onClick={addNode}>Add node</Button>
+                <Button startDecorator={<Add />} onClick={addNode} sx={{ m: 1 }}>Add node</Button>
+
+                {
+                    selectedNode && (
+                        <div>
+                           Nome: <Input variant="solid" size="sm" value={selectedNode.data.label} />
+
+                        </div>
+                    )
+                }
             </aside>
-            <div>
+            <main>
                 <ReactFlow 
+                    fitView
                     nodes={nodes} 
                     edges={edges}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
                     onConnect={onConnect}
                     onNodeClick={onNodeClick} // Detectar clique no node
-                    nodeTypes={{ custom: CustomNode }}
+                    nodeTypes={{ custom: CardEmployees }}
                 >
-                    <Background color='#000'/>
+                    <Background />
                     <Controls />
                 </ReactFlow>
-            </div>
+            </main>
         </Main>
     );
 }
