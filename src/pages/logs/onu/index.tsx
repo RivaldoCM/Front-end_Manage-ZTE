@@ -50,7 +50,7 @@ function Row(props: IOnuLogsProps) {
                 <TableCell component="th" scope="row">
                     {row.User.name}
                 </TableCell>
-                <TableCell align="center">{row.City.name}</TableCell>
+                <TableCell align="center">{row.Cities.name}</TableCell>
                 <TableCell align="center">{row.Olts.name}</TableCell>
                 <TableCell align="center">{row.slot}</TableCell>
                 <TableCell align="center">{row.pon}</TableCell>
@@ -99,7 +99,8 @@ export function LogsOnu() {
             const data = await getOnuLogs(filterParams);
             if(data){
                 if(data.success){
-                    setOnu(data.responses.response);
+                    data.responses.response && setOnu(data.responses.response);
+
                     setPage(0);
                 } else {
                     setOnu([]);
@@ -111,7 +112,7 @@ export function LogsOnu() {
         };
         getData();
     }, [filterParams]);
-
+    console.log(onu)
     const visibleRows = useMemo(() => 
         stableSort(onu).slice(
             page * rowsPerPage,
@@ -153,7 +154,7 @@ export function LogsOnu() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {visibleRows.map((row, index) => (
+                            {visibleRows && visibleRows.map((row, index) => (
                                 <Row key={index} row={row} />
                             ))}
                         </TableBody>

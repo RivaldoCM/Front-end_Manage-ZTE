@@ -104,8 +104,6 @@ export function PARKSForm({onu}: IOnu){
                         cpf: '',
                         pppoeUser: '',
                         pppoePassword: '',
-                        wifiName: '',
-                        wifiPassword: '',
                         typeOnu: '',
                         modelOnu: '',
                         voalleAccessPointId: ''
@@ -131,8 +129,8 @@ export function PARKSForm({onu}: IOnu){
                     serialNumber: onu.serialNumber,
                     modelOlt: onu.modelOlt,
                     accessPointId: authOnu.voalleAccessPointId,
-                    wifiSSID: authOnu.wifiName,
-                    wifiPass: authOnu.wifiPassword
+                    wifiSSID: '',
+                    wifiPass: ''
                 });
                 updateLogsOnu({id: hasAuth.responses.response.logId, isUpdated: response});
             } else {

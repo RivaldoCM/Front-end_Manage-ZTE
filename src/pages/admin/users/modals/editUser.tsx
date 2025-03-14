@@ -107,6 +107,7 @@ export function EditUser(props: IEditUser){
                         <MenuItem value={1}>Call Center</MenuItem>
                         <MenuItem value={3}>Supervisor Call Center</MenuItem>
                         <MenuItem value={10}>Tecnicos</MenuItem>
+                        <MenuItem value={15}>Supervisor Tecnicos</MenuItem>
                         <MenuItem value={14}>NOC</MenuItem>
                         <MenuItem value={16}>CGR</MenuItem>
                         <MenuItem value={17}>Administrador</MenuItem>

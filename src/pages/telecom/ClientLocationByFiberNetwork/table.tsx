@@ -10,13 +10,14 @@ import { Switch, Box, Checkbox, Link, Typography } from '@mui/joy';
 type Order = 'asc' | 'desc';
 
 interface Data {
+    created_at: Date;
+    'Client_city.name': string;
     pppoe: string;
     serialNumber: string;
     rxOnt: number;
     txOlt: number;
     ctoId: number;
     portId: number;
-    'Client_created_by.name': string;
     'Client_updated_by.name': string;
     'is_updated': boolean
 }
@@ -31,6 +32,22 @@ interface HeadCell {
 }
   
 const headCells: readonly HeadCell[] = [
+    {
+        id: 'created_at',
+        sort: true,
+        nested: false,
+        numeric: false,
+        disablePadding: true,
+        label: 'Criado em',
+    },
+    {
+        id: 'Client_city.name',
+        sort: false,
+        nested: true,
+        numeric: false,
+        disablePadding: false,
+        label: 'Cidade',
+    },
     {
         id: 'pppoe',
         sort: false,
@@ -48,22 +65,6 @@ const headCells: readonly HeadCell[] = [
         label: 'SerialNumber',
     },
     {
-        id: 'rxOnt',
-        sort: false,
-        nested: false,
-        numeric: true,
-        disablePadding: false,
-        label: 'Rx ONT',
-        },
-    {
-        id: 'txOlt',
-        sort: false,
-        nested: false,
-        numeric: true,
-        disablePadding: false,
-        label: 'TX OLT',
-    },
-    {
         id: 'ctoId',
         sort: false,
         nested: false,
@@ -78,22 +79,6 @@ const headCells: readonly HeadCell[] = [
         numeric: true,
         disablePadding: false,
         label: 'N° Porta CTO',
-    },
-    {
-        id: 'Client_created_by.name',
-        sort: false,
-        nested: true,
-        numeric: true,
-        disablePadding: false,
-        label: 'Adicionado por',
-    },
-    {
-        id: 'Client_updated_by.name',
-        sort: false,
-        nested: true,
-        numeric: true,
-        disablePadding: false,
-        label: 'Atualizado por',
     },
     {
         id: 'is_updated',
@@ -118,6 +103,10 @@ interface EnhancedTableToolbarProps {
     upToDate: boolean;
     userId: number;
     rowId: number[]; 
+    addedBy: string, 
+    updatedBy: {
+        name: string;
+    },
     onUpdateSent: (value: boolean) => void;
 }
 
@@ -241,9 +230,8 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps){
-    const { numSelected, upToDate, userId, rowId, onUpdateSent } = props;
+    const { numSelected, upToDate, userId, rowId, onUpdateSent, addedBy, updatedBy } = props;
     const { setFetchResponseMessage } = useResponse();
-
     const [checked, setChecked] = useState<boolean>(upToDate);
 
     useEffect(() => {
@@ -251,8 +239,6 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps){
     },[upToDate]);
 
     const handleSubmit = () => {
-        setChecked(!checked);
-
         async function getData(){
             const data = await updateClientUpdated({id: rowId[0], isUpdated: upToDate, userId: userId});
             if(data){
@@ -287,7 +273,7 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps){
         >
             {numSelected > 0 ? (
                 <Typography sx={{ flex: '1 1 100%' }} component="div">
-                    {numSelected} selecionado
+                    Adicionado por {addedBy}, {updatedBy ? `atualizado por ${updatedBy.name}` : 'ainda não foi atualizado.'}
                 </Typography>
             ) : (
                 <Typography

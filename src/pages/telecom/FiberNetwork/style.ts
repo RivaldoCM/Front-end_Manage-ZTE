@@ -4,7 +4,7 @@ export const TableController = styled.div`
 
 `;
 
-export const AddModal = styled.div`
+export const AddModal = styled.form`
     padding: .5rem;
 
     > div:nth-child(1){
@@ -15,9 +15,7 @@ export const AddModal = styled.div`
 
     >div:nth-child(4){
         display: flex;
-        flex-direction: column;
         margin: .5rem 0;
-
         > div {
             justify-content: flex-start;
         }

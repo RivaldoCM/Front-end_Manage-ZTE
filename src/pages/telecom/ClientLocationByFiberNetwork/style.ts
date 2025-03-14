@@ -13,7 +13,6 @@ export const Desktop = styled.div`
 export const Controller = styled.div`
     width: 100%;
     height:100dvh;
-    z-index: 9999;
 `;
 
 export const QRCodeResult = styled.div`

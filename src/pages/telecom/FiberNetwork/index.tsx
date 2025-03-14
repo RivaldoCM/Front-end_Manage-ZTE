@@ -38,7 +38,7 @@ export function FiberNetwork(){
 
     useEffect(() => {
         async function getData(){
-            const data = await getNetworkTopology();
+            const data = await getNetworkTopology({});
             if(data){
                 if(data.success){
                     setNetworkData(data.responses.response);
@@ -107,9 +107,6 @@ export function FiberNetwork(){
         : Math.min(networkData.length, (page + 1) * rowsPerPage);
     };
 
-    
-
-    // Avoid a layout jump when reaching the last page with empty networkData.
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - networkData.length) : 0;
 
     const handleOpenAddItem = () => setOpenAddItemModal(true);
@@ -134,7 +131,6 @@ export function FiberNetwork(){
                 />
                 <Table
                     stickyFooter
-                    
                     hoverRow
                     sx={{
                         '--TableCell-headBackground': 'transparent',
